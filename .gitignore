@@ -1,0 +1,13 @@
+# Tailwind v4 standalone CLI binary (baixado por sessão)
+tools/*.exe
+
+# CSS gerado pelo Tailwind (sempre regerável a partir dos fontes)
+src/docs/output.css
+
+# Node (caso alguém instale local — não usamos por padrão)
+node_modules/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

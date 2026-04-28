@@ -1,0 +1,226 @@
+/**
+ * Design Tokens — Canais Digitais 2.0
+ * Fonte: Figma file WGDRkmJLtuow7gRmPRAwJk
+ * Páginas: 🎨 Foundations > Colors, Elevation, Typography
+ *
+ * Esta é a única fonte de tokens do projeto. Tailwind v4 lê este arquivo
+ * via @theme e gera as classes utilitárias correspondentes.
+ *
+ * NUNCA usar valores hardcoded nos componentes. Sempre as classes geradas
+ * a partir das variáveis declaradas aqui.
+ *
+ * Mapeamento da escala Figma → Tailwind:
+ *   Figma 0  10  20  30  40  50  60  70  80  90  100
+ *   Tailw 50 100 200 300 400 500 600 700 800 900 950
+ *
+ * Modo light é o default. O modo dark do Figma é o espelho do light
+ * (mesmas cores, escala invertida) — será adicionado em sessão futura
+ * via media query ou data-attribute, sem alterar o nome dos tokens.
+ */
+
+@theme {
+  /* ========================================================================
+     FONT FAMILIES
+     ======================================================================== */
+  --font-display: "Aleo", Georgia, serif;          /* Display/Headline/Title */
+  --font-body: "Open Sans", system-ui, sans-serif; /* Body/Label */
+  --font-sans: var(--font-body);                   /* default sans = body */
+  --font-serif: var(--font-display);
+
+  /* ========================================================================
+     TYPOGRAPHY SCALE — Material Design 3
+     17 escalas extraídas dos 36 text styles do Figma.
+     A família é aplicada via classe utilitária separada (font-display ou
+     font-body) — não acoplada ao tamanho.
+     ======================================================================== */
+
+  /* Display — Aleo. Hero/títulos editoriais grandes. */
+  --text-display-lg: 57px;
+  --text-display-lg--line-height: 64px;
+  --text-display-lg--letter-spacing: -0.25px;
+
+  --text-display-md: 45px;
+  --text-display-md--line-height: 52px;
+  --text-display-md--letter-spacing: 0px;
+
+  --text-display-sm: 36px;
+  --text-display-sm--line-height: 44px;
+  --text-display-sm--letter-spacing: 0px;
+
+  /* Headline — Aleo. Títulos de página/seção. */
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+  --text-headline-lg--letter-spacing: 0px;
+
+  --text-headline-md: 28px;
+  --text-headline-md--line-height: 36px;
+  --text-headline-md--letter-spacing: 0px;
+
+  --text-headline-sm: 24px;
+  --text-headline-sm--line-height: 32px;
+  --text-headline-sm--letter-spacing: 0px;
+
+  /* Title — Aleo. Cabeçalhos de card, modais, blocos. */
+  --text-title-xl: 22px;
+  --text-title-xl--line-height: 28px;
+  --text-title-xl--letter-spacing: 0px;
+
+  --text-title-lg: 18px;
+  --text-title-lg--line-height: 24px;
+  --text-title-lg--letter-spacing: 0px;
+
+  --text-title-md: 16px;
+  --text-title-md--line-height: 24px;
+  --text-title-md--letter-spacing: 0.15px;
+
+  --text-title-sm: 14px;
+  --text-title-sm--line-height: 20px;
+  --text-title-sm--letter-spacing: 0.10px;
+
+  /* Body — Open Sans. Texto longo / parágrafos. */
+  --text-body-xl: 18px;
+  --text-body-xl--line-height: 28px;
+  --text-body-xl--letter-spacing: 0.5px;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-body-lg--letter-spacing: 0.5px;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 20px;
+  --text-body-md--letter-spacing: 0.25px;
+
+  --text-body-sm: 12px;
+  --text-body-sm--line-height: 16px;
+  --text-body-sm--letter-spacing: 0.4px;
+
+  /* Label — Open Sans. Botões, chips, navegação, elementos de UI. */
+  --text-label-lg: 14px;
+  --text-label-lg--line-height: 20px;
+  --text-label-lg--letter-spacing: 0.10px;
+
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--letter-spacing: 0.5px;
+
+  --text-label-sm: 11px;
+  --text-label-sm--line-height: 16px;
+  --text-label-sm--letter-spacing: 0.5px;
+
+  /* ========================================================================
+     FONT WEIGHTS
+     ======================================================================== */
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ========================================================================
+     COLORS — modo Light (default)
+     6 palettes × 11 escalas = 66 cores extraídas de Foundations > Colors
+
+     Primary   = neutro azulado escuro/branco (deep navy → branco)
+     Secondary = sky/azul vibrante (cyan → blue 800)
+     Neutral   = slate (cool gray azulado)
+     ======================================================================== */
+
+  /* Primary — neutro */
+  --color-primary-50:  #FFFFFF;
+  --color-primary-100: #D4DAE0;
+  --color-primary-200: #9DB5CE;
+  --color-primary-300: #5991C8;
+  --color-primary-400: #246CB3;
+  --color-primary-500: #0C4782;
+  --color-primary-600: #002244; /* deep navy — base institucional */
+  --color-primary-700: #051B31;
+  --color-primary-800: #081421;
+  --color-primary-900: #080E13;
+  --color-primary-950: #050708;
+
+  /* Secondary — azul vibrante (sky) */
+  --color-secondary-50:  #AAE6FF;
+  --color-secondary-100: #90DDFF;
+  --color-secondary-200: #76D4FF;
+  --color-secondary-300: #5CCAFF;
+  --color-secondary-400: #42BFFF;
+  --color-secondary-500: #28B4FF; /* baseline sky vibrante */
+  --color-secondary-600: #119DFF;
+  --color-secondary-700: #0082F8;
+  --color-secondary-800: #0068E1;
+  --color-secondary-900: #0051C9;
+  --color-secondary-950: #003CB2;
+
+  /* Neutral — slate */
+  --color-neutral-50:  #E9EAEC;
+  --color-neutral-100: #D6D8DD;
+  --color-neutral-200: #C2C7CF;
+  --color-neutral-300: #AEB5C2;
+  --color-neutral-400: #99A3B5;
+  --color-neutral-500: #8391A9;
+  --color-neutral-600: #6C7F9E;
+  --color-neutral-700: #5A6E8F;
+  --color-neutral-800: #4A5E7C;
+  --color-neutral-900: #3C4E69;
+  --color-neutral-950: #283857;
+
+  /* Branco e preto puros (uso utilitário) */
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+
+  /* ----------------------------------------------------------------------
+     CORES CATEGORICAIS (categoria/topic colors)
+     Usadas pelo componente "Categoria" pra diferenciar editorias.
+     Não fazem parte da escala 50-950 porque não escalam visualmente —
+     são valores únicos por nome semântico.
+     ---------------------------------------------------------------------- */
+  --color-coral:      #FF547C; /* rosa-coral vibrante */
+  --color-mint:       #00786E; /* verde-petroleo */
+  --color-mint-light: #C9FCED; /* mint tint p/ chips e backgrounds */
+  --color-saffron:    #B05223; /* laranja queimado */
+  --color-lavander:   #9423FC; /* roxo vivido */
+
+  /* ========================================================================
+     SPACING
+     Mantém o default de Tailwind v4: --spacing 4px. Gera p-1 (4px), p-2 (8px),
+     p-4 (16px), etc. O Figma não tokeniza spacing — todos os auto-layouts
+     usam múltiplos de 4 inline.
+     ======================================================================== */
+  --spacing: 4px;
+
+  /* ========================================================================
+     RADIUS
+     Mantém a escala default de Tailwind v4 (rounded-none / xs(2) / sm(4) /
+     md(6) / lg(8) / xl(12) / 2xl(16) / 3xl(24) / 4xl(32) / full).
+     Os valores usados no Figma mapeiam diretamente:
+       - 2px  → rounded-xs  (chips, badges pequenos)
+       - 4px  → rounded-sm  (cards, thumbnails, imagens, botões padrão)
+       - 8px  → rounded-lg  (containers maiores, sheets)
+       - 16px → rounded-2xl (bottom sheets)
+       - 100  → rounded-full (Avatar circular, Button pill)
+     rounded-md (6px) NÃO faz parte do DS deste projeto.
+     Nenhum override é necessário aqui.
+     ======================================================================== */
+
+  /* ========================================================================
+     SHADOWS — Tailwind v4 nativo
+     Migrado de MD3 elevation (1-5) para escala Tailwind (shadow-sm/md/lg/xl).
+     Mapeamento: elevation-2 → shadow-md · elevation-3 → shadow-lg.
+     Nenhum override necessário — usar classes utilitárias diretamente.
+     ======================================================================== */
+
+  /* ========================================================================
+     ANIMATIONS — entradas suaves (drawers, sheets, scrims)
+     Easing emphasized-decelerate (MD3) — entrada rápida + assentamento suave.
+     ======================================================================== */
+  --animate-slide-in-right: slide-in-right 320ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+  --animate-fade-in:        fade-in 240ms ease-out both;
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

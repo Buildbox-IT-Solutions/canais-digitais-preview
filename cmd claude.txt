@@ -1,0 +1,8 @@
+cmd claude
+
+cd C:\wptheme
+
+claude --dangerously-skip-permissions
+
+
+C:\xampp\php\php.exe -S localhost:8000 router.php
