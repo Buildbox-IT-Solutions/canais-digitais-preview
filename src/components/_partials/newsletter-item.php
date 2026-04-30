@@ -38,7 +38,7 @@ $isLast  = !empty($args['isLast']);
     <!-- Text -->
     <div class="flex-1 min-w-0 flex flex-col gap-1">
       <div class="flex items-center gap-2">
-        <h3 class="font-display font-bold text-title-lg text-primary-600 group-hover:text-secondary-950 transition-colors">
+        <h3 class="font-display font-bold text-title-lg text-primary-600 max-w-[75ch] group-hover:text-secondary-950 transition-colors">
           <?= htmlspecialchars($title) ?>
         </h3>
         <span class="hidden group-has-[:checked]:inline-flex items-center justify-center bg-secondary-50 rounded-xs p-1" aria-hidden="true">
@@ -48,7 +48,7 @@ $isLast  = !empty($args['isLast']);
         </span>
       </div>
       <?php if ($desc): ?>
-      <p class="font-body text-body-md text-neutral-600">
+      <p class="font-body text-body-md text-neutral-600 max-w-[75ch]">
         <?= htmlspecialchars($desc) ?>
       </p>
       <?php endif; ?>

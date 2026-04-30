@@ -1,197 +1,267 @@
 <?php
 /**
- * Layout: Redefine Senha (Tela B — via link do e-mail) — página de fluxo
- * Spec completo: src/layouts/redefine-senha-spec.php
+ * Layout: Redefine Senha — v3.0
+ * Figma: — (extensão do sistema login.php v3.0)
  *
- * URL real: /redefine-senha?token=[token]
- * Aqui o estado é escolhido via ?state= para simulação.
+ * Tela B do fluxo de recuperação: o usuário clicou no link do e-mail e está
+ * agora definindo uma nova senha. URL real: /redefine-senha?token=[token].
+ *
+ * Estados via ?state=...:
+ *   valid    → form de nova senha (default)
+ *   loading  → form em submit (preview only)
+ *   success  → senha redefinida com sucesso → CTA login
+ *   expired  → link com mais de 1h → solicitar novo
+ *   used     → link já consumido (senha já redefinida)
+ *
+ * Erros via ?error=...:
+ *   fraca    → senha não atende requisitos
+ *   mismatch → confirmação não bate
+ *
+ * Tokens: primary-100/600, secondary-500/950, neutral-100/500/700/900/950,
+ *         green-50/600, amber-50/700, red-600
+ * Anim:   animate-fade-up-sm
+ *
+ * Partials usados: password-strength, proof-panel-minimal
  */
 
-$viewState = $_GET['state'] ?? 'valid';
-$allowedStates = ['valid', 'loading', 'success', 'expired', 'used'];
-if (!in_array($viewState, $allowedStates, true)) {
-  $viewState = 'valid';
+require_once __DIR__ . '/_session.php';
+
+$state = $_GET['state'] ?? 'valid';
+if (!in_array($state, ['valid', 'loading', 'success', 'expired', 'used'], true)) {
+  $state = 'valid';
 }
 
-function render_redefine_senha(string $state = 'valid'): void {
-  $pwValue = '';
-  $pwLevel = 'empty';
-  $confirmValue = '';
-  $submitLabel = 'Redefinir senha';
-  $submitLoading = false;
-  $formDisabled = false;
+$errorMode = $_GET['error'] ?? 'none';
+if (!in_array($errorMode, ['none', 'fraca', 'mismatch'], true)) $errorMode = 'none';
 
-  if ($state === 'loading') {
-    $pwValue = 'minhaSenhaNova2026!';
-    $pwLevel = 'strong';
-    $confirmValue = 'minhaSenhaNova2026!';
-    $submitLabel = 'Redefinindo...';
-    $submitLoading = true;
-    $formDisabled = true;
-  }
+$senhaError = $errorMode === 'fraca' ? 'Senha muito fraca. Use letras e números, mín. 8 caracteres.' : null;
+$confirmError = $errorMode === 'mismatch' ? 'As senhas não coincidem.' : null;
 
-  $isTerminal = in_array($state, ['success', 'expired', 'used'], true);
-  $terminal = null;
-  if ($state === 'expired') {
-    $terminal = [
-      'icon'  => 'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z',
-      'iconBg'=> 'bg-[#FEF3C7]',
-      'iconFg'=> 'text-[#92400E]',
-      'title' => 'Link expirado',
-      'desc'  => 'O link de redefinição é válido por 1 hora. Solicite um novo para continuar.',
-      'cta'   => ['label' => 'Solicitar novo link', 'href' => '/src/layouts/recupera-senha.php'],
-    ];
-  } elseif ($state === 'used') {
-    $terminal = [
-      'icon'  => 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
-      'iconBg'=> 'bg-[#DCFCE7]',
-      'iconFg'=> 'text-[#16A34A]',
-      'title' => 'Este link já foi usado',
-      'desc'  => 'Sua senha já foi redefinida. Faça login para entrar na sua conta.',
-      'cta'   => ['label' => 'Fazer login', 'href' => '/src/layouts/login-modal.php'],
-    ];
-  } elseif ($state === 'success') {
-    $terminal = [
-      'icon'  => 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
-      'iconBg'=> 'bg-[#DCFCE7]',
-      'iconFg'=> 'text-[#16A34A]',
-      'title' => 'Senha redefinida',
-      'desc'  => 'Sua nova senha está ativa. Faça login para continuar.',
-      'cta'   => ['label' => 'Fazer login', 'href' => '/src/layouts/login-modal.php'],
-    ];
-  }
+$isTerminal = in_array($state, ['success', 'expired', 'used'], true);
+$isLoading = $state === 'loading';
 
-  $pwId = 'redef-pw-' . $state;
-  $confirmId = 'redef-confirm-' . $state;
+$terminalCfg = match($state) {
+  'success' => [
+    'iconBg'   => 'bg-green-50',
+    'iconFg'   => 'text-green-600',
+    'iconPath' => 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
+    'title'    => 'Senha redefinida',
+    'body'     => 'Sua nova senha está ativa. Faça login para continuar.',
+    'ctaLabel' => 'Fazer login',
+    'ctaHref'  => '/src/layouts/login.php',
+    'proof'    => 'welcome',
+  ],
+  'expired' => [
+    'iconBg'   => 'bg-amber-50',
+    'iconFg'   => 'text-amber-700',
+    'iconPath' => 'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z',
+    'title'    => 'Link expirado',
+    'body'     => 'O link de redefinição é válido por 1 hora. Solicite um novo para continuar.',
+    'ctaLabel' => 'Solicitar novo link',
+    'ctaHref'  => '/src/layouts/recupera-senha.php',
+    'proof'    => 'login',
+  ],
+  'used' => [
+    'iconBg'   => 'bg-primary-100',
+    'iconFg'   => 'text-primary-600',
+    'iconPath' => 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
+    'title'    => 'Este link já foi usado',
+    'body'     => 'Sua senha já foi redefinida. Faça login para entrar na sua conta.',
+    'ctaLabel' => 'Fazer login',
+    'ctaHref'  => '/src/layouts/login.php',
+    'proof'    => 'login',
+  ],
+  default => null,
+};
+
+$proofVariant = $terminalCfg['proof'] ?? 'login';
+
+$pwValue = $isLoading ? 'minhaSenhaNova2026!' : ($errorMode === 'fraca' ? 'abc' : ($errorMode === 'mismatch' ? 'minhasenha123' : ''));
+$confirmValue = $isLoading ? 'minhaSenhaNova2026!' : ($errorMode === 'mismatch' ? 'outrasenha456' : '');
+$pwLevel = $isLoading ? 'strong' : ($errorMode === 'fraca' ? 'weak' : 'empty');
 ?>
-  <div class="w-full max-w-[480px] flex flex-col gap-8 <?= $isTerminal ? 'items-center text-center' : '' ?>" data-redefine-state="<?= $state ?>">
 
-    <?php if ($state === 'valid'): ?>
-      <!-- Voltar (só na tela valid; terminais têm seu próprio CTA) -->
-      <div class="self-start">
-        <a href="/src/layouts/recupera-senha.php" class="inline-flex items-center gap-1.5 font-body font-semibold text-label-lg text-primary-600 hover:text-secondary-950 transition-colors">
-          <svg class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+<div class="flex min-h-screen items-stretch">
+
+  <!-- ============================================================
+       Split-left
+       ============================================================ -->
+  <section class="flex flex-col w-[560px] shrink-0 px-14 py-12 bg-white animate-fade-up-sm">
+
+    <!-- Top: Voltar (apenas no estado valid; terminais têm próprio CTA) -->
+    <div class="w-full">
+      <?php if ($state === 'valid'): ?>
+        <a href="/src/layouts/recupera-senha.php"
+           class="inline-flex items-center gap-2 -ml-3 px-3 py-2.5 rounded-full font-body font-bold text-label-lg text-primary-600 hover:bg-neutral-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500 focus-visible:ring-offset-2">
+          <svg class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          </svg>
           Voltar
         </a>
-      </div>
-    <?php endif; ?>
-
-    <!-- Icon -->
-    <div class="inline-flex items-center justify-center size-16 rounded-full <?= $terminal ? $terminal['iconBg'] : 'bg-[#DBEAFE]' ?>">
-      <svg class="size-8 <?= $terminal ? $terminal['iconFg'] : 'text-primary-600' ?>" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="<?= $terminal ? $terminal['icon'] : 'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.48 0 2.71 1.03 3.02 2.41l-1.95.8C13.8 8.43 12.95 8 12 8c-.95 0-1.8.43-2.17 1.21l-1.95-.8C8.19 7.03 9.42 6 10.9 6H12z'/>
-      </svg>
+      <?php endif; ?>
     </div>
 
-    <?php if ($terminal): ?>
-      <header class="flex flex-col gap-2">
-        <h1 class="font-display text-headline-md text-neutral-950"><?= $terminal['title'] ?></h1>
-        <p class="font-body text-body-lg text-neutral-700"><?= $terminal['desc'] ?></p>
-      </header>
-      <a href="<?= $terminal['cta']['href'] ?>" class="inline-flex items-center justify-center w-full h-12 rounded-full bg-primary-600 hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg text-white">
-        <?= $terminal['cta']['label'] ?>
-      </a>
-    <?php else: ?>
-      <header class="flex flex-col gap-2">
-        <h1 class="font-display text-headline-md text-neutral-950">Crie uma nova senha</h1>
-        <p class="font-body text-body-lg text-neutral-700">
-          Escolha uma senha forte com letras e números para proteger sua conta.
-        </p>
-      </header>
+    <!-- Center content -->
+    <div class="flex-1 flex flex-col justify-center w-full">
 
-      <!-- Form — submit no valid vai para ?state=success -->
-      <form class="flex flex-col gap-6" novalidate <?= $state === 'valid' ? 'action="/src/layouts/redefine-senha.php" method="get"' : '' ?>>
-        <?php if ($state === 'valid'): ?>
-          <input type="hidden" name="state" value="success">
-        <?php endif; ?>
-        <fieldset class="contents" <?= $formDisabled ? 'disabled' : '' ?>>
-
-          <!-- Nova senha -->
-          <div class="flex flex-col items-start w-full">
-            <label for="<?= $pwId ?>" class="flex gap-0.5 items-center pb-1 px-1 w-full">
-              <span class="font-body font-semibold text-label-lg text-neutral-950">Nova senha</span>
-              <span class="font-body font-semibold text-label-lg text-neutral-950">*</span>
-            </label>
-            <div class="bg-white flex h-10 items-center rounded-sm w-full border border-neutral-100 focus-within:border-secondary-950">
-              <input id="<?= $pwId ?>" type="password" autocomplete="new-password" value="<?= $pwValue ?>" aria-describedby="<?= $pwId ?>-strength" class="flex-1 w-full h-full px-3 bg-transparent text-body-lg font-body text-primary-600 focus:outline-none">
-              <button type="button" aria-label="Mostrar senha" data-login-action="toggle-password" data-target="<?= $pwId ?>" class="inline-flex items-center justify-center h-full w-10 text-neutral-500 hover:text-primary-600 transition-colors">
-                <svg class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-              </button>
-            </div>
-            <div id="<?= $pwId ?>-strength" class="mt-2 w-full">
-              <?php get_template_part('components/_partials/password-strength', null, [
-                'level'   => $pwLevel,
-                'inputId' => $pwId,
-              ]); ?>
-            </div>
+      <?php if ($terminalCfg): ?>
+        <!-- ============== Estado terminal: success | expired | used ============== -->
+        <div class="flex flex-col gap-6 w-full">
+          <div class="inline-flex items-center justify-center size-12 rounded-full <?= $terminalCfg['iconBg'] ?> <?= $terminalCfg['iconFg'] ?>">
+            <svg class="size-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="<?= $terminalCfg['iconPath'] ?>"/>
+            </svg>
           </div>
 
-          <!-- Confirmar senha -->
-          <div class="flex flex-col items-start w-full">
-            <label for="<?= $confirmId ?>" class="flex gap-0.5 items-center pb-1 px-1 w-full">
-              <span class="font-body font-semibold text-label-lg text-neutral-950">Confirmar senha</span>
-              <span class="font-body font-semibold text-label-lg text-neutral-950">*</span>
-            </label>
-            <div class="bg-white flex h-10 items-center rounded-sm w-full border border-neutral-100 focus-within:border-secondary-950">
-              <input id="<?= $confirmId ?>" type="password" autocomplete="new-password" value="<?= $confirmValue ?>" class="flex-1 w-full h-full px-3 bg-transparent text-body-lg font-body text-primary-600 focus:outline-none">
-              <button type="button" aria-label="Mostrar senha" data-login-action="toggle-password" data-target="<?= $confirmId ?>" class="inline-flex items-center justify-center h-full w-10 text-neutral-500 hover:text-primary-600 transition-colors">
-                <svg class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-              </button>
-            </div>
+          <div class="flex flex-col gap-2 w-full">
+            <h1 class="font-display font-bold text-headline-md text-primary-600"><?= $terminalCfg['title'] ?></h1>
+            <p class="font-body text-body-lg text-neutral-900"><?= $terminalCfg['body'] ?></p>
           </div>
 
-          <button type="submit" class="inline-flex items-center justify-center gap-2 w-full h-12 rounded-full bg-primary-600 hover:bg-secondary-950 disabled:bg-neutral-200 transition-colors font-body font-bold text-body-lg text-white">
-            <?php if ($submitLoading): ?>
-              <svg class="size-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-opacity=".25"/>
-                <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-              </svg>
-            <?php endif; ?>
-            <?= $submitLabel ?>
-          </button>
-        </fieldset>
-      </form>
-    <?php endif; ?>
-  </div>
-<?php }
-?>
-<main class="bg-white min-h-screen flex flex-col">
+          <a href="<?= $terminalCfg['ctaHref'] ?>"
+             class="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors mt-2">
+            <?= $terminalCfg['ctaLabel'] ?>
+          </a>
+        </div>
 
-  <header class="border-b border-neutral-100">
-    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 h-20 flex items-center">
-      <a href="/" class="inline-flex items-center font-display font-bold text-headline-sm text-primary-600">Food Connection</a>
+      <?php else: ?>
+        <!-- ============== Estado: VALID (form) ou LOADING ============== -->
+        <div class="flex flex-col gap-6 w-full">
+
+          <div class="inline-flex items-center justify-center size-12 rounded-full bg-secondary-500/10 text-secondary-950">
+            <svg class="size-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm3 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+            </svg>
+          </div>
+
+          <div class="flex flex-col gap-2 w-full">
+            <h1 class="font-display font-bold text-headline-md text-primary-600">Crie uma nova senha</h1>
+            <p class="font-body text-body-lg text-neutral-900">
+              Escolha uma senha forte com letras e números para proteger sua conta.
+            </p>
+          </div>
+
+          <form action="/src/layouts/redefine-senha.php" method="get" class="flex flex-col gap-6 w-full" novalidate>
+            <input type="hidden" name="state" value="success">
+            <fieldset class="contents" <?= $isLoading ? 'disabled' : '' ?>>
+
+              <!-- Nova senha + strength -->
+              <div class="flex flex-col gap-3 w-full">
+                <label class="flex flex-col w-full">
+                  <span class="flex items-center gap-0.5 px-1 pb-1 font-body font-semibold text-label-lg <?= $senhaError ? 'text-red-600' : 'text-neutral-950' ?>">
+                    Nova senha<span aria-hidden="true">*</span>
+                  </span>
+                  <div class="flex items-center h-10 px-3 rounded-sm border bg-white transition-colors <?= $senhaError ? 'border-red-600' : 'border-neutral-100 focus-within:border-secondary-950' ?>" data-password-field>
+                    <input type="password" name="senha" id="redef-pw" required autocomplete="new-password"
+                           value="<?= htmlspecialchars($pwValue) ?>"
+                           aria-describedby="redef-pw-strength"
+                           class="flex-1 bg-transparent font-body text-body-lg text-primary-600 placeholder:text-neutral-500 focus:outline-none">
+                    <button type="button" data-login-action="toggle-password" data-target="redef-pw" aria-label="Mostrar senha"
+                            class="inline-flex items-center justify-center size-7 -mr-1 text-neutral-500 hover:text-primary-600 transition-colors rounded-full">
+                      <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <?php if ($senhaError): ?>
+                    <p class="mt-1.5 px-1 flex items-center gap-1.5 font-body font-semibold text-label-md text-red-600">
+                      <svg class="size-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                      <?= $senhaError ?>
+                    </p>
+                  <?php endif; ?>
+                </label>
+
+                <div id="redef-pw-strength">
+                  <?php get_template_part('components/_partials/password-strength', null, [
+                    'level'   => $pwLevel,
+                    'inputId' => 'redef-pw',
+                  ]); ?>
+                </div>
+              </div>
+
+              <!-- Confirmar -->
+              <label class="flex flex-col w-full">
+                <span class="flex items-center gap-0.5 px-1 pb-1 font-body font-semibold text-label-lg <?= $confirmError ? 'text-red-600' : 'text-neutral-950' ?>">
+                  Confirmar senha<span aria-hidden="true">*</span>
+                </span>
+                <div class="flex items-center h-10 px-3 rounded-sm border bg-white transition-colors <?= $confirmError ? 'border-red-600' : 'border-neutral-100 focus-within:border-secondary-950' ?>" data-password-field>
+                  <input type="password" name="confirmar" id="redef-confirm" required autocomplete="new-password"
+                         value="<?= htmlspecialchars($confirmValue) ?>"
+                         class="flex-1 bg-transparent font-body text-body-lg text-primary-600 placeholder:text-neutral-500 focus:outline-none">
+                  <button type="button" data-login-action="toggle-password" data-target="redef-confirm" aria-label="Mostrar senha"
+                          class="inline-flex items-center justify-center size-7 -mr-1 text-neutral-500 hover:text-primary-600 transition-colors rounded-full">
+                    <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                  </button>
+                </div>
+                <?php if ($confirmError): ?>
+                  <p class="mt-1.5 px-1 flex items-center gap-1.5 font-body font-semibold text-label-md text-red-600">
+                    <svg class="size-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                    <?= $confirmError ?>
+                  </p>
+                <?php endif; ?>
+              </label>
+
+              <button type="submit"
+                      class="inline-flex items-center justify-center gap-2 w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 disabled:bg-neutral-300 text-white font-body font-bold text-body-lg transition-colors">
+                <?php if ($isLoading): ?>
+                  <svg class="size-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-opacity=".25"/>
+                    <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  </svg>
+                  Redefinindo...
+                <?php else: ?>
+                  Redefinir senha
+                <?php endif; ?>
+              </button>
+            </fieldset>
+          </form>
+        </div>
+      <?php endif; ?>
     </div>
-  </header>
 
-  <section class="flex-1 flex items-start justify-center py-16 px-4">
-    <?php render_redefine_senha($viewState); ?>
+    <!-- Bottom: account -->
+    <div class="flex justify-center items-center gap-1 w-full font-body text-body-md">
+      <span class="text-neutral-700">Lembrou da senha?</span>
+      <a href="/src/layouts/login.php" class="font-bold text-secondary-950 hover:underline">Entrar</a>
+    </div>
+
   </section>
 
-  <!-- Navegador de estados — remover em produção -->
-  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 flex flex-wrap gap-2 justify-center
-              bg-white/90 backdrop-blur-sm border border-neutral-100 rounded-full px-4 py-2
-              shadow-md z-50 font-body text-label-md">
-    <span class="text-neutral-400 self-center pr-1">Simular:</span>
-    <?php foreach ($allowedStates as $s): ?>
+  <!-- ============================================================
+       Split-right — proof panel
+       ============================================================ -->
+  <?php get_template_part('components/_partials/proof-panel-minimal', null, ['variant' => $proofVariant]); ?>
+
+</div>
+
+<!-- ============================================================
+     Dev navigator
+     ============================================================ -->
+<div class="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-col gap-1.5 items-center
+            bg-white/95 backdrop-blur-sm border border-neutral-100 rounded-2xl px-4 py-2
+            shadow-md z-50 font-body text-label-md">
+  <div class="flex flex-wrap gap-1.5 justify-center">
+    <span class="text-neutral-500 self-center pr-1">Estado:</span>
+    <?php foreach (['valid', 'loading', 'success', 'expired', 'used'] as $s): ?>
       <a href="?state=<?= $s ?>"
-         class="px-3 py-1 rounded-full transition-colors <?= $s === $viewState
-           ? 'bg-primary-600 text-white'
-           : 'text-neutral-600 hover:bg-neutral-50' ?>">
+         class="px-2.5 py-1 rounded-full transition-colors <?= $s === $state ? 'bg-primary-600 text-white' : 'text-neutral-700 hover:bg-neutral-50' ?>">
         <?= $s ?>
       </a>
     <?php endforeach; ?>
   </div>
+  <?php if ($state === 'valid'): ?>
+  <div class="flex flex-wrap gap-1.5 justify-center">
+    <span class="text-neutral-500 self-center pr-1">Erro:</span>
+    <?php foreach (['none', 'fraca', 'mismatch'] as $s): ?>
+      <a href="?error=<?= $s ?>"
+         class="px-2.5 py-1 rounded-full transition-colors <?= $s === $errorMode ? 'bg-primary-600 text-white' : 'text-neutral-700 hover:bg-neutral-50' ?>">
+        <?= $s ?>
+      </a>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
+</div>
 
-  <footer class="border-t border-neutral-100 py-6">
-    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 flex flex-wrap items-center justify-between gap-4">
-      <p class="font-body text-label-md text-neutral-500">© 2026 Informa Markets</p>
-      <nav class="flex items-center gap-6">
-        <a href="#" class="font-body text-label-md text-neutral-700 hover:text-primary-600">Termos de Uso</a>
-        <a href="#" class="font-body text-label-md text-neutral-700 hover:text-primary-600">Política de Privacidade</a>
-        <a href="#" class="font-body text-label-md text-neutral-700 hover:text-primary-600">Contato</a>
-      </nav>
-    </div>
-  </footer>
-
-</main>
 <script type="module" src="/src/assets/js/interactions.js"></script>

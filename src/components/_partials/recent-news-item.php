@@ -38,7 +38,7 @@ $isLast   = !empty($args['isLast']);
       <p class="font-body font-semibold text-label-md tracking-wider text-neutral-950">
         <?= htmlspecialchars($category) ?>
       </p>
-      <p class="font-display font-bold text-title-lg text-primary-600 line-clamp-2 group-hover:text-secondary-950 transition-colors">
+      <p class="font-display font-bold text-title-lg text-primary-600 line-clamp-2 max-w-[75ch] group-hover:text-secondary-950 transition-colors">
         <?= htmlspecialchars($title) ?>
       </p>
       <div class="flex items-center gap-1.5 font-body text-body-md text-neutral-600">

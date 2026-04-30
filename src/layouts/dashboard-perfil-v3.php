@@ -504,21 +504,15 @@ $drawerSaveHref  = $baseHref . '?tab=perfil&state=saved' . $queryExtra;
             'icon'   => 'download',
             'title'  => 'Baixar meus dados',
             'desc'   => 'Faça o download de uma cópia de seus dados a qualquer momento.',
-            'href'   => '#',
+            'href'   => '/src/layouts/meus-dados.php' . ($queryExtra ? '?' . ltrim($queryExtra, '&') : ''),
             'isLast' => false,
           ]); ?>
-          <?php get_template_part('components/_partials/general-item', null, [
-            'icon'   => 'history',
-            'title'  => 'Histórico de consentimentos',
-            'desc'   => 'Veja quando aceitou Termos, Privacidade e Opt-ins.',
-            'href'   => '#',
-            'isLast' => false,
-          ]); ?>
+          <?php /* Histórico de consentimentos — suprimido provisoriamente (2026-04-30) */ ?>
           <?php get_template_part('components/_partials/general-item', null, [
             'icon'   => 'delete',
             'title'  => 'Excluir minha conta',
             'desc'   => 'Direito ao esquecimento. Processamos em até 30 dias.',
-            'href'   => '#',
+            'href'   => '/src/layouts/excluir-conta.php' . ($queryExtra ? '?' . ltrim($queryExtra, '&') : ''),
             'danger' => true,
             'isLast' => true,
           ]); ?>

@@ -30,16 +30,18 @@ $iconPath = match($icon) {
   default   => 'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z',
 };
 
-$titleClasses = $danger ? 'text-red-700' : 'text-primary-600';
+$titleClasses = $danger
+  ? 'text-red-700 group-hover:text-red-600'
+  : 'text-primary-600 group-hover:text-secondary-950';
 ?>
 <a href="<?= htmlspecialchars($href) ?>"
-   class="flex items-center gap-4 py-4 px-1 group hover:bg-neutral-50/50 transition-colors <?= $isLast ? '' : 'border-b border-neutral-100' ?>">
+   class="flex items-center gap-4 py-4 px-1 group <?= $isLast ? '' : 'border-b border-neutral-100' ?>">
   <?php get_template_part('components/_partials/icon-tile', null, [
     'iconPath' => $iconPath,
     'tone'     => $danger ? 'danger' : 'neutral',
   ]); ?>
   <div class="flex-1 min-w-0 flex flex-col gap-1">
-    <p class="font-display font-bold text-title-md <?= $titleClasses ?>">
+    <p class="font-display font-bold text-title-md transition-colors <?= $titleClasses ?>">
       <?= htmlspecialchars($title) ?>
     </p>
     <p class="font-body text-body-md text-neutral-600">

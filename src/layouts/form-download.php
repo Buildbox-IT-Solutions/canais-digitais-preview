@@ -83,7 +83,7 @@ function render_download_card(string $state, string $title): void {
           ]); ?>
         </div>
         <div class="flex flex-wrap gap-3 w-full">
-          <a href="/src/layouts/dashboard-perfil.php" class="bg-primary-600 inline-flex items-center justify-center px-6 h-12 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg">
+          <a href="/src/layouts/dashboard-perfil-v3.php" class="bg-primary-600 inline-flex items-center justify-center px-6 h-12 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg">
             Completar meu perfil
           </a>
           <a href="/" class="inline-flex items-center justify-center px-6 h-12 rounded-full bg-transparent text-primary-600 hover:bg-neutral-50 transition-colors font-body font-bold text-body-lg">

@@ -213,6 +213,8 @@
      ======================================================================== */
   --animate-slide-in-right: slide-in-right 320ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
   --animate-fade-in:        fade-in 240ms ease-out both;
+  --animate-fade-up:        fade-up 480ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+  --animate-fade-up-sm:     fade-up-sm 360ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
 }
 
 @keyframes slide-in-right {
@@ -223,4 +225,28 @@
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-up-sm {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/**
+ * Reduced motion — respeito ao OS setting.
+ * Desativa animações e transições para usuários com sensibilidade vestibular
+ * (vertigem, enxaqueca) que ativaram o preference no sistema operacional.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

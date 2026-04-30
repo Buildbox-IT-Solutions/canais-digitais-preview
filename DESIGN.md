@@ -104,6 +104,21 @@ Cada portal pode usar combinações diferentes dessas cores por editoria. A estr
 - Em background (chips/badges): `bg-mint`, `bg-coral`, `bg-saffron`, `bg-lavander`
 - Componente `Categoria` é o principal consumidor — 28 variantes cobrindo todas as combinações
 
+> ⚠️ **Cores categoriais não são cores semânticas.** `coral` é editorial/categorial (#FF547C, rosa-coral). **Não usar em estados de erro, alertas ou validação** — esses casos têm tokens próprios (ver abaixo).
+
+### Estados de erro / validação
+
+Para sinalizar erro, validação inválida ou alertas críticos, usar a paleta **`red`** nativa do Tailwind (não `coral`). O coral pertence ao universo editorial e gera ambiguidade visual quando reaproveitado em formulários.
+
+| Uso | Token | Aplicação |
+|-----|-------|-----------|
+| Borda de input com erro | `border-red-600` | Input/select/textarea inválido |
+| Texto de label/mensagem de erro | `text-red-600` | Label do campo com erro + `<p>` da mensagem inline |
+| Banner de erro (background tint) | `bg-red-600/10` + `border-red-600/30` | Alerta global (form-level), `role="alert"` |
+| Borda de checkbox inválido | `border-red-600` | Termos de uso não aceito, etc. |
+
+Para sucesso/confirmação, usar `green-*` nativo do Tailwind. Para warning/atenção, usar `amber-*`. Nenhuma das cores categoriais (mint, coral, saffron, lavander) deve representar estado semântico.
+
 ---
 
 ## Espaçamento

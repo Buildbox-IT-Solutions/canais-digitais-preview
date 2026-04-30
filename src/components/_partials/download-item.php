@@ -54,16 +54,16 @@ $iconPath = match($icon) {
     <!-- Text -->
     <div class="flex-1 min-w-0 flex flex-col gap-1">
       <?php if ($disabled): ?>
-        <p class="font-display font-bold text-title-lg text-neutral-600">
+        <p class="font-display font-bold text-title-lg text-neutral-600 max-w-[75ch]">
           <?= htmlspecialchars($title) ?>
         </p>
       <?php else: ?>
         <a href="<?= htmlspecialchars($titleHref) ?>"
-           class="font-display font-bold text-title-lg text-primary-600 hover:text-secondary-950 transition-colors w-fit max-w-full">
+           class="font-display font-bold text-title-lg text-primary-600 hover:text-secondary-950 transition-colors w-fit max-w-[75ch]">
           <?= htmlspecialchars($title) ?>
         </a>
       <?php endif; ?>
-      <div class="flex items-center gap-1.5 font-body text-body-md text-neutral-600 flex-wrap">
+      <div class="flex items-center gap-1.5 font-body text-body-md text-neutral-600 flex-wrap max-w-[75ch]">
         <?php if ($portal): ?><span><?= htmlspecialchars($portal) ?></span><?php endif; ?>
         <?php if ($portal && $date): ?><span aria-hidden="true">•</span><?php endif; ?>
         <?php if ($date): ?><span><?= htmlspecialchars($date) ?></span><?php endif; ?>

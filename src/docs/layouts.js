@@ -28,17 +28,39 @@
 const LAYOUTS = [
   // Preenchido conforme cada D# avança.
   // Formato: { name, file, status: 'done'|'wip' }
-  { name: '404', file: '/src/layouts/404.php', status: 'done' },
-  { name: 'Formulário Newsletter', file: '/src/layouts/form-newsletter.php', status: 'done' },
-  { name: 'Formulário Download', file: '/src/layouts/form-download.php', status: 'done' },
+
+  // Editorial / públicos
   { name: 'Home', file: '/src/layouts/home.php', status: 'done' },
   { name: 'Categoria', file: '/src/layouts/categoria.php', status: 'done' },
   { name: 'Conteúdo', file: '/src/layouts/conteudo.php', status: 'done' },
   { name: 'Menu', file: '/src/layouts/menu.php', status: 'done' },
   { name: 'Busca', file: '/src/layouts/buscar.php', status: 'done' },
+
+  // Institucionais
   { name: 'Contato', file: '/src/layouts/contato.php', status: 'done' },
   { name: 'Sobre', file: '/src/layouts/sobre.php', status: 'done' },
   { name: 'Anuncie', file: '/src/layouts/anuncie.php', status: 'done' },
+
+  // Forms / utilitários
+  { name: '404', file: '/src/layouts/404.php', status: 'done' },
+  { name: 'Formulário Newsletter', file: '/src/layouts/form-newsletter.php', status: 'done' },
+  { name: 'Formulário Download', file: '/src/layouts/form-download.php', status: 'done' },
+
+  // Auth v3.0
+  { name: 'Login', file: '/src/layouts/login.php', status: 'done' },
+  { name: 'Cadastro', file: '/src/layouts/cadastro.php', status: 'done' },
+  { name: 'Recupera Senha', file: '/src/layouts/recupera-senha.php', status: 'done' },
+  { name: 'Redefine Senha', file: '/src/layouts/redefine-senha.php', status: 'done' },
+  { name: 'Confirmação de E-mail', file: '/src/layouts/confirmacao-email.php', status: 'done' },
+
+  // Dashboard / área logada
+  { name: 'Dashboard', file: '/src/layouts/dashboard.php', status: 'done' },
+  { name: 'Dashboard de Perfil v3', file: '/src/layouts/dashboard-perfil-v3.php', status: 'done' },
+
+  // LGPD account flows
+  { name: 'Meus Dados (LGPD)', file: '/src/layouts/meus-dados.php', status: 'done' },
+  { name: 'Histórico de Consentimentos (LGPD)', file: '/src/layouts/consentimentos.php', status: 'done' },
+  { name: 'Excluir Conta (LGPD)', file: '/src/layouts/excluir-conta.php', status: 'done' },
 ];
 
 const layoutsRoot = document.getElementById('layouts');

@@ -153,24 +153,44 @@ C:\xampp\php\php.exe -S localhost:8000 router.php
 
 ## Estado atual
 
-**Partials:** avatar, badge, tag, divider, image, thumbnail, play-button, categoria, byline, podcast-meta, sponsor-line, link-button, button, icon-button, icon-tile, section-title, nav-item, header-desktop, footer-desktop, form-field, form-select, form-checkbox, form-disclaimer, form-toggle, orbit, search-bar, toast, password-strength, profile-progress, completion-card, stat-card, session-row, proof-panel, auth-shell, dashboard-header, coming-soon, dashboard-welcome, dashboard-tabs-v3, drawer, profile-box, recent-news-item, newsletter-item, download-item, access-method-card, general-item, pagination
+**Partials:** avatar, badge, tag, divider, image, thumbnail, play-button, categoria, byline, podcast-meta, sponsor-line, link-button, button, icon-button, icon-tile, section-title, nav-item, header-desktop, footer-desktop, form-field, form-select, form-checkbox, form-disclaimer, form-toggle, orbit, search-bar, toast, password-strength, profile-progress, completion-card, stat-card, session-row, proof-panel, proof-panel-minimal, auth-shell, cadastro-stepper, social-button, dashboard-header, coming-soon, dashboard-welcome, dashboard-tabs-v3, drawer, profile-box, recent-news-item, newsletter-item, download-item, access-method-card, general-item, pagination
 
 **Showcases (52):** cobertura completa do inventário — ver `figma-specs/_inventario.md`
 
 **Layouts concluídos:**
-- ✅ `404.php`
-- ✅ `form-newsletter.php`
-- ✅ `form-download.php`
 
-**Demais layouts concluídos:**
+_Editorial / públicos:_
 - ✅ `home.php` (NodeId: 973:6474)
 - ✅ `categoria.php` (NodeId: 5433:16684)
 - ✅ `conteudo.php` (NodeId: 4179:32002)
 - ✅ `menu.php` (NodeId: 986:21416)
 - ✅ `buscar.php` (NodeId: 1785:17716)
+
+_Institucionais:_
 - ✅ `contato.php` (NodeId: 4935:30241)
 - ✅ `sobre.php` (NodeId: 4951:50343)
 - ✅ `anuncie.php` (NodeId: 4941:49088)
+
+_Forms / utilitários:_
+- ✅ `404.php`
+- ✅ `form-newsletter.php`
+- ✅ `form-download.php`
+
+_Auth v3.0:_
+- ✅ `login.php` (NodeId: 6268:18394) — split 560 + proof-panel-minimal
+- ✅ `cadastro.php` (NodeId: 6269:18460 / 6271:18788 / 6271:19008) — single-file 3 steps via `?step=`
+- ✅ `recupera-senha.php` — solicitar link
+- ✅ `redefine-senha.php` — definir nova senha + estados de token
+- ✅ `confirmacao-email.php` — aguardando / sucesso / link expirado
+
+_Dashboard / área logada:_
+- ✅ `dashboard.php` — hub legado com 7 sub-seções via `?section=`
+- ✅ `dashboard-perfil-v3.php` (NodeId: 6155:31441) — modelo tabbed canônico (6 abas + drawer)
+
+_LGPD account flows:_
+- ✅ `meus-dados.php` — portabilidade (Art. 18 V)
+- ✅ `consentimentos.php` — log auditável (Art. 18 II)
+- ✅ `excluir-conta.php` — direito ao esquecimento (Art. 18 IX), confirmação em modal
 
 **Bug conhecido:** play-button no showcase renderiza fragmento PHP no preview client-side. Funciona corretamente nos layouts via PHP nativo.
 
@@ -197,6 +217,49 @@ social icons, links legais (Termos, Privacidade, Acessibilidade), strip Informa 
 - Novos partials criados: `dashboard-welcome`, `dashboard-tabs-v3`, `drawer` (560px right slide-in com scrim), `profile-box` (3 colunas + variante incomplete), `recent-news-item`, `newsletter-item`, `download-item`, `access-method-card`, `general-item`, `pagination`.
 - Token novo: `--color-mint-light` (#C9FCED) → `bg-mint-light` (chip "Complete seu Perfil" + hero card mint da Visão Geral).
 - Spec completo: `figma-specs/dashboard-perfil-v3.md`.
+
+**LGPD account flows (2026-04-29):**
+- `meus-dados.php` — portabilidade (LGPD Art. 18 V). Form de escopo + formato
+  (JSON/CSV) + histórico de solicitações com status pills. Estados: `?state=default|requested`.
+- `consentimentos.php` — log auditável (Art. 18 II). Archive editorial agrupado
+  por ano (display-md Aleo como âncora), eventos em grid date+content, filtros por
+  tipo. Sem timeline-com-dots (decisão anti-AI-slop). Estados:
+  `?filter=all|termos|privacidade|newsletters|comunicacoes|cookies`.
+- `excluir-conta.php` — direito ao esquecimento (Art. 18 IX). Multi-step:
+  intro (educação + alternativas) → confirm (digitar EXCLUIR + checkbox) →
+  sent (e-mail enviado) → marked (countdown 30 dias com cancelamento) → cancel.
+  Tom respeitoso/transparente, não punitivo. Botão destrutivo em red-600.
+- Linkados no dashboard-perfil-v3 aba Conta, bloco "Privacidade & LGPD".
+
+**Auth auxiliary screens v3.0 (2026-04-29):**
+- `recupera-senha.php`, `confirmacao-email.php`, `redefine-senha.php` migrados para
+  o sistema canônico (split 560 + proof-panel-minimal + animate-fade-up-sm).
+  v1 preservadas em `*-v1-backup.php`.
+- Status colors agora via tokens nativos Tailwind: `green-50/600` (success),
+  `amber-50/700` (warning/expired), `red-50/600` (erro de input — já em DESIGN.md),
+  `secondary-500/10` + `secondary-950` (info/waiting), `primary-100/600` (used/neutro).
+- Variante nova no `proof-panel-minimal`: `welcome` ("Bem-vindo aos Canais Digitais.")
+  usada nos estados de sucesso (confirmacao success / redefine success).
+- Estados consolidados: confirmacao tinha `expired` + `link-expired` duplicados;
+  agora apenas `link-expired` (amber/warning, não vermelho — não é erro do usuário).
+- Navegação interna corrigida: removidas todas as referências a `login-modal.php`,
+  `onboarding.php`, `cadastro-bloco-1.php` (todos backups).
+- BAN /impeccable removido: `border-l-4` no callout de sucesso eliminado em recupera.
+
+**Login + Cadastro v3.0 (2026-04-29):**
+- `login.php` reescrito (NodeId `6268:18394`) — split 560px + proof panel minimal,
+  social buttons (LinkedIn + Google), e-mail/senha + esqueci-senha. Estados de erro:
+  `?error=empty|wrong|not-found|locked`. v1 preservado em `login-v1-backup.php`.
+- `cadastro.php` reescrito como single-file multi-step (`?step=1|2|3`), substitui
+  `cadastro-bloco-1.php`, `cadastro-bloco-2.php` e `onboarding.php` (todos em `*-backup.php`).
+  - Step 1 (`6269:18460`): e-mail + Avançar. Erros: `empty|invalido|existente`.
+  - Step 2 (`6271:18788`): senha + confirmar + termos/marketing. Erros: `fraca|mismatch|termos`.
+  - Step 3 (`6271:19008`): nome/telefone/empresa/cargo/setor. Erros: `campos`.
+  - Step 3 → `confirmacao-email.php`. E-mail propaga via `?email=...`.
+- Novos partials: `proof-panel-minimal` (gradient navy→ultramarine + headline+sub),
+  `cadastro-stepper` (3 dots: done/active/pending), `social-button` (LinkedIn/Google).
+- Animações novas em tokens.css: `animate-fade-up` (480ms) + `animate-fade-up-sm` (360ms),
+  com `cubic-bezier(0.05, 0.7, 0.1, 1)` (emphasized-decelerate MD3).
 
 **Header v3.0 — Estado logado (2026-04-15):**
 - `_partials/header-desktop.php` estendido para v3 — renderização condicional por `$userLoggedIn`.

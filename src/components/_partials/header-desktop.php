@@ -73,7 +73,7 @@ $firstName    = explode(' ', trim($userName))[0] ?: 'Usuário';
 
       <!-- Logo container — altura encolhe no compact -->
       <div class="flex flex-col justify-center h-24 group-[.is-compact]/header:h-20 px-3 py-4 group-[.is-compact]/header:py-3 shrink-0 transition-[height,padding] duration-200">
-        <a href="/" aria-label="Food Connection — ir para a home" class="inline-flex items-center">
+        <a href="/src/layouts/home.php" aria-label="Food Connection — ir para a home" class="inline-flex items-center">
           <img
             src="https://d2yghbees9788u.cloudfront.net/foodconnection/2025/12/cropped-cropped-Logo-FC-WP-300x104.png"
             alt="Food Connection"
@@ -133,7 +133,7 @@ $firstName    = explode(' ', trim($userName))[0] ?: 'Usuário';
               </div>
 
               <div class="py-1" role="none">
-                <a href="/src/layouts/dashboard-perfil.php" role="menuitem" class="flex items-center gap-3 px-4 py-2.5 font-body text-body-md text-neutral-700 hover:bg-neutral-50 transition-colors">
+                <a href="/src/layouts/dashboard-perfil-v3.php" role="menuitem" class="flex items-center gap-3 px-4 py-2.5 font-body text-body-md text-neutral-700 hover:bg-neutral-50 transition-colors">
                   <svg class="size-5 text-neutral-400 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                   </svg>
@@ -156,7 +156,7 @@ $firstName    = explode(' ', trim($userName))[0] ?: 'Usuário';
         <?php else: ?>
           <?php get_template_part('components/_partials/login-button', null, [
             'logged' => false,
-            'href'   => '/src/layouts/login-modal.php',
+            'href'   => '/src/layouts/login.php',
           ]); ?>
         <?php endif; ?>
 
