@@ -20,7 +20,7 @@ sort($layouts);
 <body class="bg-neutral-50 text-primary-600 font-body antialiased">
   <main class="mx-auto max-w-screen-xl px-4 py-10 lg:px-6">
     <header class="mb-8">
-      <p class="text-label-md text-primary-400">Local preview</p>
+      <p class="text-label-md text-primary-400">Ambiente de preview</p>
       <h1 class="font-display text-display-sm text-primary-600">WP Theme Entry Point</h1>
       <p class="mt-2 max-w-3xl text-body-lg text-primary-500">
         Use esta página como atalho para navegar entre documentação e telas de layout.
