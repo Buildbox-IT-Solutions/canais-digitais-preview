@@ -26,6 +26,7 @@ import { init as headerAuthor } from './components/header-author.js';
 import { init as cadastroFlow } from './components/cadastro-flow.js';
 import { init as newsletterBulk } from './components/newsletter-bulk.js';
 import { init as headerSticky } from './components/header-sticky.js';
+import { init as cepAutofill } from './components/cep-autofill.js';
 
 const modules = [
   headerInforma,
@@ -39,6 +40,7 @@ const modules = [
   cadastroFlow,
   newsletterBulk,
   headerSticky,
+  cepAutofill,
 ];
 
 document.addEventListener('DOMContentLoaded', () => {

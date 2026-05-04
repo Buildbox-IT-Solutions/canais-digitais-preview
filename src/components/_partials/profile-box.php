@@ -18,7 +18,7 @@
  *     'fields'      => ['Mariana Albuquerque', 'mariana@empresa.com.br', '+55 11 98786-9879'],
  *     'href'        => '?tab=perfil&drawer=dados-pessoais',
  *     'cta'         => 'Atualizar',       // 'Atualizar' | 'Preencher'
- *     'incomplete'  => false,             // true → chip "Complete seu Perfil" + fields em placeholder
+ *     'incomplete'  => false,             // true → chip no topo + texto em placeholder
  *     'chip'        => 'Complete seu Perfil',
  *   ]); ?>
  *
@@ -26,10 +26,11 @@
  *   icon        → string  — material icon name (3 disponíveis)
  *   title       → string
  *   description → string
- *   fields      → array<string>
+ *   fields      → array<string>  — valor (ou label-placeholder, quando $placeholder) de cada linha
  *   href        → string  — destino do botão (geralmente abre o drawer)
  *   cta         → string  — label do botão
- *   incomplete  → bool    — exibe chip + texto de fields em neutral-400
+ *   incomplete  → bool    — exibe chip no topo
+ *   placeholder → bool    — texto dos fields em neutral-400 (use quando os fields são labels-hint, não valores reais)
  *   chip        → string  — label do chip (default: 'Complete seu Perfil')
  */
 
@@ -40,7 +41,10 @@ $fields      = $args['fields']      ?? [];
 $href        = $args['href']        ?? '#';
 $cta         = $args['cta']         ?? 'Atualizar';
 $incomplete  = !empty($args['incomplete']);
+$placeholder = !empty($args['placeholder']);
 $chip        = $args['chip']        ?? 'Complete seu Perfil';
+
+$fieldTextColor = $placeholder ? 'text-neutral-400' : 'text-neutral-950';
 
 $iconPath = match($icon) {
   'business_center' => 'M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z',
@@ -48,7 +52,6 @@ $iconPath = match($icon) {
   default           => 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z',
 };
 
-$fieldTextColor = $incomplete ? 'text-neutral-400' : 'text-neutral-950';
 ?>
 <div class="bg-white border border-neutral-100 rounded-lg w-full">
   <?php if ($incomplete): ?>

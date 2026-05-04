@@ -172,12 +172,15 @@ $headings = [
                 </span>
                 <div class="flex items-center h-10 px-3 rounded-sm border bg-white transition-colors <?= $senhaError ? 'border-red-600' : 'border-neutral-100 focus-within:border-secondary-950' ?>" data-password-field>
                   <input type="password" name="senha" id="cadastro-senha" required autocomplete="new-password"
-                         value="<?= $errorMode === 'fraca' ? 'abc' : ($errorMode === 'mismatch' ? 'minhasenha123' : '') ?>"
+                         value="<?= $errorMode === 'fraca' ? 'abcdefgh' : ($errorMode === 'mismatch' ? 'Minhasenha1@' : '') ?>"
                          class="flex-1 bg-transparent font-body text-body-lg text-primary-600 placeholder:text-neutral-500 focus:outline-none">
-                  <button type="button" data-login-action="toggle-password" aria-label="Mostrar senha"
+                  <button type="button" data-login-action="toggle-password" data-target="cadastro-senha" aria-label="Mostrar senha"
                           class="inline-flex items-center justify-center size-7 -mr-1 text-neutral-500 hover:text-primary-600 transition-colors rounded-full">
-                    <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <svg data-icon="show" class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                    <svg data-icon="hide" class="size-4 hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
                     </svg>
                   </button>
                 </div>
@@ -189,10 +192,13 @@ $headings = [
                 <?php endif; ?>
               </label>
 
-              <?php get_template_part('components/_partials/password-strength', null, [
-                'level'   => $errorMode === 'fraca' ? 'weak' : 'empty',
-                'inputId' => 'cadastro-senha',
-              ]); ?>
+              <?php
+                $senhaInicial = $errorMode === 'fraca' ? 'abcdefgh' : ($errorMode === 'mismatch' ? 'Minhasenha1@' : '');
+                get_template_part('components/_partials/password-strength', null, [
+                  'inputId' => 'cadastro-senha',
+                  'value'   => $senhaInicial,
+                ]);
+              ?>
             </div>
 
             <!-- Confirmar senha -->
@@ -204,10 +210,13 @@ $headings = [
                 <input type="password" name="confirmar_senha" id="cadastro-confirmar" required autocomplete="new-password"
                        value="<?= $errorMode === 'mismatch' ? 'outrasenha456' : '' ?>"
                        class="flex-1 bg-transparent font-body text-body-lg text-primary-600 placeholder:text-neutral-500 focus:outline-none">
-                <button type="button" data-login-action="toggle-password" aria-label="Mostrar senha"
+                <button type="button" data-login-action="toggle-password" data-target="cadastro-confirmar" aria-label="Mostrar senha"
                         class="inline-flex items-center justify-center size-7 -mr-1 text-neutral-500 hover:text-primary-600 transition-colors rounded-full">
-                  <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <svg data-icon="show" class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                  </svg>
+                  <svg data-icon="hide" class="size-4 hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
                   </svg>
                 </button>
               </div>
@@ -222,7 +231,7 @@ $headings = [
             <!-- Checkboxes -->
             <div class="flex flex-col w-full">
               <label class="flex items-start gap-3 cursor-pointer group py-2">
-                <input type="checkbox" name="termos" required <?= $errorMode === 'termos' ? '' : 'checked' ?> class="sr-only">
+                <input type="checkbox" name="termos" required class="sr-only">
                 <span class="inline-flex items-center justify-center size-[18px] rounded-xs border-2 mt-1 shrink-0 transition-colors
                              <?= $termosError ? 'border-red-600' : 'border-neutral-950' ?>
                              group-has-[:checked]:bg-primary-600 group-has-[:checked]:border-primary-600">
@@ -234,7 +243,7 @@ $headings = [
               </label>
 
               <label class="flex items-start gap-3 cursor-pointer group py-2">
-                <input type="checkbox" name="marketing" checked class="sr-only">
+                <input type="checkbox" name="marketing" class="sr-only">
                 <span class="inline-flex items-center justify-center size-[18px] rounded-xs border-2 border-neutral-950 mt-1 shrink-0 transition-colors group-has-[:checked]:bg-primary-600 group-has-[:checked]:border-primary-600">
                   <svg class="size-3 text-white opacity-0 group-has-[:checked]:opacity-100" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                 </span>

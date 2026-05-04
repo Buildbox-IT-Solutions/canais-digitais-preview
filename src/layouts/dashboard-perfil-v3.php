@@ -14,7 +14,10 @@
  * Drawer (somente em perfil) via ?drawer=:
  *   dados-pessoais | dados-profissionais | dados-fiscais
  *
- * Estado salvo via ?state=saved → toast + auto-redirect 4s.
+ * Estados via ?state=:
+ *   saved → toast + auto-redirect 4s.
+ *   empty → simula novo usuário (0 downloads, 0 newsletters, 0 leituras)
+ *           na aba "Visão geral" — exibe empty states com CTA por seção.
  *
  * Acesso: /src/layouts/dashboard-perfil-v3.php
  */
@@ -40,27 +43,38 @@ if ($drawer && (!in_array($drawer, $allowedDrawers, true) || $tab !== 'perfil'))
   $drawer = null;
 }
 
-// State (saved → toast)
+// State (saved → toast; empty → novo usuário sem atividade)
 $viewState = $_GET['state'] ?? 'default';
 $isSaved   = $viewState === 'saved';
+$isEmpty   = $viewState === 'empty';
 
 // Mock perfil (14 campos canônicos)
+// Estado pós-cadastro: nome/email/telefone/empresa/cargo/setor preenchidos no signup;
+// nascimento/gênero não são coletados; bloco fiscal/localização vem vazio (pais default Brasil).
 $campos = [
   'nome'       => 'Mariana Albuquerque',
   'email'      => 'mariana.albuquerque@empresa.com.br',
   'telefone'   => '+55 (11) 98786-9879',
-  'nascimento' => '12/05/1990',
+  'nascimento' => '',
   'genero'     => '',
   'empresa'    => 'Grupo Camargo Alimentos S/A',
   'cargo'      => 'Gerente',
-  'setor'      => 'Alimentos e Bebidas',
+  'setor'      => 'Alimentos & Bebidas',
   'cpf'        => '',
   'pais'       => 'Brasil',
   'estado'     => '',
   'cidade'     => '',
   'cep'        => '',
   'endereco'   => '',
+  'numero'     => '',
+  'complemento'=> '',
 ];
+
+// Opções de select reutilizadas do cadastro
+$opcoesGenero = ['Masculino', 'Feminino', 'Prefiro não informar'];
+$opcoesCargo  = ['Diretor(a)', 'Gerente', 'Coordenador(a)', 'Analista', 'Consultor(a)', 'Outro'];
+$opcoesSetor  = ['Agro', 'Alimentos & Bebidas', 'Embalagens', 'Saúde', 'Logística', 'Varejo', 'Tecnologia', 'Outro'];
+$opcoesPais   = ['Brasil', 'Argentina', 'Chile', 'Colômbia', 'México', 'Peru', 'Portugal', 'Outro'];
 $totalFields  = count($campos);
 $filledFields = count(array_filter($campos, fn($v) => $v !== ''));
 $pct          = (int) round(($filledFields / $totalFields) * 100);
@@ -80,32 +94,42 @@ if ($drawer === 'dados-pessoais') {
   $drawerData = [
     'title'  => 'Dados pessoais',
     'fields' => [
-      ['label' => 'Nome completo',      'value' => $campos['nome']],
-      ['label' => 'E-mail corporativo', 'value' => $campos['email']],
-      ['label' => 'Telefone',           'value' => $campos['telefone']],
-      ['label' => 'Data de nascimento', 'value' => $campos['nascimento']],
-      ['label' => 'Gênero',             'value' => $campos['genero']],
+      ['label' => 'Nome completo',      'value' => $campos['nome'],     'required' => true],
+      ['label' => 'E-mail corporativo', 'value' => $campos['email'],    'type' => 'email', 'disabled' => true, 'required' => true],
+      ['label' => 'Telefone',           'value' => $campos['telefone'], 'required' => true],
+      ['label' => 'Data de nascimento', 'value' => $campos['nascimento'], 'placeholder' => 'dd/mm/aaaa'],
+      ['label' => 'Gênero',             'value' => $campos['genero'],   'type' => 'select', 'options' => $opcoesGenero, 'placeholder' => 'Selecione'],
     ],
   ];
 } elseif ($drawer === 'dados-profissionais') {
   $drawerData = [
     'title'  => 'Dados profissionais',
     'fields' => [
-      ['label' => 'Empresa', 'value' => $campos['empresa']],
-      ['label' => 'Cargo',   'value' => $campos['cargo']],
-      ['label' => 'Setor',   'value' => $campos['setor']],
+      ['label' => 'Empresa', 'value' => $campos['empresa'], 'required' => true],
+      ['label' => 'Cargo',   'value' => $campos['cargo'],   'type' => 'select', 'options' => $opcoesCargo, 'placeholder' => 'Selecione seu cargo',  'required' => true],
+      ['label' => 'Setor',   'value' => $campos['setor'],   'type' => 'select', 'options' => $opcoesSetor, 'placeholder' => 'Selecione o setor principal', 'required' => true],
     ],
   ];
 } elseif ($drawer === 'dados-fiscais') {
+  // Bloco inteiro opcional aqui no perfil — só é exigido na hora do download.
   $drawerData = [
     'title'  => 'Dados fiscais e localização',
     'fields' => [
-      ['label' => 'CPF / CNPJ', 'value' => $campos['cpf']],
-      ['label' => 'País',       'value' => $campos['pais']],
-      ['label' => 'Estado',     'value' => $campos['estado']],
-      ['label' => 'Cidade',     'value' => $campos['cidade']],
-      ['label' => 'CEP',        'value' => $campos['cep']],
-      ['label' => 'Endereço',   'value' => $campos['endereco']],
+      ['label' => 'CPF / CNPJ', 'value' => $campos['cpf'],      'placeholder' => '000.000.000-00'],
+      ['label' => 'CEP',        'value' => $campos['cep'],      'placeholder' => '00000-000',
+        'attrs' => ['data-cep-autofill' => '', 'inputmode' => 'numeric', 'maxlength' => '9'],
+        'help'  => 'Preenche automaticamente país, estado, cidade e endereço.'],
+      ['label' => 'País',       'value' => $campos['pais'],     'type' => 'select', 'options' => $opcoesPais,
+        'attrs' => ['data-cep-fill' => 'pais']],
+      ['label' => 'Estado',     'value' => $campos['estado'],   'placeholder' => 'UF',
+        'attrs' => ['data-cep-fill' => 'uf']],
+      ['label' => 'Cidade',     'value' => $campos['cidade'],
+        'attrs' => ['data-cep-fill' => 'localidade']],
+      ['label' => 'Endereço',   'value' => $campos['endereco'], 'col_span' => 9,
+        'attrs' => ['data-cep-fill' => 'logradouro']],
+      ['label' => 'Número',     'value' => $campos['numero'],   'col_span' => 3, 'placeholder' => 'Nº',
+        'attrs' => ['inputmode' => 'numeric']],
+      ['label' => 'Complemento','value' => $campos['complemento'], 'placeholder' => 'Apto, sala, bloco...'],
     ],
   ];
 }
@@ -114,20 +138,64 @@ if ($drawer === 'dados-pessoais') {
 $drawerContent = '';
 if ($drawerData) {
   ob_start();
+  echo '<div class="grid grid-cols-12 gap-x-4 gap-y-6 w-full">';
   foreach ($drawerData['fields'] as $f):
-    $val = htmlspecialchars($f['value']);
+    $type        = $f['type']        ?? 'text';
+    $val         = (string)($f['value'] ?? '');
+    $disabled    = !empty($f['disabled']);
+    $required    = !empty($f['required']);
+    $options     = $f['options']     ?? [];
+    $placeholder = $f['placeholder'] ?? '';
+    $help        = $f['help']        ?? '';
+    $colSpan     = (int)($f['col_span'] ?? 12);
+    $colSpanCls  = match ($colSpan) {
+      3       => 'col-span-3',
+      4       => 'col-span-4',
+      6       => 'col-span-6',
+      8       => 'col-span-8',
+      9       => 'col-span-9',
+      default => 'col-span-12',
+    };
+    $attrsArr    = $f['attrs']       ?? [];
+    $attrsHtml   = '';
+    foreach ($attrsArr as $k => $v) {
+      $attrsHtml .= ' ' . htmlspecialchars($k) . ($v === '' ? '' : '="' . htmlspecialchars($v) . '"');
+    }
 ?>
-    <div class="flex flex-col w-full">
-      <label class="font-body font-semibold text-label-lg text-neutral-950 px-1 pb-1">
-        <?= htmlspecialchars($f['label']) ?>
+    <div class="<?= $colSpanCls ?> flex flex-col min-w-0">
+      <label class="font-body font-semibold text-label-lg <?= $disabled ? 'text-neutral-500' : 'text-neutral-950' ?> px-1 pb-1">
+        <?= htmlspecialchars($f['label']) ?><?php if ($required): ?><span aria-hidden="true">*</span><?php endif; ?>
       </label>
-      <div class="bg-white border border-neutral-100 focus-within:border-secondary-950 flex h-10 items-center rounded-sm w-full">
-        <input type="text" value="<?= $val ?>"
-               class="flex-1 w-full h-full px-3 bg-transparent text-body-lg font-body text-primary-600 focus:outline-none">
-      </div>
+      <?php if ($type === 'select'): ?>
+        <div class="relative bg-white border border-neutral-100 focus-within:border-secondary-950 flex h-10 items-center rounded-sm w-full">
+          <select <?= $required ? 'required' : '' ?><?= $attrsHtml ?> class="flex-1 w-full h-full pl-3 pr-8 bg-transparent text-body-lg font-body <?= $val === '' ? 'text-neutral-500' : 'text-primary-600' ?> focus:text-primary-600 focus:outline-none appearance-none">
+            <?php if ($placeholder !== ''): ?>
+              <option value="" <?= $val === '' ? 'selected' : '' ?>><?= htmlspecialchars($placeholder) ?></option>
+            <?php endif; ?>
+            <?php foreach ($options as $opt): ?>
+              <option value="<?= htmlspecialchars($opt) ?>" <?= $val === $opt ? 'selected' : '' ?>><?= htmlspecialchars($opt) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <svg class="size-4 absolute right-3 text-neutral-500 pointer-events-none" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M7 10l5 5 5-5z"/>
+          </svg>
+        </div>
+      <?php else: ?>
+        <div class="<?= $disabled ? 'bg-neutral-50' : 'bg-white' ?> border border-neutral-100 <?= $disabled ? '' : 'focus-within:border-secondary-950' ?> flex h-10 items-center rounded-sm w-full">
+          <input type="<?= htmlspecialchars($type) ?>" value="<?= htmlspecialchars($val) ?>"
+                 placeholder="<?= htmlspecialchars($placeholder) ?>"
+                 <?= $required ? 'required' : '' ?>
+                 <?= $disabled ? 'disabled aria-disabled="true"' : '' ?><?= $attrsHtml ?>
+                 class="flex-1 w-full h-full px-3 bg-transparent text-body-lg font-body <?= $disabled ? 'text-neutral-500 cursor-not-allowed' : 'text-primary-600' ?> placeholder:text-neutral-400 focus:outline-none">
+        </div>
+      <?php endif; ?>
+      <?php if ($help): ?>
+        <p class="mt-1 px-1 font-body text-label-md text-neutral-700"><?= htmlspecialchars($help) ?></p>
+      <?php endif; ?>
     </div>
 <?php
   endforeach;
+  echo '</div>';
   $drawerContent = ob_get_clean();
 }
 
@@ -214,11 +282,11 @@ $drawerSaveHref  = $baseHref . '?tab=perfil&state=saved' . $queryExtra;
              class="group bg-white border border-primary-100 rounded-lg p-5 flex flex-col gap-3 hover:border-secondary-950 transition-colors">
             <div class="flex items-center gap-4">
               <div class="bg-neutral-50 inline-flex items-center justify-center p-3 rounded-lg shrink-0">
-                <svg class="size-6 text-primary-600" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg class="size-6 <?= $isEmpty ? 'text-neutral-500' : 'text-primary-600' ?>" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
                 </svg>
               </div>
-              <span class="font-display font-bold text-headline-lg text-primary-600 group-hover:text-secondary-950 transition-colors">12</span>
+              <span class="font-display font-bold text-headline-lg <?= $isEmpty ? 'text-neutral-500' : 'text-primary-600 group-hover:text-secondary-950' ?> transition-colors"><?= $isEmpty ? '0' : '12' ?></span>
             </div>
             <span class="font-body font-semibold text-label-lg text-neutral-900">Downloads totais</span>
           </a>
@@ -226,11 +294,11 @@ $drawerSaveHref  = $baseHref . '?tab=perfil&state=saved' . $queryExtra;
              class="group bg-white border border-primary-100 rounded-lg p-5 flex flex-col gap-3 hover:border-secondary-950 transition-colors">
             <div class="flex items-center gap-4">
               <div class="bg-neutral-50 inline-flex items-center justify-center p-3 rounded-lg shrink-0">
-                <svg class="size-6 text-primary-600" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg class="size-6 <?= $isEmpty ? 'text-neutral-500' : 'text-primary-600' ?>" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
               </div>
-              <span class="font-display font-bold text-headline-lg text-primary-600 group-hover:text-secondary-950 transition-colors">2</span>
+              <span class="font-display font-bold text-headline-lg <?= $isEmpty ? 'text-neutral-500' : 'text-primary-600 group-hover:text-secondary-950' ?> transition-colors"><?= $isEmpty ? '0' : '2' ?></span>
             </div>
             <span class="font-body font-semibold text-label-lg text-neutral-900">Newsletters ativas</span>
           </a>
@@ -242,6 +310,25 @@ $drawerSaveHref  = $baseHref . '?tab=perfil&state=saved' . $queryExtra;
       <!-- Recent news -->
       <section>
         <h2 class="font-display font-bold text-title-xl text-primary-600 mb-4">Últimas leituras</h2>
+
+        <?php if ($isEmpty): ?>
+        <div class="bg-neutral-50 border border-primary-100 rounded-lg px-6 py-12 flex flex-col items-center text-center gap-3">
+          <div class="size-14 rounded-full bg-white border border-primary-100 inline-flex items-center justify-center">
+            <svg class="size-7 text-primary-600" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-title-md text-primary-600">Você ainda não leu nenhum artigo</h3>
+          <p class="font-body text-body-md text-neutral-700 max-w-md">Explore o portal e comece agora. Seus artigos lidos aparecem aqui automaticamente.</p>
+          <a href="/src/layouts/home.php<?= $queryExtra ? '?' . ltrim($queryExtra, '&') : '' ?>"
+             class="mt-3 inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-md transition-colors">
+            Explorar conteúdos
+            <svg class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+            </svg>
+          </a>
+        </div>
+        <?php else: ?>
         <div class="flex flex-col">
           <?php
           $recent = [
@@ -263,6 +350,7 @@ $drawerSaveHref  = $baseHref . '?tab=perfil&state=saved' . $queryExtra;
           endforeach;
           ?>
         </div>
+        <?php endif; ?>
       </section>
     </div>
 
@@ -300,6 +388,8 @@ $drawerSaveHref  = $baseHref . '?tab=perfil&state=saved' . $queryExtra;
           'fields'      => [$campos['nome'], $campos['email'], $campos['telefone']],
           'href'        => $drawerHref('dados-pessoais'),
           'cta'         => 'Atualizar',
+          'chip'        => 'Complete seu Perfil',
+          'incomplete'  => true,
         ]); ?>
         <?php get_template_part('components/_partials/profile-box', null, [
           'icon'        => 'business_center',
@@ -317,7 +407,8 @@ $drawerSaveHref  = $baseHref . '?tab=perfil&state=saved' . $queryExtra;
           'href'        => $drawerHref('dados-fiscais'),
           'cta'         => 'Preencher',
           'incomplete'  => true,
-          'chip'        => 'Complete seu Perfil',
+          'placeholder' => true,
+          'chip'        => 'Preencha e personalize sua experiência',
         ]); ?>
       </div>
     </div>
@@ -349,14 +440,10 @@ $drawerSaveHref  = $baseHref . '?tab=perfil&state=saved' . $queryExtra;
       </header>
 
       <!-- Summary -->
-      <div class="bg-neutral-50 rounded-lg px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
+      <div class="bg-neutral-50 rounded-lg px-6 py-4">
         <p data-newsletter-count class="font-body font-semibold text-body-md text-primary-600">
           <?= $activeNl ?> newsletters ativas de <?= $totalNl ?> opções disponíveis
         </p>
-        <div class="flex items-center gap-6">
-          <button type="button" data-action="newsletter-subscribe-all" class="font-body font-bold text-body-md text-secondary-950 hover:underline">Assinar todas</button>
-          <button type="button" data-action="newsletter-unsubscribe-all" class="font-body font-bold text-body-md text-secondary-950 hover:underline">Cancelar todas</button>
-        </div>
       </div>
 
       <!-- Items -->

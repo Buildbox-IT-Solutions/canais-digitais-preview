@@ -13,38 +13,64 @@
  * é um polyfill leve para o preview se comportar como um site real.
  */
 
-function classifyPassword(value) {
+function evaluateCriteria(value) {
+  return {
+    length:    value.length >= 8,
+    uppercase: /[A-Z]/.test(value),
+    number:    /\d/.test(value),
+    special:   /[^A-Za-z0-9]/.test(value),
+  };
+}
+
+function levelFromCriteria(criteria, value) {
   if (!value) return 'empty';
-  const hasLetter = /[A-Za-z]/.test(value);
-  const hasNumber = /\d/.test(value);
-  if (!hasLetter || !hasNumber) return 'weak';
-  if (value.length < 12) return 'medium';
+  const count = Object.values(criteria).filter(Boolean).length;
+  if (count <= 2) return 'weak';
+  if (count === 3) return 'medium';
   return 'strong';
 }
 
-function applyStrengthLevel(container, level) {
-  const meta = {
-    empty:  { value: 0, label: '',       color: 'bg-neutral-100',   text: 'text-neutral-500', fills: 0 },
-    weak:   { value: 1, label: 'Fraca',  color: 'bg-[#DC2626]',     text: 'text-[#DC2626]',   fills: 1 },
-    medium: { value: 2, label: 'Média',  color: 'bg-[#F59E0B]',     text: 'text-[#F59E0B]',   fills: 2 },
-    strong: { value: 3, label: 'Forte',  color: 'bg-[#16A34A]',     text: 'text-[#16A34A]',   fills: 3 },
-  }[level] ?? { value: 0, label: '', color: 'bg-neutral-100', text: 'text-neutral-500', fills: 0 };
+const STRENGTH_META = {
+  empty:  { value: 0, label: '',       color: 'bg-neutral-100', text: 'text-neutral-500', fills: 0 },
+  weak:   { value: 1, label: 'Fraca',  color: 'bg-[#DC2626]',   text: 'text-[#DC2626]',   fills: 1 },
+  medium: { value: 2, label: 'Média',  color: 'bg-[#F59E0B]',   text: 'text-[#F59E0B]',   fills: 2 },
+  strong: { value: 3, label: 'Forte',  color: 'bg-[#16A34A]',   text: 'text-[#16A34A]',   fills: 3 },
+};
 
-  container.dataset.level = level;
-  container.setAttribute('aria-valuenow', String(meta.value));
+function updatePasswordMeter(meter, value) {
+  const criteria = evaluateCriteria(value);
+  const level = levelFromCriteria(criteria, value);
+  const meta = STRENGTH_META[level];
 
-  const segments = container.querySelectorAll(':scope > div > div');
+  meter.dataset.level = level;
+  meter.setAttribute('aria-valuenow', String(meta.value));
+
+  const segments = meter.querySelectorAll('[data-password-strength-bar] > div');
   segments.forEach((seg, i) => {
     seg.classList.remove('bg-neutral-100', 'bg-[#DC2626]', 'bg-[#F59E0B]', 'bg-[#16A34A]');
     seg.classList.add(i < meta.fills ? meta.color : 'bg-neutral-100');
   });
 
-  const label = container.querySelector('[data-password-strength-label]');
+  const label = meter.querySelector('[data-password-strength-label]');
   if (label) {
     label.classList.remove('text-neutral-500', 'text-[#DC2626]', 'text-[#F59E0B]', 'text-[#16A34A]');
     label.classList.add(meta.text);
     label.textContent = meta.label ? 'Força: ' + meta.label : '';
   }
+
+  meter.querySelectorAll('[data-password-criterion]').forEach((li) => {
+    const key = li.dataset.passwordCriterion;
+    const met = !!criteria[key];
+    li.dataset.met = met ? 'true' : 'false';
+    li.querySelector('[data-icon="unmet"]')?.classList.toggle('hidden', met);
+    li.querySelector('[data-icon="met"]')?.classList.toggle('hidden', !met);
+    const text = li.querySelector('[data-criterion-label]');
+    if (text) {
+      text.classList.toggle('text-neutral-950', met);
+      text.classList.toggle('font-semibold', met);
+      text.classList.toggle('text-neutral-700', !met);
+    }
+  });
 }
 
 const CHECK_ICON = '<svg class="size-3 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
@@ -178,11 +204,15 @@ export function init() {
     const btn = e.target.closest('[data-login-action="toggle-password"]');
     if (!btn) return;
     const id = btn.dataset.target;
-    const input = id ? document.getElementById(id) : null;
+    const input = id
+      ? document.getElementById(id)
+      : btn.closest('[data-password-field]')?.querySelector('input[type="password"], input[type="text"]');
     if (!input) return;
     const revealing = input.type === 'password';
     input.type = revealing ? 'text' : 'password';
     btn.setAttribute('aria-label', revealing ? 'Esconder senha' : 'Mostrar senha');
+    btn.querySelector('[data-icon="show"]')?.classList.toggle('hidden', revealing);
+    btn.querySelector('[data-icon="hide"]')?.classList.toggle('hidden', !revealing);
   });
 
   // 4. Auto-save preferência (toggle) + sync do thumb
@@ -260,17 +290,23 @@ export function init() {
     });
   }
 
-  // 2. Password strength em tempo real
+  // 2. Password strength em tempo real (barra + critérios)
   document.addEventListener('input', (e) => {
     const input = e.target;
     if (!(input instanceof HTMLInputElement)) return;
     if (input.type !== 'password' && input.type !== 'text') return;
-    // Busca o partial password-strength que aponte para este input
+    if (!input.id) return;
     const meter = document.querySelector(
       '[data-password-strength][data-target="' + input.id + '"]'
     );
     if (!meter) return;
-    applyStrengthLevel(meter, classifyPassword(input.value));
+    updatePasswordMeter(meter, input.value);
+  });
+
+  // Sincroniza estado inicial caso o input já venha pré-preenchido (estados de erro)
+  document.querySelectorAll('[data-password-strength][data-target]').forEach((meter) => {
+    const input = document.getElementById(meter.dataset.target);
+    if (input && input.value) updatePasswordMeter(meter, input.value);
   });
 
   // 3. Sincronizar checkbox visual (clique no label ou via teclado)

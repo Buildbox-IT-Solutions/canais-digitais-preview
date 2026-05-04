@@ -82,3 +82,8 @@ tools/          ← tailwindcss.exe (gitignored)
 3. Criar `src/components/<nome>.php` (ver convenções no `CLAUDE.md` §5.2)
 4. Registrar em `COMPONENTS` no `src/docs/showcase.js`
 5. Documentar decisões em `figma-specs/<nome>.md`
+
+## Repositório
+
+Projeto versionado no GitHub como protótipo de referência visual.
+Repositório privado — acesso restrito ao time Informa Markets.

@@ -1,35 +1,31 @@
 /**
- * Newsletter Bulk — ações "Assinar todas" / "Cancelar todas" + contador live.
+ * Newsletter list — contador live + toast de confirmação por toggle.
+ *
+ * (Os botões "Assinar todas" / "Cancelar todas" foram removidos do dashboard.)
  *
  * Markup esperado:
  *   [data-component="newsletter-list"]
  *     [data-newsletter-count]              (conta ativa de N opções)
- *     [data-action="newsletter-subscribe-all"]
- *     [data-action="newsletter-unsubscribe-all"]
- *     [data-newsletter-toggle]             (input checkbox de cada item)
+ *     [data-newsletter-item]
+ *       h3                                  (nome da newsletter — usado no toast)
+ *       [data-newsletter-toggle]            (input checkbox)
  */
 export function init() {
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action="newsletter-subscribe-all"], [data-action="newsletter-unsubscribe-all"]');
-    if (!btn) return;
-    e.preventDefault();
-    const root = btn.closest('[data-component="newsletter-list"]');
-    if (!root) return;
-    const setTo = btn.dataset.action === 'newsletter-subscribe-all';
-    root.querySelectorAll('[data-newsletter-toggle]').forEach((input) => {
-      if (input.checked !== setTo) {
-        input.checked = setTo;
-        input.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-    });
-    updateCount(root);
-  });
-
   document.addEventListener('change', (e) => {
     const input = e.target.closest('[data-newsletter-toggle]');
     if (!input) return;
+
     const root = input.closest('[data-component="newsletter-list"]');
     if (root) updateCount(root);
+
+    const item = input.closest('[data-newsletter-item]');
+    const title = item?.querySelector('h3')?.textContent.trim() || 'newsletter';
+    const message = input.checked
+      ? `Você assinou a newsletter ${title}.`
+      : `Você cancelou a newsletter ${title}.`;
+    if (typeof window.showToast === 'function') {
+      window.showToast(input.checked ? 'success' : 'info', message, { duration: 3000 });
+    }
   });
 }
 
