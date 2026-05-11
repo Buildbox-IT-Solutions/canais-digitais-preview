@@ -128,11 +128,20 @@ Escala nativa Tailwind: `shadow-sm`, `shadow-md`, `shadow-lg`, `shadow-xl`.
 
 ## Migração do legado
 
-A pasta `legacy/` contém o código PHP original do projeto. Conforme componentes e telas forem sendo migrados para React, **apagar o equivalente em `legacy/`**. O objetivo é que a pasta desapareça completamente ao final da migração.
+A pasta `legacy/` contém o código PHP original do projeto. **Antes de construir qualquer componente ou tela, consultar `TODO.md` na raiz** para ver o que ainda precisa ser migrado e evitar retrabalho.
+
+Fluxo ao migrar um item:
+1. Consultar `TODO.md` e escolher o próximo item
+2. Usar o equivalente PHP em `legacy/` como referência visual
+3. Implementar em React seguindo as convenções desta codebase
+4. Marcar como `[x]` no `TODO.md`
+5. Apagar o arquivo correspondente em `legacy/`
 
 Correspondências de estrutura:
 - `legacy/src/components/_partials/<nome>.php` → `src/components/<nome>/index.tsx`
 - `legacy/src/layouts/<nome>.php` → `src/screens/<nome>/index.tsx`
+
+O objetivo é que `legacy/` desapareça completamente ao final da migração.
 
 ---
 
