@@ -15,66 +15,66 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 - [x] `thumbnail`
 
 ### Buttons
-- [ ] `button`
-- [ ] `icon-button`
-- [ ] `link-button`
-- [ ] `login-button`
-- [ ] `play-button`
-- [ ] `social-button`
+- [x] `button`
+- [x] `icon-button`
+- [x] `link-button`
+- [x] `login-button`
+- [x] `play-button`
+- [x] `social-button`
 
 ### Form
-- [ ] `form-field`
-- [ ] `form-select`
-- [ ] `form-checkbox`
-- [ ] `form-disclaimer`
-- [ ] `form-toggle`
-- [ ] `search-bar`
-- [ ] `password-strength`
+- [x] `form-field`
+- [x] `form-select`
+- [x] `form-checkbox`
+- [x] `form-disclaimer`
+- [x] `form-toggle`
+- [x] `search-bar`
+- [x] `password-strength`
 
 ### Chips
-- [ ] `categoria`
-- [ ] `byline`
+- [x] `categoria`
+- [x] `byline`
 
 ### Navigation
-- [ ] `nav-item`
-- [ ] `header-desktop`
-- [ ] `footer-desktop`
+- [x] `nav-item`
+- [x] `header-desktop`
+- [x] `footer-desktop`
 
 ### Cards / Content
-- [ ] `sponsor-line`
-- [ ] `podcast-meta`
-- [ ] `section-title`
-- [ ] `orbit`
-- [ ] `icon-tile`
+- [x] `sponsor-line`
+- [x] `podcast-meta`
+- [x] `section-title`
+- [x] `orbit`
+- [x] `icon-tile`
 
 ### Feedback / Overlay
-- [ ] `toast`
-- [ ] `drawer`
-- [ ] `auth-shell`
-- [ ] `proof-panel`
-- [ ] `proof-panel-minimal`
+- [x] `toast`
+- [x] `drawer`
+- [x] `auth-shell`
+- [x] `proof-panel`
+- [x] `proof-panel-minimal`
 
 ### Dashboard
-- [ ] `dashboard-header`
-- [ ] `dashboard-welcome`
-- [ ] `dashboard-tabs-v3`
-- [ ] `profile-box`
-- [ ] `profile-progress`
-- [ ] `completion-card`
-- [ ] `stat-card`
-- [ ] `session-row`
-- [ ] `coming-soon`
+- [x] `dashboard-header`
+- [x] `dashboard-welcome`
+- [x] `dashboard-tabs-v3`
+- [x] `profile-box`
+- [x] `profile-progress`
+- [x] `completion-card`
+- [x] `stat-card`
+- [x] `session-row`
+- [x] `coming-soon`
 
 ### List Items
-- [ ] `recent-news-item`
-- [ ] `newsletter-item`
-- [ ] `download-item`
-- [ ] `access-method-card`
-- [ ] `general-item`
-- [ ] `pagination`
+- [x] `recent-news-item`
+- [x] `newsletter-item`
+- [x] `download-item`
+- [x] `access-method-card`
+- [x] `general-item`
+- [x] `pagination`
 
 ### Auth
-- [ ] `cadastro-stepper`
+- [x] `cadastro-stepper`
 
 ---
 
