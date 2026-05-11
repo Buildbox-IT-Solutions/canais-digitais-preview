@@ -20,4 +20,11 @@ export default defineConfig({
 			include: '**/*.svg',
 		}),
 	],
+	optimizeDeps: {
+		exclude: [
+			'@storybook/react-vite',
+			'@storybook/addon-essentials',
+			'@storybook/addon-docs/blocks',
+		],
+	},
 })

@@ -6,12 +6,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Este repositório é um **Design as Code (DaC)** — reprodução fiel do Figma em React + Tailwind, produzida como **fonte da verdade visual**. Não há lógica de negócio, integrações com API, autenticação ou banco de dados. Todo o conteúdo dinâmico é mockado.
 
+## Node e package manager
+
+A versão do Node exigida está em `.nvmrc` (`v24.12.0`). Use [nvm](https://github.com/nvm-sh/nvm) para gerenciar versões:
+
+```bash
+nvm install   # instala a versão do .nvmrc
+nvm use       # ativa a versão do .nvmrc
+```
+
+O package manager é **pnpm**. Não usar `npm` ou `yarn`. Para instalar o pnpm:
+
+```bash
+npm install -g pnpm
+```
+
 ## Commands
 
 ```bash
-pnpm dev        # Dev server (Vite)
-pnpm build      # TypeScript check + Vite build
-pnpm preview    # Preview da build
+pnpm start          # Vite + Storybook em paralelo (recomendado)
+pnpm dev            # Apenas Vite (localhost:5173)
+pnpm storybook:dev  # Apenas Storybook (localhost:6006)
+pnpm build          # TypeScript check + Vite build
+pnpm preview        # Preview da build
 ```
 
 ## Architecture
@@ -57,7 +74,15 @@ Nunca faça fetch real. Dados ficam em `src/mocks/` separados por contexto e imp
 
 - `src/components/<nome>/index.tsx` — implementação com export nomeado
 - `src/components/<nome>/types.ts` — interface de props (`I<Nome>Props`)
+- `src/components/<nome>/<nome>.stories.tsx` — stories cobrindo todas as variantes visuais
 - Props de `className` opcionais passam por `twMerge`
+
+Todo componente **deve ter um arquivo de stories** com uma story por variante visual (tamanho, cor, estado). Use `tags: ['autodocs']` e `parameters.layout: 'centered'` como padrão.
+
+```bash
+pnpm storybook:dev    # Storybook em http://localhost:6006
+pnpm storybook:build  # Build estático
+```
 
 ---
 
@@ -128,7 +153,7 @@ Escala nativa Tailwind: `shadow-sm`, `shadow-md`, `shadow-lg`, `shadow-xl`.
 
 ## Migração do legado
 
-A pasta `legacy/` contém o código PHP original do projeto. **Antes de construir qualquer componente ou tela, consultar `TODO.md` na raiz** para ver o que ainda precisa ser migrado e evitar retrabalho.
+A pasta `legacy/` contém o código PHP original do projeto. **Antes de construir qualquer componente ou tela, consultar `TODO.md` na raiz** para ver o que ainda precisa ser migrado e evitar retrabalho, essa pasta é read only não faça alterações no código a não ser removê-lo
 
 Fluxo ao migrar um item:
 1. Consultar `TODO.md` e escolher o próximo item
