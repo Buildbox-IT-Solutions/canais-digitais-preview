@@ -1,13 +1,25 @@
-# Tailwind v4 standalone CLI binary (baixado por sessão)
-tools/*.exe
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# CSS gerado pelo Tailwind (sempre regerável a partir dos fontes)
-src/docs/output.css
+node_modules
+dist
+dist-ssr
+*.local
+.env
 
-# Node (caso alguém instale local — não usamos por padrão)
-node_modules/
-
-# Sistema
+# Editor directories and files
+.idea
 .DS_Store
-Thumbs.db
-desktop.ini
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+tmp
