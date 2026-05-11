@@ -126,6 +126,16 @@ Escala nativa Tailwind: `shadow-sm`, `shadow-md`, `shadow-lg`, `shadow-xl`.
 
 ---
 
+## Migração do legado
+
+A pasta `legacy/` contém o código PHP original do projeto. Conforme componentes e telas forem sendo migrados para React, **apagar o equivalente em `legacy/`**. O objetivo é que a pasta desapareça completamente ao final da migração.
+
+Correspondências de estrutura:
+- `legacy/src/components/_partials/<nome>.php` → `src/components/<nome>/index.tsx`
+- `legacy/src/layouts/<nome>.php` → `src/screens/<nome>/index.tsx`
+
+---
+
 ## Figma Specs
 
 | Arquivo | Conteúdo |
