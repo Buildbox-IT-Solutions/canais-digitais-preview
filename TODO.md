@@ -81,11 +81,11 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 ## Telas (`src/screens/`)
 
 ### Editorial / públicos
-- [ ] `home` — NodeId `973:6474`
-- [ ] `categoria` — NodeId `5433:16684`
-- [ ] `conteudo` — NodeId `4179:32002`
-- [ ] `menu` — NodeId `986:21416`
-- [ ] `buscar` — NodeId `1785:17716`
+- [x] `home` — NodeId `973:6474`
+- [x] `categoria` — NodeId `5433:16684`
+- [x] `conteudo` — NodeId `4179:32002`
+- [x] `menu` — NodeId `986:21416`
+- [x] `buscar` — NodeId `1785:17716`
 
 ### Institucionais
 - [ ] `contato` — NodeId `4935:30241`
