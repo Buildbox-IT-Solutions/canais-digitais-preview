@@ -7,12 +7,12 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 ## Componentes (`src/components/`)
 
 ### Foundations
-- [ ] `divider`
-- [ ] `avatar`
-- [ ] `badge`
-- [ ] `tag`
-- [ ] `image`
-- [ ] `thumbnail`
+- [x] `divider`
+- [x] `avatar`
+- [x] `badge`
+- [x] `tag`
+- [x] `image`
+- [x] `thumbnail`
 
 ### Buttons
 - [ ] `button`
