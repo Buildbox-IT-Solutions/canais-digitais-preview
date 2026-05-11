@@ -8,7 +8,7 @@ Este repositório é um **Design as Code (DaC)** — reprodução fiel do Figma 
 
 ## Node e package manager
 
-A versão do Node exigida está em `.nvmrc` (`v24.12.0`). Use [nvm](https://github.com/nvm-sh/nvm) para gerenciar versões:
+A versão do Node exigida está em `.nvmrc` (`v22.14.0`). Use [nvm](https://github.com/nvm-sh/nvm) para gerenciar versões:
 
 ```bash
 nvm install   # instala a versão do .nvmrc
