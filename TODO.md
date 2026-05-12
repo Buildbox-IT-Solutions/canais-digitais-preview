@@ -98,12 +98,12 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 - [ ] `form-download`
 
 ### Auth
-- [ ] `login` — NodeId `6268:18394`
-- [ ] `cadastro` — NodeId `6269:18460` / `6271:18788` / `6271:19008` (3 steps)
-- [ ] `recupera-senha`
-- [ ] `redefine-senha`
-- [ ] `confirmacao-email`
-- [ ] `login-modal`
+- [x] `login` — NodeId `6268:18394`
+- [x] `cadastro` — NodeId `6269:18460` / `6271:18788` / `6271:19008` (3 steps)
+- [x] `recupera-senha`
+- [x] `redefine-senha`
+- [x] `confirmacao-email`
+- [x] `login-modal`
 
 ### Dashboard / área logada
 - [ ] `dashboard` — hub com 7 sub-seções
