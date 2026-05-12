@@ -88,14 +88,14 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 - [x] `buscar` — NodeId `1785:17716`
 
 ### Institucionais
-- [ ] `contato` — NodeId `4935:30241`
-- [ ] `sobre` — NodeId `4951:50343`
-- [ ] `anuncie` — NodeId `4941:49088`
-- [ ] `404`
+- [x] `contato` — NodeId `4935:30241`
+- [x] `sobre` — NodeId `4951:50343`
+- [x] `anuncie` — NodeId `4941:49088`
+- [x] `404`
 
 ### Forms
-- [ ] `form-newsletter`
-- [ ] `form-download`
+- [x] `form-newsletter`
+- [x] `form-download`
 
 ### Auth
 - [x] `login` — NodeId `6268:18394`

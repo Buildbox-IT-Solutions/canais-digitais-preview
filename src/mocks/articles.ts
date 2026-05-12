@@ -232,6 +232,34 @@ export const VEJA_TAMBEM: Article[] = [
 
 export const ARTICLE_TAGS = ['Análise sensorial', 'IA', 'Indústria 4.0', 'Controle de qualidade', 'Food Tech']
 
+export const NOT_FOUND_CARDS: Array<Article & { author: string }> = [
+	{ id: '404a', seed: '404a', category: 'Eventos', categoryColor: 'mint', title: 'FiSA 2026: inscrições abertas para o congresso de ingredientes', author: 'Marcelo Yamashita' },
+	{ id: '404b', seed: '404b', category: 'Proteína Animal', categoryColor: 'coral', title: 'Tecnocarne anuncia novo pavilhão para soluções em automação', author: 'Rafaela Costa' },
+	{ id: '404c', seed: '404c', category: 'Indústria A&B', categoryColor: 'saffron', title: 'Tendências em proteína vegetal: mercado brasileiro cresce 18%', author: 'João Pedro Almeida' },
+	{ id: '404d', seed: '404d', category: 'ESG', categoryColor: 'lavander', title: 'ESG na indústria de laticínios: case da Cooperativa Central Aurora', author: 'Luiza Bertolaccini' },
+	{ id: '404e', seed: '404e', category: 'Embalagens', categoryColor: 'secondary-500', title: 'Embalagens sustentáveis: como a Klabin lidera o setor', author: 'Bruno Tavares' },
+	{ id: '404f', seed: '404f', category: 'Sorvetes', categoryColor: 'mint', title: 'Sorvetes artesanais: boom de marcas paulistanas no verão 2026', author: 'Marcelo Yamashita' },
+	{ id: '404g', seed: '404g', category: 'Food Service', categoryColor: 'primary-600', title: 'Food Service: delivery próprio volta a ganhar tração em 2026', author: 'Rafaela Costa' },
+	{ id: '404h', seed: '404h', category: 'Tecnologia', categoryColor: 'secondary-950', title: 'Fispal Food Service 2026: programação de palestras é divulgada', author: 'Luiza Bertolaccini' },
+]
+
+export const CONTATO_EQUIPE_DIGITAL = [
+	{
+		name: 'Amanda Gonçalves',
+		role: 'Curadora de conteúdo digital',
+		bio: 'Jornalista experiente em produção de conteúdo voltado para o mercado de saúde. Controla a pauta dos portais e as estratégias de marketing digital. Em 2024, tornou-se curadora de conteúdo do portal Saúde Business.',
+		email: 'amanda.goncalves@informa.com',
+		img: '25',
+	},
+	{
+		name: 'Ana Dominguez',
+		role: 'Coordenadora de conteúdo digital',
+		bio: 'Jornalista especializada em Marketing digital, com experiência em criação de conteúdo para a experiência do cliente. Atualmente, atua como Coordenadora de Conteúdo Digital na Informa Markets Latam.',
+		email: 'ana.dominguez@informa.com',
+		img: '47',
+	},
+]
+
 export const MENU_ITEMS = [
 	{ label: 'Eventos', dropdown: true },
 	{ label: 'Ingredientes', dropdown: false },
