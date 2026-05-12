@@ -103,7 +103,7 @@ function LoggedDirectCard() {
 			</a>
 			<p className="font-body text-label-md text-neutral-500">
 				Não é você?{' '}
-				<a href="/" className="font-bold text-secondary-950 hover:underline">
+				<a href="/home" className="font-bold text-secondary-950 hover:underline">
 					Sair da conta
 				</a>
 				.
@@ -145,7 +145,7 @@ function LoggedIncompleteCard() {
 					Completar meu perfil
 				</a>
 				<a
-					href="/"
+					href="/home"
 					className="inline-flex items-center justify-center px-6 h-12 rounded-full bg-transparent text-primary-600 hover:bg-neutral-50 transition-colors font-body font-bold text-body-lg"
 				>
 					Fazer isso depois

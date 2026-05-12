@@ -59,7 +59,7 @@ export default function LoginScreen() {
 			<div className="flex min-h-screen items-stretch">
 				<section className="flex flex-col w-[560px] shrink-0 px-14 py-12 bg-white animate-fade-up-sm">
 					<div className="w-full">
-						<AuthBackLink href="/" label="Voltar para o início" />
+						<AuthBackLink href="/home" label="Voltar para o início" />
 					</div>
 
 					<div className="flex-1 flex flex-col justify-center w-full">
@@ -74,8 +74,8 @@ export default function LoginScreen() {
 							{globalError ? <AuthErrorAlert message={globalError} /> : null}
 
 							<div className="flex flex-col gap-4 w-full">
-								<SocialButton provider="linkedin" href="/" />
-								<SocialButton provider="google" href="/" />
+								<SocialButton provider="linkedin" href="/home" />
+								<SocialButton provider="google" href="/home" />
 							</div>
 
 							<div className="flex items-center gap-3 w-full overflow-hidden">

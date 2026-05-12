@@ -178,7 +178,7 @@ export default function LoginModalScreen() {
 							{/* Close */}
 							<div className="absolute right-3 top-3">
 								<a
-									href="/"
+									href="/home"
 									aria-label="Fechar"
 									className="inline-flex items-center justify-center h-10 w-10 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
 								>

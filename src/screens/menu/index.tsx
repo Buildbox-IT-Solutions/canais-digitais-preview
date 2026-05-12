@@ -21,7 +21,7 @@ export default function MenuScreen() {
 							type="ghost"
 							size="large"
 							label="Fechar menu"
-							href="/"
+							href="/home"
 						/>
 					</div>
 
