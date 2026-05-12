@@ -305,7 +305,7 @@ function MarkedStep() {
 					Cancelar exclusão e continuar
 				</a>
 				<a
-					href="/"
+					href="/home"
 					className="font-body font-bold text-body-md text-neutral-700 hover:text-primary-600 transition-colors"
 				>
 					Sair agora

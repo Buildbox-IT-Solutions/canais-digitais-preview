@@ -153,7 +153,7 @@ export default function ConfirmacaoEmailScreen() {
 
 								{state === 'waiting' ? (
 									<a
-										href="/"
+										href="/home"
 										className="self-center font-body text-body-md text-neutral-500 hover:text-neutral-700 hover:underline"
 									>
 										Verificar depois

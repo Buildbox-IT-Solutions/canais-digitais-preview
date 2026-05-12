@@ -30,7 +30,7 @@ export default function NotFoundScreen() {
 							endereço ou volte para a página inicial.
 						</p>
 					</div>
-					<Button label="Ir para Página Inicial" href="/" type="outlined" size="medium" />
+					<Button label="Ir para Página Inicial" href="/home" type="outlined" size="medium" />
 				</div>
 			</section>
 

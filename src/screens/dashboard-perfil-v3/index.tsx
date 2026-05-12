@@ -225,7 +225,7 @@ function GeralPane({ pct, missing, isEmpty }: { pct: number; missing: number; is
 							automaticamente.
 						</p>
 						<a
-							href="/"
+							href="/home"
 							className="mt-3 inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-md transition-colors"
 						>
 							Explorar conteúdos

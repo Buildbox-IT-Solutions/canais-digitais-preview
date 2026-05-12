@@ -59,12 +59,12 @@ figma-specs/      # Specs e inventário por componente
 
 ### Roteamento
 
-Todas as rotas ficam em `src/router.tsx`. A `HomeScreen` (`/`) é a central de navegação com links para todas as outras telas. Rotas não mapeadas redirecionam para `/`.
+Todas as rotas ficam em `src/router.tsx`. A `CentralScreen` (`/`) é a central de navegação do protótipo, com links para todas as outras telas agrupadas por contexto. A home editorial fica em `/home`. Rotas não mapeadas caem em `NotFoundScreen` (`*`).
 
 Ao criar uma nova tela:
 1. Criar `src/screens/<nome>/index.tsx`
 2. Adicionar a rota em `src/router.tsx`
-3. Adicionar o link na `HomeScreen`
+3. Adicionar o link em `src/screens/central/index.tsx` no grupo apropriado
 
 ### Mocks
 

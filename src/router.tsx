@@ -3,6 +3,7 @@ import AnuncieScreen from './screens/anuncie'
 import BuscarScreen from './screens/buscar'
 import CadastroScreen from './screens/cadastro'
 import CategoriaScreen from './screens/categoria'
+import CentralScreen from './screens/central'
 import ConfirmacaoEmailScreen from './screens/confirmacao-email'
 import ConsentimentosScreen from './screens/consentimentos'
 import ContatoScreen from './screens/contato'
@@ -23,7 +24,8 @@ import RedefineSenhaScreen from './screens/redefine-senha'
 import SobreScreen from './screens/sobre'
 
 const router = createBrowserRouter([
-	{ path: '/', element: <HomeScreen /> },
+	{ path: '/', element: <CentralScreen /> },
+	{ path: '/home', element: <HomeScreen /> },
 	{ path: '/categoria', element: <CategoriaScreen /> },
 	{ path: '/conteudo', element: <ConteudoScreen /> },
 	{ path: '/menu', element: <MenuScreen /> },
