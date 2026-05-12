@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import OrbitSvg from '~/assets/icons/orbit.svg'
 import type { IOrbitProps } from './types'
 

@@ -3,7 +3,6 @@ export type DownloadItemIcon = 'pdf' | 'doc' | 'image'
 export interface IDownloadItemProps {
 	icon: DownloadItemIcon
 	title: string
-	portal?: string
 	date?: string
 	size?: string
 	titleHref?: string

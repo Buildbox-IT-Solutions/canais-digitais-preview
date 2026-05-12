@@ -52,7 +52,7 @@ export default function NotFoundScreen() {
 										{c.title}
 									</a>
 								</h3>
-								<Byline author={c.author} href="#" size="sm" />
+								<Byline author={c.author} href="/categoria" size="sm" />
 							</div>
 						</article>
 					))}

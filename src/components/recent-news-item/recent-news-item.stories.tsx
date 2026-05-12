@@ -16,7 +16,6 @@ export const Default: Story = {
 	args: {
 		category: 'Proteína Animal',
 		title: 'Como fazer o transporte de pescados frescos corretamente',
-		portal: 'Food Connection',
 		when: 'há poucos segundos',
 	},
 }

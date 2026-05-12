@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
 import type {

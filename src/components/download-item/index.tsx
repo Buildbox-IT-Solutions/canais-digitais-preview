@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
 import { IconTile } from '~/components/icon-tile'
 import type { IDownloadItemProps } from './types'
@@ -13,7 +13,6 @@ import type { IDownloadItemProps } from './types'
 export function DownloadItem({
 	icon,
 	title,
-	portal,
 	date,
 	size,
 	titleHref = '#',
@@ -22,7 +21,7 @@ export function DownloadItem({
 	isLast = false,
 	className,
 }: IDownloadItemProps) {
-	const metaParts = [portal, date, size].filter(Boolean) as string[]
+	const metaParts = [date, size].filter(Boolean) as string[]
 
 	return (
 		<div className={twMerge(!isLast && 'border-b border-neutral-100', 'px-1', className)}>

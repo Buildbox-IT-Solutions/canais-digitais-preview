@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Button } from '~/components/button'
 import { Icon } from '~/components/icon'
 import type { IComingSoonProps } from './types'

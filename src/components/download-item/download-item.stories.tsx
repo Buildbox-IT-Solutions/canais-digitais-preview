@@ -10,7 +10,6 @@ const meta: Meta<typeof DownloadItem> = {
 	args: {
 		icon: 'pdf',
 		title: 'Estado do varejo 2026 — relatório completo',
-		portal: 'Food Connection',
 		date: '12 Mar 2026',
 		size: '4.8 MB',
 	},

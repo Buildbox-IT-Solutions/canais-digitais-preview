@@ -84,7 +84,7 @@ export default function LoginScreen() {
 								<span className="flex-1 h-px bg-neutral-100" />
 							</div>
 
-							<form action="/" method="get" className="flex flex-col gap-4 w-full" noValidate>
+							<form action="/home" method="get" className="flex flex-col gap-4 w-full" noValidate>
 								<AuthInput
 									label="E-mail"
 									name="email"

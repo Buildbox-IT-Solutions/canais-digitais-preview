@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import type { CategoriaColor, ICategoriaProps } from './types'
 
 /**
@@ -27,8 +27,10 @@ export function Categoria({
 	href,
 	className,
 }: ICategoriaProps) {
+	const isInteractive = Boolean(href)
 	const classes = twMerge(
-		chip && 'inline-flex items-center px-2 py-1 rounded-sm bg-white hover:bg-neutral-50 transition-colors',
+		chip && 'inline-flex items-center px-2 py-1 rounded-sm bg-white transition-colors',
+		chip && isInteractive && 'hover:bg-black/8',
 		'text-body-sm font-body font-semibold',
 		COLOR_CLASSES[color],
 		className,

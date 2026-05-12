@@ -226,7 +226,7 @@ export default function ConteudoScreen() {
 							<div className="pt-4 pb-8 px-6 w-full [&>a]:w-full">
 								<Button
 									label="Assine agora"
-									href="#"
+									href="/form-newsletter"
 									type="filled"
 									size="large"
 								/>

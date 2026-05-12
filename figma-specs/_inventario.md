@@ -173,6 +173,13 @@
 | Widget / Em Alta | `3492:42255` | 2 | ✅ [`widget-em-alta.php`](../src/components/widget-em-alta.php) · [spec](./widget-em-alta.md) |
 | Sponsor Line (Widgets) | `2769:26021` | 2 | ✅ (coberto em [`sponsor-line.php`](../src/components/sponsor-line.php)) |
 
+### In-house (sem nodeId Figma)
+Utilitários criados durante a migração PHP→React para cobrir necessidades não atendidas pelos componentes do Figma.
+
+| Componente | Variants | Status |
+|---|---|---|
+| Badge | 4 tons × 2 shapes | ✅ [`src/components/badge`](../src/components/badge/index.tsx) · [spec](./badge.md) |
+
 ---
 
 ## 📃 Páginas e Fluxos (templates de layout)

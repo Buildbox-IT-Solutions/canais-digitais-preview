@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Badge } from '~/components/badge'
 import type { DashboardTab, IDashboardTabsV3Props } from './types'
 

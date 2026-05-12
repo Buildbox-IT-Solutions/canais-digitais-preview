@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Badge } from '~/components/badge'
 import { IconTile } from '~/components/icon-tile'
 import type { IconName } from '~/components/icon/paths'

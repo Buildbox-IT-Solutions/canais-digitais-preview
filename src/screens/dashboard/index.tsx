@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router'
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Button } from '~/components/button'
 import { ComingSoon } from '~/components/coming-soon'
 import {

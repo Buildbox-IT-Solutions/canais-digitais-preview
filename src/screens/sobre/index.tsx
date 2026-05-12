@@ -64,7 +64,7 @@ export default function SobreScreen() {
 							<p>
 								Ao longo das últimas décadas, nossos eventos geraram milhares de oportunidades
 								de negócio para clientes, parceiros e congressistas.{' '}
-								<a href="#" className="font-bold text-secondary-950 hover:underline">
+								<a href="/anuncie" className="font-bold text-secondary-950 hover:underline">
 									Saiba mais sobre como sua marca pode impactar um público segmentado e
 									qualificado por meio de projetos de conexão.
 								</a>
