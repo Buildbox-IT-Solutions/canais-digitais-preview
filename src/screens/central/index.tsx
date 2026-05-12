@@ -125,7 +125,7 @@ export default function CentralScreen() {
 						</span>
 						{import.meta.env.PROD && (
 							<a
-								href="/docs"
+								href="/storybook"
 								target="_blank"
 								rel="noreferrer"
 								className="inline-flex items-center gap-2 bg-[#FF4785] text-white rounded-lg px-4 py-2 font-body font-semibold text-label-md hover:bg-[#e03070] transition-colors shadow-sm"
