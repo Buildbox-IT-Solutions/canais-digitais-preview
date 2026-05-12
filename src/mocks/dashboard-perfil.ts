@@ -42,11 +42,11 @@ export const OPCOES_SETOR = ['Agro', 'Alimentos & Bebidas', 'Embalagens', 'Saúd
 export const OPCOES_PAIS = ['Brasil', 'Argentina', 'Chile', 'Colômbia', 'México', 'Peru', 'Portugal', 'Outro']
 
 export const RECENT_NEWS = [
-	{ category: 'Proteína Animal', title: 'Como fazer o transporte de pescados frescos corretamente', portal: 'Food Connection', when: 'há poucos segundos' },
-	{ category: 'Ingredientes', title: 'Creatina além da musculação: benefícios comprovados para saúde e cognição', portal: 'Food Connection', when: 'há 2 minutos' },
-	{ category: 'Food Service', title: 'Por que a experiência do cliente em restaurantes ainda não escala?', portal: 'Food Connection', when: 'ontem' },
-	{ category: 'Fispal Tecnologia', title: 'Coquetel da Fispal 2026 antecipa agenda estratégica e oportunidades de negócio', portal: 'Food Connection', when: 'há 3 dias' },
-	{ category: 'Tecnocarne', title: 'Smart Processing: inovação ao vivo na Tecnocarne South America', portal: 'Food Connection', when: 'há 1 ano' },
+	{ category: 'Proteína Animal', title: 'Como fazer o transporte de pescados frescos corretamente', when: 'há poucos segundos' },
+	{ category: 'Ingredientes', title: 'Creatina além da musculação: benefícios comprovados para saúde e cognição', when: 'há 2 minutos' },
+	{ category: 'Food Service', title: 'Por que a experiência do cliente em restaurantes ainda não escala?', when: 'ontem' },
+	{ category: 'Fispal Tecnologia', title: 'Coquetel da Fispal 2026 antecipa agenda estratégica e oportunidades de negócio', when: 'há 3 dias' },
+	{ category: 'Tecnocarne', title: 'Smart Processing: inovação ao vivo na Tecnocarne South America', when: 'há 1 ano' },
 ]
 
 export const NEWSLETTERS = [
@@ -63,21 +63,20 @@ export type DownloadIconType = 'pdf' | 'doc' | 'image'
 export interface DownloadEntry {
 	icon: DownloadIconType
 	title: string
-	portal: string
 	date: string
 	size: string
 	disabled: boolean
 }
 
 export const DOWNLOADS: DownloadEntry[] = [
-	{ icon: 'pdf', title: 'Proteína de inseto: produção e regulação desse alimento no Brasil', portal: 'Food Connection', date: '12 Jan 2026', size: '2.6 MB', disabled: false },
-	{ icon: 'pdf', title: 'Ozempic, 6×1 e custo da mão de obra: como esses e outros assuntos moldam as tendências para o Food Service em 2026', portal: 'Food Connection', date: '15 Fev 2026', size: '3.2 MB', disabled: false },
-	{ icon: 'pdf', title: 'Alternativas vegetais: como as proteínas de origem vegetal estão ganhando espaço na dieta brasileira', portal: 'Food Connection', date: '20 Mar 2026', size: '2.8 MB', disabled: false },
-	{ icon: 'pdf', title: 'Linhas de crédito e financiamento para a indústria de alimentos e bebidas: panorama 2026', portal: 'Food Connection', date: '25 Abr 2026', size: '1.9 MB', disabled: false },
-	{ icon: 'pdf', title: 'Comida de rua: tendências e regulamentações em crescimento nas principais cidades do Brasil', portal: 'Food Connection', date: '30 Mai 2026', size: '2.5 MB', disabled: false },
-	{ icon: 'pdf', title: 'Revolução FoodTech no Brasil: tecnologias que estão reinventando a cadeia de A&B', portal: 'Food Connection', date: '10 Jun 2026', size: '3.0 MB', disabled: true },
-	{ icon: 'pdf', title: 'Embalagens sustentáveis: o que muda no setor de alimentos com a nova regulamentação', portal: 'Food Connection', date: '15 Jul 2026', size: '2.3 MB', disabled: false },
-	{ icon: 'pdf', title: 'Saúde e nutrição: como as novas diretrizes estão reformulando a indústria de alimentos', portal: 'Food Connection', date: '22 Ago 2026', size: '2.7 MB', disabled: false },
+	{ icon: 'pdf', title: 'Proteína de inseto: produção e regulação desse alimento no Brasil', date: '12 Jan 2026', size: '2.6 MB', disabled: false },
+	{ icon: 'pdf', title: 'Ozempic, 6×1 e custo da mão de obra: como esses e outros assuntos moldam as tendências para o Food Service em 2026', date: '15 Fev 2026', size: '3.2 MB', disabled: false },
+	{ icon: 'pdf', title: 'Alternativas vegetais: como as proteínas de origem vegetal estão ganhando espaço na dieta brasileira', date: '20 Mar 2026', size: '2.8 MB', disabled: false },
+	{ icon: 'pdf', title: 'Linhas de crédito e financiamento para a indústria de alimentos e bebidas: panorama 2026', date: '25 Abr 2026', size: '1.9 MB', disabled: false },
+	{ icon: 'pdf', title: 'Comida de rua: tendências e regulamentações em crescimento nas principais cidades do Brasil', date: '30 Mai 2026', size: '2.5 MB', disabled: false },
+	{ icon: 'pdf', title: 'Revolução FoodTech no Brasil: tecnologias que estão reinventando a cadeia de A&B', date: '10 Jun 2026', size: '3.0 MB', disabled: true },
+	{ icon: 'pdf', title: 'Embalagens sustentáveis: o que muda no setor de alimentos com a nova regulamentação', date: '15 Jul 2026', size: '2.3 MB', disabled: false },
+	{ icon: 'pdf', title: 'Saúde e nutrição: como as novas diretrizes estão reformulando a indústria de alimentos', date: '22 Ago 2026', size: '2.7 MB', disabled: false },
 ]
 
 export const SESSIONS = [

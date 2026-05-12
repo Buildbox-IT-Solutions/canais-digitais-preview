@@ -18,7 +18,7 @@ Items "Eventos", "Indústria A&B" e "ESG" têm um `arrow_drop_down` chevron indi
 
 ## Decisões de design
 - Brand slot é "Food Connection" (h-64 max, max-w-185 expanded / max-w-162 compact). No WP real, substituir por `<img src="..." alt="Food Connection">`.
-- Search bar compact usa `w-32` (128px) — NÃO é a versão full width. No searchOpened desktop, expande para `w-[288px]` com border `secondary-950`.
+- Search bar compact usa `w-32` (128px) — NÃO é a versão full width. **Auto-expand no foco**: `focus-within:w-72` (288px) + `focus:border-secondary-950` no input, animados via `transition-[width] duration-300` (CSS puro, sem state em JS). É o equivalente da variant `Search Opened=On` do Figma disparada por interação.
 - Social icons usam `text-primary-600` + `hover:bg-neutral-50` (ghost icon-button style em fundo branco). NÃO usam o partial `icon-button` porque precisam de brand icons específicos (WhatsApp, X) que não estão no enum do partial.
 - Nav-list pill tem `bg-neutral-50` (#e9eaec) + `rounded-full` + `px-6`. Cada nav item tem `pt-3 pb-2` com `min-h-32` e text `label-lg` primary-600.
 - Header Informa bar é MUITO mais simples do que eu tinha inferido: apenas uma linha com "informa" logo em dropdown button. NÃO tem links rápidos nem social icons (aqueles vivem no Header principal).
@@ -102,3 +102,24 @@ Sem nodeId Figma — estado derivado de `FEATURE-cadastro-etapa2.md` (§2.3).
 
 ### JS
 Lógica em `src/assets/js/components/cadastro-flow.js` (`init()` — bloco "User menu dropdown"). Também contém propagação de `?user=` em links internos e helper `render_session_toggle()` em `_session.php`.
+
+## Transição Expanded → Compact (scroll)
+
+**Figma:** Expanded Desktop `5754:7289` (200px) · Compact Desktop `5754:7271` (89px) · Expanded Mobile `5754:7343` (117px) · Compact Mobile `5754:7352` (73px).
+
+Quando `window.scrollY > 8`, o header entra em modo Compact:
+
+| Elemento | Expanded | Compact |
+|---|---|---|
+| Header Informa strip | visível (`max-h-[600px]`) | colapsado (`max-h-0`, `overflow-hidden`) |
+| Hamburger (menu icon) | ausente (`w-0 opacity-0`) | visível à esquerda (`size-12`, icon `size-8`) |
+| Logo container | `h-24 px-3 py-4` | `h-20 p-3` |
+| Logo image (max) | `max-h-16 max-w-[185px]` | `max-h-14 max-w-[162px]` |
+| Right row (search / login / Anuncie) | `py-6` | `py-6` (constante) |
+| Nav-list pill | visível (`mt-4 max-h-20`) | colapsada (`mt-0 max-h-0 overflow-hidden`) |
+| Wrapper branco | `pb-4` | `pb-0` |
+| Bottom divider 1px | `opacity-0` | `opacity-100` (linha `bg-neutral-100`) |
+
+Cada transição é `duration-300`. O scroll listener usa `requestAnimationFrame` para evitar layout thrash (mesma estratégia do `header-sticky.js` legado). Implementado pelo hook `useCompactOnScroll` em `src/components/header-desktop/index.tsx`.
+
+> Mobile (Expanded/Compact) ainda não foi portado — a versão React é exclusivamente desktop. As variants mobile `5754:7343` (Expanded 117px) e `5754:7352` (Compact 73px, hamburger + logo centralizado + search icon) estão documentadas mas pendentes.

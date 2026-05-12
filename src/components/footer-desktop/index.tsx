@@ -9,17 +9,17 @@ import type { FooterLink, FooterSocial, IFooterDesktopProps } from './types'
  */
 
 const DEFAULT_CATEGORIES: FooterLink[] = [
-	{ label: 'Eventos', href: '#' },
-	{ label: 'Ingredientes', href: '#' },
-	{ label: 'Indústria A&B', href: '#' },
-	{ label: 'Proteína Animal', href: '#' },
-	{ label: 'Food Service', href: '#' },
-	{ label: 'Sorvetes', href: '#' },
-	{ label: 'Tecnologia', href: '#' },
-	{ label: 'Embalagens', href: '#' },
-	{ label: 'ESG', href: '#' },
-	{ label: 'Especialistas', href: '#' },
-	{ label: 'E-books', href: '#' },
+	{ label: 'Eventos', href: '/categoria' },
+	{ label: 'Ingredientes', href: '/categoria' },
+	{ label: 'Indústria A&B', href: '/categoria' },
+	{ label: 'Proteína Animal', href: '/categoria' },
+	{ label: 'Food Service', href: '/categoria' },
+	{ label: 'Sorvetes', href: '/categoria' },
+	{ label: 'Tecnologia', href: '/categoria' },
+	{ label: 'Embalagens', href: '/categoria' },
+	{ label: 'ESG', href: '/categoria' },
+	{ label: 'Especialistas', href: '/categoria' },
+	{ label: 'E-books', href: '/categoria' },
 ]
 
 const DEFAULT_LEGAL: FooterLink[] = [

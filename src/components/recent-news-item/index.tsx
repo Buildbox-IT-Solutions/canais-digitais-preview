@@ -12,7 +12,6 @@ import type { IRecentNewsItemProps } from './types'
 export function RecentNewsItem({
 	category,
 	title,
-	portal,
 	when,
 	href = '#',
 	isLast = false,
@@ -29,8 +28,6 @@ export function RecentNewsItem({
 						{title}
 					</p>
 					<div className="flex items-center gap-1.5 font-body text-body-md text-neutral-600">
-						<span>{portal}</span>
-						<span aria-hidden="true">•</span>
 						<span>{when}</span>
 					</div>
 				</div>

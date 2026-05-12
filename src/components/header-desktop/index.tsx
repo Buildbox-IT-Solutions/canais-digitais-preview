@@ -16,32 +16,58 @@ import type { IHeaderDesktopProps, NavCategory } from './types'
  * Tokens: --color-primary-100, --color-primary-600, --color-secondary-950, --color-neutral-50,
  *         --color-neutral-100, --color-neutral-200, --color-neutral-950, --color-white
  *
- * O header é sticky (`sticky top-0 z-40`). A transição Expanded → Compact que
- * acontece em produção quando o usuário rola (header-sticky.js) NÃO está
- * implementada aqui — o header mantém a mesma altura durante todo o scroll.
+ * Sticky (`sticky top-0 z-40`) com transição Expanded → Compact ao rolar.
+ * O threshold de 8px de scroll alterna o estado: no Expanded a barra Informa
+ * fica visível, logo h-16, paddings folgados; no Compact a barra Informa
+ * colapsa, logo encolhe para h-10, paddings ficam mais apertados.
+ * Implementação: scroll listener + requestAnimationFrame (mesmo padrão do
+ * header-sticky.js legado).
  */
 
+const SCROLL_COMPACT_THRESHOLD = 8
+
+function useCompactOnScroll() {
+	const [compact, setCompact] = useState(false)
+	useEffect(() => {
+		let ticking = false
+		function update() {
+			setCompact(window.scrollY > SCROLL_COMPACT_THRESHOLD)
+			ticking = false
+		}
+		function onScroll() {
+			if (!ticking) {
+				requestAnimationFrame(update)
+				ticking = true
+			}
+		}
+		window.addEventListener('scroll', onScroll, { passive: true })
+		update()
+		return () => window.removeEventListener('scroll', onScroll)
+	}, [])
+	return compact
+}
+
 const DEFAULT_CATEGORIES: NavCategory[] = [
-	{ label: 'Eventos', href: '#', slug: 'eventos', dropdown: true, dropdownItems: [
-		{ label: 'Próximos', href: '#' },
-		{ label: 'Anteriores', href: '#' },
+	{ label: 'Eventos', href: '/categoria', slug: 'eventos', dropdown: true, dropdownItems: [
+		{ label: 'Próximos', href: '/categoria' },
+		{ label: 'Anteriores', href: '/categoria' },
 	]},
-	{ label: 'Ingredientes', href: '#', slug: 'ingredientes' },
-	{ label: 'Indústria A&B', href: '#', slug: 'industria-ab', dropdown: true, dropdownItems: [
-		{ label: 'Padaria', href: '#' },
-		{ label: 'Confeitaria', href: '#' },
+	{ label: 'Ingredientes', href: '/categoria', slug: 'ingredientes' },
+	{ label: 'Indústria A&B', href: '/categoria', slug: 'industria-ab', dropdown: true, dropdownItems: [
+		{ label: 'Padaria', href: '/categoria' },
+		{ label: 'Confeitaria', href: '/categoria' },
 	]},
-	{ label: 'Proteína Animal', href: '#', slug: 'proteina-animal' },
-	{ label: 'Food Service', href: '#', slug: 'food-service' },
-	{ label: 'Sorvetes', href: '#', slug: 'sorvetes' },
-	{ label: 'Tecnologia', href: '#', slug: 'tecnologia' },
-	{ label: 'Embalagens', href: '#', slug: 'embalagens' },
-	{ label: 'ESG', href: '#', slug: 'esg', dropdown: true, dropdownItems: [
-		{ label: 'Sustentabilidade', href: '#' },
-		{ label: 'Responsabilidade Social', href: '#' },
+	{ label: 'Proteína Animal', href: '/categoria', slug: 'proteina-animal' },
+	{ label: 'Food Service', href: '/categoria', slug: 'food-service' },
+	{ label: 'Sorvetes', href: '/categoria', slug: 'sorvetes' },
+	{ label: 'Tecnologia', href: '/categoria', slug: 'tecnologia' },
+	{ label: 'Embalagens', href: '/categoria', slug: 'embalagens' },
+	{ label: 'ESG', href: '/categoria', slug: 'esg', dropdown: true, dropdownItems: [
+		{ label: 'Sustentabilidade', href: '/categoria' },
+		{ label: 'Responsabilidade Social', href: '/categoria' },
 	]},
-	{ label: 'Especialistas', href: '#', slug: 'especialistas' },
-	{ label: 'E-books', href: '#', slug: 'ebooks' },
+	{ label: 'Especialistas', href: '/categoria', slug: 'especialistas' },
+	{ label: 'E-books', href: '/categoria', slug: 'ebooks' },
 ]
 
 export function HeaderDesktop({
@@ -54,23 +80,69 @@ export function HeaderDesktop({
 	userAvatar = null,
 	className,
 }: IHeaderDesktopProps) {
-	return (
-		<header className={twMerge('w-full bg-white sticky top-0 z-40', className)}>
-			<HeaderInforma />
+	const compact = useCompactOnScroll()
 
-			{/* Main row: logo + search + login + Anuncie */}
-			<div className="flex flex-col items-center pb-4">
+	return (
+		<header
+			data-compact={compact}
+			className={twMerge('w-full bg-white sticky top-0 z-40', className)}
+		>
+			{/* HeaderInforma — collapse no Compact */}
+			<div
+				aria-hidden={compact}
+				className={twMerge(
+					'overflow-hidden transition-[max-height] duration-300',
+					compact ? 'max-h-0' : 'max-h-[600px]',
+				)}
+			>
+				<HeaderInforma />
+			</div>
+
+			{/* Wrapper branco do header — pb-4 só no Expanded */}
+			<div
+				className={twMerge(
+					'flex flex-col items-center transition-[padding] duration-300',
+					compact ? 'pb-0' : 'pb-4',
+				)}
+			>
 				<div className="max-w-screen-xl w-full flex items-center">
-					<div className="flex flex-col justify-center h-24 px-3 py-4 shrink-0">
-						<a href="#" aria-label="Food Connection — ir para a home" className="inline-flex items-center">
+					{/* Hamburger — só aparece no Compact (animado) */}
+					<div
+						aria-hidden={!compact}
+						className={twMerge(
+							'overflow-hidden transition-[width,opacity] duration-300 shrink-0',
+							compact ? 'w-12 opacity-100' : 'w-0 opacity-0',
+						)}
+					>
+						<a
+							href="/menu"
+							aria-label="Abrir menu"
+							tabIndex={compact ? 0 : -1}
+							className="inline-flex items-center justify-center size-12 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
+						>
+							<Icon name="menu" className="size-8" />
+						</a>
+					</div>
+
+					<div
+						className={twMerge(
+							'flex flex-col justify-center shrink-0 transition-all duration-300',
+							compact ? 'h-20 p-3' : 'h-24 px-3 py-4',
+						)}
+					>
+						<a href="/home" aria-label="Food Connection — ir para a home" className="inline-flex items-center">
 							<img
 								src="https://d2yghbees9788u.cloudfront.net/foodconnection/2025/12/cropped-cropped-Logo-FC-WP-300x104.png"
 								alt="Food Connection"
-								className="h-16 w-auto"
+								className={twMerge(
+									'w-auto transition-all duration-300',
+									compact ? 'max-h-14 max-w-[162px]' : 'max-h-16 max-w-[185px]',
+								)}
 							/>
 						</a>
 					</div>
 
+					{/* Right row — py-6 constante (igual em ambos os estados) */}
 					<div className="flex flex-1 items-center justify-end gap-3 px-3 py-6 self-stretch">
 						<SearchBar placeholder="Buscar" />
 
@@ -84,27 +156,44 @@ export function HeaderDesktop({
 								avatar={userAvatar}
 							/>
 						) : (
-							<LoginButton logged={false} href="#" />
+							<LoginButton logged={false} href="/login" />
 						)}
 
-						<Button label="Anuncie" href="#" type="filled" size="medium" />
+						<Button label="Anuncie" href="/anuncie" type="filled" size="medium" />
 					</div>
 				</div>
 
-				{/* Nav-list pill */}
-				<nav className="mt-4 max-w-screen-xl w-full flex items-start justify-center bg-neutral-50 rounded-full px-6">
-					{categories.map((cat) => (
-						<NavItem
-							key={cat.slug}
-							label={cat.label}
-							href={cat.href}
-							dropdown={cat.dropdown}
-							active={activeCategory === cat.slug}
-							dropdownItems={cat.dropdownItems}
-						/>
-					))}
-				</nav>
+				{/* Nav-list pill — só Expanded; collapse animado no Compact */}
+				<div
+					aria-hidden={compact}
+					className={twMerge(
+						'w-full max-w-screen-xl overflow-hidden transition-[max-height,margin] duration-300',
+						compact ? 'max-h-0 mt-0' : 'max-h-20 mt-4',
+					)}
+				>
+					<nav className="w-full flex items-start justify-center bg-neutral-50 rounded-full px-6">
+						{categories.map((cat) => (
+							<NavItem
+								key={cat.slug}
+								label={cat.label}
+								href={cat.href}
+								dropdown={cat.dropdown}
+								active={activeCategory === cat.slug}
+								dropdownItems={cat.dropdownItems}
+							/>
+						))}
+					</nav>
+				</div>
 			</div>
+
+			{/* Bottom divider — só Compact */}
+			<div
+				aria-hidden={!compact}
+				className={twMerge(
+					'h-px bg-neutral-100 w-full transition-opacity duration-300',
+					compact ? 'opacity-100' : 'opacity-0',
+				)}
+			/>
 		</header>
 	)
 }

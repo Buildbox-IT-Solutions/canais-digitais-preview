@@ -9,12 +9,15 @@ import type { ISearchBarProps, SearchBarState } from './types'
  * Tokens: --color-neutral-100, --color-neutral-900, --color-primary-600,
  *         --color-secondary-950, --color-white
  *
- * `state="compact"` (default) = barra colapsada no header (w-32, sem botão
- * de limpar, border neutra). `state="opened"` = barra ativa (w-72, border
- * secondary-950 destacando foco, botão X aparece quando há valor).
+ * `state="compact"` (default) = barra colapsada (w-32) que **expande no
+ * foco** (`focus-within:w-72`) com border secondary-950 — comportamento do
+ * Figma `Search Opened=On`. `state="opened"` força w-72 + border permanente,
+ * útil em telas onde a busca é o ponto focal (ex.: /buscar).
+ *
+ * Auto-expand é CSS puro (focus-within + focus:) — sem state em JS.
  */
 const STATE_WRAPPER: Record<SearchBarState, string> = {
-	compact: 'w-32',
+	compact: 'w-32 focus-within:w-72',
 	opened: 'w-72',
 }
 
@@ -32,10 +35,15 @@ export function SearchBar({
 	className,
 }: ISearchBarProps) {
 	const hasValue = Boolean(value)
-	const showClear = state === 'opened' && hasValue
 
 	return (
-		<div className={twMerge('relative', STATE_WRAPPER[state], className)}>
+		<div
+			className={twMerge(
+				'relative transition-[width] duration-300',
+				STATE_WRAPPER[state],
+				className,
+			)}
+		>
 			<div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-neutral-900">
 				<Icon name="search" className="size-6" />
 			</div>
@@ -49,7 +57,7 @@ export function SearchBar({
 					STATE_INPUT_BORDER[state],
 				)}
 			/>
-			{showClear ? (
+			{hasValue ? (
 				<button
 					type="button"
 					aria-label="Limpar busca"

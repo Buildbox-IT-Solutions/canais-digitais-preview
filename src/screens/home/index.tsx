@@ -73,7 +73,7 @@ export default function HomeScreen() {
 								<p className="text-body-lg font-body text-neutral-900 group-hover:text-neutral-950 transition-colors">
 									{hero.lead}
 								</p>
-								{hero.author ? <Byline author={hero.author} href="#" /> : null}
+								{hero.author ? <Byline author={hero.author} href="/categoria" /> : null}
 							</div>
 						</article>
 
@@ -276,7 +276,7 @@ export default function HomeScreen() {
 							</p>
 						</div>
 						<a
-							href="#"
+							href="/form-download"
 							className="bg-primary-600 inline-flex items-center justify-center gap-3 pl-5 pr-6 py-3 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg"
 						>
 							<Icon name="download" className="size-6" />
@@ -442,7 +442,7 @@ export default function HomeScreen() {
 							</div>
 							<div className="flex flex-col h-24 items-start pb-10 pt-4 px-10 w-full">
 								<a
-									href="#"
+									href="/form-newsletter"
 									className="bg-primary-600 inline-flex items-center justify-center px-6 py-3 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg"
 								>
 									Assine agora

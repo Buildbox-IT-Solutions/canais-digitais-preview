@@ -28,13 +28,13 @@ export function AuthShell({
 			<div className="flex flex-col min-h-screen">
 				<div className="flex items-center justify-between px-12 py-8">
 					<a
-						href="#"
+						href="/home"
 						className="font-display font-bold text-title-xl text-primary-600 tracking-tight"
 					>
 						canaisdigitais<span className="text-coral">.</span>
 					</a>
 					<a
-						href="#"
+						href="/home"
 						className="inline-flex items-center gap-1.5 font-body font-bold text-label-lg uppercase tracking-wider text-neutral-700 hover:text-primary-600 transition-colors"
 					>
 						<Icon name="arrow-left" className="size-4" />
@@ -54,7 +54,7 @@ export function AuthShell({
 					<div className="flex items-center gap-5">
 						<a href="#" className="hover:text-primary-600 transition-colors">Termos</a>
 						<a href="#" className="hover:text-primary-600 transition-colors">Privacidade</a>
-						<a href="#" className="hover:text-primary-600 transition-colors">Ajuda</a>
+						<a href="/contato" className="hover:text-primary-600 transition-colors">Ajuda</a>
 					</div>
 				</div>
 			</div>

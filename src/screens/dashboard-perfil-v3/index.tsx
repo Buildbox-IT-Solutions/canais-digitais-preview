@@ -239,7 +239,6 @@ function GeralPane({ pct, missing, isEmpty }: { pct: number; missing: number; is
 								key={i}
 								category={r.category}
 								title={r.title}
-								portal={r.portal}
 								when={r.when}
 								href="/conteudo"
 								isLast={i === RECENT_NEWS.length - 1}
@@ -380,7 +379,6 @@ function DownloadsPane() {
 						key={`${page}-${i}`}
 						icon={d.icon}
 						title={d.title}
-						portal={d.portal}
 						date={d.date}
 						size={d.size}
 						titleHref="/conteudo"
@@ -610,13 +608,19 @@ function buildDrawerConfig(drawer: Drawer): { title: string; fields: DrawerField
 					required: true,
 				},
 				{ label: 'Telefone', value: PERFIL_CAMPOS.telefone, required: true },
-				{ label: 'Data de nascimento', value: PERFIL_CAMPOS.nascimento, placeholder: 'dd/mm/aaaa' },
+				{
+					label: 'Data de nascimento',
+					value: PERFIL_CAMPOS.nascimento,
+					placeholder: 'dd/mm/aaaa',
+					colSpan: 6,
+				},
 				{
 					label: 'Gênero',
 					value: PERFIL_CAMPOS.genero,
 					type: 'select',
 					options: OPCOES_GENERO,
 					placeholder: 'Selecione',
+					colSpan: 6,
 				},
 			],
 		}
