@@ -106,10 +106,10 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 - [x] `login-modal`
 
 ### Dashboard / área logada
-- [ ] `dashboard` — hub com 7 sub-seções
-- [ ] `dashboard-perfil-v3` — NodeId `6155:31441` (6 abas + drawer)
+- [x] `dashboard` — hub com 7 sub-seções
+- [x] `dashboard-perfil-v3` — NodeId `6155:31441` (6 abas + drawer)
 
 ### LGPD
-- [ ] `meus-dados`
-- [ ] `consentimentos`
-- [ ] `excluir-conta`
+- [x] `meus-dados`
+- [x] `consentimentos`
+- [x] `excluir-conta`
