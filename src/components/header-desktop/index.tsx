@@ -1,4 +1,5 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
+import { Button } from '~/components/button'
 import { Icon } from '~/components/icon'
 import { LoginButton } from '~/components/login-button'
 import { NavItem } from '~/components/nav-item'
@@ -6,13 +7,14 @@ import { SearchBar } from '~/components/search-bar'
 import type { IHeaderDesktopProps, NavCategory } from './types'
 
 /**
- * Componente: Header Desktop v4.0
- * Figma: 5754:7270 (Header 2.0)
+ * Componente: Header Desktop v3.0
+ * Figma: 5754:7270 (Header 2.0) + estado logado v3 (figma-specs/header.md §v3.0)
  * Tokens: --color-primary-100, --color-primary-600, --color-secondary-950, --color-neutral-50,
  *         --color-neutral-100, --color-neutral-200, --color-neutral-950, --color-white
  *
- * O comportamento sticky com transição Expanded → Compact (header-sticky.js) é
- * comportamento de produção — aqui mantido apenas como estrutura visual estática.
+ * O header é sticky (`sticky top-0 z-40`). A transição Expanded → Compact que
+ * acontece em produção quando o usuário rola (header-sticky.js) NÃO está
+ * implementada aqui — o header mantém a mesma altura durante todo o scroll.
  */
 
 const DEFAULT_CATEGORIES: NavCategory[] = [
@@ -87,12 +89,7 @@ export function HeaderDesktop({
 							href="#"
 						/>
 
-						<a
-							href="#"
-							className="inline-flex items-center justify-center px-6 py-2 rounded-full bg-primary-600 text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg whitespace-nowrap"
-						>
-							Anuncie
-						</a>
+						<Button label="Anuncie" href="#" type="filled" size="medium" />
 					</div>
 				</div>
 

@@ -77,7 +77,6 @@ export default function ExcluirContaScreen() {
 				<HeaderDesktop
 					userLoggedIn
 					userName={USER_NAME}
-					userEmail={USER_EMAIL}
 					userInitials={USER_INITIALS}
 				/>
 

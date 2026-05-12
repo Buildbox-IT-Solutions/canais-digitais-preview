@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
 import { ProofPanel } from '~/components/proof-panel'
 import type { IAuthShellProps } from './types'

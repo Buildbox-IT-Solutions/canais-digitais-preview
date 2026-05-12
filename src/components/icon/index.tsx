@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { ALL_ICON_PATHS } from './paths'
 import type { IIconProps } from './types'
 

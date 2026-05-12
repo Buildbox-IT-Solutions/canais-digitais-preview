@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes } from 'react'
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 
 interface IAuthInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'required'> {
 	label: string

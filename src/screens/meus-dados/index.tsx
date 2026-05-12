@@ -4,7 +4,6 @@ import { Icon } from '~/components/icon'
 import { AuthBackLink } from '../_auth/back-link'
 
 const USER_NAME = 'Mariana Albuquerque'
-const USER_EMAIL = 'mariana.albuquerque@empresa.com.br'
 const USER_INITIALS = 'MA'
 
 /**
@@ -19,7 +18,6 @@ export default function MeusDadosScreen() {
 			<HeaderDesktop
 				userLoggedIn
 				userName={USER_NAME}
-				userEmail={USER_EMAIL}
 				userInitials={USER_INITIALS}
 			/>
 

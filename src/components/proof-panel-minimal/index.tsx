@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import type { IProofPanelMinimalProps, ProofPanelMinimalVariant } from './types'
 
 /**

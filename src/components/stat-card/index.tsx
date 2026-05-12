@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { IconTile } from '~/components/icon-tile'
 import type { IStatCardProps } from './types'
 

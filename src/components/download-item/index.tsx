@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
 import { IconTile } from '~/components/icon-tile'
 import type { IDownloadItemProps } from './types'

@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router'
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Button } from '~/components/button'
 import { ComingSoon } from '~/components/coming-soon'
 import {
@@ -69,7 +69,6 @@ export default function DashboardScreen() {
 				headerProps={{
 					userLoggedIn: true,
 					userName: USER_NAME,
-					userEmail: USER_EMAIL,
 					userInitials: USER_INITIALS,
 				}}
 				sections={[

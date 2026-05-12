@@ -7,7 +7,7 @@ Item de navegação horizontal usado dentro do nav-list pill do Header. **4 vari
 
 ## Anatomia
 - Container: `flex flex-col items-center` (com `bg-primary-100` quando hovered)
-- Inner: `flex items-center min-h-32 pb-2 pt-3 px-3` (gap-1 + pl-3 pr-2 quando dropdown=on)
+- Inner: `flex items-center min-h-8 pb-2 pt-3 px-3` (gap-1 + pl-3 pr-2 quando dropdown=on). `min-h-8` em Tailwind v4 = 32px.
 - **Label**: `font-body font-bold text-label-lg` (14/20 Bold tracking 0.1)
   - Enabled: `text-primary-600`
   - Hovered: `text-secondary-950`

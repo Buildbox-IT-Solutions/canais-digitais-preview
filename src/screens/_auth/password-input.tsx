@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
 
 interface IAuthPasswordInputProps {

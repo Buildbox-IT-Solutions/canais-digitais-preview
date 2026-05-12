@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Badge } from '~/components/badge'
 import { Icon } from '~/components/icon'
 import type { AccessMethodIcon, IAccessMethodCardProps } from './types'

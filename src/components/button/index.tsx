@@ -1,5 +1,5 @@
 import { isValidElement } from 'react'
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import type { ButtonIcon, ButtonSize, ButtonType, IButtonProps } from './types'
 
 /**

@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router'
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'

@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { Divider } from '~/components/divider'
 import type { IFormDisclaimerProps } from './types'
 

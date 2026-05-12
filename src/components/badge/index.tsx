@@ -1,9 +1,13 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import type { BadgeTone, IBadgeProps } from './types'
 
 /**
  * Componente: Badge
- * Pill informativo / status. Para keyword/categoria clicável use Tag.
+ * Figma: utilitário in-house (sem nodeId) — pill informativo/status criado
+ * durante a migração para cobrir casos não cobertos por Tag/Categoria.
+ * Spec: figma-specs/badge.md
+ * Diferença vs. Tag/Categoria: Badge = status (Ativo/Em breve/Bloqueado).
+ * Tag = keyword clicável. Categoria = etiqueta editorial colorida.
  * Tokens: --color-mint-light, --color-mint, --color-neutral-100, --color-neutral-900,
  *         --color-secondary-50, --color-primary-600, red-100/700 (Tailwind default)
  */

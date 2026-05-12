@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import type { ILoadingProps } from './types'
 import LoadingIcon from '~/assets/icons/loading.svg'
 

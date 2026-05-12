@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router'
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from '~/lib/tw-merge'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
@@ -21,7 +21,6 @@ const ALLOWED_FILTERS: Array<ConsentType | 'all'> = [
 ]
 
 const USER_NAME = 'Mariana Albuquerque'
-const USER_EMAIL = 'mariana.albuquerque@empresa.com.br'
 const USER_INITIALS = 'MA'
 
 /**
@@ -54,7 +53,6 @@ export default function ConsentimentosScreen() {
 			<HeaderDesktop
 				userLoggedIn
 				userName={USER_NAME}
-				userEmail={USER_EMAIL}
 				userInitials={USER_INITIALS}
 			/>
 
