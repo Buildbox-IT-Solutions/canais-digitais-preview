@@ -1,13 +1,20 @@
 import { twMerge } from '~/lib/tw-merge'
+import { DropdownMenu } from '~/components/dropdown-menu'
 import { Icon } from '~/components/icon'
+import { MenuListItem } from '~/components/menu-list-item'
 import type { INavItemProps } from './types'
 
 /**
  * Componente: Nav Item
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=121-2360
- * Variantes: default | hover | active × com/sem dropdown
+ * Variantes do Figma: Enabled | Hovered × com/sem dropdown (4 variants)
  * Tokens: --color-primary-100, --color-primary-600, --color-secondary-950, --color-neutral-50,
  *         --color-neutral-900
+ *
+ * Extensão React (não existe no Figma): a prop `active` aplica permanentemente
+ * o visual de Hovered + chevron rotacionado, marcando a categoria corrente
+ * vinda do roteador. Sem ela o HeaderDesktop não tem como indicar "em qual
+ * editoria o usuário está". Veja figma-specs/nav-item.md §"API React".
  */
 export function NavItem({
 	label,
@@ -48,20 +55,12 @@ export function NavItem({
 				<div className={underlineClasses} />
 			</div>
 			{dropdown && dropdownItems && dropdownItems.length > 0 ? (
-				<div className="absolute top-full left-0 z-50 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-150">
-					<div className="bg-neutral-50 flex items-start py-2 rounded-sm shadow-md w-[200px] mt-1">
-						<div className="flex flex-1 flex-col items-start min-w-0">
-							{dropdownItems.map((item) => (
-								<a
-									key={item.label}
-									href={item.href}
-									className="flex h-14 items-center px-3 py-2 w-full hover:bg-black/8 font-body font-semibold text-body-lg text-neutral-900"
-								>
-									{item.label}
-								</a>
-							))}
-						</div>
-					</div>
+				<div className="absolute top-full left-0 z-50 mt-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-150">
+					<DropdownMenu tone="neutral">
+						{dropdownItems.map((item) => (
+							<MenuListItem key={item.label} label={item.label} href={item.href} />
+						))}
+					</DropdownMenu>
 				</div>
 			) : null}
 		</div>

@@ -18,7 +18,7 @@ const FONT_SIZES = [
 	'label-lg', 'label-md', 'label-sm',
 ]
 
-const CUSTOM_COLORS = ['coral', 'mint', 'mint-light', 'saffron', 'lavander']
+const CUSTOM_COLORS = ['coral', 'coral-light', 'mint', 'mint-light', 'saffron', 'lavander']
 
 export const twMerge = extendTailwindMerge({
 	extend: {

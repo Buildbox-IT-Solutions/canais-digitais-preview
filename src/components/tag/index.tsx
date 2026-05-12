@@ -5,11 +5,14 @@ import type { ITagProps } from './types'
  * Componente: Tag
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=567-9604
  * Variantes: link (com href) | estático (span)
- * Tokens: --color-primary-100, --color-primary-800, --color-neutral-50, --color-secondary-950
+ * Tokens: --color-primary-100, --color-primary-800, --color-secondary-950
+ *
+ * Hover usa MD3 state-layer `bg-black/8` (mistura com o `bg-primary-100`
+ * existente em vez de substituir), alinhado com a convenção do CLAUDE.md.
  */
 
 const TAG_CLASSES =
-	'inline-flex items-center px-2 py-1 rounded-sm bg-primary-100 text-primary-800 hover:bg-neutral-50 hover:text-secondary-950 transition-colors font-body font-semibold text-title-sm'
+	'inline-flex items-center px-2 py-1 rounded-sm bg-primary-100 text-primary-800 hover:bg-black/8 hover:text-secondary-950 transition-colors font-body font-semibold text-title-sm'
 
 export function Tag({ label, href, className }: ITagProps) {
 	if (href) {

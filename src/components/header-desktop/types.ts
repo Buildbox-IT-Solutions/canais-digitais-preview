@@ -11,6 +11,7 @@ export interface IHeaderDesktopProps {
 	activeCategory?: string | null
 	userLoggedIn?: boolean
 	userName?: string
+	userEmail?: string
 	userInitials?: string
 	userAvatar?: string | null
 	className?: string

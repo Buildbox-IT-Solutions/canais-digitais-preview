@@ -21,16 +21,16 @@ Pill informativo / status. Cobre casos não atendidos por `Tag` (keyword clicáv
 | `shape` | `square` (default, `rounded-sm`) · `pill` (`rounded-full`) |
 | `icon` | ReactNode opcional à esquerda |
 
-## Tons (estado atual)
+## Tons
 
-| Tone | Background | Texto | Notas |
+| Tone | Background | Texto | Uso |
 |---|---|---|---|
 | `mint` | `bg-mint-light` | `text-mint` | Status positivo (Ativo, Favorito) |
 | `neutral` | `bg-neutral-100` | `text-neutral-900` | Neutro (Em breve, Atalho) |
-| `coral` | `bg-red-100` ⚠️ | `text-red-700` ⚠️ | Erro/Bloqueado. **Inconsistência conhecida** — não usa o token `--color-coral`; usa Tailwind defaults |
-| `secondary` | `bg-secondary-50` | `text-primary-600` ⚠️ | Destaque. **Inconsistência conhecida** — texto é `primary-600`, não `secondary-*` |
+| `coral` | `bg-coral-light` | `text-coral` | Erro/Bloqueado |
+| `secondary` | `bg-secondary-50` | `text-secondary-950` | Destaque (Conta Informa, dispositivo atual) |
 
-> As duas inconsistências (`coral` e `secondary`) estão registradas no diagnóstico da sessão de 2026-05-12 (Tier 2) e aguardam decisão de design.
+Os 4 tons usam exclusivamente tokens do `@theme` em `src/index.css`. O token `--color-coral-light` (`#FFE4EB`) foi criado especificamente para o background do tom coral.
 
 ## Decisões de design
 

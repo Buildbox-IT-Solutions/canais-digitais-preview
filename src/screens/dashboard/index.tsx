@@ -69,6 +69,7 @@ export default function DashboardScreen() {
 				headerProps={{
 					userLoggedIn: true,
 					userName: USER_NAME,
+					userEmail: USER_EMAIL,
 					userInitials: USER_INITIALS,
 				}}
 				sections={[

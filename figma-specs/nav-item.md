@@ -26,3 +26,16 @@ Item de navegação horizontal usado dentro do nav-list pill do Header. **4 vari
 - Hovered+dropdown mostra o Dropdown Menu absolute below com submenu items.
 
 > ✅ **VALIDADO contra Figma em 2026-04-09** — sessão 6.
+
+## API React
+
+A implementação React adiciona uma prop que **não existe no Figma**:
+
+| Prop | Existe no Figma? | Por quê |
+|---|---|---|
+| `dropdown` | ✅ | Mapeia para a variant property |
+| `active` | ❌ — **extensão** | Marca a categoria corrente vinda do roteador. Aplica o mesmo visual do Hovered + chevron rotacionado, de forma permanente |
+
+A extensão é necessária porque a `nav-list pill` do HeaderDesktop precisa de algum sinal para indicar "em qual editoria o usuário está" — algo que o Figma resolve com layers manuais por composição, mas que num app de verdade vem do roteador. Sem `active`, todos os items ficariam no estado Enabled o tempo todo.
+
+Não confundir com um terceiro estado de design: `active` aplica **exatamente o mesmo CSS** do Hovered, só que persistente. O componente continua tendo dois estados visuais; a prop só decide se o hover é "vivo" (`:hover`) ou "permanente" (`active=true`).

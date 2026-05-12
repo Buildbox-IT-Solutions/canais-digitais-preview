@@ -162,11 +162,12 @@
   --color-black: #000000;
 
   /* Cores categoricais — editorias */
-  --color-coral:      #FF547C; /* rosa-coral vibrante */
-  --color-mint:       #00786E; /* verde-petróleo */
-  --color-mint-light: #C9FCED; /* mint tint — chips e backgrounds */
-  --color-saffron:    #B05223; /* laranja queimado */
-  --color-lavander:   #9423FC; /* roxo vívido */
+  --color-coral:       #FF547C; /* rosa-coral vibrante */
+  --color-coral-light: #FFE4EB; /* coral tint — backgrounds (Badge erro/bloqueado) */
+  --color-mint:        #00786E; /* verde-petróleo */
+  --color-mint-light:  #C9FCED; /* mint tint — chips e backgrounds */
+  --color-saffron:     #B05223; /* laranja queimado */
+  --color-lavander:    #9423FC; /* roxo vívido */
 
   /* ========================================================================
      SPACING — base 4px (padrão Tailwind v4)

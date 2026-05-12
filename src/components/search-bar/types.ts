@@ -1,6 +1,8 @@
+export type SearchBarState = 'compact' | 'opened'
+
 export interface ISearchBarProps {
 	placeholder?: string
-	expanded?: boolean
+	state?: SearchBarState
 	value?: string
 	onChange?: (value: string) => void
 	onClear?: () => void

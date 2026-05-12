@@ -69,6 +69,7 @@ export default function DashboardPerfilV3Screen() {
 			<HeaderDesktop
 				userLoggedIn
 				userName={USER_NAME}
+				userEmail={USER_EMAIL}
 				userInitials={USER_INITIALS}
 			/>
 

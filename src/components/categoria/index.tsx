@@ -30,7 +30,7 @@ export function Categoria({
 	const isInteractive = Boolean(href)
 	const classes = twMerge(
 		chip && 'inline-flex items-center px-2 py-1 rounded-sm bg-white transition-colors',
-		chip && isInteractive && 'hover:bg-neutral-50',
+		chip && isInteractive && 'hover:bg-black/8',
 		'text-body-sm font-body font-semibold',
 		COLOR_CLASSES[color],
 		className,

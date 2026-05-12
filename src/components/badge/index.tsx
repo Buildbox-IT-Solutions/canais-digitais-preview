@@ -8,15 +8,15 @@ import type { BadgeTone, IBadgeProps } from './types'
  * Spec: figma-specs/badge.md
  * Diferença vs. Tag/Categoria: Badge = status (Ativo/Em breve/Bloqueado).
  * Tag = keyword clicável. Categoria = etiqueta editorial colorida.
- * Tokens: --color-mint-light, --color-mint, --color-neutral-100, --color-neutral-900,
- *         --color-secondary-50, --color-primary-600, red-100/700 (Tailwind default)
+ * Tokens: --color-mint-light, --color-mint, --color-coral-light, --color-coral,
+ *         --color-neutral-100, --color-neutral-900, --color-secondary-50, --color-secondary-950
  */
 
 const TONE_CLASSES: Record<BadgeTone, string> = {
 	mint: 'bg-mint-light text-mint',
 	neutral: 'bg-neutral-100 text-neutral-900',
-	coral: 'bg-red-100 text-red-700',
-	secondary: 'bg-secondary-50 text-primary-600',
+	coral: 'bg-coral-light text-coral',
+	secondary: 'bg-secondary-50 text-secondary-950',
 }
 
 export function Badge({

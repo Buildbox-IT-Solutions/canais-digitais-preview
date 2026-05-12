@@ -6,11 +6,13 @@ const meta: Meta<typeof SearchBar> = {
 	component: SearchBar,
 	parameters: { layout: 'padded' },
 	tags: ['autodocs'],
-	decorators: [(Story) => <div className="w-80"><Story /></div>],
 }
 
 export default meta
 type Story = StoryObj<typeof SearchBar>
 
-export const Default: Story = {}
-export const Expanded: Story = { args: { expanded: true, value: 'Inteligência artificial' } }
+export const Compact: Story = { args: { state: 'compact' } }
+export const Opened: Story = { args: { state: 'opened' } }
+export const OpenedWithValue: Story = {
+	args: { state: 'opened', value: 'Inteligência artificial' },
+}
