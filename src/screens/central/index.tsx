@@ -123,6 +123,20 @@ export default function CentralScreen() {
 							<span className="size-2 rounded-full bg-primary-600" />
 							Protótipo · Design as Code
 						</span>
+						{import.meta.env.PROD && (
+							<a
+								href="/docs"
+								target="_blank"
+								rel="noreferrer"
+								className="inline-flex items-center gap-2 bg-[#FF4785] text-white rounded-lg px-4 py-2 font-body font-semibold text-label-md hover:bg-[#e03070] transition-colors shadow-sm"
+							>
+								<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+									<path d="M1.17 0 .04 12.597l6.96 1.403 6.96-1.403L12.83 0H1.17Z" fill="currentColor" opacity=".15"/>
+									<path d="M7 10.977 2.773 9.894l-.287-3.21h1.8l.146 1.633L7 9.08l2.568-.764.34-3.8H3.47l-.176-1.97h7.411l-.587 6.572L7 10.977Z" fill="currentColor"/>
+								</svg>
+								Storybook →
+							</a>
+						)}
 					</div>
 					<h1 className="font-display font-bold text-display-md text-primary-600">
 						Canais Digitais — Central de navegação
