@@ -10,9 +10,9 @@ import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
 import { AuthPasswordInput } from '../_auth/password-input'
 
-type LoginError = 'none' | 'empty' | 'wrong' | 'not-found' | 'locked'
+type LoginError = 'none' | 'empty' | 'invalid' | 'locked'
 
-const ALLOWED_ERRORS: LoginError[] = ['none', 'empty', 'wrong', 'not-found', 'locked']
+const ALLOWED_ERRORS: LoginError[] = ['none', 'empty', 'invalid', 'locked']
 
 /**
  * Tela: Login (Modal) — v2
@@ -30,34 +30,26 @@ export default function LoginV2Screen() {
 		: 'none') as LoginError
 
 	const emailDefault =
-		errorMode === 'wrong'
+		errorMode === 'invalid'
 			? 'mariana.albuquerque@empresa.com.br'
 			: errorMode === 'locked'
 				? 'ana.souza@informa.com'
-				: errorMode === 'not-found'
-					? 'ines.pereira@empresa.com.br'
-					: ''
+				: ''
 
-	const emailError =
-		errorMode === 'empty'
-			? 'Informe seu e-mail.'
-			: errorMode === 'not-found'
-				? 'E-mail não encontrado. Verifique ou crie uma conta.'
-				: undefined
+	// Mensagem genérica de credenciais: nunca revela se o e-mail existe nem qual
+	// campo falhou, evitando enumeração de contas. Campos não recebem erro específico.
+	const emailError = errorMode === 'empty' ? 'Informe seu e-mail.' : undefined
 
-	const senhaError =
-		errorMode === 'empty'
-			? 'Informe sua senha.'
-			: errorMode === 'wrong'
-				? 'Senha incorreta. Tente novamente.'
-				: undefined
+	const senhaError = errorMode === 'empty' ? 'Informe sua senha.' : undefined
 
 	const globalError =
-		errorMode === 'locked'
-			? 'Conta bloqueada por 15 minutos após 5 tentativas inválidas. Use "Esqueci minha senha".'
-			: undefined
+		errorMode === 'invalid'
+			? 'E-mail ou senha incorretos.'
+			: errorMode === 'locked'
+				? 'Conta bloqueada por 15 minutos após 5 tentativas inválidas. Use "Esqueci minha senha".'
+				: undefined
 
-	const senhaValue = errorMode === 'wrong' ? '********' : ''
+	const senhaValue = errorMode === 'invalid' ? '********' : ''
 
 	return (
 		<>
@@ -164,7 +156,7 @@ export default function LoginV2Screen() {
 			<AuthDevNav
 				paramName="error"
 				label="Erro"
-				options={['none', 'empty', 'wrong', 'not-found', 'locked']}
+				options={['none', 'empty', 'invalid', 'locked']}
 				current={errorMode}
 			/>
 		</>
