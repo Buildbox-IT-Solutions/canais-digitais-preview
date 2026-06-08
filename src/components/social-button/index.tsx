@@ -49,28 +49,39 @@ export function SocialButton({
 	href,
 	label,
 	onClick,
+	iconOnly = false,
 	className,
 }: ISocialButtonProps) {
 	const finalLabel = label ?? DEFAULT_LABEL[provider]
 	const classes = twMerge(
-		'inline-flex items-center justify-center gap-3 w-full h-12 px-5 rounded-full border-[1.5px] border-primary-600 bg-white hover:bg-primary-600/[0.04] transition-colors font-body font-bold text-body-lg text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500 focus-visible:ring-offset-2',
+		'inline-flex items-center justify-center w-full rounded-full bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500 focus-visible:ring-offset-2',
+		iconOnly
+			? 'h-12 p-3 border-[1.5px] border-neutral-100 hover:bg-black/[0.04]'
+			: 'gap-3 h-12 px-5 border-[1.5px] border-neutral-100 hover:bg-black/[0.04] font-body font-bold text-body-lg text-primary-600',
 		className,
 	)
 	const iconNode = provider === 'linkedin' ? LinkedInIcon : GoogleIcon
+	const content = iconOnly ? (
+		iconNode
+	) : (
+		<>
+			{iconNode}
+			<span>{finalLabel}</span>
+		</>
+	)
+	const a11yLabel = iconOnly ? finalLabel : undefined
 
 	if (href) {
 		return (
-			<a href={href} className={classes}>
-				{iconNode}
-				<span>{finalLabel}</span>
+			<a href={href} className={classes} aria-label={a11yLabel}>
+				{content}
 			</a>
 		)
 	}
 
 	return (
-		<button type="button" onClick={onClick} className={classes}>
-			{iconNode}
-			<span>{finalLabel}</span>
+		<button type="button" onClick={onClick} className={classes} aria-label={a11yLabel}>
+			{content}
 		</button>
 	)
 }
