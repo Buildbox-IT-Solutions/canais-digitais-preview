@@ -137,7 +137,8 @@ export default function CadastroV2Screen() {
 			? null
 			: `/cadastro-v2?step=${step - 1}&email=${encodeURIComponent(emailParam)}`
 
-	const nextAction = step === 3 ? '/confirmacao-email-v2' : '/cadastro-v2'
+	// Ao concluir o passo 3, o modal é fechado e a confirmação abre em fullpage (tela 3.1).
+	const nextAction = step === 3 ? '/confirmacao-email' : '/cadastro-v2'
 
 	return (
 		<>
@@ -203,7 +204,11 @@ export default function CadastroV2Screen() {
 					</div>
 
 					<form action={nextAction} method="get" className="flex-1 min-h-0 flex flex-col" noValidate>
-						<input type="hidden" name="step" value={step + 1} />
+						{step === 3 ? (
+							<input type="hidden" name="state" value="waiting" />
+						) : (
+							<input type="hidden" name="step" value={step + 1} />
+						)}
 
 						{/* body */}
 						<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-2 pb-4 flex flex-col gap-6">
