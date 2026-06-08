@@ -5,5 +5,10 @@ export interface ISocialButtonProps {
 	href?: string
 	label?: string
 	onClick?: () => void
+	/**
+	 * Variante apenas-ícone (sem rótulo) — usada nos modais de Login/Cadastro v2,
+	 * com botões lado a lado e borda neutra. Default: false.
+	 */
+	iconOnly?: boolean
 	className?: string
 }

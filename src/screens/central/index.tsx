@@ -38,11 +38,13 @@ const GROUPS: RouteGroup[] = [
 		color: 'secondary',
 		items: [
 			{ path: '/login', label: 'Login' },
-			{ path: '/login-modal', label: 'Login (modal)' },
+			{ path: '/login-v2', label: 'Login (modal v2)', description: 'Modal compacto sobre o portal' },
 			{ path: '/cadastro', label: 'Cadastro', description: 'Fluxo em 3 etapas' },
+			{ path: '/cadastro-v2', label: 'Cadastro (modal v2)', description: 'Fluxo em 3 etapas, modal sobre o portal' },
 			{ path: '/recupera-senha', label: 'Recuperar senha' },
 			{ path: '/redefine-senha', label: 'Redefinir senha' },
 			{ path: '/confirmacao-email', label: 'Confirmação de e-mail' },
+			{ path: '/confirmacao-email-v2', label: 'Confirmação de e-mail — v2', description: '"Verificar depois" com peso de botão primário' },
 		],
 	},
 	{
@@ -52,6 +54,7 @@ const GROUPS: RouteGroup[] = [
 		items: [
 			{ path: '/dashboard', label: 'Dashboard' },
 			{ path: '/dashboard-perfil-v3', label: 'Perfil — v3' },
+			{ path: '/dashboard-perfil-v4', label: 'Perfil — v4', description: 'Perfil como aba inicial; Últimas leituras' },
 			{ path: '/meus-dados', label: 'Meus dados' },
 			{ path: '/consentimentos', label: 'Consentimentos' },
 			{ path: '/excluir-conta', label: 'Excluir conta' },

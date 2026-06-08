@@ -174,7 +174,7 @@ function AnonymousPromptCard() {
 				</div>
 				<div className="flex flex-col gap-3 w-full">
 					<a
-						href="/login-modal"
+						href="/login-v2"
 						className="bg-primary-600 inline-flex items-center justify-center w-full h-12 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg"
 					>
 						Fazer login

@@ -42,15 +42,39 @@ const VARIANTS: Record<
 		post: '.',
 		sub: 'Sua conta está ativa em todos os 11 portais editoriais da Informa Markets com o mesmo login.',
 	},
+	'confirm-waiting': {
+		pre: 'Seu acesso está a ',
+		mark: 'um clique',
+		post: '.',
+		sub: 'Assim que confirmar, você entra direto. Sem mais etapas, sem formulários.',
+	},
+	'confirm-welcome': {
+		pre: '',
+		mark: 'Bem-vindo!',
+		post: '\nSua conta está ativa.',
+		sub: 'E-books, relatórios e análises exclusivas do seu setor.',
+	},
 }
 
-export function ProofPanelMinimal({ variant = 'login', className }: IProofPanelMinimalProps) {
+const SIZE = {
+	sm: { root: 'p-8', text: 'gap-4 max-w-none', heading: 'text-headline-md', sub: 'text-body-md text-white/90' },
+	md: { root: 'p-16', text: 'gap-4 max-w-[600px]', heading: 'text-display-sm', sub: 'text-body-lg text-white/85' },
+	lg: { root: 'flex-1 min-h-screen p-20', text: 'gap-6 max-w-[600px]', heading: 'text-display-md', sub: 'text-body-lg text-white/85' },
+} as const
+
+export function ProofPanelMinimal({
+	variant = 'login',
+	size = 'lg',
+	className,
+}: IProofPanelMinimalProps) {
 	const v = VARIANTS[variant]
+	const s = SIZE[size]
 
 	return (
 		<aside
 			className={twMerge(
-				'relative flex-1 flex flex-col items-start justify-center min-h-screen overflow-hidden p-20 text-white',
+				'relative flex flex-col items-start justify-center overflow-hidden text-white',
+				s.root,
 				className,
 			)}
 		>
@@ -70,9 +94,12 @@ export function ProofPanelMinimal({ variant = 'login', className }: IProofPanelM
 				/>
 			</div>
 
-			<div className="relative flex flex-col gap-6 w-full max-w-[600px]">
+			<div className={twMerge('relative flex flex-col w-full', s.text)}>
 				<h2
-					className="font-display text-display-md tracking-tight animate-fade-up"
+					className={twMerge(
+						'font-display tracking-tight whitespace-pre-line animate-fade-up',
+						s.heading,
+					)}
 					style={{ animationDelay: '80ms' }}
 				>
 					{v.pre}
@@ -80,7 +107,7 @@ export function ProofPanelMinimal({ variant = 'login', className }: IProofPanelM
 					{v.post}
 				</h2>
 				<p
-					className="font-body text-body-lg text-white/85 animate-fade-up"
+					className={twMerge('font-body animate-fade-up', s.sub)}
 					style={{ animationDelay: '180ms' }}
 				>
 					{v.sub}
