@@ -18,7 +18,6 @@ import FormDownloadScreen from './screens/form-download'
 import FormNewsletterScreen from './screens/form-newsletter'
 import HomeScreen from './screens/home'
 import LoginScreen from './screens/login'
-import LoginModalScreen from './screens/login-modal'
 import LoginV2Screen from './screens/login-v2'
 import MenuScreen from './screens/menu'
 import MeusDadosScreen from './screens/meus-dados'
@@ -42,7 +41,6 @@ const router = createBrowserRouter([
 	{ path: '/redefine-senha', element: <RedefineSenhaScreen /> },
 	{ path: '/confirmacao-email', element: <ConfirmacaoEmailScreen /> },
 	{ path: '/confirmacao-email-v2', element: <ConfirmacaoEmailV2Screen /> },
-	{ path: '/login-modal', element: <LoginModalScreen /> },
 	{ path: '/dashboard', element: <DashboardScreen /> },
 	{ path: '/dashboard-perfil-v3', element: <DashboardPerfilV3Screen /> },
 	{ path: '/dashboard-perfil-v4', element: <DashboardPerfilV4Screen /> },

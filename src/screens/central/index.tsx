@@ -38,8 +38,7 @@ const GROUPS: RouteGroup[] = [
 		color: 'secondary',
 		items: [
 			{ path: '/login', label: 'Login' },
-			{ path: '/login-modal', label: 'Login (modal)' },
-			{ path: '/login-v2', label: 'Login (modal v2)', description: 'Modal sobre o portal' },
+			{ path: '/login-v2', label: 'Login (modal v2)', description: 'Modal compacto sobre o portal' },
 			{ path: '/cadastro', label: 'Cadastro', description: 'Fluxo em 3 etapas' },
 			{ path: '/cadastro-v2', label: 'Cadastro (modal v2)', description: 'Fluxo em 3 etapas, modal sobre o portal' },
 			{ path: '/recupera-senha', label: 'Recuperar senha' },
