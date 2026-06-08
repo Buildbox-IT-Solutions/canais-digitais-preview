@@ -34,18 +34,23 @@ export default function LoginScreen() {
 				? 'ana.souza@informa.com'
 				: ''
 
-	// Mensagem genérica de credenciais: nunca revela se o e-mail existe nem qual
-	// campo falhou, evitando enumeração de contas. Campos não recebem erro específico.
-	const emailError = errorMode === 'empty' ? 'Informe seu e-mail.' : undefined
+	// Credenciais inválidas: marca os dois campos em erro e exibe a mensagem genérica
+	// uma única vez (no campo de senha), sem revelar qual campo falhou nem se o e-mail
+	// existe — evita enumeração de contas.
+	const emailError =
+		errorMode === 'empty' ? 'Informe seu e-mail.' : errorMode === 'invalid' ? ' ' : undefined
 
-	const senhaError = errorMode === 'empty' ? 'Informe sua senha.' : undefined
+	const senhaError =
+		errorMode === 'empty'
+			? 'Informe sua senha.'
+			: errorMode === 'invalid'
+				? 'E-mail ou senha incorretos.'
+				: undefined
 
 	const globalError =
-		errorMode === 'invalid'
-			? 'E-mail ou senha incorretos.'
-			: errorMode === 'locked'
-				? 'Conta bloqueada por 15 minutos após 5 tentativas inválidas. Use "Esqueci minha senha".'
-				: undefined
+		errorMode === 'locked'
+			? 'Conta bloqueada por 15 minutos após 5 tentativas inválidas. Use "Esqueci minha senha".'
+			: undefined
 
 	const senhaValue = errorMode === 'invalid' ? '********' : ''
 
