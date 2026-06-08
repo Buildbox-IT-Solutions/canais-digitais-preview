@@ -34,11 +34,14 @@ export default function LoginScreen() {
 				? 'ana.souza@informa.com'
 				: ''
 
-	// Credenciais inválidas: marca os dois campos em erro e exibe a mensagem genérica
-	// uma única vez (no campo de senha), sem revelar qual campo falhou nem se o e-mail
-	// existe — evita enumeração de contas.
+	// Credenciais inválidas: marca os dois campos em erro com a mesma mensagem genérica,
+	// sem revelar qual campo falhou nem se o e-mail existe — evita enumeração de contas.
 	const emailError =
-		errorMode === 'empty' ? 'Informe seu e-mail.' : errorMode === 'invalid' ? ' ' : undefined
+		errorMode === 'empty'
+			? 'Informe seu e-mail.'
+			: errorMode === 'invalid'
+				? 'E-mail ou senha incorretos.'
+				: undefined
 
 	const senhaError =
 		errorMode === 'empty'
