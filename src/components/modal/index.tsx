@@ -55,7 +55,7 @@ export function Modal({
 
 			<div
 				className={twMerge(
-					'relative bg-white w-full rounded-lg shadow-lg max-h-[calc(100vh-2rem)] animate-fade-up-sm',
+					'relative bg-white w-full rounded-lg shadow-lg max-h-[90vh] animate-fade-up-sm',
 					padded ? 'p-6 md:p-8 overflow-y-auto' : 'flex items-stretch overflow-hidden',
 					SIZE_MAP[size],
 					className,
