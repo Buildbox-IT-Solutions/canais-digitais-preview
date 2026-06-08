@@ -4,6 +4,8 @@ export type ProofPanelMinimalVariant =
 	| 'signup-2'
 	| 'signup-3'
 	| 'welcome'
+	| 'confirm-waiting'
+	| 'confirm-welcome'
 
 /**
  * Tamanho do painel, por contexto de uso:

@@ -42,6 +42,18 @@ const VARIANTS: Record<
 		post: '.',
 		sub: 'Sua conta está ativa em todos os 11 portais editoriais da Informa Markets com o mesmo login.',
 	},
+	'confirm-waiting': {
+		pre: 'Seu acesso está a ',
+		mark: 'um clique',
+		post: '.',
+		sub: 'Assim que confirmar, você entra direto. Sem mais etapas, sem formulários.',
+	},
+	'confirm-welcome': {
+		pre: '',
+		mark: 'Bem-vindo!',
+		post: '\nSua conta está ativa.',
+		sub: 'E-books, relatórios e análises exclusivas do seu setor.',
+	},
 }
 
 const SIZE = {
@@ -84,7 +96,10 @@ export function ProofPanelMinimal({
 
 			<div className={twMerge('relative flex flex-col w-full', s.text)}>
 				<h2
-					className={twMerge('font-display tracking-tight animate-fade-up', s.heading)}
+					className={twMerge(
+						'font-display tracking-tight whitespace-pre-line animate-fade-up',
+						s.heading,
+					)}
 					style={{ animationDelay: '80ms' }}
 				>
 					{v.pre}
