@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
+import { PasswordChecklist } from '~/components/password-checklist'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import HomeScreen from '../home'
@@ -12,11 +13,11 @@ import { AuthPasswordInput } from '../_auth/password-input'
 
 type CadastroStep = 1 | 2 | 3
 type Step1Error = 'none' | 'empty' | 'invalido' | 'existente'
-type Step2Error = 'none' | 'fraca' | 'mismatch' | 'termos'
+type Step2Error = 'none' | 'mismatch' | 'termos'
 type Step3Error = 'none' | 'campos'
 
 const STEP1_ERRORS: Step1Error[] = ['none', 'empty', 'invalido', 'existente']
-const STEP2_ERRORS: Step2Error[] = ['none', 'fraca', 'mismatch', 'termos']
+const STEP2_ERRORS: Step2Error[] = ['none', 'mismatch', 'termos']
 const STEP3_ERRORS: Step3Error[] = ['none', 'campos']
 
 const HEADINGS: Record<CadastroStep, { title: string; sub: string | null }> = {
@@ -117,8 +118,6 @@ export default function CadastroV2Screen() {
 				: ''
 
 	// Step 2
-	const senhaError =
-		errorMode === 'fraca' ? 'Senha muito fraca. Use letras e números, mín. 8 caracteres.' : undefined
 	const confirmError = errorMode === 'mismatch' ? 'As senhas não coincidem.' : undefined
 	const termosError =
 		errorMode === 'termos'
@@ -128,8 +127,7 @@ export default function CadastroV2Screen() {
 	// Step 3
 	const campoVazioError = errorMode === 'campos' ? 'Preencha todos os campos obrigatórios.' : undefined
 
-	const senhaInicial =
-		errorMode === 'fraca' ? 'abcdefgh' : errorMode === 'mismatch' ? 'Minhasenha1@' : ''
+	const senhaInicial = errorMode === 'mismatch' ? 'Minhasenha1@' : ''
 	const confirmInicial = errorMode === 'mismatch' ? 'outrasenha456' : ''
 
 	const prevStep =
@@ -213,6 +211,7 @@ export default function CadastroV2Screen() {
 						{/* body */}
 						<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-2 pb-4 flex flex-col gap-6">
 							{campoVazioError ? <AuthErrorAlert message={campoVazioError} /> : null}
+							{termosError ? <AuthErrorAlert message={termosError} /> : null}
 
 							{step === 1 ? (
 								<AuthInput
@@ -235,15 +234,17 @@ export default function CadastroV2Screen() {
 								<>
 									<input type="hidden" name="email" value={emailParam} />
 
-									<AuthPasswordInput
-										label="Senha"
-										name="senha"
-										id="cadastro-v2-senha"
-										autoComplete="new-password"
-										defaultValue={senhaInicial}
-										error={senhaError}
-										required
-									/>
+									<div className="flex flex-col gap-3 w-full">
+										<AuthPasswordInput
+											label="Senha"
+											name="senha"
+											id="cadastro-v2-senha"
+											autoComplete="new-password"
+											defaultValue={senhaInicial}
+											required
+										/>
+										<PasswordChecklist value={senhaInicial} />
+									</div>
 
 									<AuthPasswordInput
 										label="Confirmar senha"
@@ -300,20 +301,6 @@ export default function CadastroV2Screen() {
 												Quero receber comunicações e novidades da Informa Markets
 											</span>
 										</label>
-
-										{termosError ? (
-											<p className="mt-1 px-1 flex items-center gap-1.5 font-body font-semibold text-label-md text-red-600">
-												<svg
-													className="size-3.5 shrink-0"
-													viewBox="0 0 24 24"
-													fill="currentColor"
-													aria-hidden="true"
-												>
-													<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-												</svg>
-												{termosError}
-											</p>
-										) : null}
 									</div>
 								</>
 							) : null}

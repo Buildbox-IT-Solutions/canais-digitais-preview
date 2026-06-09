@@ -1,11 +1,13 @@
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
+import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
+import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
-import { AuthStatusRing } from '../_auth/status-ring'
+import { AuthStatusIcon } from '../_auth/status-icon'
 
 type RecuperaState = 'default' | 'sent'
 type RecuperaError = 'none' | 'empty' | 'invalido' | 'throttle'
@@ -14,15 +16,14 @@ const STATES: RecuperaState[] = ['default', 'sent']
 const ERRORS: RecuperaError[] = ['none', 'empty', 'invalido', 'throttle']
 
 /**
- * Tela: Recupera Senha (Full Page) — v2
- * Tela A do fluxo de recuperação, alinhada ao Login/Confirmação full page: split 50/50,
- * page-header (Voltar) / body centralizado (máx. 392px) / footer + proof panel size="md".
- * O estado "sent" ("Confira sua caixa de entrada") replica o layout de status do "Confirme seu
- * e-mail": anel de status 120px, conteúdo centralizado, headline-lg.
+ * Tela: Recupera Senha (Modal) — v2
+ * Versão modal do fluxo de recuperação, espelhando Login/Cadastro modal (912px, proof panel size="sm",
+ * top-bar com Voltar + fechar). O estado "sent" replica o status do "Confirme seu e-mail" modal:
+ * AuthStatusIcon (mail), título + corpo + ações.
  * Estados: ?state=default|sent · erros: ?error=empty|invalido|throttle
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-*
  */
-export default function RecuperaSenhaScreen() {
+export default function RecuperaSenhaV2Screen() {
 	const [params] = useSearchParams()
 	const stateParam = params.get('state') ?? 'default'
 	const state = (STATES.includes(stateParam as RecuperaState) ? stateParam : 'default') as RecuperaState
@@ -55,32 +56,54 @@ export default function RecuperaSenhaScreen() {
 
 	return (
 		<>
-			<main className="flex min-h-screen items-stretch">
-				{/* Coluna do conteúdo */}
-				<div className="flex grow basis-1/2 min-w-0 flex-col bg-white animate-fade-up-sm">
-					{/* page-header — apenas no formulário */}
-					{isSent ? null : (
-						<header className="shrink-0 px-10 pt-10 pb-6">
-							<a
-								href="/login"
-								className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 -ml-1 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
-							>
-								<Icon name="arrow-left" className="size-5" />
-								Voltar para o login
-							</a>
-						</header>
-					)}
+			{/* Portal ao fundo */}
+			<HomeScreen />
 
-					{/* page-body */}
-					<div className="flex-1 flex flex-col items-center justify-center overflow-y-auto px-6 py-8">
+			<Modal
+				open
+				size="xl"
+				padded={false}
+				showClose={false}
+				closeHref="/home"
+				labelledById="recupera-v2-title"
+				className="max-w-[912px] min-h-[min(696px,90vh)]"
+			>
+				<ProofPanelMinimal variant="login" size="sm" className="hidden md:flex grow basis-1/2 min-w-0" />
+
+				{/* Coluna do conteúdo */}
+				<div className="relative flex grow basis-1/2 min-w-0 min-h-0 flex-col bg-white">
+					{/* top-bar: Voltar + fechar */}
+					<div className="shrink-0 flex items-center justify-between px-4 pt-4 pb-2">
+						<a
+							href="/login-v2"
+							className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
+						>
+							<Icon name="arrow-left" className="size-5" />
+							Voltar
+						</a>
+
+						<a
+							href="/home"
+							aria-label="Fechar"
+							className="inline-flex items-center justify-center size-9 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
+						>
+							<Icon name="close" className="size-[18px]" />
+						</a>
+					</div>
+
+					{/* body */}
+					<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-4 pb-4 flex flex-col justify-center">
 						{isSent ? (
-							<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-								<AuthStatusRing accent="primary" icon="mail" />
+							<div className="flex flex-col gap-6 w-full">
+								<AuthStatusIcon tone="info-secondary" icon="mail" />
 
 								<div className="flex flex-col gap-2 w-full">
-									<h1 className="font-display font-bold text-headline-lg text-primary-600">
+									<h2
+										id="recupera-v2-title"
+										className="font-display font-bold text-headline-md text-primary-600"
+									>
 										Confira sua caixa de entrada
-									</h1>
+									</h2>
 									<p className="font-body text-body-lg text-neutral-900">
 										Se este e-mail estiver cadastrado, você receberá um link em instantes para criar
 										uma nova senha.
@@ -90,9 +113,9 @@ export default function RecuperaSenhaScreen() {
 									</p>
 								</div>
 
-								<div className="flex flex-col gap-3 w-full">
+								<div className="flex flex-col gap-3 w-full mt-2">
 									<a
-										href="/login"
+										href="/login-v2"
 										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
 									>
 										Voltar para o login
@@ -106,11 +129,14 @@ export default function RecuperaSenhaScreen() {
 								</div>
 							</div>
 						) : (
-							<div className="w-full max-w-[392px] flex flex-col gap-6">
-								<div className="flex flex-col gap-2">
-									<h1 className="font-display font-bold text-headline-md text-primary-600">
+							<div className="flex flex-col gap-6 w-full">
+								<div className="flex flex-col gap-2 w-full">
+									<h2
+										id="recupera-v2-title"
+										className="font-display font-bold text-headline-md text-primary-600"
+									>
 										Esqueceu a senha?
-									</h1>
+									</h2>
 									<p className="font-body text-body-lg text-neutral-900">
 										Informe seu e-mail e enviaremos um link para criar uma nova senha.
 									</p>
@@ -118,7 +144,12 @@ export default function RecuperaSenhaScreen() {
 
 								{globalError ? <AuthErrorAlert message={globalError} /> : null}
 
-								<form action="/recupera-senha" method="get" className="flex flex-col gap-6" noValidate>
+								<form
+									action="/recupera-senha-v2"
+									method="get"
+									className="flex flex-col gap-4 w-full"
+									noValidate
+								>
 									<input type="hidden" name="state" value="sent" />
 
 									<AuthInput
@@ -135,7 +166,7 @@ export default function RecuperaSenhaScreen() {
 
 									<button
 										type="submit"
-										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
+										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors mt-2"
 									>
 										Enviar link de recuperação
 									</button>
@@ -144,20 +175,18 @@ export default function RecuperaSenhaScreen() {
 						)}
 					</div>
 
-					{/* page-footer — apenas no formulário */}
+					{/* footer */}
 					{isSent ? null : (
-						<footer className="shrink-0 px-10 pt-6 pb-10">
-							<AuthBottomLink label="Não tem conta?" linkLabel="Criar conta" linkHref="/cadastro?step=1" />
-						</footer>
+						<div className="shrink-0 px-8 pt-4 pb-8">
+							<AuthBottomLink
+								label="Não tem conta?"
+								linkLabel="Criar conta"
+								linkHref="/cadastro-v2?step=1"
+							/>
+						</div>
 					)}
 				</div>
-
-				<ProofPanelMinimal
-					variant="login"
-					size="md"
-					className="hidden md:flex grow basis-1/2 min-w-0"
-				/>
-			</main>
+			</Modal>
 
 			<AuthDevNav
 				rows={[

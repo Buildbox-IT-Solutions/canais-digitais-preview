@@ -1,11 +1,7 @@
-export type PasswordStrengthLevel = 'empty' | 'weak' | 'medium' | 'strong'
+import type { PasswordCriteria } from '~/components/password-checklist/types'
 
-export interface PasswordCriteria {
-	length: boolean
-	uppercase: boolean
-	number: boolean
-	special: boolean
-}
+export type PasswordStrengthLevel = 'empty' | 'weak' | 'medium' | 'strong'
+export type { PasswordCriteria }
 
 export interface IPasswordStrengthProps {
 	value?: string

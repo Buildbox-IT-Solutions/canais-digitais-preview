@@ -23,7 +23,9 @@ import MenuScreen from './screens/menu'
 import MeusDadosScreen from './screens/meus-dados'
 import NotFoundScreen from './screens/not-found'
 import RecuperaSenhaScreen from './screens/recupera-senha'
+import RecuperaSenhaV2Screen from './screens/recupera-senha-v2'
 import RedefineSenhaScreen from './screens/redefine-senha'
+import RedefineSenhaV2Screen from './screens/redefine-senha-v2'
 import SobreScreen from './screens/sobre'
 
 const router = createBrowserRouter([
@@ -38,7 +40,9 @@ const router = createBrowserRouter([
 	{ path: '/cadastro', element: <CadastroScreen /> },
 	{ path: '/cadastro-v2', element: <CadastroV2Screen /> },
 	{ path: '/recupera-senha', element: <RecuperaSenhaScreen /> },
+	{ path: '/recupera-senha-v2', element: <RecuperaSenhaV2Screen /> },
 	{ path: '/redefine-senha', element: <RedefineSenhaScreen /> },
+	{ path: '/redefine-senha-v2', element: <RedefineSenhaV2Screen /> },
 	{ path: '/confirmacao-email', element: <ConfirmacaoEmailScreen /> },
 	{ path: '/confirmacao-email-v2', element: <ConfirmacaoEmailV2Screen /> },
 	{ path: '/dashboard', element: <DashboardScreen /> },
