@@ -1,7 +1,7 @@
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { PasswordStrength } from '~/components/password-strength'
-import type { PasswordStrengthLevel } from '~/components/password-strength/types'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import { AuthBottomLink } from '../_auth/bottom-link'
@@ -98,11 +98,9 @@ export default function RedefineSenhaScreen() {
 		: errorMode === 'mismatch'
 			? 'outrasenha456'
 			: ''
-	const pwLevel: PasswordStrengthLevel = isLoading
-		? 'strong'
-		: errorMode === 'fraca'
-			? 'weak'
-			: 'empty'
+
+	const [pw, setPw] = useState(pwValue)
+	useEffect(() => { setPw(pwValue) }, [pwValue])
 
 	const proofVariant: ProofPanelMinimalVariant = terminal?.proof ?? 'login'
 
@@ -164,11 +162,12 @@ export default function RedefineSenhaScreen() {
 												name="senha"
 												id="redef-pw"
 												autoComplete="new-password"
-												defaultValue={pwValue}
+												value={pw}
+												onChange={setPw}
 												error={senhaError}
 												required
 											/>
-											<PasswordStrength level={pwLevel} inputId="redef-pw" />
+											<PasswordStrength value={pw} inputId="redef-pw" />
 										</div>
 
 										<AuthPasswordInput

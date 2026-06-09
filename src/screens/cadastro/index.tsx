@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { PasswordChecklist } from '~/components/password-checklist'
@@ -130,6 +131,9 @@ export default function CadastroScreen() {
 	const senhaInicial = errorMode === 'mismatch' ? 'Minhasenha1@' : ''
 	const confirmInicial = errorMode === 'mismatch' ? 'outrasenha456' : ''
 
+	const [pw, setPw] = useState(senhaInicial)
+	useEffect(() => { setPw(senhaInicial) }, [senhaInicial])
+
 	const backHref =
 		step === 1 ? '/login' : `/cadastro?step=${step - 1}&email=${encodeURIComponent(emailParam)}`
 
@@ -208,10 +212,11 @@ export default function CadastroScreen() {
 												name="senha"
 												id="cadastro-senha"
 												autoComplete="new-password"
-												defaultValue={senhaInicial}
+												value={pw}
+												onChange={setPw}
 												required
 											/>
-											<PasswordChecklist value={senhaInicial} />
+											<PasswordChecklist value={pw} />
 										</div>
 
 										<AuthPasswordInput

@@ -99,7 +99,7 @@ export default function RecuperaSenhaScreen() {
 									</a>
 									<a
 										href="?state=default"
-										className="self-center font-body font-bold text-body-md text-secondary-950 hover:underline"
+										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-transparent hover:bg-neutral-50 text-primary-600 font-body font-bold text-body-lg transition-colors"
 									>
 										Tentar com outro e-mail
 									</a>

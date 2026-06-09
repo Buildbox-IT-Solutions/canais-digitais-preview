@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
+import { twMerge } from '~/lib/tw-merge'
 import { Modal } from '~/components/modal'
 import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
@@ -77,6 +79,31 @@ function buildConfig(state: ConfirmacaoState, email: string): ConfirmacaoConfig 
 	}
 }
 
+const OUTLINED_BTN =
+	'inline-flex items-center justify-center w-full h-12 px-6 rounded-full border-[1.5px] border-primary-600 bg-white hover:bg-primary-600/[0.04] text-primary-600 font-body font-bold text-body-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500 focus-visible:ring-offset-2'
+
+function ReenviarEmailButton() {
+	const [secondsLeft, setSecondsLeft] = useState(0)
+	const isDisabled = secondsLeft > 0
+
+	useEffect(() => {
+		if (secondsLeft <= 0) return
+		const id = setTimeout(() => setSecondsLeft((s) => s - 1), 1000)
+		return () => clearTimeout(id)
+	}, [secondsLeft])
+
+	return (
+		<button
+			type="button"
+			disabled={isDisabled}
+			onClick={() => setSecondsLeft(60)}
+			className={twMerge(OUTLINED_BTN, isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none')}
+		>
+			{isDisabled ? `Reenviar e-mail (${secondsLeft}s)` : 'Reenviar e-mail'}
+		</button>
+	)
+}
+
 /**
  * Tela: Confirmação de E-mail (Modal) — v2 (deriva de confirmacao-email)
  * Mudanças: (1) no estado "waiting", "Verificar depois" ganha o mesmo peso do CTA primário —
@@ -146,12 +173,7 @@ export default function ConfirmacaoEmailV2Screen() {
 											Verificar depois
 										</a>
 
-										<button
-											type="button"
-											className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full border-[1.5px] border-primary-600 bg-white hover:bg-primary-600/[0.04] text-primary-600 font-body font-bold text-body-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500 focus-visible:ring-offset-2"
-										>
-											{cfg.primaryLabel}
-										</button>
+										<ReenviarEmailButton />
 
 										{cfg.secondLabel && cfg.secondHref ? (
 											<a

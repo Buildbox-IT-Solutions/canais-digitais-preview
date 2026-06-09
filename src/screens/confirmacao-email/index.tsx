@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
@@ -17,6 +18,7 @@ interface ConfirmacaoButton {
 	label: string
 	href?: string
 	variant: ButtonVariant
+	isResend?: boolean
 }
 
 interface ConfirmacaoConfig {
@@ -75,7 +77,7 @@ function buildConfig(state: ConfirmacaoState, email: string): ConfirmacaoConfig 
 				body: null,
 				buttons: [
 					{ label: 'Verificar depois', href: '/home', variant: 'filled' },
-					{ label: 'Reenviar e-mail', variant: 'outlined' },
+					{ label: 'Reenviar e-mail', variant: 'outlined', isResend: true },
 				],
 				proof: 'confirm-waiting',
 			}
@@ -91,8 +93,31 @@ const BTN_VARIANT: Record<ButtonVariant, string> = {
 	ghost: 'bg-transparent hover:bg-neutral-50 text-primary-600',
 }
 
-function ConfirmButton({ label, href, variant }: ConfirmacaoButton) {
+function ReenviarEmailButton({ className }: { className: string }) {
+	const [secondsLeft, setSecondsLeft] = useState(0)
+	const isDisabled = secondsLeft > 0
+
+	useEffect(() => {
+		if (secondsLeft <= 0) return
+		const id = setTimeout(() => setSecondsLeft((s) => s - 1), 1000)
+		return () => clearTimeout(id)
+	}, [secondsLeft])
+
+	return (
+		<button
+			type="button"
+			disabled={isDisabled}
+			onClick={() => setSecondsLeft(60)}
+			className={twMerge(className, isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none')}
+		>
+			{isDisabled ? `Reenviar e-mail (${secondsLeft}s)` : 'Reenviar e-mail'}
+		</button>
+	)
+}
+
+function ConfirmButton({ label, href, variant, isResend }: ConfirmacaoButton) {
 	const className = twMerge(BTN_BASE, BTN_VARIANT[variant])
+	if (isResend) return <ReenviarEmailButton className={className} />
 	if (href) {
 		return (
 			<a href={href} className={className}>

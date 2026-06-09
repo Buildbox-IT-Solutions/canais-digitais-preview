@@ -7,7 +7,7 @@ import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
-import { AuthStatusIcon } from '../_auth/status-icon'
+import { AuthStatusRing } from '../_auth/status-ring'
 
 type RecuperaState = 'default' | 'sent'
 type RecuperaError = 'none' | 'empty' | 'invalido' | 'throttle'
@@ -94,8 +94,8 @@ export default function RecuperaSenhaV2Screen() {
 					{/* body */}
 					<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-4 pb-4 flex flex-col justify-center">
 						{isSent ? (
-							<div className="flex flex-col gap-6 w-full">
-								<AuthStatusIcon tone="info-secondary" icon="mail" />
+							<div className="flex flex-col items-center gap-8 text-center w-full">
+								<AuthStatusRing accent="primary" icon="mail" />
 
 								<div className="flex flex-col gap-2 w-full">
 									<h2
@@ -113,7 +113,7 @@ export default function RecuperaSenhaV2Screen() {
 									</p>
 								</div>
 
-								<div className="flex flex-col gap-3 w-full mt-2">
+								<div className="flex flex-col gap-3 w-full">
 									<a
 										href="/login-v2"
 										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
@@ -122,7 +122,7 @@ export default function RecuperaSenhaV2Screen() {
 									</a>
 									<a
 										href="?state=default"
-										className="self-center font-body font-bold text-body-md text-secondary-950 hover:underline"
+										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-transparent hover:bg-neutral-50 text-primary-600 font-body font-bold text-body-lg transition-colors"
 									>
 										Tentar com outro e-mail
 									</a>
