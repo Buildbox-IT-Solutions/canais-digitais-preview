@@ -26,6 +26,7 @@ const GROUPS: RouteGroup[] = [
 		color: 'primary',
 		items: [
 			{ path: '/home', label: 'Home', description: 'Página inicial — capa editorial completa' },
+			{ path: '/home-v2', label: 'Home v2', description: 'Nova proposta com múltiplos patrocinadores' },
 			{ path: '/categoria', label: 'Categoria', description: 'Listagem de conteúdos por categoria' },
 			{ path: '/conteudo', label: 'Conteúdo', description: 'Página interna de matéria' },
 			{ path: '/buscar', label: 'Buscar', description: 'Resultados de busca' },

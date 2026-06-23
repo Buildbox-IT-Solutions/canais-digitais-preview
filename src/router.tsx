@@ -17,6 +17,7 @@ import ExcluirContaScreen from './screens/excluir-conta'
 import FormDownloadScreen from './screens/form-download'
 import FormNewsletterScreen from './screens/form-newsletter'
 import HomeScreen from './screens/home'
+import { HomeV2Screen } from './screens/home-v2'
 import LoginScreen from './screens/login'
 import LoginV2Screen from './screens/login-v2'
 import MenuScreen from './screens/menu'
@@ -33,6 +34,7 @@ import { PatrocinadorScreen } from './screens/patrocinador'
 const router = createBrowserRouter([
 	{ path: '/', element: <CentralScreen /> },
 	{ path: '/home', element: <HomeScreen /> },
+	{ path: '/home-v2', element: <HomeV2Screen /> },
 	{ path: '/categoria', element: <CategoriaScreen /> },
 	{ path: '/conteudo', element: <ConteudoScreen /> },
 	{ path: '/menu', element: <MenuScreen /> },
