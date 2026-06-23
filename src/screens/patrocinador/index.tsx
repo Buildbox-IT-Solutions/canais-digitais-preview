@@ -5,7 +5,7 @@
  * Responsiva: mobile-first, breakpoints md: para desktop
  */
 
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { SponsorLine } from '~/components/sponsor-line'
