@@ -27,6 +27,8 @@ import RecuperaSenhaV2Screen from './screens/recupera-senha-v2'
 import RedefineSenhaScreen from './screens/redefine-senha'
 import RedefineSenhaV2Screen from './screens/redefine-senha-v2'
 import SobreScreen from './screens/sobre'
+import { PatrocinadoresScreen } from './screens/patrocinadores'
+import { PatrocinadorScreen } from './screens/patrocinador'
 
 const router = createBrowserRouter([
 	{ path: '/', element: <CentralScreen /> },
@@ -54,6 +56,8 @@ const router = createBrowserRouter([
 	{ path: '/contato', element: <ContatoScreen /> },
 	{ path: '/sobre', element: <SobreScreen /> },
 	{ path: '/anuncie', element: <AnuncieScreen /> },
+	{ path: '/patrocinadores', element: <PatrocinadoresScreen /> },
+	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
 	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
 	{ path: '/form-download', element: <FormDownloadScreen /> },
 	{ path: '*', element: <NotFoundScreen /> },
