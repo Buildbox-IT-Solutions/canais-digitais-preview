@@ -34,7 +34,7 @@ import { sponsors } from '~/mocks/sponsors'
  * 18 seções: hero · faixa patrocinadores · 3 colunas (Ingredientes/Food Service/Em Alta) · Proteína Animal ·
  * Download · Webstories · Vídeos · Fispal · Banner Newsletter · News+Podcasts · Especialistas · Última
  */
-export default function HomeV2Screen() {
+export function HomeV2Screen() {
 	const [hero, top2, top3] = HOME_HERO
 
 	return (

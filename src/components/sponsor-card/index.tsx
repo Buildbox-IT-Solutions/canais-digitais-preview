@@ -46,12 +46,10 @@ export function SponsorCard({
 
       <a
         href={href}
-        target="_blank"
-        rel="noopener noreferrer"
         className="mt-auto inline-flex items-center gap-1 font-body font-semibold text-label-sm text-primary-600 hover:text-primary-700"
       >
-        Visitar site
-        <span aria-hidden>↗</span>
+        Saiba mais
+        <span aria-hidden>→</span>
       </a>
     </article>
   )
