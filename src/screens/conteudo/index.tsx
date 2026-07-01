@@ -5,11 +5,13 @@ import { Categoria } from '~/components/categoria'
 import { Divider } from '~/components/divider'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
+import { Icon } from '~/components/icon'
 import { IconButton } from '~/components/icon-button'
 import type { IconName } from '~/components/icon/paths'
 import { SectionTitle } from '~/components/section-title'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
+import { useSearchParams } from 'react-router'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
 
 const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
@@ -26,6 +28,9 @@ const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=4179-32002
  */
 export default function ConteudoScreen() {
+	const [params] = useSearchParams()
+	const logado = params.get('logado') === 'true'
+
 	return (
 		<main className="bg-white">
 			<HeaderDesktop activeCategory="food-service" />
@@ -232,6 +237,64 @@ export default function ConteudoScreen() {
 								/>
 							</div>
 						</div>
+
+						{/* Card Download */}
+						{logado ? (
+							<div className="bg-white border border-neutral-100 flex flex-col gap-6 items-start rounded-sm shadow-sm p-8 w-full max-w-[392px]">
+								<div className="inline-flex items-center justify-center size-16 rounded-full bg-[#DCFCE7]">
+									<Icon name="download" className="size-8 text-[#16A34A]" />
+								</div>
+								<div className="flex flex-col gap-2 w-full">
+									<h3 className="font-display font-bold text-title-xl text-neutral-950">
+										Tudo pronto!
+									</h3>
+									<p className="font-body text-body-md text-neutral-700">
+										Seu material esta pronto para baixar.
+									</p>
+								</div>
+								<a
+									href="#"
+									className="bg-primary-600 inline-flex gap-3 items-center justify-center w-full h-12 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg"
+								>
+									<Icon name="download" className="size-6" />
+									Baixar agora
+								</a>
+								<p className="font-body text-label-md text-neutral-500">
+									Nao e voce?{' '}
+									<a href="/home" className="font-bold text-secondary-950 hover:underline">
+										Sair da conta
+									</a>
+									.
+								</p>
+							</div>
+						) : (
+							<div className="bg-primary-100 flex flex-col items-start overflow-hidden rounded-sm w-full max-w-[392px]">
+								<div className="aspect-[3/2] w-full overflow-hidden bg-secondary-50">
+									<img
+										src={picsumSrc('material-capa', 392, 261)}
+										alt="Capa do material"
+										className="w-full h-full object-cover"
+									/>
+								</div>
+								<div className="flex flex-col gap-4 pt-8 pb-4 px-6 text-primary-600">
+									<h3 className="font-display font-bold text-title-lg">
+										10 tendencias em Food Service para 2026
+									</h3>
+									<p className="font-body text-body-md text-neutral-700">
+										Baixe sem custo. Acesse com um clique e use todos os materiais.
+									</p>
+								</div>
+								<div className="pt-4 pb-8 px-6 w-full">
+									<Button
+										label="Baixar material"
+										href="/gate-download"
+										type="filled"
+										size="large"
+										className="w-full"
+									/>
+								</div>
+							</div>
+						)}
 
 						{/* Ad 300×250 */}
 						<div className="bg-white p-4 flex justify-center">
