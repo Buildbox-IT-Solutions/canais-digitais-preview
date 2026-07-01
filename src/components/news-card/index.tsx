@@ -65,7 +65,14 @@ export function NewsCard({
 				</a>
 			</h3>
 			{lead && leadClass ? (
-				<p className={twMerge('font-body text-neutral-900', leadClass)}>{lead}</p>
+				<p
+					className={twMerge(
+						'font-body text-neutral-900 group-hover:text-neutral-950 transition-colors',
+						leadClass,
+					)}
+				>
+					{lead}
+				</p>
 			) : null}
 			{author ? <Byline author={author} href={authorHref} size={bylineSize} /> : null}
 		</div>

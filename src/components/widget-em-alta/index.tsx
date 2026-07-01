@@ -20,17 +20,29 @@ export function WidgetEmAlta({ title = 'Em Alta', items, className }: IWidgetEmA
 				<p className="flex-1 font-display font-bold text-title-xl text-primary-600 leading-7">{title}</p>
 			</div>
 			<div className="flex flex-col items-start w-full">
-				{items.map((item, i) => (
-					<div key={item.title} className="flex flex-col gap-4 items-start py-2 px-6 w-full">
-						<a href={item.href ?? '#'} className="group flex font-display font-bold gap-4 items-start w-full">
+				{items.map((item, i) => {
+					const inner = (
+						<>
 							<p className="text-display-sm text-neutral-900 whitespace-nowrap leading-[44px]">{i + 1}</p>
 							<p className="flex-1 font-display font-bold text-title-lg text-primary-600 group-hover:text-secondary-950 transition-colors leading-6">
 								{item.title}
 							</p>
-						</a>
-						{i < items.length - 1 ? <Divider /> : null}
-					</div>
-				))}
+						</>
+					)
+					const rowClass = 'group flex font-display font-bold gap-4 items-start w-full'
+					return (
+						<div key={item.title} className="flex flex-col gap-4 items-start py-2 px-6 w-full">
+							{item.href ? (
+								<a href={item.href} className={rowClass}>
+									{inner}
+								</a>
+							) : (
+								<div className={rowClass}>{inner}</div>
+							)}
+							{i < items.length - 1 ? <Divider /> : null}
+						</div>
+					)
+				})}
 			</div>
 		</aside>
 	)
