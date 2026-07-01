@@ -26,7 +26,7 @@ interface ConfirmacaoConfig {
 	proof: ProofPanelMinimalVariant
 }
 
-function buildConfig(state: ConfirmacaoState, email: string): ConfirmacaoConfig {
+function buildConfig(state: ConfirmacaoState, email: string, intent: string): ConfirmacaoConfig {
 	switch (state) {
 		case 'success':
 			return {
@@ -45,9 +45,11 @@ function buildConfig(state: ConfirmacaoState, email: string): ConfirmacaoConfig 
 				tone: 'warning',
 				icon: 'schedule',
 				title: 'Link expirado',
-				body: 'O link de confirmação é válido por 24 horas. Solicite um novo para ativar sua conta.',
+				body: 'O link de confirmacao e valido por 24 horas. Solicite um novo para ativar sua conta.',
 				primaryLabel: 'Enviar novo link',
-				primaryHref: `?state=waiting&email=${encodeURIComponent(email)}`,
+				primaryHref: intent === 'download'
+					? `/gate-download?state=waiting&email=${encodeURIComponent(email)}`
+					: `?state=waiting&email=${encodeURIComponent(email)}`,
 				secondLabel: 'Voltar para o login',
 				secondHref: '/login-v2',
 				proof: 'login',
@@ -120,7 +122,8 @@ export default function ConfirmacaoEmailV2Screen() {
 		: 'waiting') as ConfirmacaoState
 
 	const email = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
-	const cfg = buildConfig(state, email)
+	const intent = params.get('intent') ?? ''
+	const cfg = buildConfig(state, email, intent)
 	const isWaiting = state === 'waiting'
 
 	return (
@@ -211,7 +214,11 @@ export default function ConfirmacaoEmailV2Screen() {
 						{isWaiting ? (
 							<p className="text-center font-body text-label-md text-neutral-400">
 								<a
-									href={`?state=success&email=${encodeURIComponent(email)}`}
+									href={
+										intent === 'download'
+											? '/conteudo?logado=true'
+											: `?state=success&email=${encodeURIComponent(email)}`
+									}
 									className="underline hover:text-neutral-600"
 								>
 									[Simular clique no link do e-mail]
