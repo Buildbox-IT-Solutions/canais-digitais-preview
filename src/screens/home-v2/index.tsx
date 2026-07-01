@@ -5,10 +5,13 @@ import { Divider } from '~/components/divider'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
+import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
+import { PodcastCard } from '~/components/podcast-card'
 import { SectionTitle } from '~/components/section-title'
-import { SponsorLine } from '~/components/sponsor-line'
 import { Thumbnail } from '~/components/thumbnail'
+import { WebstoryCard } from '~/components/webstory-card'
+import { WidgetEmAlta } from '~/components/widget-em-alta'
 import {
 	EM_ALTA,
 	ESPECIALISTAS,
@@ -54,29 +57,17 @@ export function HomeV2Screen() {
 			<section className="w-full">
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 py-6 flex flex-col gap-8">
 					<div className="grid grid-cols-[600px_1fr_1fr] gap-6">
-						<article className="group flex flex-col gap-3">
-							<Thumbnail
-								src={picsumSrc(hero.seed, 1200, 675)}
-								alt="Capa"
-								href="/conteudo"
-								ratio="video"
-							/>
-							<div className="flex flex-col gap-2">
-								<Categoria color={hero.categoryColor} label={hero.category} href="/categoria" />
-								<h3 className="text-headline-md font-display font-bold text-primary-600">
-									<a
-										href="/conteudo"
-										className="group-hover:text-secondary-950 transition-colors"
-									>
-										{hero.title}
-									</a>
-								</h3>
-								<p className="text-body-lg font-body text-neutral-900 group-hover:text-neutral-950 transition-colors">
-									{hero.lead}
-								</p>
-								{hero.author ? <Byline author={hero.author} href="/categoria" /> : null}
-							</div>
-						</article>
+						<NewsCard
+							size="large"
+							orientation="vertical"
+							image={picsumSrc(hero.seed, 1200, 675)}
+							href="/conteudo"
+							title={hero.title}
+							categoria={{ label: hero.category, color: hero.categoryColor, href: '/categoria' }}
+							lead={hero.lead}
+							author={hero.author}
+							authorHref="/categoria"
+						/>
 
 						<div className="flex flex-col gap-8">
 							{[top2, top3].map((article) => (
@@ -214,31 +205,7 @@ export function HomeV2Screen() {
 					/>
 
 					<div className="flex flex-col gap-6 pt-10">
-						<aside className="bg-neutral-50 border border-neutral-100 flex flex-col items-start overflow-hidden pb-4 rounded-lg w-full">
-							<div className="flex items-center p-6 w-full">
-								<p className="flex-1 font-display font-bold text-title-xl text-primary-600 leading-7">
-									Em Alta
-								</p>
-							</div>
-							<div className="flex flex-col items-start w-full">
-								{EM_ALTA.map((title, i) => (
-									<div
-										key={title}
-										className="flex flex-col gap-4 items-start py-2 px-6 w-full"
-									>
-										<div className="group flex font-display font-bold gap-4 items-start w-full">
-											<p className="text-display-sm text-neutral-900 whitespace-nowrap leading-[44px]">
-												{i + 1}
-											</p>
-											<p className="flex-1 font-display font-bold text-title-lg text-primary-600 group-hover:text-secondary-950 transition-colors leading-6">
-												{title}
-											</p>
-										</div>
-										{i < EM_ALTA.length - 1 ? <Divider /> : null}
-									</div>
-								))}
-							</div>
-						</aside>
+						<WidgetEmAlta title="Em Alta" items={EM_ALTA.map((title) => ({ title }))} />
 						<div className="border border-primary-100 bg-neutral-50 flex items-center justify-center rounded-sm h-[282px] w-full">
 							<span className="font-body font-bold text-label-md text-neutral-700">300 × 250</span>
 						</div>
@@ -330,27 +297,14 @@ export function HomeV2Screen() {
 				<SectionTitle label="Webstories" color="primary-600" href="/categoria" />
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 mt-6 flex gap-6 overflow-x-auto pb-2">
 					{WEBSTORIES.map((ws) => (
-						<a
+						<WebstoryCard
 							key={ws.seed}
 							href="/conteudo"
-							className="group shrink-0 w-[288px] aspect-[320/569] relative rounded-sm overflow-hidden"
-						>
-							<img
-								src={picsumSrc(ws.seed, 640, 1138)}
-								alt="Story"
-								className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-							/>
-							<div className="absolute inset-0 flex flex-col justify-between">
-								<div className="flex flex-col items-start p-5">
-									<Categoria color={ws.color} label={ws.label} chip />
-								</div>
-								<div className="bg-primary-600/70 group-hover:bg-gradient-to-b group-hover:from-primary-600/0 group-hover:via-primary-600/70 group-hover:to-primary-600 flex flex-col gap-2 items-start px-5 py-4 w-full">
-									<h3 className="font-display font-bold text-title-md text-white w-full">
-										{ws.title}
-									</h3>
-								</div>
-							</div>
-						</a>
+							image={picsumSrc(ws.seed, 640, 1138)}
+							label={ws.label}
+							color={ws.color}
+							title={ws.title}
+						/>
 					))}
 				</div>
 			</section>
@@ -426,29 +380,18 @@ export function HomeV2Screen() {
 				<SectionTitle label="Fispal Tecnologia" color="primary-600" href="/categoria" />
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 mt-6 grid grid-cols-3 gap-6">
 					{FISPAL_LIST.map((card) => (
-						<article key={card.id} className="group flex flex-col gap-3">
-							<Thumbnail
-								src={picsumSrc(card.seed, 800, 450)}
-								alt="Capa"
-								href="/conteudo"
-								ratio="video"
-							/>
-							<div className="flex flex-col gap-2">
-								<Categoria color={card.categoryColor} label={card.category} href="/categoria" />
-								<h3 className="text-title-xl font-display font-bold text-primary-600">
-									<a
-										href="/conteudo"
-										className="group-hover:text-secondary-950 transition-colors"
-									>
-										{card.title}
-									</a>
-								</h3>
-								<p className="text-body-md font-body text-neutral-900 group-hover:text-neutral-950 transition-colors">
-									{card.lead}
-								</p>
-								{card.author ? <Byline author={card.author} href="/categoria" /> : null}
-							</div>
-						</article>
+						<NewsCard
+							key={card.id}
+							size="medium"
+							orientation="vertical"
+							image={picsumSrc(card.seed, 800, 450)}
+							href="/conteudo"
+							title={card.title}
+							categoria={{ label: card.category, color: card.categoryColor, href: '/categoria' }}
+							lead={card.lead}
+							author={card.author}
+							authorHref="/categoria"
+						/>
 					))}
 				</div>
 			</section>
@@ -542,51 +485,21 @@ export function HomeV2Screen() {
 						</div>
 						<div className="flex flex-col items-start w-full">
 							<div className="flex flex-col items-start justify-center overflow-hidden py-2 px-6 rounded-lg w-full">
-								<div className="bg-white border border-neutral-100 flex flex-col items-start rounded-lg w-full">
-									<div className="group flex items-center p-3 w-full">
-										<div className="rounded-sm overflow-hidden size-[104px] shrink-0">
-											<img
-												src={picsumSrc('pod1', 208, 208)}
-												alt="Capa podcast"
-												className="w-full h-full object-cover"
-											/>
-										</div>
-										<div className="flex flex-1 flex-col gap-2 items-start min-w-0 px-4">
-											<span className="font-body font-semibold text-label-md text-mint">
-												Food Service
-											</span>
-											<p className="font-display font-bold text-title-md text-primary-600 group-hover:text-secondary-950 transition-colors line-clamp-3 w-full">
-												Meu colega robô: WEG e Mitsubishi apostam em robôs que ajudam humanos
-											</p>
-										</div>
-									</div>
-									<Divider />
-									<div className="px-4 py-3 w-full">
-										<SponsorLine company={sponsors[0].name} href={"/patrocinador?id=" + sponsors[0].id} />
-									</div>
-								</div>
+								<PodcastCard
+									category="Food Service"
+									title="Meu colega robô: WEG e Mitsubishi apostam em robôs que ajudam humanos"
+									image={picsumSrc('pod1', 208, 208)}
+									sponsor={sponsors[0].name}
+									sponsorHref={"/patrocinador?id=" + sponsors[0].id}
+								/>
 							</div>
 							{PODCASTS.map((pod) => (
-								<div
+								<PodcastCard
 									key={pod.seed}
-									className="group flex gap-4 items-center py-3 px-6 w-full"
-								>
-									<div className="rounded-sm overflow-hidden size-[104px] shrink-0">
-										<img
-											src={picsumSrc(pod.seed, 208, 208)}
-											alt="Capa podcast"
-											className="w-full h-full object-cover"
-										/>
-									</div>
-									<div className="flex flex-1 flex-col gap-2 items-start min-w-0">
-										<span className="font-body font-semibold text-label-md text-mint">
-											{pod.category}
-										</span>
-										<p className="font-display font-bold text-title-md text-primary-600 group-hover:text-secondary-950 transition-colors line-clamp-3 w-full">
-											{pod.title}
-										</p>
-									</div>
-								</div>
+									category={pod.category}
+									title={pod.title}
+									image={picsumSrc(pod.seed, 208, 208)}
+								/>
 							))}
 						</div>
 						<div className="flex flex-col items-start py-2 px-6 w-full">
@@ -684,35 +597,21 @@ export function HomeV2Screen() {
 			<section className="w-full">
 				<SectionTitle label="Fispal Food Tecnologia" color="primary-600" href="/categoria" />
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 mt-6 grid grid-cols-[600px_1fr] gap-6">
-					<article className="group flex flex-col gap-3">
-						<Thumbnail
-							src={picsumSrc(LAST_SECTION[0].seed, 1200, 675)}
-							alt="Capa"
-							href="/conteudo"
-							ratio="video"
-						/>
-						<div className="flex flex-col gap-2">
-							<Categoria
-								color={LAST_SECTION[0].categoryColor}
-								label={LAST_SECTION[0].category}
-								href="/categoria"
-							/>
-							<h3 className="text-headline-md font-display font-bold text-primary-600">
-								<a
-									href="/conteudo"
-									className="group-hover:text-secondary-950 transition-colors"
-								>
-									{LAST_SECTION[0].title}
-								</a>
-							</h3>
-							<p className="text-body-lg font-body text-neutral-900 group-hover:text-neutral-950 transition-colors">
-								{LAST_SECTION[0].lead}
-							</p>
-							{LAST_SECTION[0].author ? (
-								<Byline author={LAST_SECTION[0].author} href="/categoria" />
-							) : null}
-						</div>
-					</article>
+					<NewsCard
+						size="large"
+						orientation="vertical"
+						image={picsumSrc(LAST_SECTION[0].seed, 1200, 675)}
+						href="/conteudo"
+						title={LAST_SECTION[0].title}
+						categoria={{
+							label: LAST_SECTION[0].category,
+							color: LAST_SECTION[0].categoryColor,
+							href: '/categoria',
+						}}
+						lead={LAST_SECTION[0].lead}
+						author={LAST_SECTION[0].author}
+						authorHref="/categoria"
+					/>
 
 					<div className="grid grid-cols-2 gap-6">
 						{LAST_SECTION.slice(1, 3).map((card) => (
