@@ -14,7 +14,6 @@ const base = {
 	category: 'Food Service',
 	title: 'Meu colega robô: WEG e Mitsubishi apostam em robôs que ajudam humanos',
 	image: 'https://picsum.photos/seed/pod/208/208',
-	href: '#',
 }
 
 export const Default: Story = { args: base }
