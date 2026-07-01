@@ -249,7 +249,7 @@ export default function ConteudoScreen() {
 										Tudo pronto!
 									</h3>
 									<p className="font-body text-body-md text-neutral-700">
-										Seu material esta pronto para baixar.
+										Seu material está pronto para baixar.
 									</p>
 								</div>
 								<a
@@ -260,7 +260,7 @@ export default function ConteudoScreen() {
 									Baixar agora
 								</a>
 								<p className="font-body text-label-md text-neutral-500">
-									Nao e voce?{' '}
+									Não é você?{' '}
 									<a href="/home" className="font-bold text-secondary-950 hover:underline">
 										Sair da conta
 									</a>
@@ -278,7 +278,7 @@ export default function ConteudoScreen() {
 								</div>
 								<div className="flex flex-col gap-4 pt-8 pb-4 px-6 text-primary-600">
 									<h3 className="font-display font-bold text-title-lg">
-										10 tendencias em Food Service para 2026
+										10 tendências em Food Service para 2026
 									</h3>
 									<p className="font-body text-body-md text-neutral-700">
 										Baixe sem custo. Acesse com um clique e use todos os materiais.
