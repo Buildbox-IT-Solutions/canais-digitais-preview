@@ -45,7 +45,7 @@ function buildConfig(state: ConfirmacaoState, email: string, intent: string): Co
 				tone: 'warning',
 				icon: 'schedule',
 				title: 'Link expirado',
-				body: 'O link de confirmacao e valido por 24 horas. Solicite um novo para ativar sua conta.',
+				body: 'O link de confirmação é válido por 24 horas. Solicite um novo para ativar sua conta.',
 				primaryLabel: 'Enviar novo link',
 				primaryHref: intent === 'download'
 					? `/gate-download?state=waiting&email=${encodeURIComponent(email)}`
