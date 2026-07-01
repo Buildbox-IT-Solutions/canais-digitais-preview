@@ -310,7 +310,7 @@ export function HomeV2Screen() {
 							</p>
 						</div>
 						<a
-							href="/form-download"
+							href="/gate-download"
 							className="bg-primary-600 inline-flex items-center justify-center gap-3 pl-5 pr-6 py-3 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg"
 						>
 							<Icon name="download" className="size-6" />

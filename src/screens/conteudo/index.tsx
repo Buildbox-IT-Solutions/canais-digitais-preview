@@ -242,7 +242,7 @@ export default function ConteudoScreen() {
 						{logado ? (
 							<div className="bg-white border border-neutral-100 flex flex-col gap-6 items-start rounded-sm shadow-sm p-8 w-full max-w-[392px]">
 								<div className="inline-flex items-center justify-center size-16 rounded-full bg-[#DCFCE7]">
-									<Icon name="download" className="size-8 text-[#16A34A]" />
+									<Icon name="check" className="size-8 text-[#16A34A]" />
 								</div>
 								<div className="flex flex-col gap-2 w-full">
 									<h3 className="font-display font-bold text-title-xl text-neutral-950">

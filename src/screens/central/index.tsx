@@ -79,7 +79,6 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/patrocinadores', label: 'Patrocinadores', description: 'Listagem de todos os patrocinadores' },
 			{ path: '/patrocinador?id=tetrapak', label: 'Patrocinador (individual)', description: 'Página de um patrocinador específico' },
 			{ path: '/form-newsletter', label: 'Form — Newsletter' },
-			{ path: '/form-download', label: 'Form — Download' },
 		],
 	},
 	{
