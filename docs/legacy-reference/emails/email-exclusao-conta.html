@@ -1,0 +1,137 @@
+<!--
+  Email Transacional: Confirmação de exclusão de conta
+  Trigger: Usuário solicita exclusão no dashboard
+  Link válido por: [X] dias — prazo de "resgatar" a conta antes da exclusão definitiva
+  IMPORTANTE: SEM link de descadastrar no footer (§10 — contexto legal/transacional)
+  Relacionado: FEATURE-cadastro.md §6.7 (modal de exclusão) + §10
+-->
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Exclusão de conta — Food Connection</title>
+</head>
+<body style="margin:0;padding:0;background:#F7F8FA;font-family:'Open Sans',Arial,sans-serif;color:#283857;">
+
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">
+    Recebemos sua solicitação de exclusão de conta. Você tem 30 dias para cancelar se mudar de ideia.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F7F8FA;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#FFFFFF;border-radius:8px;overflow:hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background:#002244;padding:24px 24px;">
+              <span style="font-family:Georgia,serif;font-weight:700;font-size:22px;color:#FFFFFF;letter-spacing:0.2px;">Food Connection</span>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 32px 8px 32px;">
+              <h1 style="margin:0 0 16px 0;font-family:Georgia,serif;font-weight:700;font-size:28px;line-height:1.2;color:#283857;">
+                Recebemos sua solicitação
+              </h1>
+              <p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#5A6E8F;">
+                Olá, [NOME]. Confirmamos o pedido de exclusão da sua Conta Informa em <strong style="color:#283857;">[DATA_SOLICITACAO]</strong>.
+              </p>
+              <p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#5A6E8F;">
+                Esta ação encerrará seu acesso a todos os portais Informa. Sua conta será <strong style="color:#283857;">permanentemente removida em 30 dias</strong> — até lá, você pode cancelar a exclusão se mudar de ideia.
+              </p>
+              <p style="margin:0 0 16px 0;font-size:14px;line-height:1.5;color:#8391A9;">
+                Seu histórico de downloads será mantido pelo prazo mínimo exigido por lei e não será utilizado para novas comunicações.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Info box -->
+          <tr>
+            <td style="padding:8px 32px 16px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:16px 20px;border-radius:4px;">
+                    <p style="margin:0 0 8px 0;font-family:Georgia,serif;font-weight:700;font-size:15px;color:#283857;">O que será excluído:</p>
+                    <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.6;color:#5A6E8F;">
+                      <li>Dados de perfil (nome, foto, telefone, endereço)</li>
+                      <li>Histórico de downloads e acessos</li>
+                      <li>Preferências e inscrições de newsletter</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CTA Cancelar exclusão -->
+          <tr>
+            <td align="center" style="padding:16px 32px 16px 32px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:table;margin:0 auto;">
+                <tr>
+                  <td style="background:#002244;border-radius:9999px;">
+                    <a href="https://foodconnection.com.br/cancelar-exclusao?token=[TOKEN]" style="display:inline-block;padding:14px 32px;font-family:'Open Sans',Arial,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:9999px;">
+                      Cancelar exclusão
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Fallback de link -->
+          <tr>
+            <td style="padding:0 32px 24px 32px;">
+              <p style="margin:0 0 8px 0;font-size:13px;line-height:1.5;color:#8391A9;">
+                Se o botão não funcionar, copie e cole este endereço no seu navegador:
+              </p>
+              <p style="margin:0;font-size:13px;line-height:1.5;color:#003CB2;word-break:break-all;">
+                <a href="https://foodconnection.com.br/cancelar-exclusao?token=[TOKEN]" style="color:#003CB2;text-decoration:underline;">https://foodconnection.com.br/cancelar-exclusao?token=[TOKEN]</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding:0 32px;">
+              <div style="height:1px;background:#D6D8DD;line-height:1px;font-size:0;">&nbsp;</div>
+            </td>
+          </tr>
+
+          <!-- Nota -->
+          <tr>
+            <td style="padding:24px 32px 32px 32px;">
+              <p style="margin:0;font-size:13px;line-height:1.5;color:#8391A9;">
+                Se não reconhece esta solicitação, entre em contato imediatamente pelo
+                <a href="https://foodconnection.com.br/contato" style="color:#003CB2;text-decoration:underline;">suporte</a>
+                — podemos estornar o pedido e investigar o acesso.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer — SEM link de descadastrar (transacional legal) -->
+          <tr>
+            <td align="center" style="background:#F7F8FA;padding:24px 32px;border-top:1px solid #D6D8DD;">
+              <p style="margin:0 0 8px 0;font-size:12px;line-height:1.6;color:#5A6E8F;">
+                <a href="https://foodconnection.com.br/privacidade" style="color:#5A6E8F;text-decoration:underline;">Política de Privacidade</a>
+                &nbsp;·&nbsp;
+                <a href="https://foodconnection.com.br/termos" style="color:#5A6E8F;text-decoration:underline;">Termos de Uso</a>
+              </p>
+              <p style="margin:0;font-size:11px;line-height:1.6;color:#8391A9;">
+                Informa Markets Brasil — Rua Bela Cintra, 967, Consolação, São Paulo/SP, 01415-000
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
