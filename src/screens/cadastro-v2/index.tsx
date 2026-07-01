@@ -97,6 +97,7 @@ export default function CadastroV2Screen() {
 	const step = ([1, 2, 3].includes(stepRaw) ? stepRaw : 1) as CadastroStep
 
 	const emailParam = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
+	const intent = params.get('intent') ?? ''
 
 	const errorParam = params.get('error') ?? 'none'
 	const validErrors = step === 1 ? STEP1_ERRORS : step === 2 ? STEP2_ERRORS : STEP3_ERRORS
@@ -140,7 +141,7 @@ export default function CadastroV2Screen() {
 			: `/cadastro-v2?step=${step - 1}&email=${encodeURIComponent(emailParam)}`
 
 	// Ao concluir o passo 3, o modal é fechado e a confirmação abre em fullpage (tela 3.1).
-	const nextAction = step === 3 ? '/confirmacao-email' : '/cadastro-v2'
+	const nextAction = step === 3 ? '/confirmacao-email-v2' : '/cadastro-v2'
 
 	return (
 		<>
@@ -211,6 +212,7 @@ export default function CadastroV2Screen() {
 						) : (
 							<input type="hidden" name="step" value={step + 1} />
 						)}
+						{intent ? <input type="hidden" name="intent" value={intent} /> : null}
 
 						{/* body */}
 						<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-2 pb-4 flex flex-col gap-6">
