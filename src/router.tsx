@@ -15,6 +15,7 @@ import DashboardPerfilV3Screen from './screens/dashboard-perfil-v3'
 import DashboardPerfilV4Screen from './screens/dashboard-perfil-v4'
 import ExcluirContaScreen from './screens/excluir-conta'
 import FormDownloadScreen from './screens/form-download'
+import GateDownloadScreen from './screens/gate-download'
 import FormNewsletterScreen from './screens/form-newsletter'
 import HomeScreen from './screens/home'
 import { HomeV2Screen } from './screens/home-v2'
@@ -62,6 +63,7 @@ const router = createBrowserRouter([
 	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
 	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
 	{ path: '/form-download', element: <FormDownloadScreen /> },
+	{ path: '/gate-download', element: <GateDownloadScreen /> },
 	{ path: '*', element: <NotFoundScreen /> },
 ])
 

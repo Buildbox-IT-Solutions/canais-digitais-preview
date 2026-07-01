@@ -48,6 +48,11 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/redefine-senha-v2', label: 'Redefinir senha (modal v2)', description: 'Modal compacto sobre o portal' },
 			{ path: '/confirmacao-email', label: 'Confirmação de e-mail' },
 			{ path: '/confirmacao-email-v2', label: 'Confirmação de e-mail — v2', description: '"Verificar depois" com peso de botão primário' },
+			{
+				path: '/gate-download',
+				label: 'Gate Download',
+				description: 'Hard gate de download: captura e-mail, bifurca novo vs. existente',
+			},
 		],
 	},
 	{
