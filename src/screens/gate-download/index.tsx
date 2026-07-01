@@ -116,7 +116,7 @@ export default function GateDownloadScreen() {
               </h2>
               <p className="font-body text-body-md text-neutral-700">
                 Acesse com um clique e use todos os materiais sem preencher
-                formularios de novo.
+                formulários de novo.
               </p>
             </div>
 
@@ -142,7 +142,7 @@ export default function GateDownloadScreen() {
               </button>
             </form>
 
-            <AuthBottomLink label="Ja tem conta?" linkLabel="Entrar" linkHref="/login-v2" />
+            <AuthBottomLink label="Já tem conta?" linkLabel="Entrar" linkHref="/login-v2" />
           </div>
         ) : (
           <div className="flex flex-col gap-6">
