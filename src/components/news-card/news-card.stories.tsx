@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { NewsCard } from './index'
 
-/** Larguras de design por variante (figma-specs/news-card.md, coluna "Card W").
- *  O componente é fluido (preenche o container); estas molduras só reproduzem
- *  a largura do slot de grid no Storybook para conferência visual. */
+/** Molduras ILUSTRATIVAS para diferenciar os tamanhos no Storybook.
+ *  Decisão (Opção B, provisória): o card é fluido e a largura real vem do
+ *  col-span do grid da TELA, não do componente. Os px abaixo são só
+ *  aproximação relativa (lg > md > sm), não spec de produção. */
 const WIDTHS: Record<string, string> = {
 	'large-vertical': 'w-[600px]',
 	'medium-vertical': 'w-[392px]',

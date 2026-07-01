@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { VideoCard } from './index'
 
-/** Larguras de design por variante (figma-specs/video-card.md).
- *  O componente é fluido; estas molduras só reproduzem a largura do slot no
- *  Storybook. xsmall-horizontal a confirmar contra o Figma. */
+/** Molduras ILUSTRATIVAS para diferenciar os tamanhos no Storybook.
+ *  Decisão (Opção B, provisória): o card é fluido; a largura real vem do
+ *  col-span do grid da TELA. Os px abaixo são só aproximação relativa. */
 const WIDTHS: Record<string, string> = {
 	'large-vertical': 'w-[600px]',
 	'medium-vertical': 'w-[392px]',
