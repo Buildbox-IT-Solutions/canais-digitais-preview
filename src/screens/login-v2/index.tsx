@@ -133,7 +133,7 @@ export default function LoginV2Screen() {
 
 								<div className="flex justify-end">
 									<a
-										href="/recupera-senha"
+										href="/recupera-senha-v2"
 										className="font-body font-bold text-body-md text-secondary-950 hover:underline"
 									>
 										Esqueci minha senha

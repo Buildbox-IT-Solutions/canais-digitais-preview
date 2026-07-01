@@ -14,21 +14,27 @@ import DashboardScreen from './screens/dashboard'
 import DashboardPerfilV3Screen from './screens/dashboard-perfil-v3'
 import DashboardPerfilV4Screen from './screens/dashboard-perfil-v4'
 import ExcluirContaScreen from './screens/excluir-conta'
-import FormDownloadScreen from './screens/form-download'
+import GateDownloadScreen from './screens/gate-download'
 import FormNewsletterScreen from './screens/form-newsletter'
 import HomeScreen from './screens/home'
+import { HomeV2Screen } from './screens/home-v2'
 import LoginScreen from './screens/login'
 import LoginV2Screen from './screens/login-v2'
 import MenuScreen from './screens/menu'
 import MeusDadosScreen from './screens/meus-dados'
 import NotFoundScreen from './screens/not-found'
 import RecuperaSenhaScreen from './screens/recupera-senha'
+import RecuperaSenhaV2Screen from './screens/recupera-senha-v2'
 import RedefineSenhaScreen from './screens/redefine-senha'
+import RedefineSenhaV2Screen from './screens/redefine-senha-v2'
 import SobreScreen from './screens/sobre'
+import { PatrocinadoresScreen } from './screens/patrocinadores'
+import { PatrocinadorScreen } from './screens/patrocinador'
 
 const router = createBrowserRouter([
 	{ path: '/', element: <CentralScreen /> },
 	{ path: '/home', element: <HomeScreen /> },
+	{ path: '/home-v2', element: <HomeV2Screen /> },
 	{ path: '/categoria', element: <CategoriaScreen /> },
 	{ path: '/conteudo', element: <ConteudoScreen /> },
 	{ path: '/menu', element: <MenuScreen /> },
@@ -38,7 +44,9 @@ const router = createBrowserRouter([
 	{ path: '/cadastro', element: <CadastroScreen /> },
 	{ path: '/cadastro-v2', element: <CadastroV2Screen /> },
 	{ path: '/recupera-senha', element: <RecuperaSenhaScreen /> },
+	{ path: '/recupera-senha-v2', element: <RecuperaSenhaV2Screen /> },
 	{ path: '/redefine-senha', element: <RedefineSenhaScreen /> },
+	{ path: '/redefine-senha-v2', element: <RedefineSenhaV2Screen /> },
 	{ path: '/confirmacao-email', element: <ConfirmacaoEmailScreen /> },
 	{ path: '/confirmacao-email-v2', element: <ConfirmacaoEmailV2Screen /> },
 	{ path: '/dashboard', element: <DashboardScreen /> },
@@ -50,8 +58,10 @@ const router = createBrowserRouter([
 	{ path: '/contato', element: <ContatoScreen /> },
 	{ path: '/sobre', element: <SobreScreen /> },
 	{ path: '/anuncie', element: <AnuncieScreen /> },
+	{ path: '/patrocinadores', element: <PatrocinadoresScreen /> },
+	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
 	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
-	{ path: '/form-download', element: <FormDownloadScreen /> },
+	{ path: '/gate-download', element: <GateDownloadScreen /> },
 	{ path: '*', element: <NotFoundScreen /> },
 ])
 

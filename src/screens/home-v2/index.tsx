@@ -26,14 +26,15 @@ import {
 	VIDEOS_LIST,
 	WEBSTORIES,
 } from '~/mocks/articles'
+import { sponsors } from '~/mocks/sponsors'
 
 /**
- * Tela: Home — Página inicial
+ * Tela: Home v2 — Página inicial com faixa de patrocinadores
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=973-6474
- * 18 seções: hero · 3 colunas (Ingredientes/Food Service/Em Alta) · Proteína Animal ·
+ * 18 seções: hero · faixa patrocinadores · 3 colunas (Ingredientes/Food Service/Em Alta) · Proteína Animal ·
  * Download · Webstories · Vídeos · Fispal · Banner Newsletter · News+Podcasts · Especialistas · Última
  */
-export default function HomeScreen() {
+export function HomeV2Screen() {
 	const [hero, top2, top3] = HOME_HERO
 
 	return (
@@ -156,6 +157,39 @@ export default function HomeScreen() {
 						<div className="border border-primary-100 bg-neutral-50 flex items-center justify-center rounded-sm aspect-[300/250]">
 							<span className="font-body font-bold text-label-md text-neutral-700">300 × 250</span>
 						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* ─── Faixa de Patrocinadores ─── */}
+			<section className="border-y border-neutral-200 bg-neutral-50 py-4">
+				<div className="mx-auto max-w-screen-xl px-4 lg:px-6">
+					<div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+						<span className="shrink-0 font-body text-label-sm font-semibold uppercase tracking-wider text-neutral-500">
+							Patrocinadores
+						</span>
+						<div className="flex flex-wrap items-center gap-4 md:gap-6">
+							{sponsors.map((sponsor) => (
+								<a
+									key={sponsor.id}
+									href={`/patrocinador?id=${sponsor.id}`}
+									title={sponsor.name}
+									className="group flex items-center rounded-sm p-2 transition-opacity hover:opacity-80"
+								>
+									<img
+										src={sponsor.logoSrc}
+										alt={sponsor.name}
+										className="h-8 max-w-[120px] object-contain grayscale group-hover:grayscale-0"
+									/>
+								</a>
+							))}
+						</div>
+						<a
+							href="/patrocinadores"
+							className="shrink-0 font-body text-label-sm font-semibold text-primary-600 hover:text-primary-700 md:ml-auto"
+						>
+							Ver todos →
+						</a>
 					</div>
 				</div>
 			</section>
@@ -528,7 +562,7 @@ export default function HomeScreen() {
 									</div>
 									<Divider />
 									<div className="px-4 py-3 w-full">
-										<SponsorLine company="Company Name" href="#" />
+										<SponsorLine company={sponsors[0].name} href={"/patrocinador?id=" + sponsors[0].id} />
 									</div>
 								</div>
 							</div>
@@ -788,7 +822,7 @@ function CategoryColumn({
 							Conteúdo Patrocinado
 						</p>
 						<p className="font-display font-bold text-title-md text-secondary-950">
-							Company Name
+							{sponsors[1].name}
 						</p>
 					</div>
 					<div className="relative bg-black/60 px-4 py-3 w-full z-10">

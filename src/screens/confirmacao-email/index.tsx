@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
@@ -5,6 +6,7 @@ import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import { AuthDevNav } from '../_auth/dev-nav'
+import { AuthStatusRing, type StatusRingAccent } from '../_auth/status-ring'
 
 type ConfirmacaoState = 'waiting' | 'success' | 'link-expired' | 'link-used'
 
@@ -16,11 +18,11 @@ interface ConfirmacaoButton {
 	label: string
 	href?: string
 	variant: ButtonVariant
+	isResend?: boolean
 }
 
 interface ConfirmacaoConfig {
-	/** classes de cor do anel de status (borda + ícone) */
-	accent: string
+	accent: StatusRingAccent
 	icon: IconName
 	title: string
 	body: string | null
@@ -28,17 +30,11 @@ interface ConfirmacaoConfig {
 	proof: ProofPanelMinimalVariant | null
 }
 
-const ACCENT = {
-	primary: 'border-primary-600 text-primary-600',
-	mint: 'border-mint text-mint',
-	neutral: 'border-neutral-900 text-neutral-900',
-} as const
-
 function buildConfig(state: ConfirmacaoState, email: string): ConfirmacaoConfig {
 	switch (state) {
 		case 'success':
 			return {
-				accent: ACCENT.mint,
+				accent: 'mint',
 				icon: 'check',
 				title: 'Tudo pronto!',
 				body: 'Acesse conteúdo exclusivo, análises e dados do seu setor sem restrições.',
@@ -50,7 +46,7 @@ function buildConfig(state: ConfirmacaoState, email: string): ConfirmacaoConfig 
 			}
 		case 'link-expired':
 			return {
-				accent: ACCENT.neutral,
+				accent: 'neutral',
 				icon: 'schedule',
 				title: 'Link expirado',
 				body: 'O link de confirmação é válido por 24 horas. Solicite um novo para ativar sua conta.',
@@ -66,7 +62,7 @@ function buildConfig(state: ConfirmacaoState, email: string): ConfirmacaoConfig 
 			}
 		case 'link-used':
 			return {
-				accent: ACCENT.mint,
+				accent: 'mint',
 				icon: 'check',
 				title: 'Sua conta já está ativa',
 				body: 'Este link de confirmação já foi usado. Basta fazer login para continuar.',
@@ -75,13 +71,13 @@ function buildConfig(state: ConfirmacaoState, email: string): ConfirmacaoConfig 
 			}
 		default:
 			return {
-				accent: ACCENT.primary,
+				accent: 'primary',
 				icon: 'mail',
 				title: 'Confirme seu e-mail',
 				body: null,
 				buttons: [
 					{ label: 'Verificar depois', href: '/home', variant: 'filled' },
-					{ label: 'Reenviar e-mail', variant: 'outlined' },
+					{ label: 'Reenviar e-mail', variant: 'outlined', isResend: true },
 				],
 				proof: 'confirm-waiting',
 			}
@@ -97,8 +93,31 @@ const BTN_VARIANT: Record<ButtonVariant, string> = {
 	ghost: 'bg-transparent hover:bg-neutral-50 text-primary-600',
 }
 
-function ConfirmButton({ label, href, variant }: ConfirmacaoButton) {
+function ReenviarEmailButton({ className }: { className: string }) {
+	const [secondsLeft, setSecondsLeft] = useState(0)
+	const isDisabled = secondsLeft > 0
+
+	useEffect(() => {
+		if (secondsLeft <= 0) return
+		const id = setTimeout(() => setSecondsLeft((s) => s - 1), 1000)
+		return () => clearTimeout(id)
+	}, [secondsLeft])
+
+	return (
+		<button
+			type="button"
+			disabled={isDisabled}
+			onClick={() => setSecondsLeft(60)}
+			className={twMerge(className, isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none')}
+		>
+			{isDisabled ? `Reenviar e-mail (${secondsLeft}s)` : 'Reenviar e-mail'}
+		</button>
+	)
+}
+
+function ConfirmButton({ label, href, variant, isResend }: ConfirmacaoButton) {
 	const className = twMerge(BTN_BASE, BTN_VARIANT[variant])
+	if (isResend) return <ReenviarEmailButton className={className} />
 	if (href) {
 		return (
 			<a href={href} className={className}>
@@ -110,20 +129,6 @@ function ConfirmButton({ label, href, variant }: ConfirmacaoButton) {
 		<button type="button" className={className}>
 			{label}
 		</button>
-	)
-}
-
-/** Anel de status — círculo 120px com borda 2.5px + ícone 40px (Figma 6989:17827). */
-function StatusRing({ accent, icon }: { accent: string; icon: IconName }) {
-	return (
-		<div
-			className={twMerge(
-				'inline-flex items-center justify-center size-[120px] shrink-0 rounded-full border-[2.5px]',
-				accent,
-			)}
-		>
-			<Icon name={icon} className="size-10" />
-		</div>
 	)
 }
 
@@ -174,7 +179,7 @@ export default function ConfirmacaoEmailScreen() {
 					{/* page-body */}
 					<div className="flex-1 flex flex-col items-center justify-center overflow-y-auto px-6 py-8">
 						<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-							<StatusRing accent={cfg.accent} icon={cfg.icon} />
+							<AuthStatusRing accent={cfg.accent} icon={cfg.icon} />
 
 							<div className="flex flex-col gap-2 w-full">
 								<h1 className="font-display font-bold text-headline-lg text-primary-600">

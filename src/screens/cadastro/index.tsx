@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
+import { PasswordChecklist } from '~/components/password-checklist'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import { AuthBottomLink } from '../_auth/bottom-link'
@@ -10,11 +12,11 @@ import { AuthPasswordInput } from '../_auth/password-input'
 
 type CadastroStep = 1 | 2 | 3
 type Step1Error = 'none' | 'empty' | 'invalido' | 'existente'
-type Step2Error = 'none' | 'fraca' | 'mismatch' | 'termos'
+type Step2Error = 'none' | 'mismatch' | 'termos'
 type Step3Error = 'none' | 'campos'
 
 const STEP1_ERRORS: Step1Error[] = ['none', 'empty', 'invalido', 'existente']
-const STEP2_ERRORS: Step2Error[] = ['none', 'fraca', 'mismatch', 'termos']
+const STEP2_ERRORS: Step2Error[] = ['none', 'mismatch', 'termos']
 const STEP3_ERRORS: Step3Error[] = ['none', 'campos']
 
 const HEADINGS: Record<CadastroStep, { title: string; sub: string | null }> = {
@@ -117,8 +119,6 @@ export default function CadastroScreen() {
 				: ''
 
 	// Step 2
-	const senhaError =
-		errorMode === 'fraca' ? 'Senha muito fraca. Use letras e números, mín. 8 caracteres.' : undefined
 	const confirmError = errorMode === 'mismatch' ? 'As senhas não coincidem.' : undefined
 	const termosError =
 		errorMode === 'termos'
@@ -128,9 +128,11 @@ export default function CadastroScreen() {
 	// Step 3
 	const campoVazioError = errorMode === 'campos' ? 'Preencha todos os campos obrigatórios.' : undefined
 
-	const senhaInicial =
-		errorMode === 'fraca' ? 'abcdefgh' : errorMode === 'mismatch' ? 'Minhasenha1@' : ''
+	const senhaInicial = errorMode === 'mismatch' ? 'Minhasenha1@' : ''
 	const confirmInicial = errorMode === 'mismatch' ? 'outrasenha456' : ''
+
+	const [pw, setPw] = useState(senhaInicial)
+	useEffect(() => { setPw(senhaInicial) }, [senhaInicial])
 
 	const backHref =
 		step === 1 ? '/login' : `/cadastro?step=${step - 1}&email=${encodeURIComponent(emailParam)}`
@@ -178,6 +180,7 @@ export default function CadastroScreen() {
 							</div>
 
 							{campoVazioError ? <AuthErrorAlert message={campoVazioError} /> : null}
+							{termosError ? <AuthErrorAlert message={termosError} /> : null}
 
 							<form action={nextAction} method="get" className="flex flex-col gap-6" noValidate>
 								<input type="hidden" name="step" value={step + 1} />
@@ -203,15 +206,18 @@ export default function CadastroScreen() {
 									<>
 										<input type="hidden" name="email" value={emailParam} />
 
-										<AuthPasswordInput
-											label="Senha"
-											name="senha"
-											id="cadastro-senha"
-											autoComplete="new-password"
-											defaultValue={senhaInicial}
-											error={senhaError}
-											required
-										/>
+										<div className="flex flex-col gap-3 w-full">
+											<AuthPasswordInput
+												label="Senha"
+												name="senha"
+												id="cadastro-senha"
+												autoComplete="new-password"
+												value={pw}
+												onChange={setPw}
+												required
+											/>
+											<PasswordChecklist value={pw} />
+										</div>
 
 										<AuthPasswordInput
 											label="Confirmar senha"
@@ -268,20 +274,6 @@ export default function CadastroScreen() {
 													Quero receber comunicações e novidades da Informa Markets
 												</span>
 											</label>
-
-											{termosError ? (
-												<p className="mt-1 px-1 flex items-center gap-1.5 font-body font-semibold text-label-md text-red-600">
-													<svg
-														className="size-3.5 shrink-0"
-														viewBox="0 0 24 24"
-														fill="currentColor"
-														aria-hidden="true"
-													>
-														<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-													</svg>
-													{termosError}
-												</p>
-											) : null}
 										</div>
 									</>
 								) : null}

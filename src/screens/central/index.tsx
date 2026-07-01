@@ -26,6 +26,7 @@ const GROUPS: RouteGroup[] = [
 		color: 'primary',
 		items: [
 			{ path: '/home', label: 'Home', description: 'Página inicial — capa editorial completa' },
+			{ path: '/home-v2', label: 'Home v2', description: 'Nova proposta com múltiplos patrocinadores' },
 			{ path: '/categoria', label: 'Categoria', description: 'Listagem de conteúdos por categoria' },
 			{ path: '/conteudo', label: 'Conteúdo', description: 'Página interna de matéria' },
 			{ path: '/buscar', label: 'Buscar', description: 'Resultados de busca' },
@@ -42,9 +43,16 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/cadastro', label: 'Cadastro', description: 'Fluxo em 3 etapas' },
 			{ path: '/cadastro-v2', label: 'Cadastro (modal v2)', description: 'Fluxo em 3 etapas, modal sobre o portal' },
 			{ path: '/recupera-senha', label: 'Recuperar senha' },
+			{ path: '/recupera-senha-v2', label: 'Recuperar senha (modal v2)', description: 'Modal compacto sobre o portal' },
 			{ path: '/redefine-senha', label: 'Redefinir senha' },
+			{ path: '/redefine-senha-v2', label: 'Redefinir senha (modal v2)', description: 'Modal compacto sobre o portal' },
 			{ path: '/confirmacao-email', label: 'Confirmação de e-mail' },
 			{ path: '/confirmacao-email-v2', label: 'Confirmação de e-mail — v2', description: '"Verificar depois" com peso de botão primário' },
+			{
+				path: '/gate-download',
+				label: 'Gate Download',
+				description: 'Hard gate de download: captura e-mail, bifurca novo vs. existente',
+			},
 		],
 	},
 	{
@@ -68,8 +76,9 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/sobre', label: 'Sobre' },
 			{ path: '/contato', label: 'Contato' },
 			{ path: '/anuncie', label: 'Anuncie' },
+			{ path: '/patrocinadores', label: 'Patrocinadores', description: 'Listagem de todos os patrocinadores' },
+			{ path: '/patrocinador?id=tetrapak', label: 'Patrocinador (individual)', description: 'Página de um patrocinador específico' },
 			{ path: '/form-newsletter', label: 'Form — Newsletter' },
-			{ path: '/form-download', label: 'Form — Download' },
 		],
 	},
 	{
