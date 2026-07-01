@@ -1,89 +1,44 @@
-# Canais Digitais 2.0 — Tema WordPress (Design-as-Code)
+# legacy/ — referência residual da migração PHP→React
 
-Reprodução fiel do Design do Figma em PHP + Tailwind v4. Fonte da verdade visual para o time de Devs do tema WordPress real.
+Esta pasta continha o protótipo PHP original do projeto. A migração para
+React foi concluída (marco na tag `migracao-php-react-v1`), e a maior parte
+do legado já foi removida nesta limpeza:
 
-> Leia o [`CLAUDE.md`](./CLAUDE.md) antes de qualquer trabalho neste projeto.
+- Componentes com equivalente React confirmado — removidos.
+- Layouts/telas já migrados ou superados por versões canônicas — removidos.
+- Infra e tooling do preview PHP (`index.php`, `router.php`, `Dockerfile`,
+  site estático de DS em `src/docs/`, geradores em `tools/`, tokens/estilos
+  duplicados, JS de interação) — removidos.
+- Documentos de contexto (`DESIGN.md`, `FEATURE-cadastro*.md`, `.impeccable.md`)
+  e templates de e-mail — o conteúdo único foi extraído antes da remoção para
+  `figma-specs/_regras-de-negocio.md` e `docs/legacy-reference/emails/`.
 
-**Figma:** https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0
+## O que permanece aqui (e por quê)
 
-## Stack
+O que sobrou é **referência intencional** para trabalho de migração ainda
+pendente, não sobra esquecida:
 
-- **PHP** (.php files com header de doc) — destino: tema WordPress
-- **Tailwind v4** — config via CSS (`@theme` em `src/tokens/tokens.css`), não JS
-- **PHP built-in server** + `router.php` — preview local
+- **`src/components/`** — componentes que ainda **não têm equivalente React**
+  (ex.: `tooltip`, `bottom-sheet`, `avatar-stack`, `filter-chip`, `search-view`,
+  `relacionadas`, `resumo-box`, `highlight-post`, `author-summary`,
+  `authors-carousel`, `header-author`, `loading-button`, `video-container`),
+  além de padrões de card que hoje existem apenas **inline** dentro das telas
+  React e ainda não foram extraídos como componentes próprios com stories
+  (ex.: `news-card*`, `video-card*`, `podcast-card*`, `webstories`,
+  `widget-*`, `side-menu`, `banner-newsletter`).
+- **`src/layouts/`** — três telas **não migradas**: `cadastro-v2.php` e
+  `login-v2.php` (designs alternativos single-column, diferentes das telas
+  homônimas que existem em React) e `onboarding-backup.php` (wizard com chips
+  de interesse + tela de celebração, não coberto pelo cadastro atual).
 
-## Como rodar o preview local
+## Histórico completo
 
-Pré-requisitos: PHP 8.x e o binário `tools/tailwindcss.exe` (ver abaixo).
-
-### Setup único (Windows)
-
-O PHP built-in server não funciona com espaços no path. Crie uma junction uma vez:
-
-```
-mklink /J C:\wptheme "C:\Pedro\Informa\Canais Digitais\Redesign\WP Theme"
-```
-
-### Subir o ambiente
-
-Em **dois terminais** a partir de `C:\wptheme`:
+Todo o conteúdo removido permanece recuperável na tag
+**`migracao-php-react-v1`** — por exemplo:
 
 ```bash
-# Terminal 1 — Tailwind watcher (regenera output.css ao salvar)
-tools/tailwindcss.exe -i src/styles/input.css -o src/docs/output.css --watch
-
-# Terminal 2 — Servidor PHP
-cd C:\wptheme && php -S localhost:8000 router.php
+git show migracao-php-react-v1:legacy/src/components/tooltip.php
 ```
 
-### URLs de acesso
-
-| URL | O que mostra |
-|-----|-------------|
-| <http://localhost:8000/src/docs/index.html> | Showcase de componentes (catálogo visual) |
-| <http://localhost:8000/src/docs/tokens.html> | Tokens de design (cores, radius, sombras) |
-| <http://localhost:8000/src/docs/typography.html> | Type specimen (tipografia) |
-| <http://localhost:8000/src/layouts/404.php> | Layout 404 (PHP nativo) |
-
-### Como o `router.php` funciona
-
-| Rota | Comportamento |
-|------|--------------|
-| `/src/components/**` | Servido como **texto plano** — `showcase.js` resolve o PHP no client |
-| `/src/layouts/**` | Executado como **PHP nativo** — `get_template_part()` polyfill ativo |
-| demais arquivos | Comportamento estático padrão (HTML, CSS, JS, imagens) |
-
-## Tailwind v4 standalone CLI
-
-Baixe o binário único do release oficial e salve em `tools/tailwindcss.exe`:
-
-- Releases: https://github.com/tailwindlabs/tailwindcss/releases
-- Arquivo: `tailwindcss-windows-x64.exe`
-
-O binário é gitignored — cada quem baixa o seu.
-
-## Estrutura
-
-```
-src/
-  components/   ← componentes .php (marcação + classes Tailwind)
-  tokens/       ← tokens.css com @theme do Tailwind v4
-  layouts/      ← templates de página
-  styles/       ← input.css (entrypoint do Tailwind)
-  docs/         ← index.html + showcase.js + output.css (gerado)
-figma-specs/    ← anotações por componente
-tools/          ← tailwindcss.exe (gitignored)
-```
-
-## Adicionando um novo componente
-
-1. Consultar o frame no Figma
-2. Verificar tokens em `src/tokens/tokens.css`
-3. Criar `src/components/<nome>.php` (ver convenções no `CLAUDE.md` §5.2)
-4. Registrar em `COMPONENTS` no `src/docs/showcase.js`
-5. Documentar decisões em `figma-specs/<nome>.md`
-
-## Repositório
-
-Projeto versionado no GitHub como protótipo de referência visual.
-Repositório privado — acesso restrito ao time Informa Markets.
+Quando os itens pendentes acima forem concluídos, esta pasta deve desaparecer
+por completo.
