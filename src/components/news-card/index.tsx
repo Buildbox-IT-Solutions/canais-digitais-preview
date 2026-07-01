@@ -60,7 +60,7 @@ export function NewsCard({
 		<div className="flex flex-col gap-2 min-w-0 flex-1">
 			{categoria ? <Categoria {...categoria} /> : null}
 			<h3 className={twMerge('font-display font-bold text-primary-600', headlineClass)}>
-				<a href={href} className="group-hover:underline">
+				<a href={href} className="group-hover:text-secondary-950 transition-colors">
 					{title}
 				</a>
 			</h3>
