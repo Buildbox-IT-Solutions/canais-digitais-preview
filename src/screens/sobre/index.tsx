@@ -1,9 +1,8 @@
-import { Categoria } from '~/components/categoria'
 import { Divider } from '~/components/divider'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
+import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
-import { Thumbnail } from '~/components/thumbnail'
 import { picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
 
 /**
@@ -105,28 +104,15 @@ export default function SobreScreen() {
 				<SectionTitle label="Veja também" color="primary-600" />
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 pt-6 pb-10 flex flex-wrap gap-x-6 gap-y-8">
 					{VEJA_TAMBEM.map((card) => (
-						<article
+						<NewsCard
 							key={card.id}
-							className="group flex flex-col gap-3 flex-1 min-w-[288px]"
-						>
-							<Thumbnail
-								src={picsumSrc(card.seed, 600, 338)}
-								alt="Capa"
-								href="/conteudo"
-								ratio="video"
-							/>
-							<div className="flex flex-col gap-2">
-								<Categoria color={card.categoryColor} label={card.category} />
-								<h3 className="text-title-lg font-display font-bold text-primary-600 leading-tight">
-									<a
-										href="/conteudo"
-										className="group-hover:text-secondary-950 transition-colors"
-									>
-										{card.title}
-									</a>
-								</h3>
-							</div>
-						</article>
+							size="small"
+							title={card.title}
+							image={picsumSrc(card.seed, 600, 338)}
+							href="/conteudo"
+							categoria={{ label: card.category, color: card.categoryColor }}
+							className="flex-1 min-w-[288px]"
+						/>
 					))}
 				</div>
 			</section>
