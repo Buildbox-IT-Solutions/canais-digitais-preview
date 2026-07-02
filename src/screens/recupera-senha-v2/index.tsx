@@ -124,7 +124,7 @@ export default function RecuperaSenhaV2Screen() {
 										href="?state=default"
 										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-transparent hover:bg-neutral-50 text-primary-600 font-body font-bold text-body-lg transition-colors"
 									>
-										Tentar com outro e-mail
+										Tentar novamente
 									</a>
 								</div>
 							</div>

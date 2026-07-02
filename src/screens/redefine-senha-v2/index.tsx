@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
-import { PasswordStrength } from '~/components/password-strength'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import HomeScreen from '../home'
@@ -207,7 +206,6 @@ export default function RedefineSenhaV2Screen() {
 												error={senhaError}
 												required
 											/>
-											<PasswordStrength value={pw} inputId="redef-v2-pw" />
 										</div>
 
 										<AuthPasswordInput
