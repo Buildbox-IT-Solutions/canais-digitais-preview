@@ -2,7 +2,6 @@ import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
-import { SocialButton } from '~/components/social-button'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
@@ -99,17 +98,6 @@ export default function LoginV2Screen() {
 					<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-2 pb-4">
 						<div className="flex flex-col gap-6">
 							{globalError ? <AuthErrorAlert message={globalError} /> : null}
-
-							<div className="flex gap-4">
-								<SocialButton provider="google" href="/home" iconOnly className="flex-1" />
-								<SocialButton provider="linkedin" href="/home" iconOnly className="flex-1" />
-							</div>
-
-							<div className="flex items-center gap-3 overflow-hidden">
-								<span className="flex-1 h-px bg-neutral-100" />
-								<span className="font-body text-body-md text-neutral-500">ou</span>
-								<span className="flex-1 h-px bg-neutral-100" />
-							</div>
 
 							<form action="/home" method="get" className="flex flex-col gap-6" noValidate>
 								<AuthInput

@@ -16,7 +16,7 @@ const VARIANTS: Record<
 		pre: 'Inteligência editorial para quem ',
 		mark: 'move',
 		post: ' indústrias.',
-		sub: 'Do agronegócio à saúde, da logística ao varejo — acesse todos os onze portais editoriais da Informa Markets com o mesmo login.',
+		sub: 'Do agronegócio à saúde, da logística ao varejo — dados, análises e materiais exclusivos do seu setor.',
 	},
 	'signup-1': {
 		pre: 'Criar uma conta é ',
@@ -40,7 +40,7 @@ const VARIANTS: Record<
 		pre: 'Bem-vindo aos ',
 		mark: 'Canais Digitais',
 		post: '.',
-		sub: 'Sua conta está ativa em todos os 11 portais editoriais da Informa Markets com o mesmo login.',
+		sub: 'Sua conta está ativa. Acesse materiais, relatórios e análises exclusivas do seu setor.',
 	},
 	'confirm-waiting': {
 		pre: 'Seu acesso está a ',
