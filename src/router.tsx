@@ -14,6 +14,10 @@ import ConteudoScreen from './screens/conteudo'
 import DashboardScreen from './screens/dashboard'
 import DashboardPerfilV3Screen from './screens/dashboard-perfil-v3'
 import DashboardPerfilV4Screen from './screens/dashboard-perfil-v4'
+import EmailBoasVindasScreen from './screens/email-boas-vindas'
+import EmailConfirmacaoScreen from './screens/email-confirmacao'
+import EmailExclusaoContaScreen from './screens/email-exclusao-conta'
+import EmailRecuperacaoSenhaScreen from './screens/email-recuperacao-senha'
 import ExcluirContaScreen from './screens/excluir-conta'
 import GateDownloadScreen from './screens/gate-download'
 import FormNewsletterScreen from './screens/form-newsletter'
@@ -63,6 +67,10 @@ const router = createBrowserRouter([
 	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
 	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
 	{ path: '/gate-download', element: <GateDownloadScreen /> },
+	{ path: '/email-confirmacao', element: <EmailConfirmacaoScreen /> },
+	{ path: '/email-boas-vindas', element: <EmailBoasVindasScreen /> },
+	{ path: '/email-recuperacao-senha', element: <EmailRecuperacaoSenhaScreen /> },
+	{ path: '/email-exclusao-conta', element: <EmailExclusaoContaScreen /> },
 	{ path: '/archive', element: <ArchiveScreen /> },
 	{ path: '*', element: <NotFoundScreen /> },
 ])

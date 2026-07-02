@@ -67,6 +67,17 @@ const GROUPS: RouteGroup[] = [
 		],
 	},
 	{
+		title: 'E-mails',
+		description: 'Templates de e-mail transacional (preview).',
+		color: 'secondary',
+		items: [
+			{ path: '/email-confirmacao', label: 'Confirmação de e-mail', description: 'Pós-cadastro · ativar conta' },
+			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada' },
+			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha' },
+			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação · 30 dias p/ cancelar' },
+		],
+	},
+	{
 		title: 'Sistema',
 		description: 'Páginas de exceção e fallback.',
 		color: 'neutral',
