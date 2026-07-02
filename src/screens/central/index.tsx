@@ -26,7 +26,6 @@ const GROUPS: RouteGroup[] = [
 		color: 'primary',
 		items: [
 			{ path: '/home', label: 'Home', description: 'Página inicial — capa editorial completa' },
-			{ path: '/home-v2', label: 'Home v2', description: 'Nova proposta com múltiplos patrocinadores' },
 			{ path: '/categoria', label: 'Categoria', description: 'Listagem de conteúdos por categoria' },
 			{ path: '/conteudo', label: 'Conteúdo', description: 'Página interna de matéria' },
 			{ path: '/buscar', label: 'Buscar', description: 'Resultados de busca' },
@@ -38,15 +37,10 @@ const GROUPS: RouteGroup[] = [
 		description: 'Login, cadastro e fluxos de senha.',
 		color: 'secondary',
 		items: [
-			{ path: '/login', label: 'Login' },
 			{ path: '/login-v2', label: 'Login (modal v2)', description: 'Modal compacto sobre o portal' },
-			{ path: '/cadastro', label: 'Cadastro', description: 'Fluxo em 3 etapas' },
 			{ path: '/cadastro-v2', label: 'Cadastro (modal v2)', description: 'Fluxo em 3 etapas, modal sobre o portal' },
-			{ path: '/recupera-senha', label: 'Recuperar senha' },
 			{ path: '/recupera-senha-v2', label: 'Recuperar senha (modal v2)', description: 'Modal compacto sobre o portal' },
-			{ path: '/redefine-senha', label: 'Redefinir senha' },
 			{ path: '/redefine-senha-v2', label: 'Redefinir senha (modal v2)', description: 'Modal compacto sobre o portal' },
-			{ path: '/confirmacao-email', label: 'Confirmação de e-mail' },
 			{ path: '/confirmacao-email-v2', label: 'Confirmação de e-mail — v2', description: '"Verificar depois" com peso de botão primário' },
 			{
 				path: '/gate-download',
@@ -60,8 +54,6 @@ const GROUPS: RouteGroup[] = [
 		description: 'Área logada do usuário e gestão de dados pessoais.',
 		color: 'mint',
 		items: [
-			{ path: '/dashboard', label: 'Dashboard' },
-			{ path: '/dashboard-perfil-v3', label: 'Perfil — v3' },
 			{ path: '/dashboard-perfil-v4', label: 'Perfil — v4', description: 'Perfil como aba inicial; Últimas leituras' },
 			{ path: '/meus-dados', label: 'Meus dados' },
 			{ path: '/consentimentos', label: 'Consentimentos' },
@@ -213,16 +205,25 @@ export default function CentralScreen() {
 					})}
 				</div>
 
-				<footer className="mt-16 pt-8 border-t border-neutral-100 font-body text-body-sm text-neutral-700">
-					Repositório:{' '}
-					<a
-						href="https://github.com/Buildbox-IT-Solutions/canais-digitais-preview"
-						className="text-primary-600 hover:underline"
-						target="_blank"
-						rel="noreferrer"
-					>
-						Buildbox-IT-Solutions/canais-digitais-preview
-					</a>
+				<footer className="mt-16 pt-8 border-t border-neutral-100 font-body text-body-sm text-neutral-700 flex flex-col gap-2">
+					<span>
+						Versões descontinuadas:{' '}
+						<Link to="/archive" className="text-primary-600 hover:underline">
+							/archive
+						</Link>{' '}
+						— referência, não implementar.
+					</span>
+					<span>
+						Repositório:{' '}
+						<a
+							href="https://github.com/Buildbox-IT-Solutions/canais-digitais-preview"
+							className="text-primary-600 hover:underline"
+							target="_blank"
+							rel="noreferrer"
+						>
+							Buildbox-IT-Solutions/canais-digitais-preview
+						</a>
+					</span>
 				</footer>
 			</div>
 		</main>

@@ -1,5 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router'
 import AnuncieScreen from './screens/anuncie'
+import ArchiveScreen from './screens/archive'
 import BuscarScreen from './screens/buscar'
 import CadastroScreen from './screens/cadastro'
 import CadastroV2Screen from './screens/cadastro-v2'
@@ -62,6 +63,7 @@ const router = createBrowserRouter([
 	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
 	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
 	{ path: '/gate-download', element: <GateDownloadScreen /> },
+	{ path: '/archive', element: <ArchiveScreen /> },
 	{ path: '*', element: <NotFoundScreen /> },
 ])
 
