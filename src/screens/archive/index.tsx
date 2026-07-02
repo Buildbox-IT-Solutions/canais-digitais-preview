@@ -22,22 +22,22 @@ const GROUPS: ArchiveGroup[] = [
 	{
 		title: 'Autenticação — full page (substituídas pelos modais)',
 		items: [
-			{ path: '/login', label: 'Login (full page)', reason: 'Substituída pelo modal em /login-v2' },
-			{ path: '/cadastro', label: 'Cadastro (full page)', reason: 'Substituída pelo modal em /cadastro-v2' },
+			{ path: '/login-full', label: 'Login (full page)', reason: 'Substituída pelo modal em /login' },
+			{ path: '/cadastro-full', label: 'Cadastro (full page)', reason: 'Substituída pelo modal em /cadastro' },
 			{
-				path: '/recupera-senha',
+				path: '/recupera-senha-full',
 				label: 'Recuperar senha (full page)',
-				reason: 'Substituída pelo modal em /recupera-senha-v2',
+				reason: 'Substituída pelo modal em /recupera-senha',
 			},
 			{
-				path: '/redefine-senha',
+				path: '/redefine-senha-full',
 				label: 'Redefinir senha (full page)',
-				reason: 'Substituída pelo modal em /redefine-senha-v2',
+				reason: 'Substituída pelo modal em /redefine-senha',
 			},
 			{
-				path: '/confirmacao-email',
+				path: '/confirmacao-email-full',
 				label: 'Confirmação de e-mail (full page)',
-				reason: 'Substituída pelo modal em /confirmacao-email-v2',
+				reason: 'Substituída pelo modal em /confirmacao-email',
 			},
 		],
 	},

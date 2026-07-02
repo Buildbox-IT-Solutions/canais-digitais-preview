@@ -92,7 +92,7 @@ export default function GateDownloadScreen() {
     if (isExistente(value)) {
       navigate(`/gate-download?state=waiting&email=${encodeURIComponent(value)}`)
     } else {
-      navigate(`/cadastro-v2?step=1&email=${encodeURIComponent(value)}&intent=download`)
+      navigate(`/cadastro?step=1&email=${encodeURIComponent(value)}&intent=download`)
     }
   }
 
@@ -142,7 +142,7 @@ export default function GateDownloadScreen() {
               </button>
             </form>
 
-            <AuthBottomLink label="Já tem conta?" linkLabel="Entrar" linkHref="/login-v2" />
+            <AuthBottomLink label="Já tem conta?" linkLabel="Entrar" linkHref="/login" />
           </div>
         ) : (
           <div className="flex flex-col gap-6">

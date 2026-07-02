@@ -138,10 +138,10 @@ export default function CadastroV2Screen() {
 	const prevStep =
 		step === 1
 			? null
-			: `/cadastro-v2?step=${step - 1}&email=${encodeURIComponent(emailParam)}`
+			: `/cadastro?step=${step - 1}&email=${encodeURIComponent(emailParam)}`
 
 	// Ao concluir o passo 3, o modal é fechado e a confirmação abre em fullpage (tela 3.1).
-	const nextAction = step === 3 ? '/confirmacao-email-v2' : '/cadastro-v2'
+	const nextAction = step === 3 ? '/confirmacao-email' : '/cadastro'
 
 	return (
 		<>
@@ -231,7 +231,7 @@ export default function CadastroV2Screen() {
 									defaultValue={emailValueByError || emailParam}
 									error={emailError}
 									helperLink={
-										errorMode === 'existente' ? { label: 'Entrar', href: '/login-v2' } : undefined
+										errorMode === 'existente' ? { label: 'Entrar', href: '/login' } : undefined
 									}
 								/>
 							) : null}
@@ -383,7 +383,7 @@ export default function CadastroV2Screen() {
 							</button>
 
 							{step === 1 ? (
-								<AuthBottomLink label="Já tem uma conta?" linkLabel="Entrar" linkHref="/login-v2" />
+								<AuthBottomLink label="Já tem uma conta?" linkLabel="Entrar" linkHref="/login" />
 							) : null}
 						</div>
 					</form>

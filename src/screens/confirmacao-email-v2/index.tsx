@@ -51,7 +51,7 @@ function buildConfig(state: ConfirmacaoState, email: string, intent: string): Co
 					? `/gate-download?state=waiting&email=${encodeURIComponent(email)}`
 					: `?state=waiting&email=${encodeURIComponent(email)}`,
 				secondLabel: 'Voltar para o login',
-				secondHref: '/login-v2',
+				secondHref: '/login',
 				proof: 'login',
 			}
 		case 'link-used':
@@ -61,7 +61,7 @@ function buildConfig(state: ConfirmacaoState, email: string, intent: string): Co
 				title: 'Sua conta já está ativa',
 				body: 'Este link de confirmação já foi usado. Basta fazer login para continuar.',
 				primaryLabel: 'Fazer login',
-				primaryHref: '/login-v2',
+				primaryHref: '/login',
 				secondLabel: null,
 				secondHref: null,
 				proof: 'login',
@@ -75,7 +75,7 @@ function buildConfig(state: ConfirmacaoState, email: string, intent: string): Co
 				primaryLabel: 'Reenviar e-mail',
 				primaryHref: '#',
 				secondLabel: 'Errei o e-mail',
-				secondHref: '/cadastro-v2?step=1',
+				secondHref: '/cadastro?step=1',
 				proof: 'signup-1',
 			}
 	}
@@ -135,7 +135,7 @@ export default function ConfirmacaoEmailV2Screen() {
 				<section className="flex flex-col w-full md:w-[470px] shrink-0 px-8 sm:px-12 py-12 overflow-y-auto">
 					<div className="w-full">
 						{state !== 'success' ? (
-							<AuthBackLink href="/login-v2" label="Voltar para o login" />
+							<AuthBackLink href="/login" label="Voltar para o login" />
 						) : null}
 					</div>
 

@@ -133,7 +133,7 @@ export default function LoginV2Screen() {
 
 								<div className="flex justify-end">
 									<a
-										href="/recupera-senha-v2"
+										href="/recupera-senha"
 										className="font-body font-bold text-body-md text-secondary-950 hover:underline"
 									>
 										Esqueci minha senha
@@ -155,7 +155,7 @@ export default function LoginV2Screen() {
 						<AuthBottomLink
 							label="Não tem conta?"
 							linkLabel="Criar conta"
-							linkHref="/cadastro-v2?step=1"
+							linkHref="/cadastro?step=1"
 						/>
 					</div>
 				</div>
