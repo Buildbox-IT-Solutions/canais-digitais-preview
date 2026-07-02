@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { twMerge } from '~/lib/tw-merge'
+import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
 import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import HomeScreen from '../home'
-import { AuthBackLink } from '../_auth/back-link'
 import { AuthDevNav } from '../_auth/dev-nav'
+import { AuthInput } from '../_auth/input'
 import { AuthStatusIcon, type StatusTone } from '../_auth/status-icon'
 
-type ConfirmacaoState = 'waiting' | 'success' | 'link-expired' | 'link-used'
+type ConfirmacaoState = 'waiting' | 'corrigir' | 'success' | 'link-expired' | 'link-used'
 
-const STATES: ConfirmacaoState[] = ['waiting', 'success', 'link-expired', 'link-used']
+const STATES: ConfirmacaoState[] = ['waiting', 'corrigir', 'success', 'link-expired', 'link-used']
 
 interface ConfirmacaoConfig {
 	tone: StatusTone
@@ -67,6 +68,7 @@ function buildConfig(state: ConfirmacaoState, email: string, intent: string): Co
 				proof: 'login',
 			}
 		default:
+			// waiting + corrigir compartilham o config base
 			return {
 				tone: 'info-secondary',
 				icon: 'mail',
@@ -75,7 +77,9 @@ function buildConfig(state: ConfirmacaoState, email: string, intent: string): Co
 				primaryLabel: 'Reenviar e-mail',
 				primaryHref: '#',
 				secondLabel: 'Errei o e-mail',
-				secondHref: '/cadastro?step=1',
+				secondHref: `?state=corrigir&email=${encodeURIComponent(email)}${
+					intent ? `&intent=${encodeURIComponent(intent)}` : ''
+				}`,
 				proof: 'signup-1',
 			}
 	}
@@ -107,12 +111,59 @@ function ReenviarEmailButton() {
 }
 
 /**
- * Tela: Confirmação de E-mail (Modal) — v2 (deriva de confirmacao-email)
- * Mudanças: (1) no estado "waiting", "Verificar depois" ganha o mesmo peso do CTA primário —
- * botão cheio (bg-primary-600), full-width, h-12 — e fica no topo; "Reenviar e-mail" vira o
- * botão outline logo abaixo. (2) Apresentado como modal sobre o portal (HomeScreen), mantendo
- * o ProofPanelMinimal, com o fluxo apontando para as rotas v2.
- * Estados: ?state=waiting|success|link-expired|link-used · ?email=...
+ * Estado "corrigir" (EML-02): a conta ainda não foi criada, então corrigir o e-mail
+ * é só reenviar o link para o endereço certo — sem refazer o cadastro. Submete de volta
+ * para o estado "waiting" com o novo e-mail.
+ */
+function CorrigirForm({ email, intent }: { email: string; intent: string }) {
+	return (
+		<div className="flex flex-col gap-6 w-full">
+			<AuthStatusIcon tone="info-secondary" icon="mail" />
+
+			<div className="flex flex-col gap-2 w-full">
+				<h1
+					id="confirmacao-v2-title"
+					className="font-display font-bold text-headline-md text-primary-600"
+				>
+					Corrigir e-mail
+				</h1>
+				<p className="font-body text-body-lg text-neutral-900">
+					Digite o e-mail correto e reenviaremos o link de confirmação — sem refazer o cadastro.
+				</p>
+			</div>
+
+			<form action="/confirmacao-email" method="get" className="flex flex-col gap-4 w-full" noValidate>
+				<input type="hidden" name="state" value="waiting" />
+				{intent ? <input type="hidden" name="intent" value={intent} /> : null}
+
+				<AuthInput
+					label="Novo e-mail"
+					name="email"
+					type="email"
+					required
+					autoFocus
+					autoComplete="email"
+					placeholder="seu@empresa.com.br"
+					defaultValue={email}
+				/>
+
+				<button
+					type="submit"
+					className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors mt-2"
+				>
+					Salvar e reenviar
+				</button>
+			</form>
+		</div>
+	)
+}
+
+/**
+ * Tela: Confirmação de E-mail (Modal) — v2
+ * Layout padrão dos modais de auth (EML-04): proof panel à esquerda (50%) + coluna de conteúdo
+ * à direita (50%), 912px, top-bar com Voltar + fechar. Estado "corrigir" (EML-02) permite
+ * trocar o e-mail sem refazer o cadastro.
+ * Estados: ?state=waiting|corrigir|success|link-expired|link-used · ?email=... · ?intent=download
  */
 export default function ConfirmacaoEmailV2Screen() {
 	const [params] = useSearchParams()
@@ -125,93 +176,135 @@ export default function ConfirmacaoEmailV2Screen() {
 	const intent = params.get('intent') ?? ''
 	const cfg = buildConfig(state, email, intent)
 	const isWaiting = state === 'waiting'
+	const isCorrigir = state === 'corrigir'
+
+	const backHref = isCorrigir ? `?state=waiting&email=${encodeURIComponent(email)}` : '/login'
+	const backLabel = isCorrigir ? 'Voltar' : 'Voltar para o login'
 
 	return (
 		<>
 			{/* Portal ao fundo */}
 			<HomeScreen />
 
-			<Modal open size="xl" padded={false} closeHref="/home" labelledById="confirmacao-v2-title">
-				<section className="flex flex-col w-full md:w-[470px] shrink-0 px-8 sm:px-12 py-12 overflow-y-auto">
-					<div className="w-full">
+			<Modal
+				open
+				size="xl"
+				padded={false}
+				showClose={false}
+				closeHref="/home"
+				labelledById="confirmacao-v2-title"
+				className="max-w-[912px] min-h-[min(696px,90vh)]"
+			>
+				<ProofPanelMinimal
+					variant={cfg.proof}
+					size="sm"
+					className="hidden md:flex grow basis-1/2 min-w-0"
+				/>
+
+				{/* Coluna do conteúdo */}
+				<div className="relative flex grow basis-1/2 min-w-0 min-h-0 flex-col bg-white">
+					{/* top-bar: Voltar (exceto success) + fechar */}
+					<div className="shrink-0 flex items-center justify-between px-4 pt-4 pb-2">
 						{state !== 'success' ? (
-							<AuthBackLink href="/login" label="Voltar para o login" />
-						) : null}
+							<a
+								href={backHref}
+								className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
+							>
+								<Icon name="arrow-left" className="size-5" />
+								{backLabel}
+							</a>
+						) : (
+							<span aria-hidden="true" />
+						)}
+
+						<a
+							href="/home"
+							aria-label="Fechar"
+							className="inline-flex items-center justify-center size-9 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
+						>
+							<Icon name="close" className="size-[18px]" />
+						</a>
 					</div>
 
-					<div className="flex-1 flex flex-col justify-center w-full">
-						<div className="flex flex-col gap-6 w-full">
-							<AuthStatusIcon tone={cfg.tone} icon={cfg.icon} />
+					{/* body centralizado */}
+					<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-4 pb-4 flex flex-col justify-center">
+						{isCorrigir ? (
+							<CorrigirForm email={email} intent={intent} />
+						) : (
+							<div className="flex flex-col gap-6 w-full">
+								<AuthStatusIcon tone={cfg.tone} icon={cfg.icon} />
 
-							<div className="flex flex-col gap-2 w-full">
-								<h1
-									id="confirmacao-v2-title"
-									className="font-display font-bold text-headline-md text-primary-600"
-								>
-									{cfg.title}
-								</h1>
+								<div className="flex flex-col gap-2 w-full">
+									<h1
+										id="confirmacao-v2-title"
+										className="font-display font-bold text-headline-md text-primary-600"
+									>
+										{cfg.title}
+									</h1>
 
-								{isWaiting ? (
-									<>
-										<p className="font-body text-body-lg text-neutral-900">
-											Enviamos um link para <strong className="font-bold">{email}</strong>. Clique
-											no link para ativar sua conta.
-										</p>
-										<p className="font-body text-body-md text-neutral-700">
-											Não esqueça de verificar a pasta de spam. O link expira em 24 horas.
-										</p>
-									</>
-								) : (
-									<p className="font-body text-body-lg text-neutral-900">{cfg.body}</p>
-								)}
-							</div>
+									{isWaiting ? (
+										<>
+											<p className="font-body text-body-lg text-neutral-900">
+												Enviamos um link para <strong className="font-bold">{email}</strong>. Clique
+												no link para ativar sua conta.
+											</p>
+											<p className="font-body text-body-md text-neutral-700">
+												Não esqueça de verificar a pasta de spam. O link expira em 24 horas.
+											</p>
+										</>
+									) : (
+										<p className="font-body text-body-lg text-neutral-900">{cfg.body}</p>
+									)}
+								</div>
 
-							<div className="flex flex-col gap-3 w-full mt-2">
-								{isWaiting ? (
-									<>
-										<a
-											href="/home"
-											className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
-										>
-											Verificar depois
-										</a>
-
-										<ReenviarEmailButton />
-
-										{cfg.secondLabel && cfg.secondHref ? (
+								<div className="flex flex-col gap-3 w-full mt-2">
+									{isWaiting ? (
+										<>
 											<a
-												href={cfg.secondHref}
-												className="self-center font-body font-bold text-body-md text-secondary-950 hover:underline"
+												href="/home"
+												className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
 											>
-												{cfg.secondLabel}
+												Verificar depois
 											</a>
-										) : null}
-									</>
-								) : (
-									<>
-										<a
-											href={cfg.primaryHref}
-											className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
-										>
-											{cfg.primaryLabel}
-										</a>
 
-										{cfg.secondLabel && cfg.secondHref ? (
+											<ReenviarEmailButton />
+
+											{cfg.secondLabel && cfg.secondHref ? (
+												<a
+													href={cfg.secondHref}
+													className="self-center font-body font-bold text-body-md text-secondary-950 hover:underline"
+												>
+													{cfg.secondLabel}
+												</a>
+											) : null}
+										</>
+									) : (
+										<>
 											<a
-												href={cfg.secondHref}
-												className="self-center font-body font-bold text-body-md text-secondary-950 hover:underline"
+												href={cfg.primaryHref}
+												className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
 											>
-												{cfg.secondLabel}
+												{cfg.primaryLabel}
 											</a>
-										) : null}
-									</>
-								)}
+
+											{cfg.secondLabel && cfg.secondHref ? (
+												<a
+													href={cfg.secondHref}
+													className="self-center font-body font-bold text-body-md text-secondary-950 hover:underline"
+												>
+													{cfg.secondLabel}
+												</a>
+											) : null}
+										</>
+									)}
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 
-					<div className="w-full">
-						{isWaiting ? (
+					{/* footer: simular clique (só waiting) */}
+					{isWaiting ? (
+						<div className="shrink-0 px-8 pt-2 pb-6">
 							<p className="text-center font-body text-label-md text-neutral-400">
 								<a
 									href={
@@ -224,11 +317,9 @@ export default function ConfirmacaoEmailV2Screen() {
 									[Simular clique no link do e-mail]
 								</a>
 							</p>
-						) : null}
-					</div>
-				</section>
-
-				<ProofPanelMinimal variant={cfg.proof} className="hidden md:flex flex-1 min-h-0 p-12" />
+						</div>
+					) : null}
+				</div>
 			</Modal>
 
 			<AuthDevNav
