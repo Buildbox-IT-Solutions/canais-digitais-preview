@@ -1,10 +1,8 @@
 import { Button } from '~/components/button'
-import { Byline } from '~/components/byline'
-import { Categoria } from '~/components/categoria'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
+import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
-import { Thumbnail } from '~/components/thumbnail'
 import { NOT_FOUND_CARDS, picsumSrc } from '~/mocks/articles'
 
 /**
@@ -38,23 +36,17 @@ export default function NotFoundScreen() {
 				<SectionTitle label="Você também pode gostar" color="primary-600" />
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 mt-8 grid grid-cols-4 gap-6">
 					{NOT_FOUND_CARDS.map((c) => (
-						<article key={c.id} className="group flex flex-col gap-3">
-							<Thumbnail
-								src={picsumSrc(c.seed, 600, 400)}
-								alt="Capa"
-								href="/conteudo"
-								ratio="video"
-							/>
-							<div className="flex flex-col gap-2">
-								<Categoria color={c.categoryColor} label={c.category} />
-								<h3 className="text-title-md font-display font-bold text-primary-600 leading-tight">
-									<a href="/conteudo" className="group-hover:underline">
-										{c.title}
-									</a>
-								</h3>
-								<Byline author={c.author} href="/categoria" size="sm" />
-							</div>
-						</article>
+						<NewsCard
+							key={c.id}
+							size="small"
+							orientation="vertical"
+							title={c.title}
+							image={picsumSrc(c.seed, 600, 400)}
+							href="/conteudo"
+							categoria={{ label: c.category, color: c.categoryColor }}
+							author={c.author}
+							authorHref="/categoria"
+						/>
 					))}
 				</div>
 			</section>
