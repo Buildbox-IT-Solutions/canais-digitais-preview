@@ -156,7 +156,7 @@ export function HeaderDesktop({
 								avatar={userAvatar}
 							/>
 						) : (
-							<LoginButton logged={false} href="/login" />
+							<AccessMenu />
 						)}
 
 						<Button label="Anuncie" href="/anuncie" type="filled" size="medium" />
@@ -199,8 +199,73 @@ export function HeaderDesktop({
 }
 
 /**
+ * Trigger "Acessar" (deslogado): no hover/clique abre um menu com Login e Cadastro,
+ * em vez de ir direto ao modal de login (ACS-01/02).
+ */
+function AccessMenu() {
+	const [open, setOpen] = useState(false)
+	const ref = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (!open) return
+		function handleClickOutside(e: MouseEvent) {
+			if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+		}
+		function handleEscape(e: KeyboardEvent) {
+			if (e.key === 'Escape') setOpen(false)
+		}
+		document.addEventListener('mousedown', handleClickOutside)
+		document.addEventListener('keydown', handleEscape)
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside)
+			document.removeEventListener('keydown', handleEscape)
+		}
+	}, [open])
+
+	return (
+		<div
+			ref={ref}
+			className="relative"
+			onMouseEnter={() => setOpen(true)}
+			onMouseLeave={() => setOpen(false)}
+		>
+			<button
+				type="button"
+				aria-haspopup="true"
+				aria-expanded={open}
+				onClick={() => setOpen((v) => !v)}
+				className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-primary-600 pl-3 pr-3 py-2 text-primary-600 hover:bg-neutral-50 transition-colors font-body font-bold text-body-lg whitespace-nowrap"
+			>
+				<Icon name="account-circle" className="size-6 shrink-0" />
+				Acessar
+				<Icon name="arrow-drop-down" className="size-5 shrink-0" />
+			</button>
+
+			{open ? (
+				<div className="absolute right-0 top-full pt-2 origin-top-right animate-fade-up-sm z-50">
+					<DropdownMenu tone="white" width="w-[220px]" className="py-2">
+						<MenuListItem
+							label="Login"
+							href="/login"
+							density="compact"
+							leading={<Icon name="account-circle" className="size-5" />}
+						/>
+						<MenuListItem
+							label="Cadastro"
+							href="/cadastro"
+							density="compact"
+							leading={<Icon name="plus" className="size-5" />}
+						/>
+					</DropdownMenu>
+				</div>
+			) : null}
+		</div>
+	)
+}
+
+/**
  * Trigger (LoginButton logged) + dropdown 264px com cabeçalho de usuário,
- * link "Minha Conta Informa" e "Sair". Spec: figma-specs/header.md §v3.0.
+ * link "Meu Perfil" e "Sair". Spec: figma-specs/header.md §v3.0.
  */
 interface IUserMenuProps {
 	name: string
@@ -269,8 +334,8 @@ function UserMenu({ name, email, initials, avatar }: IUserMenuProps) {
 						</div>
 
 						<MenuListItem
-							label="Minha Conta Informa"
-							href="/dashboard-perfil-v3"
+							label="Meu Perfil"
+							href="/dashboard-perfil-v4"
 							density="compact"
 							leading={<Icon name="account-circle" className="size-5" />}
 						/>

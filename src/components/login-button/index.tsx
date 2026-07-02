@@ -5,7 +5,7 @@ import type { ILoginButtonProps } from './types'
 /**
  * Componente: Login Button
  * Figma: 5955:22722 (component set !logged + logged)
- * Variantes: !logged (account_circle + "Entrar") | logged (avatar + 1º nome + arrow_drop_down)
+ * Variantes: !logged (account_circle + "Acessar") | logged (avatar + 1º nome + arrow_drop_down)
  * Tokens: --color-primary-600, --color-primary-100, --color-neutral-50
  */
 export function LoginButton({
@@ -24,7 +24,7 @@ export function LoginButton({
 		return (
 			<a href={href} className={twMerge(baseClasses, 'pl-3 pr-4 py-2', className)}>
 				<Icon name="account-circle" className="size-6 shrink-0" />
-				Entrar
+				Acessar
 			</a>
 		)
 	}
