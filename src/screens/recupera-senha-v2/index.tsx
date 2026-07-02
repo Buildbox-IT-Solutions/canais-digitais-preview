@@ -7,6 +7,7 @@ import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
+import { AuthResendButton } from '../_auth/resend-button'
 import { AuthStatusRing } from '../_auth/status-ring'
 
 type RecuperaState = 'default' | 'sent'
@@ -114,6 +115,7 @@ export default function RecuperaSenhaV2Screen() {
 								</div>
 
 								<div className="flex flex-col gap-3 w-full">
+									<AuthResendButton label="Reenviar e-mail" />
 									<a
 										href="/login"
 										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"

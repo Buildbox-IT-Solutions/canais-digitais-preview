@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthInput } from '../_auth/input'
+import { AuthResendButton } from '../_auth/resend-button'
 import ConteudoScreen from '../conteudo'
 
 type GateState = 'email' | 'waiting'
@@ -21,28 +21,6 @@ function isExistente(email: string): boolean {
 
 function maskEmail(email: string): string {
   return email.replace(/^[^@]+/, '****')
-}
-
-function ReenviarLinkButton() {
-  const [secondsLeft, setSecondsLeft] = useState(0)
-  const isDisabled = secondsLeft > 0
-
-  useEffect(() => {
-    if (secondsLeft <= 0) return
-    const id = setTimeout(() => setSecondsLeft((s) => s - 1), 1000)
-    return () => clearTimeout(id)
-  }, [secondsLeft])
-
-  return (
-    <button
-      type="button"
-      disabled={isDisabled}
-      onClick={() => setSecondsLeft(60)}
-      className={`inline-flex items-center justify-center w-full h-12 px-6 rounded-full border-[1.5px] border-primary-600 bg-white hover:bg-primary-600/[0.04] text-primary-600 font-body font-bold text-body-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500 focus-visible:ring-offset-2${isDisabled ? ' opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
-    >
-      {isDisabled ? `Reenviar link (${secondsLeft}s)` : 'Reenviar link'}
-    </button>
-  )
 }
 
 /**
@@ -174,7 +152,7 @@ export default function GateDownloadScreen() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <ReenviarLinkButton />
+              <AuthResendButton />
 
               <a
                 href="/gate-download?state=email"
