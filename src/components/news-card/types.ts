@@ -16,5 +16,7 @@ export interface INewsCardProps {
 	authorHref?: string
 	/** Overlay injetado na Thumbnail (usado pelo VideoCard para o PlayButton). */
 	mediaOverlay?: ReactNode
+	/** Sobrescreve as classes do wrapper de mídia no layout horizontal (escape hatch de largura). */
+	mediaClassName?: string
 	className?: string
 }

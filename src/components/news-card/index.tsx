@@ -45,6 +45,7 @@ export function NewsCard({
 	author,
 	authorHref,
 	mediaOverlay,
+	mediaClassName,
 	className,
 }: INewsCardProps) {
 	const key = `${size}-${orientation}`
@@ -87,7 +88,7 @@ export function NewsCard({
 	if (orientation === 'horizontal') {
 		return (
 			<article className={twMerge('group flex flex-row items-center gap-4 w-full', className)}>
-				<div className={twMerge('shrink-0', H_THUMB_WIDTH[size])}>{thumb}</div>
+				<div className={mediaClassName ?? twMerge('shrink-0', H_THUMB_WIDTH[size])}>{thumb}</div>
 				{content}
 			</article>
 		)
