@@ -88,9 +88,7 @@ export default function DashboardPerfilV4Screen() {
 			</div>
 
 			<div className="flex-1 max-w-screen-xl mx-auto w-full px-4 lg:px-6 py-10">
-				{tab === 'perfil' ? (
-					<PerfilPane pct={pct} missing={missing} isEmpty={isEmpty} />
-				) : null}
+				{tab === 'perfil' ? <PerfilPane pct={pct} missing={missing} /> : null}
 				{tab === 'ultimas' ? <UltimasPane isEmpty={isEmpty} /> : null}
 				{tab === 'newsletter' ? <NewsletterPane /> : null}
 				{tab === 'downloads' ? <DownloadsPane /> : null}
@@ -109,97 +107,50 @@ export default function DashboardPerfilV4Screen() {
 	)
 }
 
-function ProfileMetrics({ pct, missing, isEmpty }: { pct: number; missing: number; isEmpty: boolean }) {
+function ProfileMetrics({ pct, missing }: { pct: number; missing: number }) {
 	const R = 60
 	const CIRC = 2 * Math.PI * R
 	const arc = (pct / 100) * CIRC
 
 	return (
-		<div className="flex flex-col lg:flex-row gap-4 items-stretch">
-			<div className="flex-[3] bg-mint-light rounded-lg pl-8 pr-12 py-8 flex items-center gap-8">
-				<div className="relative size-[140px] shrink-0">
-					<svg width={140} height={140} viewBox="0 0 140 140" aria-hidden="true">
-						<circle cx={70} cy={70} r={R} fill="none" stroke="rgba(0,34,68,.15)" strokeWidth={8} />
-						<circle
-							cx={70}
-							cy={70}
-							r={R}
-							fill="none"
-							stroke="var(--color-mint)"
-							strokeWidth={8}
-							strokeLinecap="round"
-							strokeDasharray={`${arc.toFixed(2)} 999`}
-							transform="rotate(-90 70 70)"
-							style={{ transition: 'stroke-dasharray 600ms cubic-bezier(0.2,0,0,1)' }}
-						/>
-					</svg>
-					<div className="absolute inset-0 flex flex-col items-center justify-center text-primary-600">
-						<span className="font-display font-bold text-headline-md leading-none">{pct}%</span>
-						<span className="font-body font-semibold text-label-sm tracking-wider mt-1">
-							COMPLETO
-						</span>
-					</div>
-				</div>
-				<div className="flex-1 min-w-0 flex flex-col gap-4">
-					<h2 className="font-display font-bold text-headline-sm text-primary-600 leading-tight">
-						Receba conteúdos mais relevantes para você
-					</h2>
-					<p className="font-body text-body-md text-primary-600">
-						<strong className="font-bold">Faltam {missing} campos para chegar a 100%</strong>. Cada
-						informação afina o que chega até você em conteúdos, newsletters e eventos.
-					</p>
-					<a
-						href="?tab=perfil&drawer=dados-pessoais"
-						className="inline-flex items-center gap-2 h-8 pl-4 pr-3 rounded-full bg-primary-600 text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-md w-fit"
-					>
-						Completar perfil
-						<Icon name="arrow-forward" className="size-5" />
-					</a>
+		<div className="bg-mint-light rounded-lg pl-8 pr-12 py-8 flex items-center gap-8">
+			<div className="relative size-[140px] shrink-0">
+				<svg width={140} height={140} viewBox="0 0 140 140" aria-hidden="true">
+					<circle cx={70} cy={70} r={R} fill="none" stroke="rgba(0,34,68,.15)" strokeWidth={8} />
+					<circle
+						cx={70}
+						cy={70}
+						r={R}
+						fill="none"
+						stroke="var(--color-mint)"
+						strokeWidth={8}
+						strokeLinecap="round"
+						strokeDasharray={`${arc.toFixed(2)} 999`}
+						transform="rotate(-90 70 70)"
+						style={{ transition: 'stroke-dasharray 600ms cubic-bezier(0.2,0,0,1)' }}
+					/>
+				</svg>
+				<div className="absolute inset-0 flex flex-col items-center justify-center text-primary-600">
+					<span className="font-display font-bold text-headline-md leading-none">{pct}%</span>
+					<span className="font-body font-semibold text-label-sm tracking-wider mt-1">
+						COMPLETO
+					</span>
 				</div>
 			</div>
-
-			<div className="flex-1 flex flex-col gap-4">
+			<div className="flex-1 min-w-0 flex flex-col gap-4">
+				<h2 className="font-display font-bold text-headline-sm text-primary-600 leading-tight">
+					Receba conteúdos mais relevantes para você
+				</h2>
+				<p className="font-body text-body-md text-primary-600">
+					<strong className="font-bold">Faltam {missing} campos para chegar a 100%</strong>. Cada
+					informação afina o que chega até você em conteúdos, newsletters e eventos.
+				</p>
 				<a
-					href="?tab=downloads"
-					className="group bg-white border border-primary-100 rounded-lg p-5 flex flex-col gap-3 hover:border-secondary-950 transition-colors"
+					href="?tab=perfil&drawer=dados-pessoais"
+					className="inline-flex items-center gap-2 h-8 pl-4 pr-3 rounded-full bg-primary-600 text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-md w-fit"
 				>
-					<div className="flex items-center gap-4">
-						<div className="bg-neutral-50 inline-flex items-center justify-center p-3 rounded-lg shrink-0">
-							<Icon
-								name="download"
-								className={isEmpty ? 'size-6 text-neutral-500' : 'size-6 text-primary-600'}
-							/>
-						</div>
-						<span
-							className={`font-display font-bold text-headline-lg ${isEmpty ? 'text-neutral-500' : 'text-primary-600 group-hover:text-secondary-950'} transition-colors`}
-						>
-							{isEmpty ? '0' : '12'}
-						</span>
-					</div>
-					<span className="font-body font-semibold text-label-lg text-neutral-900">
-						Downloads totais
-					</span>
-				</a>
-				<a
-					href="?tab=newsletter"
-					className="group bg-white border border-primary-100 rounded-lg p-5 flex flex-col gap-3 hover:border-secondary-950 transition-colors"
-				>
-					<div className="flex items-center gap-4">
-						<div className="bg-neutral-50 inline-flex items-center justify-center p-3 rounded-lg shrink-0">
-							<Icon
-								name="mail"
-								className={isEmpty ? 'size-6 text-neutral-500' : 'size-6 text-primary-600'}
-							/>
-						</div>
-						<span
-							className={`font-display font-bold text-headline-lg ${isEmpty ? 'text-neutral-500' : 'text-primary-600 group-hover:text-secondary-950'} transition-colors`}
-						>
-							{isEmpty ? '0' : '2'}
-						</span>
-					</div>
-					<span className="font-body font-semibold text-label-lg text-neutral-900">
-						Newsletters ativas
-					</span>
+					Completar perfil
+					<Icon name="arrow-forward" className="size-5" />
 				</a>
 			</div>
 		</div>
@@ -253,10 +204,10 @@ function UltimasPane({ isEmpty }: { isEmpty: boolean }) {
 	)
 }
 
-function PerfilPane({ pct, missing, isEmpty }: { pct: number; missing: number; isEmpty: boolean }) {
+function PerfilPane({ pct, missing }: { pct: number; missing: number }) {
 	return (
 		<div className="flex flex-col gap-10">
-			<ProfileMetrics pct={pct} missing={missing} isEmpty={isEmpty} />
+			<ProfileMetrics pct={pct} missing={missing} />
 
 			<div className="flex flex-col gap-6">
 				<header className="flex flex-col gap-1">

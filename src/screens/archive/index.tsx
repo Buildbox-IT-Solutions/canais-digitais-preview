@@ -34,11 +34,6 @@ const GROUPS: ArchiveGroup[] = [
 				label: 'Redefinir senha (full page)',
 				reason: 'Substituída pelo modal em /redefine-senha',
 			},
-			{
-				path: '/confirmacao-email-full',
-				label: 'Confirmação de e-mail (full page)',
-				reason: 'Substituída pelo modal em /confirmacao-email',
-			},
 		],
 	},
 	{

@@ -34,7 +34,7 @@ export function DashboardWelcome({
 					/>
 				) : (
 					<div className="size-[120px] rounded-full bg-primary-100 flex items-center justify-center">
-						<span className="font-body font-semibold text-display-lg text-primary-600 leading-none">
+						<span className="font-body font-semibold text-display-sm text-primary-600 leading-none">
 							{initials}
 						</span>
 					</div>

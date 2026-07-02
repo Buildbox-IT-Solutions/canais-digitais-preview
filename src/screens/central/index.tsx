@@ -27,6 +27,7 @@ const GROUPS: RouteGroup[] = [
 		items: [
 			{ path: '/cadastro', label: 'Cadastro', description: 'Início · modal em 3 passos → termina na Confirmação de e-mail' },
 			{ path: '/confirmacao-email', label: 'Confirmação de e-mail', description: 'Fim do cadastro · verificação do e-mail' },
+			{ path: '/confirmacao-email-full?state=link-expired', label: 'Confirmação — link inválido', description: 'Link expirado / já usado · full page (cold entry, sem modal)' },
 			{ path: '/login', label: 'Login', description: 'Modal de login sobre o portal' },
 			{ path: '/recupera-senha', label: 'Recuperar senha', description: 'Início · informa e-mail → link enviado' },
 			{ path: '/redefine-senha', label: 'Redefinir senha', description: 'Fim · define nova senha pelo link' },

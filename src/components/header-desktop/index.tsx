@@ -327,9 +327,6 @@ function UserMenu({ name, email, initials, avatar }: IUserMenuProps) {
 								{email ? (
 									<p className="font-body text-label-md text-neutral-700 truncate">{email}</p>
 								) : null}
-								<span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-secondary-50 px-2 py-0.5 font-body font-semibold text-label-sm text-secondary-950">
-									Conta Informa
-								</span>
 							</div>
 						</div>
 
@@ -347,7 +344,6 @@ function UserMenu({ name, email, initials, avatar }: IUserMenuProps) {
 							href="/home"
 							density="compact"
 							leading={<Icon name="logout" className="size-5" />}
-							className="text-red-700 hover:bg-red-50"
 						/>
 					</DropdownMenu>
 				</div>
