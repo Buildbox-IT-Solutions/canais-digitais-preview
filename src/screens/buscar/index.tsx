@@ -1,10 +1,9 @@
 import { AdFrame } from '~/components/ad-frame'
-import { Categoria } from '~/components/categoria'
 import { Divider } from '~/components/divider'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
-import { Thumbnail } from '~/components/thumbnail'
+import { NewsCard } from '~/components/news-card'
 import { picsumSrc, SEARCH_RESULTS } from '~/mocks/articles'
 
 const FILTERS = ['Categoria', 'Autor', 'Tipo']
@@ -98,32 +97,17 @@ export default function BuscarScreen() {
 						{/* Article list */}
 						<div className="flex flex-col gap-10">
 							{SEARCH_RESULTS.map((r) => (
-								<article key={r.id} className="group flex flex-row gap-4 items-center w-full">
-									<div className="flex-1 min-w-[288px] max-w-[392px]">
-										<Thumbnail
-											src={picsumSrc(r.seed, 784, 441)}
-											alt="Capa"
-											href="/conteudo"
-											ratio="video"
-										/>
-									</div>
-									<div className="flex flex-col gap-2 flex-1 min-w-0 justify-center">
-										<Categoria
-											color={r.categoryColor}
-											label={r.category}
-											href="/categoria"
-										/>
-										<h3 className="text-title-xl font-display font-bold text-primary-600">
-											<a
-												href="/conteudo"
-												className="group-hover:text-secondary-950 transition-colors"
-											>
-												{r.title}
-											</a>
-										</h3>
-										<p className="text-body-md font-body text-neutral-900">{r.lead}</p>
-									</div>
-								</article>
+								<NewsCard
+									key={r.id}
+									size="large"
+									orientation="horizontal"
+									title={r.title}
+									image={picsumSrc(r.seed, 784, 441)}
+									href="/conteudo"
+									categoria={{ label: r.category, color: r.categoryColor, href: '/categoria' }}
+									lead={r.lead}
+									mediaClassName="flex-1 min-w-[288px] max-w-[392px]"
+								/>
 							))}
 						</div>
 
