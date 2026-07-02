@@ -12,12 +12,11 @@ import type { DashboardTab, IDashboardTabsV4Props } from './types'
  */
 
 const DEFAULT_TABS: DashboardTab[] = [
-	{ id: 'perfil', label: 'Perfil' },
-	{ id: 'conta', label: 'Minha Conta' },
-	{ id: 'ultimas', label: 'Últimas leituras' },
-	{ id: 'favoritos', label: 'Favoritos', disabled: true, chip: 'Em breve' },
-	{ id: 'newsletter', label: 'Newsletter' },
+	{ id: 'perfil', label: 'Meu Perfil' },
 	{ id: 'downloads', label: 'Downloads' },
+	{ id: 'ultimas', label: 'Últimas leituras', disabled: true, chip: 'Em breve' },
+	{ id: 'favoritos', label: 'Favoritos', disabled: true, chip: 'Em breve' },
+	{ id: 'newsletter', label: 'Newsletter', disabled: true, chip: 'Em breve' },
 ]
 
 export function DashboardTabsV4({

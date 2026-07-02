@@ -4,5 +4,6 @@ export interface IDashboardWelcomeProps {
 	initials?: string
 	avatarSrc?: string | null
 	logoutHref?: string
+	changePasswordHref?: string
 	className?: string
 }
