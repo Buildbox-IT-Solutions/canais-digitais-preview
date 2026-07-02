@@ -40,8 +40,8 @@ const GROUPS: RouteGroup[] = [
 		items: [
 			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads' },
 			{ path: '/consentimentos', label: 'Consentimentos (LGPD)', description: 'Gestão de consentimentos' },
-			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · portabilidade (vira modal na área logada)' },
-			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Encerramento de conta (vira modal na área logada)' },
+			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil' },
+			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · 30 dias para cancelar' },
 		],
 	},
 	{
