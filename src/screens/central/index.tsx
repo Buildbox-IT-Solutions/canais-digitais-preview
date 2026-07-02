@@ -21,51 +21,39 @@ interface RouteGroup {
 
 const GROUPS: RouteGroup[] = [
 	{
-		title: 'Editorial',
-		description: 'Telas públicas de leitura e navegação por conteúdo.',
-		color: 'primary',
-		items: [
-			{ path: '/home', label: 'Home', description: 'Página inicial — capa editorial completa' },
-			{ path: '/home-v2', label: 'Home v2', description: 'Nova proposta com múltiplos patrocinadores' },
-			{ path: '/categoria', label: 'Categoria', description: 'Listagem de conteúdos por categoria' },
-			{ path: '/conteudo', label: 'Conteúdo', description: 'Página interna de matéria' },
-			{ path: '/buscar', label: 'Buscar', description: 'Resultados de busca' },
-			{ path: '/menu', label: 'Menu', description: 'Menu principal expandido' },
-		],
-	},
-	{
-		title: 'Autenticação',
-		description: 'Login, cadastro e fluxos de senha.',
+		title: 'Acesso & Autenticação',
+		description: 'Fluxos de entrada — na ordem do mapa: cadastro → login → recuperação → download.',
 		color: 'secondary',
 		items: [
-			{ path: '/login', label: 'Login' },
-			{ path: '/login-v2', label: 'Login (modal v2)', description: 'Modal compacto sobre o portal' },
-			{ path: '/cadastro', label: 'Cadastro', description: 'Fluxo em 3 etapas' },
-			{ path: '/cadastro-v2', label: 'Cadastro (modal v2)', description: 'Fluxo em 3 etapas, modal sobre o portal' },
-			{ path: '/recupera-senha', label: 'Recuperar senha' },
-			{ path: '/recupera-senha-v2', label: 'Recuperar senha (modal v2)', description: 'Modal compacto sobre o portal' },
-			{ path: '/redefine-senha', label: 'Redefinir senha' },
-			{ path: '/redefine-senha-v2', label: 'Redefinir senha (modal v2)', description: 'Modal compacto sobre o portal' },
-			{ path: '/confirmacao-email', label: 'Confirmação de e-mail' },
-			{ path: '/confirmacao-email-v2', label: 'Confirmação de e-mail — v2', description: '"Verificar depois" com peso de botão primário' },
-			{
-				path: '/gate-download',
-				label: 'Gate Download',
-				description: 'Hard gate de download: captura e-mail, bifurca novo vs. existente',
-			},
+			{ path: '/cadastro', label: 'Cadastro', description: 'Início · modal em 3 passos → termina na Confirmação de e-mail' },
+			{ path: '/confirmacao-email', label: 'Confirmação de e-mail', description: 'Fim do cadastro · verificação do e-mail' },
+			{ path: '/login', label: 'Login', description: 'Modal de login sobre o portal' },
+			{ path: '/recupera-senha', label: 'Recuperar senha', description: 'Início · informa e-mail → link enviado' },
+			{ path: '/redefine-senha', label: 'Redefinir senha', description: 'Fim · define nova senha pelo link' },
+			{ path: '/gate-download', label: 'Gate de download', description: 'Cadastro acionado pelo clique em Download' },
 		],
 	},
 	{
-		title: 'Dashboard & LGPD',
+		title: 'Perfil & LGPD',
 		description: 'Área logada do usuário e gestão de dados pessoais.',
 		color: 'mint',
 		items: [
-			{ path: '/dashboard', label: 'Dashboard' },
-			{ path: '/dashboard-perfil-v3', label: 'Perfil — v3' },
-			{ path: '/dashboard-perfil-v4', label: 'Perfil — v4', description: 'Perfil como aba inicial; Últimas leituras' },
-			{ path: '/meus-dados', label: 'Meus dados' },
-			{ path: '/consentimentos', label: 'Consentimentos' },
-			{ path: '/excluir-conta', label: 'Excluir conta' },
+			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads' },
+			{ path: '/consentimentos', label: 'Consentimentos (LGPD)', description: 'Gestão de consentimentos' },
+			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil' },
+			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · 30 dias para cancelar' },
+		],
+	},
+	{
+		title: 'Editorial (templates)',
+		description: 'Telas públicas de leitura e navegação — templates válidos mantidos.',
+		color: 'primary',
+		items: [
+			{ path: '/home', label: 'Home', description: 'Página inicial — capa editorial completa' },
+			{ path: '/categoria', label: 'Categoria', description: 'Listagem de conteúdos por categoria' },
+			{ path: '/conteudo', label: 'Conteúdo', description: 'Página interna de matéria (Post)' },
+			{ path: '/buscar', label: 'Buscar', description: 'Resultados de busca' },
+			{ path: '/menu', label: 'Menu', description: 'Menu principal expandido' },
 		],
 	},
 	{
@@ -76,9 +64,17 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/sobre', label: 'Sobre' },
 			{ path: '/contato', label: 'Contato' },
 			{ path: '/anuncie', label: 'Anuncie' },
-			{ path: '/patrocinadores', label: 'Patrocinadores', description: 'Listagem de todos os patrocinadores' },
-			{ path: '/patrocinador?id=tetrapak', label: 'Patrocinador (individual)', description: 'Página de um patrocinador específico' },
-			{ path: '/form-newsletter', label: 'Form — Newsletter' },
+		],
+	},
+	{
+		title: 'E-mails',
+		description: 'Templates de e-mail transacional (preview).',
+		color: 'secondary',
+		items: [
+			{ path: '/email-confirmacao', label: 'Confirmação de e-mail', description: 'Pós-cadastro · ativar conta' },
+			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada' },
+			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha' },
+			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação · 30 dias p/ cancelar' },
 		],
 	},
 	{
@@ -213,16 +209,25 @@ export default function CentralScreen() {
 					})}
 				</div>
 
-				<footer className="mt-16 pt-8 border-t border-neutral-100 font-body text-body-sm text-neutral-700">
-					Repositório:{' '}
-					<a
-						href="https://github.com/Buildbox-IT-Solutions/canais-digitais-preview"
-						className="text-primary-600 hover:underline"
-						target="_blank"
-						rel="noreferrer"
-					>
-						Buildbox-IT-Solutions/canais-digitais-preview
-					</a>
+				<footer className="mt-16 pt-8 border-t border-neutral-100 font-body text-body-sm text-neutral-700 flex flex-col gap-2">
+					<span>
+						Versões descontinuadas:{' '}
+						<Link to="/archive" className="text-primary-600 hover:underline">
+							/archive
+						</Link>{' '}
+						— referência, não implementar.
+					</span>
+					<span>
+						Repositório:{' '}
+						<a
+							href="https://github.com/Buildbox-IT-Solutions/canais-digitais-preview"
+							className="text-primary-600 hover:underline"
+							target="_blank"
+							rel="noreferrer"
+						>
+							Buildbox-IT-Solutions/canais-digitais-preview
+						</a>
+					</span>
 				</footer>
 			</div>
 		</main>

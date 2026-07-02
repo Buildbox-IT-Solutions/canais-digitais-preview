@@ -15,6 +15,7 @@ export function DashboardWelcome({
 	initials = 'U',
 	avatarSrc = null,
 	logoutHref = '#',
+	changePasswordHref = '#',
 	className,
 }: IDashboardWelcomeProps) {
 	return (
@@ -56,10 +57,12 @@ export function DashboardWelcome({
 						<span className="font-body font-bold text-label-md text-neutral-900">Seu e-mail</span>
 						<span className="font-body font-bold text-body-md text-primary-600">{email}</span>
 					</div>
-					<p className="font-body text-body-sm text-neutral-900">
-						Sua conta é válida em todos os portais Informa Markets. Ao acessar outro portal, faça
-						login com o mesmo e-mail e senha.
-					</p>
+					<a
+						href={changePasswordHref}
+						className="font-body font-bold text-body-md text-secondary-950 hover:underline w-fit"
+					>
+						Alterar senha
+					</a>
 				</div>
 			</div>
 

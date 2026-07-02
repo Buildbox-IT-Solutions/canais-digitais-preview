@@ -7,6 +7,7 @@ import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
+import { AuthResendButton } from '../_auth/resend-button'
 import { AuthStatusRing } from '../_auth/status-ring'
 
 type RecuperaState = 'default' | 'sent'
@@ -75,7 +76,7 @@ export default function RecuperaSenhaV2Screen() {
 					{/* top-bar: Voltar + fechar */}
 					<div className="shrink-0 flex items-center justify-between px-4 pt-4 pb-2">
 						<a
-							href="/login-v2"
+							href="/login"
 							className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
 						>
 							<Icon name="arrow-left" className="size-5" />
@@ -114,8 +115,9 @@ export default function RecuperaSenhaV2Screen() {
 								</div>
 
 								<div className="flex flex-col gap-3 w-full">
+									<AuthResendButton label="Reenviar e-mail" />
 									<a
-										href="/login-v2"
+										href="/login"
 										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
 									>
 										Voltar para o login
@@ -124,7 +126,7 @@ export default function RecuperaSenhaV2Screen() {
 										href="?state=default"
 										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-transparent hover:bg-neutral-50 text-primary-600 font-body font-bold text-body-lg transition-colors"
 									>
-										Tentar com outro e-mail
+										Tentar novamente
 									</a>
 								</div>
 							</div>
@@ -145,7 +147,7 @@ export default function RecuperaSenhaV2Screen() {
 								{globalError ? <AuthErrorAlert message={globalError} /> : null}
 
 								<form
-									action="/recupera-senha-v2"
+									action="/recupera-senha"
 									method="get"
 									className="flex flex-col gap-4 w-full"
 									noValidate
@@ -181,7 +183,7 @@ export default function RecuperaSenhaV2Screen() {
 							<AuthBottomLink
 								label="Não tem conta?"
 								linkLabel="Criar conta"
-								linkHref="/cadastro-v2?step=1"
+								linkHref="/cadastro?step=1"
 							/>
 						</div>
 					)}

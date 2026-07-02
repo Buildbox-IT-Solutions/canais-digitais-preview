@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
-import { PasswordStrength } from '~/components/password-strength'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import HomeScreen from '../home'
@@ -35,7 +34,7 @@ const TERMINAL: Record<'success' | 'expired' | 'used', TerminalConfig> = {
 		title: 'Senha redefinida',
 		body: 'Sua nova senha está ativa. Faça login para continuar.',
 		ctaLabel: 'Fazer login',
-		ctaHref: '/login-v2',
+		ctaHref: '/login',
 		proof: 'welcome',
 	},
 	expired: {
@@ -44,7 +43,7 @@ const TERMINAL: Record<'success' | 'expired' | 'used', TerminalConfig> = {
 		title: 'Link expirado',
 		body: 'O link de redefinição é válido por 1 hora. Solicite um novo para continuar.',
 		ctaLabel: 'Solicitar novo link',
-		ctaHref: '/recupera-senha-v2',
+		ctaHref: '/recupera-senha',
 		proof: 'login',
 	},
 	used: {
@@ -53,7 +52,7 @@ const TERMINAL: Record<'success' | 'expired' | 'used', TerminalConfig> = {
 		title: 'Este link já foi usado',
 		body: 'Sua senha já foi redefinida. Faça login para entrar na sua conta.',
 		ctaLabel: 'Fazer login',
-		ctaHref: '/login-v2',
+		ctaHref: '/login',
 		proof: 'login',
 	},
 }
@@ -134,7 +133,7 @@ export default function RedefineSenhaV2Screen() {
 							<span aria-hidden="true" />
 						) : (
 							<a
-								href="/recupera-senha-v2"
+								href="/recupera-senha"
 								className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
 							>
 								<Icon name="arrow-left" className="size-5" />
@@ -189,7 +188,7 @@ export default function RedefineSenhaV2Screen() {
 								</div>
 
 								<form
-									action="/redefine-senha-v2"
+									action="/redefine-senha"
 									method="get"
 									className="flex flex-col gap-6 w-full"
 									noValidate
@@ -207,7 +206,6 @@ export default function RedefineSenhaV2Screen() {
 												error={senhaError}
 												required
 											/>
-											<PasswordStrength value={pw} inputId="redef-v2-pw" />
 										</div>
 
 										<AuthPasswordInput
@@ -262,7 +260,7 @@ export default function RedefineSenhaV2Screen() {
 					{/* footer — apenas no formulário */}
 					{terminal ? null : (
 						<div className="shrink-0 px-8 pt-4 pb-8">
-							<AuthBottomLink label="Lembrou da senha?" linkLabel="Entrar" linkHref="/login-v2" />
+							<AuthBottomLink label="Lembrou da senha?" linkLabel="Entrar" linkHref="/login" />
 						</div>
 					)}
 				</div>

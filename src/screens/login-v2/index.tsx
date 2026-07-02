@@ -2,7 +2,6 @@ import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
-import { SocialButton } from '~/components/social-button'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
@@ -100,17 +99,6 @@ export default function LoginV2Screen() {
 						<div className="flex flex-col gap-6">
 							{globalError ? <AuthErrorAlert message={globalError} /> : null}
 
-							<div className="flex gap-4">
-								<SocialButton provider="google" href="/home" iconOnly className="flex-1" />
-								<SocialButton provider="linkedin" href="/home" iconOnly className="flex-1" />
-							</div>
-
-							<div className="flex items-center gap-3 overflow-hidden">
-								<span className="flex-1 h-px bg-neutral-100" />
-								<span className="font-body text-body-md text-neutral-500">ou</span>
-								<span className="flex-1 h-px bg-neutral-100" />
-							</div>
-
 							<form action="/home" method="get" className="flex flex-col gap-6" noValidate>
 								<AuthInput
 									label="E-mail"
@@ -133,7 +121,7 @@ export default function LoginV2Screen() {
 
 								<div className="flex justify-end">
 									<a
-										href="/recupera-senha-v2"
+										href="/recupera-senha"
 										className="font-body font-bold text-body-md text-secondary-950 hover:underline"
 									>
 										Esqueci minha senha
@@ -155,7 +143,7 @@ export default function LoginV2Screen() {
 						<AuthBottomLink
 							label="Não tem conta?"
 							linkLabel="Criar conta"
-							linkHref="/cadastro-v2?step=1"
+							linkHref="/cadastro?step=1"
 						/>
 					</div>
 				</div>

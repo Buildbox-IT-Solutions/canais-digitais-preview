@@ -1,5 +1,4 @@
 import { useSearchParams } from 'react-router'
-import { AccessMethodCard } from '~/components/access-method-card'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
@@ -12,7 +11,6 @@ import { NewsletterItem } from '~/components/newsletter-item'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
 import { RecentNewsItem } from '~/components/recent-news-item'
-import { SessionRow } from '~/components/session-row'
 import { Toast } from '~/components/toast'
 import {
 	DOWNLOADS,
@@ -23,13 +21,12 @@ import {
 	OPCOES_SETOR,
 	PERFIL_CAMPOS,
 	RECENT_NEWS,
-	SESSIONS,
 } from '~/mocks/dashboard-perfil'
 
-type Tab = 'perfil' | 'conta' | 'ultimas' | 'newsletter' | 'downloads'
+type Tab = 'perfil' | 'ultimas' | 'newsletter' | 'downloads'
 type Drawer = 'dados-pessoais' | 'dados-profissionais' | 'dados-fiscais'
 
-const TABS: Tab[] = ['perfil', 'conta', 'ultimas', 'newsletter', 'downloads']
+const TABS: Tab[] = ['perfil', 'ultimas', 'newsletter', 'downloads']
 const DRAWERS: Drawer[] = ['dados-pessoais', 'dados-profissionais', 'dados-fiscais']
 
 const BASE_HREF = '/dashboard-perfil-v4'
@@ -42,9 +39,9 @@ const PER_PAGE = 8
 
 /**
  * Tela: Dashboard de Perfil v4 — modelo tabbed (deriva de dashboard-perfil-v3)
- * Abas: perfil (padrão), conta, ultimas, favoritos (desabilitada), newsletter, downloads
- * "Visão geral" foi removida; banner de progresso + cards de métricas vivem na aba Perfil
- * e a lista de leituras virou a aba "Últimas leituras".
+ * Abas MVP: Meu Perfil (padrão) + Downloads; Últimas leituras / Favoritos / Newsletter como "Em breve".
+ * "Minha Conta" removida: Baixar dados + Excluir conta vivem na aba Perfil (seção LGPD);
+ * Alterar senha no DashboardWelcome. Sessões e login social saíram (fora de escopo do MVP).
  * Drawer overlay em perfil: ?drawer=dados-pessoais|dados-profissionais|dados-fiscais
  * Estados: ?state=saved (toast) | empty (novo usuário)
  */
@@ -94,7 +91,6 @@ export default function DashboardPerfilV4Screen() {
 				{tab === 'perfil' ? (
 					<PerfilPane pct={pct} missing={missing} isEmpty={isEmpty} />
 				) : null}
-				{tab === 'conta' ? <ContaPane /> : null}
 				{tab === 'ultimas' ? <UltimasPane isEmpty={isEmpty} /> : null}
 				{tab === 'newsletter' ? <NewsletterPane /> : null}
 				{tab === 'downloads' ? <DownloadsPane /> : null}
@@ -325,6 +321,34 @@ function PerfilPane({ pct, missing, isEmpty }: { pct: number; missing: number; i
 					/>
 				</div>
 			</div>
+
+			<section>
+				<header className="mb-4">
+					<h3 className="font-display font-bold text-title-lg text-primary-600">
+						Privacidade &amp; LGPD
+					</h3>
+					<p className="font-body text-body-md text-neutral-600 mt-1">
+						Você tem controle total sobre seus dados conforme a LGPD. Todas as alterações são
+						registradas.
+					</p>
+				</header>
+				<div className="flex flex-col">
+					<GeneralItem
+						icon="download"
+						title="Baixar meus dados"
+						desc="Faça o download de uma cópia de seus dados a qualquer momento."
+						href="/meus-dados"
+					/>
+					<GeneralItem
+						icon="delete"
+						title="Excluir minha conta"
+						desc="Direito ao esquecimento. Processamos em até 30 dias."
+						href="/excluir-conta"
+						danger
+						isLast
+					/>
+				</div>
+			</section>
 		</div>
 	)
 }
@@ -402,93 +426,6 @@ function DownloadsPane() {
 					<Pagination current={page} total={totalPages} baseHref={`${BASE_HREF}?tab=downloads`} />
 				</div>
 			) : null}
-		</div>
-	)
-}
-
-function ContaPane() {
-	return (
-		<div className="flex flex-col gap-10">
-			<header className="flex flex-col gap-1">
-				<h2 className="font-display font-bold text-title-xl text-primary-600">Minha Conta</h2>
-				<p className="font-body text-body-md text-neutral-600">
-					Gerenciamento de acesso, sessões e dados da sua Conta Informa.
-				</p>
-			</header>
-
-			<section>
-				<h3 className="font-display font-bold text-title-lg text-primary-600 mb-4">
-					Método de acesso
-				</h3>
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-					<AccessMethodCard
-						icon="mail"
-						name="E-mail e senha"
-						chip="Ativo"
-						detail={USER_EMAIL}
-						cta="Alterar senha"
-					/>
-					<AccessMethodCard
-						icon="linkedin"
-						name="LinkedIn"
-						detail="Conecte seu LinkedIn para entrar sem senha"
-						cta="Conectar"
-					/>
-					<AccessMethodCard
-						icon="google"
-						name="Google"
-						detail="Conecte seu Google para entrar sem senha"
-						cta="Conectar"
-					/>
-				</div>
-			</section>
-
-			<section>
-				<h3 className="font-display font-bold text-title-lg text-primary-600 mb-4">
-					Sessões ativas
-				</h3>
-				<div className="flex flex-col">
-					{SESSIONS.map((s, i) => (
-						<SessionRow
-							key={i}
-							device={s.device}
-							browser={s.browser}
-							location={s.location}
-							last={s.last}
-							current={s.current}
-							isLast={i === SESSIONS.length - 1}
-						/>
-					))}
-				</div>
-			</section>
-
-			<section>
-				<header className="mb-4">
-					<h3 className="font-display font-bold text-title-lg text-primary-600">
-						Privacidade &amp; LGPD
-					</h3>
-					<p className="font-body text-body-md text-neutral-600 mt-1">
-						Você tem controle total sobre seus dados conforme a LGPD. Todas as alterações são
-						registradas.
-					</p>
-				</header>
-				<div className="flex flex-col">
-					<GeneralItem
-						icon="download"
-						title="Baixar meus dados"
-						desc="Faça o download de uma cópia de seus dados a qualquer momento."
-						href="/meus-dados"
-					/>
-					<GeneralItem
-						icon="delete"
-						title="Excluir minha conta"
-						desc="Direito ao esquecimento. Processamos em até 30 dias."
-						href="/excluir-conta"
-						danger
-						isLast
-					/>
-				</div>
-			</section>
 		</div>
 	)
 }

@@ -1,5 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router'
 import AnuncieScreen from './screens/anuncie'
+import ArchiveScreen from './screens/archive'
 import BuscarScreen from './screens/buscar'
 import CadastroScreen from './screens/cadastro'
 import CadastroV2Screen from './screens/cadastro-v2'
@@ -13,6 +14,10 @@ import ConteudoScreen from './screens/conteudo'
 import DashboardScreen from './screens/dashboard'
 import DashboardPerfilV3Screen from './screens/dashboard-perfil-v3'
 import DashboardPerfilV4Screen from './screens/dashboard-perfil-v4'
+import EmailBoasVindasScreen from './screens/email-boas-vindas'
+import EmailConfirmacaoScreen from './screens/email-confirmacao'
+import EmailExclusaoContaScreen from './screens/email-exclusao-conta'
+import EmailRecuperacaoSenhaScreen from './screens/email-recuperacao-senha'
 import ExcluirContaScreen from './screens/excluir-conta'
 import GateDownloadScreen from './screens/gate-download'
 import FormNewsletterScreen from './screens/form-newsletter'
@@ -39,16 +44,16 @@ const router = createBrowserRouter([
 	{ path: '/conteudo', element: <ConteudoScreen /> },
 	{ path: '/menu', element: <MenuScreen /> },
 	{ path: '/buscar', element: <BuscarScreen /> },
-	{ path: '/login', element: <LoginScreen /> },
-	{ path: '/login-v2', element: <LoginV2Screen /> },
-	{ path: '/cadastro', element: <CadastroScreen /> },
-	{ path: '/cadastro-v2', element: <CadastroV2Screen /> },
-	{ path: '/recupera-senha', element: <RecuperaSenhaScreen /> },
-	{ path: '/recupera-senha-v2', element: <RecuperaSenhaV2Screen /> },
-	{ path: '/redefine-senha', element: <RedefineSenhaScreen /> },
-	{ path: '/redefine-senha-v2', element: <RedefineSenhaV2Screen /> },
-	{ path: '/confirmacao-email', element: <ConfirmacaoEmailScreen /> },
-	{ path: '/confirmacao-email-v2', element: <ConfirmacaoEmailV2Screen /> },
+	{ path: '/login-full', element: <LoginScreen /> },
+	{ path: '/login', element: <LoginV2Screen /> },
+	{ path: '/cadastro-full', element: <CadastroScreen /> },
+	{ path: '/cadastro', element: <CadastroV2Screen /> },
+	{ path: '/recupera-senha-full', element: <RecuperaSenhaScreen /> },
+	{ path: '/recupera-senha', element: <RecuperaSenhaV2Screen /> },
+	{ path: '/redefine-senha-full', element: <RedefineSenhaScreen /> },
+	{ path: '/redefine-senha', element: <RedefineSenhaV2Screen /> },
+	{ path: '/confirmacao-email-full', element: <ConfirmacaoEmailScreen /> },
+	{ path: '/confirmacao-email', element: <ConfirmacaoEmailV2Screen /> },
 	{ path: '/dashboard', element: <DashboardScreen /> },
 	{ path: '/dashboard-perfil-v3', element: <DashboardPerfilV3Screen /> },
 	{ path: '/dashboard-perfil-v4', element: <DashboardPerfilV4Screen /> },
@@ -62,6 +67,11 @@ const router = createBrowserRouter([
 	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
 	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
 	{ path: '/gate-download', element: <GateDownloadScreen /> },
+	{ path: '/email-confirmacao', element: <EmailConfirmacaoScreen /> },
+	{ path: '/email-boas-vindas', element: <EmailBoasVindasScreen /> },
+	{ path: '/email-recuperacao-senha', element: <EmailRecuperacaoSenhaScreen /> },
+	{ path: '/email-exclusao-conta', element: <EmailExclusaoContaScreen /> },
+	{ path: '/archive', element: <ArchiveScreen /> },
 	{ path: '*', element: <NotFoundScreen /> },
 ])
 
