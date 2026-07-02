@@ -64,9 +64,6 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/sobre', label: 'Sobre' },
 			{ path: '/contato', label: 'Contato' },
 			{ path: '/anuncie', label: 'Anuncie' },
-			{ path: '/patrocinadores', label: 'Patrocinadores', description: 'Listagem de todos os patrocinadores' },
-			{ path: '/patrocinador?id=tetrapak', label: 'Patrocinador (individual)', description: 'Página de um patrocinador específico' },
-			{ path: '/form-newsletter', label: 'Form — Newsletter' },
 		],
 	},
 	{

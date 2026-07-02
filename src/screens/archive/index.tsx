@@ -54,6 +54,22 @@ const GROUPS: ArchiveGroup[] = [
 			{ path: '/dashboard-perfil-v3', label: 'Perfil — v3', reason: 'Consolidado em /dashboard-perfil-v4' },
 		],
 	},
+	{
+		title: 'Institucionais & Forms — descontinuadas',
+		items: [
+			{ path: '/patrocinadores', label: 'Patrocinadores', reason: 'Fora do escopo da versão enxuta' },
+			{
+				path: '/patrocinador?id=tetrapak',
+				label: 'Patrocinador (individual)',
+				reason: 'Fora do escopo da versão enxuta',
+			},
+			{
+				path: '/form-newsletter',
+				label: 'Form — Newsletter',
+				reason: 'Fora do escopo da versão enxuta (Newsletter fica "Em breve" no perfil)',
+			},
+		],
+	},
 ]
 
 const TOTAL = GROUPS.reduce((sum, g) => sum + g.items.length, 0)
