@@ -2,6 +2,7 @@ import { AdFrame } from '~/components/ad-frame'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
+import { NewsCard } from '~/components/news-card'
 import { Thumbnail } from '~/components/thumbnail'
 import { CATEGORIA_FEATURED, CATEGORIA_LIST, picsumSrc } from '~/mocks/articles'
 
@@ -56,52 +57,28 @@ export default function CategoriaScreen() {
 					<div className="flex flex-col gap-6 flex-1 min-w-0">
 						<div className="flex gap-6">
 							{featured.slice(0, 2).map((article) => (
-								<article
+								<NewsCard
 									key={article.id}
-									className="group flex flex-col gap-3 flex-1 min-w-[288px]"
-								>
-									<Thumbnail
-										src={picsumSrc(article.seed, 600, 338)}
-										alt="Capa"
-										href="/conteudo"
-										ratio="video"
-									/>
-									<div className="flex flex-col gap-2">
-										<h3 className="text-title-lg font-display font-bold text-primary-600 leading-tight">
-											<a
-												href="/conteudo"
-												className="group-hover:text-secondary-950 transition-colors"
-											>
-												{article.title}
-											</a>
-										</h3>
-									</div>
-								</article>
+									size="small"
+									orientation="vertical"
+									title={article.title}
+									image={picsumSrc(article.seed, 600, 338)}
+									href="/conteudo"
+									className="flex-1 min-w-[288px]"
+								/>
 							))}
 						</div>
 						<div className="flex gap-6">
 							{featured.slice(2, 3).map((article) => (
-								<article
+								<NewsCard
 									key={article.id}
-									className="group flex flex-col gap-3 flex-1 min-w-[288px]"
-								>
-									<Thumbnail
-										src={picsumSrc(article.seed, 600, 338)}
-										alt="Capa"
-										href="/conteudo"
-										ratio="video"
-									/>
-									<div className="flex flex-col gap-2">
-										<h3 className="text-title-lg font-display font-bold text-primary-600 leading-tight">
-											<a
-												href="/conteudo"
-												className="group-hover:text-secondary-950 transition-colors"
-											>
-												{article.title}
-											</a>
-										</h3>
-									</div>
-								</article>
+									size="small"
+									orientation="vertical"
+									title={article.title}
+									image={picsumSrc(article.seed, 600, 338)}
+									href="/conteudo"
+									className="flex-1 min-w-[288px]"
+								/>
 							))}
 							<div className="flex flex-col items-center flex-1 min-w-[288px]">
 								<AdFrame width={300} height={250} />

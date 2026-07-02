@@ -2,15 +2,16 @@ import { AdFrame } from '~/components/ad-frame'
 import { Avatar } from '~/components/avatar'
 import { Button } from '~/components/button'
 import { Categoria } from '~/components/categoria'
-import { Divider } from '~/components/divider'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
 import { IconButton } from '~/components/icon-button'
 import type { IconName } from '~/components/icon/paths'
+import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
+import { WidgetEmAlta } from '~/components/widget-em-alta'
 import { useSearchParams } from 'react-router'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
 
@@ -184,31 +185,10 @@ export default function ConteudoScreen() {
 					{/* Sidebar */}
 					<aside className="col-span-4 flex flex-col gap-10">
 						{/* Widget Em Alta */}
-						<div className="bg-neutral-50 border border-neutral-100 flex flex-col items-start overflow-hidden pb-4 rounded-lg w-full max-w-[392px]">
-							<div className="flex items-center p-6 w-full">
-								<p className="flex-1 font-display font-bold text-title-xl text-primary-600 leading-7">
-									Em Alta
-								</p>
-							</div>
-							<div className="flex flex-col items-start w-full">
-								{EM_ALTA.map((title, i) => (
-									<div
-										key={title}
-										className="flex flex-col gap-4 items-start py-2 px-6 w-full"
-									>
-										<div className="group flex font-display font-bold gap-4 items-start w-full">
-											<p className="text-display-sm text-neutral-900 whitespace-nowrap leading-[44px]">
-												{i + 1}
-											</p>
-											<p className="flex-1 font-display font-bold text-title-lg text-primary-600 group-hover:text-secondary-950 transition-colors leading-6">
-												{title}
-											</p>
-										</div>
-										{i < EM_ALTA.length - 1 ? <Divider /> : null}
-									</div>
-								))}
-							</div>
-						</div>
+						<WidgetEmAlta
+							items={EM_ALTA.map((title) => ({ title }))}
+							className="max-w-[392px]"
+						/>
 
 						{/* Banner Newsletter */}
 						<div className="bg-primary-100 flex flex-col items-start overflow-hidden rounded-sm w-full max-w-[392px]">
@@ -309,28 +289,16 @@ export default function ConteudoScreen() {
 				<SectionTitle label="Veja também" color="primary-600" />
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 pt-6 pb-10 flex flex-wrap gap-x-6 gap-y-8">
 					{VEJA_TAMBEM.map((card) => (
-						<article
+						<NewsCard
 							key={card.id}
-							className="group flex flex-col gap-3 flex-1 min-w-[288px]"
-						>
-							<Thumbnail
-								src={picsumSrc(card.seed, 600, 338)}
-								alt="Capa"
-								href="/conteudo"
-								ratio="video"
-							/>
-							<div className="flex flex-col gap-2">
-								<Categoria color={card.categoryColor} label={card.category} href="/categoria" />
-								<h3 className="text-title-lg font-display font-bold text-primary-600 leading-tight">
-									<a
-										href="/conteudo"
-										className="group-hover:text-secondary-950 transition-colors"
-									>
-										{card.title}
-									</a>
-								</h3>
-							</div>
-						</article>
+							size="small"
+							orientation="vertical"
+							title={card.title}
+							image={picsumSrc(card.seed, 600, 338)}
+							href="/conteudo"
+							categoria={{ label: card.category, color: card.categoryColor, href: '/categoria' }}
+							className="flex-1 min-w-[288px]"
+						/>
 					))}
 				</div>
 			</section>
