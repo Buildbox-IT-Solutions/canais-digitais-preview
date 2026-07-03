@@ -20,7 +20,7 @@ const ERRORS: RecuperaError[] = ['none', 'empty', 'invalido', 'throttle']
  * Tela: Recupera Senha (Modal) — v2
  * Versão modal do fluxo de recuperação, espelhando Login/Cadastro modal (912px, proof panel size="sm",
  * top-bar com Voltar + fechar). O estado "sent" replica o status do "Confirme seu e-mail" modal:
- * AuthStatusIcon (mail), título + corpo + ações.
+ * AuthStatusRing (mail, size sm), título + corpo + ações.
  * Estados: ?state=default|sent · erros: ?error=empty|invalido|throttle
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-*
  */
