@@ -11,10 +11,37 @@ import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthInput } from '../_auth/input'
 import { AuthStatusRing, type StatusRingAccent } from '../_auth/status-ring'
 import { maskEmail } from '../_auth/mask-email'
+import { AuthTerminalModal, type AuthTerminalButton } from '../_auth/terminal-modal'
 
-type ConfirmacaoState = 'waiting' | 'corrigir' | 'success'
+type ConfirmacaoState = 'waiting' | 'corrigir' | 'success' | 'link-expired' | 'link-used'
 
-const STATES: ConfirmacaoState[] = ['waiting', 'corrigir', 'success']
+const STATES: ConfirmacaoState[] = ['waiting', 'corrigir', 'success', 'link-expired', 'link-used']
+
+const ERROR_TERMINAL: Record<'link-expired' | 'link-used', {
+	accent: StatusRingAccent
+	icon: IconName
+	title: string
+	body: string
+	buttons: AuthTerminalButton[]
+}> = {
+	'link-expired': {
+		accent: 'neutral',
+		icon: 'schedule',
+		title: 'Link expirado',
+		body: 'O link de confirmação é válido por 24 horas. Solicite um novo para ativar sua conta.',
+		buttons: [
+			{ label: 'Enviar novo link', href: '?state=waiting', variant: 'filled' },
+			{ label: 'Voltar para o login', href: '/login', variant: 'ghost' },
+		],
+	},
+	'link-used': {
+		accent: 'mint',
+		icon: 'check',
+		title: 'Sua conta já está ativa',
+		body: 'Este link de confirmação já foi usado. Basta fazer login para continuar.',
+		buttons: [{ label: 'Fazer login', href: '/login', variant: 'filled' }],
+	},
+}
 
 type ButtonVariant = 'filled' | 'outlined' | 'ghost'
 
@@ -167,15 +194,13 @@ function CorrigirForm({ email, intent }: { email: string; intent: string }) {
 
 /**
  * Tela: Confirmação de E-mail (Modal) — v2
- * Estados "warm" (usuário na sessão, modal aberto): waiting|corrigir|success — conteúdo idêntico
- * à full page (confirmacao-email): anel de status 120px, layout centralizado (máx. 392px),
- * tipografia e botões iguais. A única diferença é a apresentação — aqui vive dentro de um Modal
- * 912px sobre o portal, com proof panel à esquerda (50%) e botão de fechar.
- * Os estados de link inválido (link-expired|link-used) são cold-entry — o usuário chega pelo link
- * do e-mail sem o modal aberto — e por isso vivem na full page /confirmacao-email-full.
+ * Modal sobre a home (portal ao fundo). Estados de jornada (waiting/corrigir/success) vivem na casca
+ * 912px 50/50 (proof panel à esquerda + coluna de conteúdo, anel de status 80px, máx. 392px). Os
+ * estados de fim de linha (link-expired/link-used) usam o AuthTerminalModal compacto, sem proof.
+ * O link do e-mail abre este modal sobre a home; a full page /confirmacao-email-full foi arquivada.
  * Extras exclusivos do modal: estado "corrigir" (EML-02, troca de e-mail sem refazer cadastro)
  * e roteamento intent=download.
- * Estados: ?state=waiting|corrigir|success · ?email=... · ?intent=download
+ * Estados: ?state=waiting|corrigir|success|link-expired|link-used · ?email=... · ?intent=download
  */
 export default function ConfirmacaoEmailV2Screen() {
 	const [params] = useSearchParams()
@@ -186,6 +211,10 @@ export default function ConfirmacaoEmailV2Screen() {
 
 	const email = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
 	const intent = params.get('intent') ?? ''
+
+	const isErrorTerminal = state === 'link-expired' || state === 'link-used'
+	const errorTerminal = isErrorTerminal ? ERROR_TERMINAL[state as 'link-expired' | 'link-used'] : null
+
 	const cfg = buildConfig(state)
 	const isWaiting = state === 'waiting'
 	const isCorrigir = state === 'corrigir'
@@ -202,6 +231,16 @@ export default function ConfirmacaoEmailV2Screen() {
 			{/* Portal ao fundo */}
 			<HomeScreen />
 
+			{errorTerminal ? (
+				<AuthTerminalModal
+					accent={errorTerminal.accent}
+					icon={errorTerminal.icon}
+					title={errorTerminal.title}
+					body={errorTerminal.body}
+					buttons={errorTerminal.buttons}
+					labelledById="confirmacao-v2-title"
+				/>
+			) : (
 			<Modal
 				open
 				size="xl"
@@ -291,6 +330,7 @@ export default function ConfirmacaoEmailV2Screen() {
 					) : null}
 				</div>
 			</Modal>
+			)}
 
 			<AuthDevNav
 				paramName="state"
