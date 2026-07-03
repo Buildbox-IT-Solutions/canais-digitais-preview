@@ -96,38 +96,26 @@ export default function RecuperaSenhaV2Screen() {
 					<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-4 pb-4 flex flex-col justify-center">
 						{isSent ? (
 							<div className="flex flex-col items-center gap-8 text-center w-full">
-								<AuthStatusRing accent="primary" icon="mail" />
+								<AuthStatusRing accent="primary" icon="mail" size="sm" />
 
 								<div className="flex flex-col gap-2 w-full">
 									<h2
 										id="recupera-v2-title"
-										className="font-display font-bold text-headline-md text-primary-600"
+										className="font-display font-bold text-headline-sm text-primary-600"
 									>
 										Confira sua caixa de entrada
 									</h2>
-									<p className="font-body text-body-lg text-neutral-900">
+									<p className="font-body text-body-md text-neutral-900">
 										Se este e-mail estiver cadastrado, você receberá um link em instantes para criar
 										uma nova senha.
 									</p>
-									<p className="font-body text-body-md text-neutral-700">
+									<p className="font-body text-body-sm text-neutral-700">
 										Não esqueça de verificar a pasta de spam. O link expira em 1 hora.
 									</p>
 								</div>
 
 								<div className="flex flex-col gap-3 w-full">
 									<AuthResendButton label="Reenviar e-mail" />
-									<a
-										href="/login"
-										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
-									>
-										Voltar para o login
-									</a>
-									<a
-										href="?state=default"
-										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-transparent hover:bg-neutral-50 text-primary-600 font-body font-bold text-body-lg transition-colors"
-									>
-										Tentar novamente
-									</a>
 								</div>
 							</div>
 						) : (
@@ -178,15 +166,17 @@ export default function RecuperaSenhaV2Screen() {
 					</div>
 
 					{/* footer */}
-					{isSent ? null : (
-						<div className="shrink-0 px-8 pt-4 pb-8">
+					<div className="shrink-0 px-8 pt-4 pb-8">
+						{isSent ? (
+							<AuthBottomLink label="E-mail errado?" linkLabel="Corrigir" linkHref="?state=default" />
+						) : (
 							<AuthBottomLink
 								label="Não tem conta?"
 								linkLabel="Criar conta"
 								linkHref="/cadastro?step=1"
 							/>
-						</div>
-					)}
+						)}
+					</div>
 				</div>
 			</Modal>
 

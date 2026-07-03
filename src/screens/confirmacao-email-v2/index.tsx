@@ -10,6 +10,7 @@ import HomeScreen from '../home'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthInput } from '../_auth/input'
 import { AuthStatusRing, type StatusRingAccent } from '../_auth/status-ring'
+import { maskEmail } from '../_auth/mask-email'
 
 type ConfirmacaoState = 'waiting' | 'corrigir' | 'success'
 
@@ -118,22 +119,27 @@ function ConfirmButton({ label, href, variant, isResend }: ConfirmacaoButton) {
  */
 function CorrigirForm({ email, intent }: { email: string; intent: string }) {
 	return (
-		<div className="w-full max-w-[392px] flex flex-col gap-6">
-			<AuthStatusRing accent="primary" icon="mail" />
+		<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
+			<AuthStatusRing accent="primary" icon="mail" size="sm" />
 
 			<div className="flex flex-col gap-2 w-full">
 				<h1
 					id="confirmacao-v2-title"
-					className="font-display font-bold text-headline-lg text-primary-600"
+					className="font-display font-bold text-headline-sm text-primary-600"
 				>
 					Corrigir e-mail
 				</h1>
-				<p className="font-body text-body-lg text-neutral-900">
+				<p className="font-body text-body-md text-neutral-900">
 					Digite o e-mail correto e reenviaremos o link de confirmação — sem refazer o cadastro.
 				</p>
 			</div>
 
-			<form action="/confirmacao-email" method="get" className="flex flex-col gap-4 w-full" noValidate>
+			<form
+				action="/confirmacao-email"
+				method="get"
+				className="flex flex-col gap-4 w-full text-left"
+				noValidate
+			>
 				<input type="hidden" name="state" value="waiting" />
 				{intent ? <input type="hidden" name="intent" value={intent} /> : null}
 
@@ -242,24 +248,24 @@ export default function ConfirmacaoEmailV2Screen() {
 							<CorrigirForm email={email} intent={intent} />
 						) : (
 							<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-								<AuthStatusRing accent={cfg.accent} icon={cfg.icon} />
+								<AuthStatusRing accent={cfg.accent} icon={cfg.icon} size="sm" />
 
 								<div className="flex flex-col gap-2 w-full">
 									<h1
 										id="confirmacao-v2-title"
-										className="font-display font-bold text-headline-lg text-primary-600"
+										className="font-display font-bold text-headline-sm text-primary-600"
 									>
 										{cfg.title}
 									</h1>
 
 									{isWaiting ? (
-										<div className="flex flex-col gap-1 w-full font-body text-body-lg text-neutral-900">
+										<div className="flex flex-col gap-1 w-full font-body text-body-md text-neutral-900">
 											<p>Enviamos um link para</p>
-											<p className="font-bold break-words">{email}</p>
-											<p>Clique no link para ativar sua conta. O link expira em 24 horas.</p>
+											<p className="font-bold break-words">{maskEmail(email)}</p>
+											<p>Clique no link para ativar sua conta.</p>
 										</div>
 									) : (
-										<p className="font-body text-body-lg text-neutral-900">{cfg.body}</p>
+										<p className="font-body text-body-md text-neutral-900">{cfg.body}</p>
 									)}
 								</div>
 
