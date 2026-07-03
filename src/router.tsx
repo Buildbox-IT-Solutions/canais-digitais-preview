@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from 'react-router'
+import { RouterProvider, createBrowserRouter, Navigate } from 'react-router'
 import AnuncieScreen from './screens/anuncie'
 import ArchiveScreen from './screens/archive'
 import BuscarScreen from './screens/buscar'
@@ -54,6 +54,12 @@ const router = createBrowserRouter([
 	{ path: '/redefine-senha', element: <RedefineSenhaV2Screen /> },
 	{ path: '/confirmacao-email-full', element: <ConfirmacaoEmailScreen /> },
 	{ path: '/confirmacao-email', element: <ConfirmacaoEmailV2Screen /> },
+	// Endpoint do link do e-mail de confirmação. O "servidor" resolveria o token e decidiria o
+	// desfecho; no protótipo simulamos o clique válido → tela de sucesso (cold entry → full page).
+	{ path: '/confirmar', element: <Navigate to="/confirmacao-email-full?state=success" replace /> },
+	// Endpoint do link do e-mail de recuperação de senha. O token gateia o acesso; no protótipo
+	// simulamos o clique válido → formulário de nova senha (cold entry → full page).
+	{ path: '/redefinir', element: <Navigate to="/redefine-senha-full" replace /> },
 	{ path: '/dashboard', element: <DashboardScreen /> },
 	{ path: '/dashboard-perfil-v3', element: <DashboardPerfilV3Screen /> },
 	{ path: '/dashboard-perfil-v4', element: <DashboardPerfilV4Screen /> },
