@@ -4,6 +4,7 @@ import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
+import { PasswordChecklist } from '~/components/password-checklist'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
@@ -13,10 +14,10 @@ import { AuthTerminalModal, type AuthTerminalButton } from '../_auth/terminal-mo
 import type { IconName } from '~/components/icon/paths'
 
 type RedefineState = 'valid' | 'loading' | 'success' | 'expired' | 'used'
-type RedefineError = 'none' | 'fraca' | 'mismatch'
+type RedefineError = 'none' | 'mismatch'
 
 const STATES: RedefineState[] = ['valid', 'loading', 'success', 'expired', 'used']
-const ERRORS: RedefineError[] = ['none', 'fraca', 'mismatch']
+const ERRORS: RedefineError[] = ['none', 'mismatch']
 
 // Sucesso permanece na casca 50/50 com proof celebratória.
 const SUCCESS = {
@@ -78,19 +79,13 @@ export default function RedefineSenhaV2Screen() {
 	const isLoading = state === 'loading'
 	const errorTerminal = isErrorTerminal ? ERROR_TERMINAL[state as 'expired' | 'used'] : null
 
-	const senhaError =
-		errorMode === 'fraca'
-			? 'Senha muito fraca. Use letras e números, mín. 8 caracteres.'
-			: undefined
 	const confirmError = errorMode === 'mismatch' ? 'As senhas não coincidem.' : undefined
 
 	const pwValue = isLoading
 		? 'minhaSenhaNova2026!'
-		: errorMode === 'fraca'
-			? 'abc'
-			: errorMode === 'mismatch'
-				? 'minhasenha123'
-				: ''
+		: errorMode === 'mismatch'
+			? 'minhasenha123'
+			: ''
 	const confirmValue = isLoading
 		? 'minhaSenhaNova2026!'
 		: errorMode === 'mismatch'
@@ -224,9 +219,9 @@ export default function RedefineSenhaV2Screen() {
 												autoComplete="new-password"
 												value={pw}
 												onChange={setPw}
-												error={senhaError}
 												required
 											/>
+											<PasswordChecklist value={pw} />
 										</div>
 
 										<AuthPasswordInput
