@@ -36,6 +36,26 @@ export const PERFIL_CAMPOS: PerfilCampos = {
 	complemento: '',
 }
 
+/** Perfil totalmente preenchido — usuário "engajado" (?state=completo no dashboard-perfil-v4). */
+export const PERFIL_CAMPOS_COMPLETO: PerfilCampos = {
+	nome: 'Mariana Albuquerque',
+	email: 'mariana.albuquerque@empresa.com.br',
+	telefone: '+55 (11) 98786-9879',
+	nascimento: '15/03/1988',
+	genero: 'Feminino',
+	empresa: 'Grupo Camargo Alimentos S/A',
+	cargo: 'Gerente',
+	setor: 'Alimentos & Bebidas',
+	cpf: '123.456.789-00',
+	pais: 'Brasil',
+	estado: 'SP',
+	cidade: 'São Paulo',
+	cep: '01310-100',
+	endereco: 'Av. Paulista',
+	numero: '1000',
+	complemento: 'Conj. 51',
+}
+
 export const OPCOES_GENERO = ['Masculino', 'Feminino', 'Prefiro não informar']
 export const OPCOES_CARGO = ['Diretor(a)', 'Gerente', 'Coordenador(a)', 'Analista', 'Consultor(a)', 'Outro']
 export const OPCOES_SETOR = ['Agro', 'Alimentos & Bebidas', 'Embalagens', 'Saúde', 'Logística', 'Varejo', 'Tecnologia', 'Outro']

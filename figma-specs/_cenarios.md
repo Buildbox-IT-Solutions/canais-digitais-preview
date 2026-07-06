@@ -3,7 +3,7 @@
 > Inventário dos estados/telas que ainda **não existem** no protótipo, para virar backlog.
 > Criado em **2026-07-06**. Foco atual: **área logada** (`dashboard-perfil-v4`).
 
-**Status legend:** ⬜ a fazer · 🔄 em progresso · ✅ feito
+**Status legend:** ⬜ a fazer · 🔄 em progresso · ✅ feito · ❌ N/A
 
 ---
 
@@ -15,33 +15,28 @@ Hoje o `?state=empty` do [`dashboard-perfil-v4`](../src/screens/dashboard-perfil
 
 | Persona | Perfil | Downloads | Últimas | Newsletter |
 |---|---|---|---|---|
-| **Novo** (recém-criado) | ~0% / placeholder | vazio | vazio | nenhuma ativa (0/6) |
-| **Parcial** (default de hoje) | ~40% | 24 itens | populada | 2 de 6 |
+| **Novo** (recém-criado) | parcial (~44%) | vazio | vazio | nenhuma ativa (0/6) |
+| **Parcial** (default de hoje) | ~44% | 24 itens | populada | 2 de 6 |
 | **Engajado / completo** | **100%** | populada | populada | todas (6/6) |
 
-**Proposta de orquestração:** um `?persona=novo|engajado` (default = parcial) que atravessa as 4 abas de uma vez, mantendo o `?state=saved` (toast) ortogonal. Decisão de param a confirmar na hora de construir.
+**Trigger (decidido):** reusa `?state=` — `?state=empty` esvazia **Downloads + Últimas** (novo usuário; Perfil segue parcial); `?state=completo` → **Perfil 100%**. `?state=saved` (toast) segue ortogonal. O `?persona=` do #5 fica para quando as demais abas (Newsletter etc.) entrarem.
 
 ---
 
 ## Cenários — foco atual (área logada)
 
-### 1. Downloads — empty (novo usuário) ⬜
-- **Onde:** aba Downloads do `dashboard-perfil-v4` (`?tab=downloads`).
-- **Gatilho proposto:** `?persona=novo` (ou `?state=empty` estendido para a aba).
-- **O que mostrar:** bloco vazio "Você ainda não baixou nenhum material" + subtexto + CTA "Explorar conteúdos" → `/home` (ou `/categoria`).
-- **Reaproveitar:** o padrão de empty já usado no `UltimasPane` ([dashboard-perfil-v4:170-188](../src/screens/dashboard-perfil-v4/index.tsx)) — card `bg-neutral-50` + ícone em círculo + título + texto + botão. Ícone `download`.
+### 1. Downloads — empty (novo usuário) ✅
+- **Onde/gatilho:** aba Downloads do `dashboard-perfil-v4`, `?tab=downloads&state=empty`.
+- **O que mostra:** card vazio "Você ainda não baixou nenhum material" + subtexto + CTA "Explorar conteúdos" → `/home`, sem lista nem paginação.
+- **Reaproveita:** o mesmo padrão de empty do `UltimasPane` — card `bg-neutral-50` + ícone `download` em círculo + título + texto + botão.
 
-### 2. Perfil — 100% completo ⬜
-- **Onde:** aba Perfil (`?tab=perfil`).
-- **Gatilho proposto:** `?persona=engajado`.
-- **O que muda:** anel de progresso em **100%**; remover o banner "Faltam N campos" e os chips "Complete seu Perfil"/"incomplete" dos `ProfileBox`; mensagem de celebração (ex.: "Perfil completo ✓"). `ProfileBox` sem estados `incomplete`/`placeholder`.
-- **Reaproveitar:** `ProfileMetrics`, `ProfileBox`; mock `PERFIL_CAMPOS` totalmente preenchido → `pct` = 100 automaticamente.
+### 2. Perfil — 100% completo ✅
+- **Onde/gatilho:** aba Perfil, `?tab=perfil&state=completo`.
+- **Abordagem (supressão):** o estado completo é o perfil **sem o andaime de completude** — some o banner `ProfileMetrics`, as badges "Complete seu Perfil" e o subtítulo "% completo / N restantes"; `ProfileBox` sem `incomplete`/`placeholder`; a box Demográficos mostra valores reais. Sem mensagem/CTA nova (a tela ganhará funcionalidades na evolução do produto).
+- **Reaproveita:** `ProfileMetrics`/`ProfileBox` (só recebem props diferentes) + novo mock `PERFIL_CAMPOS_COMPLETO`.
 
-### 3. Perfil — 0% / recém-criado ⬜
-- **Onde:** aba Perfil.
-- **Gatilho proposto:** `?persona=novo`.
-- **O que muda:** anel em **0%**; todos os campos em placeholder; banner "complete seu perfil" reforçado. Hoje o mock é parcial — falta o extremo "acabou de criar".
-- **Reaproveitar:** mesmos componentes; `PERFIL_CAMPOS` vazio.
+### 3. Perfil — 0% / recém-criado — ❌ N/A
+- **Descartado:** o cadastro exige preencher boa parte dos dados, então um perfil recém-criado **nunca fica em 0%**. A persona "Novo" mantém o perfil **parcial** (~44%), não vazio.
 
 ### 4. Newsletter — nenhuma ativa (0/6) e todas ativas (6/6) ⬜
 - **Onde:** aba Newsletter (`?tab=newsletter`).

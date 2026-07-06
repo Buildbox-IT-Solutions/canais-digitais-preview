@@ -11,6 +11,7 @@ import { NewsletterItem } from '~/components/newsletter-item'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
 import { RecentNewsItem } from '~/components/recent-news-item'
+import { StatusRing } from '~/components/status-ring'
 import { Toast } from '~/components/toast'
 import {
 	DOWNLOADS,
@@ -20,6 +21,8 @@ import {
 	OPCOES_PAIS,
 	OPCOES_SETOR,
 	PERFIL_CAMPOS,
+	PERFIL_CAMPOS_COMPLETO,
+	type PerfilCampos,
 	RECENT_NEWS,
 } from '~/mocks/dashboard-perfil'
 
@@ -59,9 +62,13 @@ export default function DashboardPerfilV4Screen() {
 	const state = params.get('state')
 	const isSaved = state === 'saved'
 	const isEmpty = state === 'empty'
+	const isCompleto = state === 'completo'
 
-	const totalFields = Object.keys(PERFIL_CAMPOS).length
-	const filledFields = Object.values(PERFIL_CAMPOS).filter((v) => v !== '').length
+	// "Engajado" (?state=completo): perfil todo preenchido; a tela suprime o andaime
+	// de completude (banner de progresso, badges e infos de % restantes).
+	const campos = isCompleto ? PERFIL_CAMPOS_COMPLETO : PERFIL_CAMPOS
+	const totalFields = Object.keys(campos).length
+	const filledFields = Object.values(campos).filter((v) => v !== '').length
 	const pct = Math.round((filledFields / totalFields) * 100)
 	const missing = totalFields - filledFields
 
@@ -88,10 +95,12 @@ export default function DashboardPerfilV4Screen() {
 			</div>
 
 			<div className="flex-1 max-w-screen-xl mx-auto w-full px-4 lg:px-6 py-10">
-				{tab === 'perfil' ? <PerfilPane pct={pct} missing={missing} /> : null}
+				{tab === 'perfil' ? (
+					<PerfilPane pct={pct} missing={missing} complete={isCompleto} campos={campos} />
+				) : null}
 				{tab === 'ultimas' ? <UltimasPane isEmpty={isEmpty} /> : null}
 				{tab === 'newsletter' ? <NewsletterPane /> : null}
-				{tab === 'downloads' ? <DownloadsPane /> : null}
+				{tab === 'downloads' ? <DownloadsPane isEmpty={isEmpty} /> : null}
 			</div>
 
 			<FooterDesktop />
@@ -168,11 +177,9 @@ function UltimasPane({ isEmpty }: { isEmpty: boolean }) {
 			</header>
 
 			{isEmpty ? (
-				<div className="bg-neutral-50 border border-primary-100 rounded-lg px-6 py-12 flex flex-col items-center text-center gap-3">
-					<div className="size-14 rounded-full bg-white border border-primary-100 inline-flex items-center justify-center">
-						<Icon name="book" className="size-7 text-primary-600" />
-					</div>
-					<h3 className="font-display font-bold text-title-md text-primary-600">
+				<div className="flex flex-col items-center text-center gap-4 py-12">
+					<StatusRing accent="primary" icon="book" size="sm" />
+					<h3 className="font-display font-bold text-title-xl text-primary-600">
 						Você ainda não leu nenhum artigo
 					</h3>
 					<p className="font-body text-body-md text-neutral-700 max-w-md">
@@ -180,7 +187,7 @@ function UltimasPane({ isEmpty }: { isEmpty: boolean }) {
 					</p>
 					<a
 						href="/home"
-						className="mt-3 inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-md transition-colors"
+						className="mt-2 inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full border-[1.5px] border-primary-600 text-primary-600 hover:bg-neutral-50 font-body font-bold text-body-md transition-colors"
 					>
 						Explorar conteúdos
 						<Icon name="arrow-forward" className="size-5" />
@@ -204,17 +211,36 @@ function UltimasPane({ isEmpty }: { isEmpty: boolean }) {
 	)
 }
 
-function PerfilPane({ pct, missing }: { pct: number; missing: number }) {
+function PerfilPane({
+	pct,
+	missing,
+	complete,
+	campos,
+}: {
+	pct: number
+	missing: number
+	complete: boolean
+	campos: PerfilCampos
+}) {
+	// No estado "completo" a box Demográficos mostra valores reais; caso contrário,
+	// os rótulos-placeholder de campos a preencher.
+	const demograficoFields = complete
+		? [campos.cpf, `${campos.cidade}, ${campos.estado}`, campos.endereco]
+		: ['CPF / CNPJ', 'Cidade, UF', 'Endereço']
+
 	return (
 		<div className="flex flex-col gap-10">
-			<ProfileMetrics pct={pct} missing={missing} />
+			{/* Banner de progresso: some no perfil completo (andaime de completude). */}
+			{!complete ? <ProfileMetrics pct={pct} missing={missing} /> : null}
 
 			<div className="flex flex-col gap-6">
 				<header className="flex flex-col gap-1">
 					<h2 className="font-display font-bold text-title-xl text-primary-600">Perfil</h2>
-					<p className="font-body text-body-md text-neutral-600">
-						{pct}% completo — {missing} campos restantes.
-					</p>
+					{!complete ? (
+						<p className="font-body text-body-md text-neutral-600">
+							{pct}% completo — {missing} campos restantes.
+						</p>
+					) : null}
 				</header>
 
 				<div className="flex flex-col gap-2">
@@ -245,17 +271,17 @@ function PerfilPane({ pct, missing }: { pct: number; missing: number }) {
 						icon="account-circle"
 						title="Dados pessoais"
 						description="Informações de identificação da sua conta"
-						fields={[PERFIL_CAMPOS.nome, PERFIL_CAMPOS.email, PERFIL_CAMPOS.telefone]}
+						fields={[campos.nome, campos.email, campos.telefone]}
 						href="?tab=perfil&drawer=dados-pessoais"
 						cta="Atualizar"
 						chip="Complete seu Perfil"
-						incomplete
+						incomplete={!complete}
 					/>
 					<ProfileBox
 						icon="business-center"
 						title="Dados profissionais"
 						description="Define suas recomendações de conteúdo e newsletter"
-						fields={[PERFIL_CAMPOS.empresa, PERFIL_CAMPOS.cargo, PERFIL_CAMPOS.setor]}
+						fields={[campos.empresa, campos.cargo, campos.setor]}
 						href="?tab=perfil&drawer=dados-profissionais"
 						cta="Atualizar"
 					/>
@@ -263,11 +289,11 @@ function PerfilPane({ pct, missing }: { pct: number; missing: number }) {
 						icon="location"
 						title="Dados Demográficos"
 						description="Solicitado apenas quando você baixa materiais"
-						fields={['CPF / CNPJ', 'Cidade, UF', 'Endereço']}
+						fields={demograficoFields}
 						href="?tab=perfil&drawer=dados-fiscais"
-						cta="Preencher"
-						incomplete
-						placeholder
+						cta={complete ? 'Atualizar' : 'Preencher'}
+						incomplete={!complete}
+						placeholder={!complete}
 						chip="Preencha e personalize sua experiência"
 					/>
 				</div>
@@ -339,7 +365,7 @@ function NewsletterPane() {
 	)
 }
 
-function DownloadsPane() {
+function DownloadsPane({ isEmpty }: { isEmpty: boolean }) {
 	const [params] = useSearchParams()
 	const pageRaw = Number(params.get('page') ?? 1)
 	const totalPages = Math.max(1, Math.ceil(DOWNLOADS.length / PER_PAGE))
@@ -351,32 +377,60 @@ function DownloadsPane() {
 		<div className="flex flex-col gap-6">
 			<header className="flex flex-col gap-1">
 				<h2 className="font-display font-bold text-title-xl text-primary-600">Meus downloads</h2>
-				<p className="font-body text-body-md text-neutral-600">
-					Baixe novamente qualquer material a qualquer momento.
-				</p>
+				{!isEmpty ? (
+					<p className="font-body text-body-md text-neutral-600">
+						Baixe novamente qualquer material a qualquer momento.
+					</p>
+				) : null}
 			</header>
 
-			<div className="flex flex-col">
-				{slice.map((d, i) => (
-					<DownloadItem
-						key={`${page}-${i}`}
-						icon={d.icon}
-						title={d.title}
-						date={d.date}
-						size={d.size}
-						titleHref="/conteudo"
-						fileHref="#"
-						disabled={d.disabled}
-						isLast={i === slice.length - 1}
-					/>
-				))}
-			</div>
-
-			{totalPages > 1 ? (
-				<div className="pt-4">
-					<Pagination current={page} total={totalPages} baseHref={`${BASE_HREF}?tab=downloads`} />
+			{isEmpty ? (
+				<div className="flex flex-col items-center text-center gap-4 py-12">
+					<StatusRing accent="primary" icon="folder" size="sm" />
+					<h3 className="font-display font-bold text-title-xl text-primary-600">
+						Você ainda não baixou nenhum material
+					</h3>
+					<p className="font-body text-body-md text-neutral-700 max-w-md">
+						Baixe e-books, guias e relatórios do portal — eles ficam salvos aqui para você
+						acessar quando quiser.
+					</p>
+					<a
+						href="/home"
+						className="mt-2 inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full border-[1.5px] border-primary-600 text-primary-600 hover:bg-neutral-50 font-body font-bold text-body-md transition-colors"
+					>
+						Explorar conteúdos
+						<Icon name="arrow-forward" className="size-5" />
+					</a>
 				</div>
-			) : null}
+			) : (
+				<>
+					<div className="flex flex-col">
+						{slice.map((d, i) => (
+							<DownloadItem
+								key={`${page}-${i}`}
+								icon={d.icon}
+								title={d.title}
+								date={d.date}
+								size={d.size}
+								titleHref="/conteudo"
+								fileHref="#"
+								disabled={d.disabled}
+								isLast={i === slice.length - 1}
+							/>
+						))}
+					</div>
+
+					{totalPages > 1 ? (
+						<div className="pt-4">
+							<Pagination
+								current={page}
+								total={totalPages}
+								baseHref={`${BASE_HREF}?tab=downloads`}
+							/>
+						</div>
+					) : null}
+				</>
+			)}
 		</div>
 	)
 }
