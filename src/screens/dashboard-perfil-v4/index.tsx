@@ -164,7 +164,7 @@ function ProfileMetrics({ pct, missing }: { pct: number; missing: number }) {
 	const arc = (pct / 100) * CIRC
 
 	return (
-		<div className="bg-mint-light rounded-lg pl-8 pr-12 py-8 flex items-center gap-8">
+		<div className="bg-mint-light rounded-lg p-6 lg:pl-8 lg:pr-12 lg:py-8 flex flex-col items-center text-center gap-6 lg:flex-row lg:items-center lg:text-left lg:gap-8">
 			<div className="relative size-[140px] shrink-0">
 				<svg width={140} height={140} viewBox="0 0 140 140" aria-hidden="true">
 					<circle cx={70} cy={70} r={R} fill="none" stroke="rgba(0,34,68,.15)" strokeWidth={8} />
@@ -188,7 +188,7 @@ function ProfileMetrics({ pct, missing }: { pct: number; missing: number }) {
 					</span>
 				</div>
 			</div>
-			<div className="flex-1 min-w-0 flex flex-col gap-4">
+			<div className="flex-1 min-w-0 flex flex-col items-center lg:items-start gap-4">
 				<h2 className="font-display font-bold text-headline-sm text-primary-600 leading-tight">
 					Receba conteúdos mais relevantes para você
 				</h2>
@@ -290,7 +290,7 @@ function PerfilPane({
 						Foto de perfil{' '}
 						<span className="font-body font-normal text-neutral-950">(Opcional)</span>
 					</h3>
-					<div className="bg-neutral-50/60 border-2 border-dashed border-neutral-100 rounded-lg p-6 flex items-center gap-4">
+					<div className="bg-neutral-50/60 border-2 border-dashed border-neutral-100 rounded-lg p-4 lg:p-6 flex items-center gap-4">
 						<div className="size-16 rounded-full bg-primary-100 flex items-center justify-center shrink-0">
 							<span className="font-body font-semibold text-headline-sm text-primary-600 leading-none">
 								{USER_INITIALS}
