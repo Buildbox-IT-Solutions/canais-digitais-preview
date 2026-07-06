@@ -50,7 +50,8 @@ export function FooterDesktop({
 }: IFooterDesktopProps) {
 	return (
 		<footer className={twMerge('w-full bg-primary-600 text-white', className)}>
-			<div className="max-w-screen-xl mx-auto flex gap-[72px] items-start px-6">
+			{/* Desktop (≥lg) — duas colunas. Mobile abaixo. */}
+			<div className="hidden lg:flex max-w-screen-xl mx-auto gap-[72px] items-start px-6">
 				<div className="flex-1 flex flex-col items-start">
 					<div className="flex items-start pt-8 pb-4 w-full">
 						<div className="h-10 inline-flex items-center font-display font-bold text-title-xl text-white">
@@ -105,6 +106,62 @@ export function FooterDesktop({
 							<Icon name={s.provider} className="size-5" />
 						</a>
 					))}
+				</div>
+			</div>
+
+			{/* Mobile (<lg) — empilhado (Figma 330:6249) */}
+			<div className="lg:hidden flex flex-col">
+				<div className="p-4">
+					<div className="h-10 inline-flex items-center font-display font-bold text-title-xl text-white">
+						informa
+					</div>
+				</div>
+
+				<div className="flex items-center gap-4 p-4">
+					{socials.map((s) => (
+						<a
+							key={s.provider}
+							href={s.href}
+							aria-label={s.label}
+							className="inline-flex items-center justify-center size-10 rounded-full border border-white text-white hover:bg-white/10 transition-colors"
+						>
+							<Icon name={s.provider} className="size-5" />
+						</a>
+					))}
+				</div>
+
+				<div className="grid grid-cols-2 gap-x-8 gap-y-4 p-4">
+					{categories.map((cat) => (
+						<a
+							key={cat.label}
+							href={cat.href}
+							className="font-body font-semibold text-label-lg text-white hover:text-primary-100 transition-colors"
+						>
+							{cat.label}
+						</a>
+					))}
+				</div>
+
+				<div className="flex flex-col gap-4 px-4 py-2">
+					<div className="h-px w-full bg-neutral-100/50" />
+					<p className="text-body-sm font-body text-white leading-4">{description}</p>
+					<div className="h-px w-full bg-neutral-100/50" />
+				</div>
+
+				<div className="grid grid-cols-2 gap-2 px-4 py-2">
+					{legalLinks.map((link) => (
+						<a
+							key={link.label}
+							href={link.href}
+							className="font-body font-semibold text-label-lg text-white hover:text-primary-100 transition-colors"
+						>
+							{link.label}
+						</a>
+					))}
+				</div>
+
+				<div className="px-4 py-8">
+					<p className="font-body text-body-sm text-white">{copyright}</p>
 				</div>
 			</div>
 		</footer>
