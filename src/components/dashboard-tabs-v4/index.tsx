@@ -28,7 +28,7 @@ export function DashboardTabsV4({
 }: IDashboardTabsV4Props) {
 	return (
 		<div className={twMerge('w-full border-b border-neutral-100', className)}>
-			<div className="flex items-center" role="tablist">
+			<div className="flex items-center overflow-x-auto" role="tablist">
 				{tabs.map((t) => {
 					const isActive = t.id === active
 					const isDisabled = Boolean(t.disabled)
@@ -41,7 +41,7 @@ export function DashboardTabsV4({
 							: 'font-semibold text-neutral-900 hover:text-secondary-950'
 					const borderClass = isActive ? 'border-primary-600' : 'border-transparent'
 					const commonClasses = twMerge(
-						'h-11 inline-flex items-center pt-3 pb-2 px-5 border-b-2 font-body text-label-lg transition-colors',
+						'h-11 shrink-0 whitespace-nowrap inline-flex items-center pt-3 pb-2 px-5 border-b-2 font-body text-label-lg transition-colors',
 						borderClass,
 						labelClasses,
 					)
