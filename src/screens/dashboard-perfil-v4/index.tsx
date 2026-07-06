@@ -1,4 +1,5 @@
 import { useSearchParams } from 'react-router'
+import { useMediaQuery } from '~/lib/use-media-query'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
@@ -479,6 +480,10 @@ function DownloadsPane({ isEmpty }: { isEmpty: boolean }) {
 
 function PerfilDrawer({ drawer }: { drawer: Drawer }) {
 	const cfg = buildDrawerConfig(drawer)
+	// Abaixo de sm (640px) todo campo ocupa a largura toda; de sm pra cima os
+	// pares (colSpan 6/6, 9/3) voltam lado a lado. O grid é inline-style, então
+	// o clamp é por JS (Tailwind não alcança inline styles nem classe dinâmica).
+	const isWide = useMediaQuery('(min-width: 640px)')
 
 	return (
 		<Drawer
@@ -498,7 +503,7 @@ function PerfilDrawer({ drawer }: { drawer: Drawer }) {
 				}}
 			>
 				{cfg.fields.map((f, i) => (
-					<DrawerField key={i} field={f} />
+					<DrawerField key={i} field={f} isWide={isWide} />
 				))}
 			</div>
 		</Drawer>
@@ -517,7 +522,7 @@ interface DrawerFieldDef {
 	help?: string
 }
 
-function DrawerField({ field }: { field: DrawerFieldDef }) {
+function DrawerField({ field, isWide }: { field: DrawerFieldDef; isWide: boolean }) {
 	const {
 		label,
 		value,
@@ -531,9 +536,10 @@ function DrawerField({ field }: { field: DrawerFieldDef }) {
 	} = field
 
 	const span = Math.min(12, Math.max(1, colSpan))
+	const eff = isWide ? span : 12
 
 	return (
-		<div className="flex flex-col" style={{ gridColumn: `span ${span} / span ${span}`, minWidth: 0 }}>
+		<div className="flex flex-col" style={{ gridColumn: `span ${eff} / span ${eff}`, minWidth: 0 }}>
 			<label
 				className={`font-body font-semibold text-label-lg ${disabled ? 'text-neutral-500' : 'text-neutral-950'} px-1 pb-1`}
 			>
