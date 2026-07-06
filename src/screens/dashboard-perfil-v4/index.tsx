@@ -35,7 +35,7 @@ const USER_NAME = 'Mariana Albuquerque'
 const USER_EMAIL = 'mariana.albuquerque@empresa.com.br'
 const USER_INITIALS = 'MA'
 
-const PER_PAGE = 8
+const PER_PAGE = 10
 
 /**
  * Tela: Dashboard de Perfil v4 — modelo tabbed (deriva de dashboard-perfil-v3)
