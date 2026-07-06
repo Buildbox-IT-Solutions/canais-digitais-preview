@@ -46,7 +46,8 @@ const PER_PAGE = 10
  * "Minha Conta" removida: Baixar dados + Excluir conta vivem na aba Perfil (seção LGPD);
  * Alterar senha no DashboardWelcome. Sessões e login social saíram (fora de escopo do MVP).
  * Drawer overlay em perfil: ?drawer=dados-pessoais|dados-profissionais|dados-fiscais
- * Estados: ?state=saved (toast) | empty (novo usuário)
+ * Estados: ?state=saved (toast) | empty (novo usuário) | completo (perfil 100%).
+ * Switcher de cenários (ScenarioNav) fixo no rodapé para o cliente navegar sem editar URL.
  */
 export default function DashboardPerfilV4Screen() {
 	const [params] = useSearchParams()
@@ -112,7 +113,48 @@ export default function DashboardPerfilV4Screen() {
 					<Toast type="success" message="Alterações salvas." />
 				</div>
 			) : null}
+			<ScenarioNav tab={tab} state={state} />
 		</main>
+	)
+}
+
+/**
+ * Switcher de cenários (estilo "tweaks"/dev-nav) fixo no rodapé — cada botão leva
+ * à aba + estado do cenário, para o cliente demonstrar sem digitar URL.
+ */
+function ScenarioNav({ tab, state }: { tab: Tab; state: string | null }) {
+	const items = [
+		{
+			label: 'Perfil incompleto',
+			href: `${BASE_HREF}?tab=perfil`,
+			active: tab === 'perfil' && state !== 'completo',
+		},
+		{
+			label: 'Perfil completo',
+			href: `${BASE_HREF}?tab=perfil&state=completo`,
+			active: tab === 'perfil' && state === 'completo',
+		},
+		{
+			label: 'Download vazio',
+			href: `${BASE_HREF}?tab=downloads&state=empty`,
+			active: tab === 'downloads' && state === 'empty',
+		},
+	]
+	return (
+		<div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-wrap gap-1.5 justify-center bg-white/95 backdrop-blur-sm border border-neutral-100 rounded-full px-3 py-1.5 shadow-md z-50 font-body text-label-md">
+			<span className="text-neutral-500 self-center pr-1">Cenários:</span>
+			{items.map((it) => (
+				<a
+					key={it.label}
+					href={it.href}
+					className={`px-2.5 py-1 rounded-full transition-colors ${
+						it.active ? 'bg-primary-600 text-white' : 'text-neutral-700 hover:bg-neutral-50'
+					}`}
+				>
+					{it.label}
+				</a>
+			))}
+		</div>
 	)
 }
 
