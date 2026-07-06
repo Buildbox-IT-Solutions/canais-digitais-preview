@@ -84,6 +84,9 @@ export function HeaderDesktop({
 	className,
 }: IHeaderDesktopProps) {
 	const compact = useCompactOnScroll()
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
+	// Mobile (<lg): hambúrguer sempre visível. Desktop (≥lg): mantém o gate por scroll (só no Compact).
+	const showHamburger = !isDesktop || compact
 
 	return (
 		<header
@@ -109,18 +112,18 @@ export function HeaderDesktop({
 				)}
 			>
 				<div className="max-w-screen-xl w-full flex items-center">
-					{/* Hamburger — só aparece no Compact (animado) */}
+					{/* Hamburger — sempre no mobile; no desktop só no Compact (animado) */}
 					<div
-						aria-hidden={!compact}
+						aria-hidden={!showHamburger}
 						className={twMerge(
 							'overflow-hidden transition-[width,opacity] duration-300 shrink-0',
-							compact ? 'w-12 opacity-100' : 'w-0 opacity-0',
+							compact ? 'w-12 opacity-100' : 'w-12 opacity-100 lg:w-0 lg:opacity-0',
 						)}
 					>
 						<a
-							href="/menu"
+							href={userLoggedIn ? '/menu?logged=1' : '/menu'}
 							aria-label="Abrir menu"
-							tabIndex={compact ? 0 : -1}
+							tabIndex={showHamburger ? 0 : -1}
 							className="inline-flex items-center justify-center size-12 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
 						>
 							<Icon name="menu" className="size-8" />
@@ -129,8 +132,8 @@ export function HeaderDesktop({
 
 					<div
 						className={twMerge(
-							'flex flex-col justify-center shrink-0 transition-all duration-300',
-							compact ? 'h-20 p-3' : 'h-24 px-3 py-4',
+							'flex flex-col justify-center transition-all duration-300 flex-1 items-center lg:flex-none lg:items-start',
+							compact ? 'h-20 p-3' : 'h-24 p-3 lg:px-3 lg:py-4',
 						)}
 					>
 						<a href="/home" aria-label="Food Connection — ir para a home" className="inline-flex items-center">
@@ -139,38 +142,51 @@ export function HeaderDesktop({
 								alt="Food Connection"
 								className={twMerge(
 									'w-auto transition-all duration-300',
-									compact ? 'max-h-14 max-w-[162px]' : 'max-h-16 max-w-[185px]',
+									compact
+										? 'max-h-10 max-w-[140px] lg:max-h-14 lg:max-w-[162px]'
+										: 'max-h-11 max-w-[150px] lg:max-h-16 lg:max-w-[185px]',
 								)}
 							/>
 						</a>
 					</div>
 
-					{/* Right row — py-6 constante (igual em ambos os estados) */}
-					<div className="flex flex-1 items-center justify-end gap-3 px-3 py-6 self-stretch">
-						<SearchBar placeholder="Buscar" />
+					{/* Right row — no mobile só o ícone de busca; cluster completo volta em ≥lg */}
+					<div className="flex items-center justify-end gap-3 px-0 py-6 self-stretch shrink-0 lg:flex-1 lg:px-3">
+						{/* Ícone de busca — só mobile (twin-render, padrão do pagination) */}
+						<a
+							href="/buscar"
+							aria-label="Buscar"
+							className="flex lg:hidden size-12 items-center justify-center rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
+						>
+							<Icon name="search" className="size-8" />
+						</a>
 
-						<div className="w-px self-stretch bg-neutral-200" aria-hidden="true" />
+						<SearchBar placeholder="Buscar" className="hidden lg:block" />
 
-						{userLoggedIn ? (
-							<UserMenu
-								name={userName}
-								email={userEmail}
-								initials={userInitials}
-								avatar={userAvatar}
-							/>
-						) : (
-							<AccessMenu />
-						)}
+						<div className="hidden lg:block w-px self-stretch bg-neutral-200" aria-hidden="true" />
 
-						<Button label="Anuncie" href="/anuncie" type="filled" size="medium" />
+						<div className="hidden lg:flex items-center gap-3">
+							{userLoggedIn ? (
+								<UserMenu
+									name={userName}
+									email={userEmail}
+									initials={userInitials}
+									avatar={userAvatar}
+								/>
+							) : (
+								<AccessMenu />
+							)}
+
+							<Button label="Anuncie" href="/anuncie" type="filled" size="medium" />
+						</div>
 					</div>
 				</div>
 
-				{/* Nav-list pill — só Expanded; collapse animado no Compact */}
+				{/* Nav-list pill — só desktop; e nele só no Expanded (collapse animado no Compact) */}
 				<div
 					aria-hidden={compact}
 					className={twMerge(
-						'w-full max-w-screen-xl overflow-hidden transition-[max-height,margin] duration-300',
+						'hidden lg:block w-full max-w-screen-xl overflow-hidden transition-[max-height,margin] duration-300',
 						compact ? 'max-h-0 mt-0' : 'max-h-20 mt-4',
 					)}
 				>
