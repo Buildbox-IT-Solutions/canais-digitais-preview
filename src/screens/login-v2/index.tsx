@@ -84,19 +84,16 @@ export default function LoginV2Screen() {
 						<Icon name="close" className="size-[18px]" />
 					</a>
 
-					{/* header */}
-					<div className="shrink-0 pt-10 pb-4 pl-8 pr-14">
-						<h2
-							id="login-v2-title"
-							className="font-display font-bold text-headline-md text-primary-600"
-						>
-							Entrar
-						</h2>
-					</div>
+					{/* bloco título + form, centralizado verticalmente no espaço acima do footer */}
+					<div className="flex-1 min-h-0 overflow-y-auto flex flex-col px-8 py-6">
+						<div className="flex flex-col gap-6 my-auto">
+							<h2
+								id="login-v2-title"
+								className="font-display font-bold text-headline-md text-primary-600"
+							>
+								Entrar
+							</h2>
 
-					{/* body */}
-					<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-2 pb-4">
-						<div className="flex flex-col gap-6">
 							{globalError ? <AuthErrorAlert message={globalError} /> : null}
 
 							<form action="/home" method="get" className="flex flex-col gap-6" noValidate>

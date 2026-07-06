@@ -5,6 +5,7 @@ import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
+import { AuthResendButton } from '../_auth/resend-button'
 import { AuthStatusRing } from '../_auth/status-ring'
 
 type RecuperaState = 'default' | 'sent'
@@ -58,51 +59,38 @@ export default function RecuperaSenhaScreen() {
 			<main className="flex min-h-screen items-stretch">
 				{/* Coluna do conteúdo */}
 				<div className="flex grow basis-1/2 min-w-0 flex-col bg-white animate-fade-up-sm">
-					{/* page-header — apenas no formulário */}
-					{isSent ? null : (
-						<header className="shrink-0 px-10 pt-10 pb-6">
-							<a
-								href="/login"
-								className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 -ml-1 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
-							>
-								<Icon name="arrow-left" className="size-5" />
-								Voltar para o login
-							</a>
-						</header>
-					)}
+					{/* page-header — Voltar para o login nos dois estados (top back, como no modal) */}
+					<header className="shrink-0 px-10 pt-10 pb-6">
+						<a
+							href="/login"
+							className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 -ml-1 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
+						>
+							<Icon name="arrow-left" className="size-5" />
+							Voltar para o login
+						</a>
+					</header>
 
 					{/* page-body */}
 					<div className="flex-1 flex flex-col items-center justify-center overflow-y-auto px-6 py-8">
 						{isSent ? (
 							<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-								<AuthStatusRing accent="primary" icon="mail" />
+								<AuthStatusRing accent="primary" icon="mail" size="sm" />
 
 								<div className="flex flex-col gap-2 w-full">
-									<h1 className="font-display font-bold text-headline-lg text-primary-600">
+									<h1 className="font-display font-bold text-headline-sm text-primary-600">
 										Confira sua caixa de entrada
 									</h1>
-									<p className="font-body text-body-lg text-neutral-900">
+									<p className="font-body text-body-md text-neutral-900">
 										Se este e-mail estiver cadastrado, você receberá um link em instantes para criar
 										uma nova senha.
 									</p>
-									<p className="font-body text-body-md text-neutral-700">
+									<p className="font-body text-body-sm text-neutral-700">
 										Não esqueça de verificar a pasta de spam. O link expira em 1 hora.
 									</p>
 								</div>
 
 								<div className="flex flex-col gap-3 w-full">
-									<a
-										href="/login"
-										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
-									>
-										Voltar para o login
-									</a>
-									<a
-										href="?state=default"
-										className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-transparent hover:bg-neutral-50 text-primary-600 font-body font-bold text-body-lg transition-colors"
-									>
-										Tentar com outro e-mail
-									</a>
+									<AuthResendButton label="Reenviar e-mail" />
 								</div>
 							</div>
 						) : (
@@ -144,12 +132,14 @@ export default function RecuperaSenhaScreen() {
 						)}
 					</div>
 
-					{/* page-footer — apenas no formulário */}
-					{isSent ? null : (
-						<footer className="shrink-0 px-10 pt-6 pb-10">
+					{/* page-footer */}
+					<footer className="shrink-0 px-10 pt-6 pb-10">
+						{isSent ? (
+							<AuthBottomLink label="E-mail errado?" linkLabel="Corrigir" linkHref="?state=default" />
+						) : (
 							<AuthBottomLink label="Não tem conta?" linkLabel="Criar conta" linkHref="/cadastro?step=1" />
-						</footer>
-					)}
+						)}
+					</footer>
 				</div>
 
 				<ProofPanelMinimal

@@ -7,6 +7,7 @@ import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthStatusRing, type StatusRingAccent } from '../_auth/status-ring'
+import { maskEmail } from '../_auth/mask-email'
 
 type ConfirmacaoState = 'waiting' | 'success' | 'link-expired' | 'link-used'
 
@@ -179,21 +180,21 @@ export default function ConfirmacaoEmailScreen() {
 					{/* page-body */}
 					<div className="flex-1 flex flex-col items-center justify-center overflow-y-auto px-6 py-8">
 						<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-							<AuthStatusRing accent={cfg.accent} icon={cfg.icon} />
+							<AuthStatusRing accent={cfg.accent} icon={cfg.icon} size="sm" />
 
 							<div className="flex flex-col gap-2 w-full">
-								<h1 className="font-display font-bold text-headline-lg text-primary-600">
+								<h1 className="font-display font-bold text-headline-sm text-primary-600">
 									{cfg.title}
 								</h1>
 
 								{isWaiting ? (
-									<div className="flex flex-col gap-1 w-full font-body text-body-lg text-neutral-900">
+									<div className="flex flex-col gap-1 w-full font-body text-body-md text-neutral-900">
 										<p>Enviamos um link para</p>
-										<p className="font-bold break-words">{email}</p>
-										<p>Clique no link para ativar sua conta. O link expira em 24 horas.</p>
+										<p className="font-bold break-words">{maskEmail(email)}</p>
+										<p>Clique no link para ativar sua conta.</p>
 									</div>
 								) : (
-									<p className="font-body text-body-lg text-neutral-900">{cfg.body}</p>
+									<p className="font-body text-body-md text-neutral-900">{cfg.body}</p>
 								)}
 							</div>
 
