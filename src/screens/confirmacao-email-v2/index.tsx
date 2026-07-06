@@ -9,7 +9,7 @@ import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/
 import HomeScreen from '../home'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthInput } from '../_auth/input'
-import { AuthStatusRing, type StatusRingAccent } from '../_auth/status-ring'
+import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import { maskEmail } from '../_auth/mask-email'
 import { AuthTerminalModal, type AuthTerminalButton } from '../_auth/terminal-modal'
 
@@ -147,7 +147,7 @@ function ConfirmButton({ label, href, variant, isResend }: ConfirmacaoButton) {
 function CorrigirForm({ email, intent }: { email: string; intent: string }) {
 	return (
 		<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-			<AuthStatusRing accent="primary" icon="mail" size="sm" />
+			<StatusRing accent="primary" icon="mail" size="sm" />
 
 			<div className="flex flex-col gap-2 w-full">
 				<h1
@@ -287,7 +287,7 @@ export default function ConfirmacaoEmailV2Screen() {
 							<CorrigirForm email={email} intent={intent} />
 						) : (
 							<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-								<AuthStatusRing accent={cfg.accent} icon={cfg.icon} size="sm" />
+								<StatusRing accent={cfg.accent} icon={cfg.icon} size="sm" />
 
 								<div className="flex flex-col gap-2 w-full">
 									<h1

@@ -9,7 +9,7 @@ import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthPasswordInput } from '../_auth/password-input'
-import { AuthStatusRing, type StatusRingAccent } from '../_auth/status-ring'
+import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import { AuthTerminalModal, type AuthTerminalButton } from '../_auth/terminal-modal'
 import type { IconName } from '~/components/icon/paths'
 
@@ -57,7 +57,7 @@ const ERROR_TERMINAL: Record<'expired' | 'used', {
 /**
  * Tela: Redefine Senha (Modal) — v2
  * Modal sobre a home (912px, proof size="sm"). Formulário (valid/loading) e sucesso na casca 50/50
- * (sucesso com AuthStatusRing size sm + proof celebratória). Fim de linha (expired/used) no
+ * (sucesso com StatusRing size sm + proof celebratória). Fim de linha (expired/used) no
  * AuthTerminalModal compacto, sem proof.
  * Estados: ?state=valid|loading|success|expired|used · erros: ?error=fraca|mismatch
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-*
@@ -170,7 +170,7 @@ export default function RedefineSenhaV2Screen() {
 					<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-4 pb-4 flex flex-col justify-center">
 						{isSuccess ? (
 							<div className="flex flex-col items-center gap-8 text-center w-full">
-								<AuthStatusRing accent={SUCCESS.accent} icon={SUCCESS.icon} size="sm" />
+								<StatusRing accent={SUCCESS.accent} icon={SUCCESS.icon} size="sm" />
 
 								<div className="flex flex-col gap-2 w-full">
 									<h2

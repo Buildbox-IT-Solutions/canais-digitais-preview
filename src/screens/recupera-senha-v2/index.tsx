@@ -8,7 +8,7 @@ import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
 import { AuthResendButton } from '../_auth/resend-button'
-import { AuthStatusRing } from '../_auth/status-ring'
+import { StatusRing } from '~/components/status-ring'
 
 type RecuperaState = 'default' | 'sent'
 type RecuperaError = 'none' | 'empty' | 'invalido' | 'throttle'
@@ -20,7 +20,7 @@ const ERRORS: RecuperaError[] = ['none', 'empty', 'invalido', 'throttle']
  * Tela: Recupera Senha (Modal) — v2
  * Versão modal do fluxo de recuperação, espelhando Login/Cadastro modal (912px, proof panel size="sm",
  * top-bar com Voltar + fechar). O estado "sent" replica o status do "Confirme seu e-mail" modal:
- * AuthStatusRing (mail, size sm), título + corpo + ações.
+ * StatusRing (mail, size sm), título + corpo + ações.
  * Estados: ?state=default|sent · erros: ?error=empty|invalido|throttle
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-*
  */
@@ -96,7 +96,7 @@ export default function RecuperaSenhaV2Screen() {
 					<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-4 pb-4 flex flex-col justify-center">
 						{isSent ? (
 							<div className="flex flex-col items-center gap-8 text-center w-full">
-								<AuthStatusRing accent="primary" icon="mail" size="sm" />
+								<StatusRing accent="primary" icon="mail" size="sm" />
 
 								<div className="flex flex-col gap-2 w-full">
 									<h2

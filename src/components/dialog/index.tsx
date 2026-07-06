@@ -1,23 +1,26 @@
 import { useId } from 'react'
 import { Modal } from '~/components/modal'
 import { Icon } from '~/components/icon'
+import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import type { DialogAction, DialogIconTone, IDialogProps } from './types'
 
 /**
  * Componente: Dialog
- * Casca padronizada de dialog de coluna única sobre o Modal: cabeçalho (badge de ícone ou eyebrow +
+ * Casca padronizada de dialog de coluna única sobre o Modal: cabeçalho (anel de ícone StatusRing ou eyebrow +
  * título + descrição) → corpo (children) → rodapé de ações responsivo. Desktop: botões pareados à
  * direita (secundária ghost + primária). Mobile: empilhados full-width, primária em cima.
  * Fonte da verdade dos dialogs (excluir-conta, meus-dados, gate-download). Auth 50/50 fica fora.
  * Tokens: --color-primary-600, --color-secondary-950, --color-red-600, --color-neutral-*
  */
 
-const ICON_TONE: Record<DialogIconTone, string> = {
-	primary: 'bg-primary-50 text-primary-600',
-	secondary: 'bg-secondary-50 text-secondary-500',
-	danger: 'bg-red-50 text-red-700',
-	warning: 'bg-amber-50 text-amber-700',
-	success: 'bg-mint/10 text-mint',
+// Espelha o palette dos anéis dos modais de auth: informativos em navy,
+// sucesso em mint, avisos/agendamentos em neutral e destrutivo em vermelho.
+const TONE_TO_ACCENT: Record<DialogIconTone, StatusRingAccent> = {
+	primary: 'primary',
+	secondary: 'primary',
+	success: 'mint',
+	warning: 'neutral',
+	danger: 'danger',
 }
 
 const ACTION_BASE =
@@ -88,11 +91,7 @@ export function Dialog({
 		<Modal open={open} size={size} closeHref={closeHref} onClose={onClose} labelledById={titleId}>
 			<div className="flex flex-col gap-6">
 				{icon ? (
-					<div
-						className={`inline-flex items-center justify-center size-16 rounded-full ${ICON_TONE[icon.tone ?? 'primary']}`}
-					>
-						<Icon name={icon.name} className="size-8" />
-					</div>
+					<StatusRing accent={TONE_TO_ACCENT[icon.tone ?? 'primary']} icon={icon.name} size="sm" />
 				) : null}
 
 				<div className="flex flex-col gap-2 pr-8">
