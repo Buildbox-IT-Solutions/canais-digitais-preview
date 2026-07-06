@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { twMerge } from '~/lib/tw-merge'
+import { useMediaQuery } from '~/lib/use-media-query'
+import { AccessInvite } from '~/components/access-invite'
+import { BottomSheet } from '~/components/bottom-sheet'
 import { Button } from '~/components/button'
 import { DropdownMenu } from '~/components/dropdown-menu'
 import { HeaderInforma } from '~/components/header-informa'
@@ -199,20 +202,37 @@ export function HeaderDesktop({
 }
 
 /**
- * Trigger "Acessar" (deslogado): no hover/clique abre um menu com Login e Cadastro,
- * em vez de ir direto ao modal de login (ACS-01/02).
+ * Trigger "Acessar" (deslogado): abre um convite (título + benefícios + ações de
+ * cadastro/login), em vez de ir direto ao modal (ACS-01/02). Apresentação por
+ * viewport — popover ancorado no desktop (≥1024px) e bottom sheet no mobile.
+ * O convite (AccessInvite) é o mesmo nos dois; só a casca muda. As ações levam
+ * às páginas full-page de /cadastro e /login, onde ficam os campos.
  */
 function AccessMenu() {
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
 	const [open, setOpen] = useState(false)
-	const ref = useRef<HTMLDivElement>(null)
+	const wrapperRef = useRef<HTMLDivElement>(null)
+	const triggerRef = useRef<HTMLButtonElement>(null)
+	const panelId = useId()
+	const titleId = useId()
 
+	// Ao cruzar o breakpoint, fecha para não deixar popover/sheet preso no modo errado.
 	useEffect(() => {
-		if (!open) return
+		setOpen(false)
+	}, [isDesktop])
+
+	// Popover desktop (não-modal): fecha no Esc (devolve o foco ao trigger) e no clique fora.
+	// No mobile quem cuida de Esc/backdrop/focus trap/scroll lock é o próprio BottomSheet.
+	useEffect(() => {
+		if (!open || !isDesktop) return
 		function handleClickOutside(e: MouseEvent) {
-			if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+			if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setOpen(false)
 		}
 		function handleEscape(e: KeyboardEvent) {
-			if (e.key === 'Escape') setOpen(false)
+			if (e.key === 'Escape') {
+				setOpen(false)
+				triggerRef.current?.focus()
+			}
 		}
 		document.addEventListener('mousedown', handleClickOutside)
 		document.addEventListener('keydown', handleEscape)
@@ -220,20 +240,44 @@ function AccessMenu() {
 			document.removeEventListener('mousedown', handleClickOutside)
 			document.removeEventListener('keydown', handleEscape)
 		}
-	}, [open])
+	}, [open, isDesktop])
+
+	// Setas ↑/↓ movem o foco entre as ações do popover (Tab também funciona nativamente).
+	function handlePanelArrows(e: ReactKeyboardEvent<HTMLDivElement>) {
+		if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+		const items = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('a[href],button'))
+		if (items.length === 0) return
+		e.preventDefault()
+		const current = items.indexOf(document.activeElement as HTMLElement)
+		const next =
+			e.key === 'ArrowDown'
+				? (current + 1) % items.length
+				: (current <= 0 ? items.length : current) - 1
+		items[next]?.focus()
+	}
 
 	return (
 		<div
-			ref={ref}
+			ref={wrapperRef}
 			className="relative"
-			onMouseEnter={() => setOpen(true)}
-			onMouseLeave={() => setOpen(false)}
+			onMouseEnter={isDesktop ? () => setOpen(true) : undefined}
+			onMouseLeave={isDesktop ? () => setOpen(false) : undefined}
+			onFocus={isDesktop ? () => setOpen(true) : undefined}
+			onBlur={
+				isDesktop
+					? (e) => {
+							if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false)
+						}
+					: undefined
+			}
 		>
 			<button
+				ref={triggerRef}
 				type="button"
-				aria-haspopup="true"
+				aria-haspopup="dialog"
 				aria-expanded={open}
-				onClick={() => setOpen((v) => !v)}
+				aria-controls={open ? panelId : undefined}
+				onClick={() => setOpen(true)}
 				className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-primary-600 pl-3 pr-3 py-2 text-primary-600 hover:bg-neutral-50 transition-colors font-body font-bold text-body-lg whitespace-nowrap"
 			>
 				<Icon name="account-circle" className="size-6 shrink-0" />
@@ -241,24 +285,25 @@ function AccessMenu() {
 				<Icon name="arrow-drop-down" className="size-5 shrink-0" />
 			</button>
 
-			{open ? (
-				<div className="absolute right-0 top-full pt-2 origin-top-right animate-fade-up-sm z-50">
-					<DropdownMenu tone="white" width="w-[220px]" className="py-2">
-						<MenuListItem
-							label="Login"
-							href="/login"
-							density="compact"
-							leading={<Icon name="account-circle" className="size-5" />}
-						/>
-						<MenuListItem
-							label="Cadastro"
-							href="/cadastro"
-							density="compact"
-							leading={<Icon name="plus" className="size-5" />}
-						/>
-					</DropdownMenu>
-				</div>
-			) : null}
+			{isDesktop ? (
+				open ? (
+					<div
+						id={panelId}
+						role="dialog"
+						aria-labelledby={titleId}
+						onKeyDown={handlePanelArrows}
+						className="absolute right-0 top-full pt-2 origin-top-right animate-fade-up-sm z-50"
+					>
+						<div className="w-[300px] rounded-lg border border-neutral-100 bg-white p-5 shadow-lg">
+							<AccessInvite titleId={titleId} variant="popover" />
+						</div>
+					</div>
+				) : null
+			) : (
+				<BottomSheet open={open} onClose={() => setOpen(false)} id={panelId} labelledById={titleId}>
+					<AccessInvite titleId={titleId} />
+				</BottomSheet>
+			)}
 		</div>
 	)
 }
