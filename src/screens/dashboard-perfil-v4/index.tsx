@@ -142,7 +142,7 @@ function ScenarioNav({ tab, state }: { tab: Tab; state: string | null }) {
 		},
 	]
 	return (
-		<div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-wrap gap-1.5 justify-center bg-white/95 backdrop-blur-sm border border-neutral-100 rounded-full px-3 py-1.5 shadow-md z-50 font-body text-label-md">
+		<div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-wrap gap-1.5 justify-center max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-sm border border-neutral-100 rounded-full px-3 py-1.5 shadow-md z-50 font-body text-label-md">
 			<span className="text-neutral-500 self-center pr-1">Cenários:</span>
 			{items.map((it) => (
 				<a
