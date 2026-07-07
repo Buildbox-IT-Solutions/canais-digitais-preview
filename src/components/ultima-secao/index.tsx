@@ -8,8 +8,8 @@
  * Desktop: grid-cols-[600px_1fr] + sub-grid-cols-2, ordem [0,1,2,3,ad], inalterado.
  */
 import { twMerge } from '~/lib/tw-merge'
-import { Byline } from '~/components/byline'
 import { Categoria } from '~/components/categoria'
+import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
 import { Thumbnail } from '~/components/thumbnail'
 import { picsumSrc } from '~/mocks/articles'
@@ -46,19 +46,17 @@ export function UltimaSecao({ title, articles, className }: IUltimaSecaoProps) {
 
 			{/* Desktop (>=lg): JSX original, inalterado */}
 			<div className="hidden lg:grid max-w-screen-xl mx-auto px-6 mt-6 grid-cols-[600px_1fr] gap-6">
-				<article className="group flex flex-col gap-3">
-					<Thumbnail src={picsumSrc(hero.seed, 1200, 675)} alt="Capa" href="/conteudo" ratio="video" />
-					<div className="flex flex-col gap-2">
-						<Categoria color={hero.categoryColor} label={hero.category} href="/categoria" />
-						<h3 className="text-headline-md font-display font-bold text-primary-600 leading-tight">
-							<a href="/conteudo" className="group-hover:text-secondary-950 transition-colors">
-								{hero.title}
-							</a>
-						</h3>
-						{hero.lead ? <p className="text-body-lg font-body text-neutral-900">{hero.lead}</p> : null}
-						{hero.author ? <Byline author={hero.author} href="/categoria" size="md" /> : null}
-					</div>
-				</article>
+				<NewsCard
+					size="large"
+					orientation="vertical"
+					image={picsumSrc(hero.seed, 1200, 675)}
+					href="/conteudo"
+					title={hero.title}
+					categoria={{ label: hero.category, color: hero.categoryColor, href: '/categoria' }}
+					lead={hero.lead}
+					author={hero.author}
+					authorHref="/categoria"
+				/>
 
 				<div className="grid grid-cols-2 gap-6">
 					{[second, third].map((card) => (
