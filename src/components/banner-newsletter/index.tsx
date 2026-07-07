@@ -17,7 +17,7 @@ export function BannerNewsletter({ image, title, description, ctaLabel, ctaHref,
 					<div className="aspect-[300/200] flex flex-col items-center justify-center overflow-hidden w-full lg:flex-1 lg:min-w-0 lg:self-stretch">
 						<img src={image} alt="" className="w-full h-full object-cover" />
 					</div>
-					<div className="flex flex-col items-start justify-center w-full lg:flex-1 lg:min-w-[704px]">
+					<div className="flex flex-col items-start justify-center w-full lg:flex-1 lg:min-w-0">
 						<div className="flex flex-col gap-4 items-start justify-center pb-4 pt-8 lg:pt-10 px-6 lg:px-10 text-primary-600 w-full">
 							<p className="font-display font-bold text-headline-sm lg:text-display-sm lg:leading-[44px] w-full">{title}</p>
 							<p className="font-body text-body-lg w-full">{description}</p>
