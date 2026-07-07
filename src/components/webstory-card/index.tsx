@@ -13,7 +13,7 @@ export function WebstoryCard({ title, image, label, color, href = '#', className
 		<a
 			href={href}
 			className={twMerge(
-				'group shrink-0 w-[288px] aspect-[320/569] relative rounded-sm overflow-hidden',
+				'group shrink-0 w-[312px] lg:w-[288px] aspect-[320/569] relative rounded-sm overflow-hidden',
 				className,
 			)}
 		>
