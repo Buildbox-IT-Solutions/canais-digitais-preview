@@ -4,7 +4,6 @@ import { Divider } from '~/components/divider'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
 import { IconButton } from '~/components/icon-button'
-import { MenuListItem } from '~/components/menu-list-item'
 import { MENU_ITEMS } from '~/mocks/articles'
 
 /**
@@ -19,16 +18,7 @@ import { MENU_ITEMS } from '~/mocks/articles'
  */
 
 const USER_NAME = 'Mariana Albuquerque'
-const USER_EMAIL = 'mariana.albuquerque@empresa.com.br'
 const USER_INITIALS = 'MA'
-
-const SOCIALS = [
-	{ provider: 'whatsapp', href: '#', label: 'WhatsApp' },
-	{ provider: 'linkedin', href: '#', label: 'LinkedIn' },
-	{ provider: 'facebook', href: '#', label: 'Facebook' },
-	{ provider: 'youtube', href: '#', label: 'YouTube' },
-	{ provider: 'twitter', href: '#', label: 'X / Twitter' },
-] as const
 
 export default function MenuScreen() {
 	const [params] = useSearchParams()
@@ -51,43 +41,41 @@ export default function MenuScreen() {
 				</div>
 
 				<div className="flex flex-col flex-1 min-h-0 overflow-y-auto w-full">
-					{logged ? (
-						<div className="w-full">
-							<div className="flex items-center gap-3 px-5 py-3 w-full">
-								<span
-									className="size-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center shrink-0 font-body font-semibold text-body-lg"
-									aria-hidden="true"
-								>
-									{USER_INITIALS}
-								</span>
-								<div className="flex flex-1 flex-col gap-0.5 min-w-0">
-									<p className="font-body font-semibold text-body-md text-primary-600 truncate">
-										{USER_NAME}
-									</p>
-									<p className="font-body text-label-md text-neutral-700 truncate">
-										{USER_EMAIL}
-									</p>
-								</div>
-							</div>
+					<a
+						href={logged ? '/dashboard-perfil-v4' : '/login'}
+						className="flex items-center gap-3 px-5 py-3 w-full hover:bg-black/8 transition-colors"
+					>
+						{logged ? (
+							<span
+								className="size-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center shrink-0 font-body font-semibold text-body-lg"
+								aria-hidden="true"
+							>
+								{USER_INITIALS}
+							</span>
+						) : (
+							<span
+								className="size-10 rounded-full bg-neutral-50 text-primary-600 flex items-center justify-center shrink-0"
+								aria-hidden="true"
+							>
+								<Icon name="account-circle" className="size-6" />
+							</span>
+						)}
 
-							<MenuListItem
-								label="Meu Perfil"
-								href="/dashboard-perfil-v4"
-								className="pl-6 pr-4"
-								leading={<Icon name="account-circle" className="size-5 text-primary-600" />}
-							/>
-							<MenuListItem
-								label="Sair"
-								href="/"
-								className="pl-6 pr-4"
-								leading={<Icon name="logout" className="size-5 text-primary-600" />}
-							/>
-
-							<div className="px-5 py-2">
-								<Divider />
-							</div>
+						<div className="flex flex-1 flex-col gap-0.5 min-w-0">
+							<p className="font-body font-bold text-label-lg text-primary-600 truncate">
+								{logged ? USER_NAME : 'Acesse sua conta'}
+							</p>
+							<p className="font-body font-bold text-body-sm text-secondary-950 truncate">
+								{logged ? 'Minha conta' : 'ou cadastra-se grátis'}
+							</p>
 						</div>
-					) : null}
+
+						<Icon name="chevron-right" className="size-6 text-primary-600 shrink-0" />
+					</a>
+
+					<div className="px-5 py-2 w-full">
+						<Divider />
+					</div>
 
 					<nav className="flex flex-col items-start w-full">
 						{MENU_ITEMS.map((item) => (
@@ -105,23 +93,20 @@ export default function MenuScreen() {
 							</a>
 						))}
 					</nav>
+
+					{logged ? (
+						<a
+							href="/home"
+							className="flex gap-3 h-14 items-center pl-6 pr-4 py-2 w-full hover:bg-neutral-50 transition-colors"
+						>
+							<Icon name="logout" className="size-5 text-primary-600" />
+							<span className="flex-1 font-body font-bold text-label-lg text-primary-600">Sair</span>
+						</a>
+					) : null}
 				</div>
 
 				<div className="flex flex-col gap-4 items-start px-5 py-2 w-full shrink-0">
 					<Button label="Anuncie" href="/anuncie" type="filled" size="medium" className="w-full" />
-
-					<div className="flex items-center gap-4">
-						{SOCIALS.map((s) => (
-							<a
-								key={s.provider}
-								href={s.href}
-								aria-label={s.label}
-								className="inline-flex items-center justify-center size-10 rounded-full border border-primary-100 text-primary-600 hover:bg-neutral-50 transition-colors"
-							>
-								<Icon name={s.provider} className="size-5" />
-							</a>
-						))}
-					</div>
 
 					<Divider />
 
