@@ -19,6 +19,13 @@ const SIZE_MAP: Record<ModalSize, string> = {
 	xl: 'max-w-[960px]',
 }
 
+const SIZE_MAP_MOBILE_FULLSCREEN: Record<ModalSize, string> = {
+	sm: 'max-w-none lg:max-w-[400px]',
+	md: 'max-w-none lg:max-w-[480px]',
+	lg: 'max-w-none lg:max-w-[560px]',
+	xl: 'max-w-none lg:max-w-[960px]',
+}
+
 export function Modal({
 	open,
 	children,
@@ -69,7 +76,7 @@ export function Modal({
 							? 'overflow-y-auto flex flex-col items-center justify-center p-6 lg:block lg:p-8'
 							: 'overflow-y-auto p-6 md:p-8'
 						: 'flex items-stretch overflow-hidden',
-					SIZE_MAP[size],
+					mobileFullScreen ? SIZE_MAP_MOBILE_FULLSCREEN[size] : SIZE_MAP[size],
 					className,
 				)}
 			>
