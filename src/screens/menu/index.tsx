@@ -9,12 +9,12 @@ import { MENU_ITEMS } from '~/mocks/articles'
 /**
  * Tela: Menu — Side menu overlay (hambúrguer)
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=986-9198
- * Variante mobile L1 (280px): close + bloco de conta (logado) + lista de editorias
- * + footer (Anuncie + social + divider + brand informa).
+ * Variante mobile L1 (280px): close + linha de conta (chevron) + lista de editorias
+ * + "Sair" (só logado) + footer (Anuncie + divider + brand informa).
  *
- * `?logged=1` (setado pelo hambúrguer do header quando userLoggedIn) mostra o
- * bloco de conta no topo — o header mobile não tem UserMenu, então as ações
- * "Meu Perfil" / "Sair" vivem aqui.
+ * `?logged=1` (setado pelo hambúrguer do header quando userLoggedIn) alterna a
+ * linha de conta entre deslogado (→ /login) e logado (→ /dashboard-perfil-v4,
+ * direto ao perfil). "Sair" vive como item separado após a lista de editorias.
  */
 
 const USER_NAME = 'Mariana Albuquerque'
