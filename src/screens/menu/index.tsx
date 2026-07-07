@@ -27,9 +27,9 @@ export default function MenuScreen() {
 
 	return (
 		<div className="relative w-full h-screen overflow-hidden">
-			<div className="absolute inset-0 bg-primary-950 opacity-[.32] z-40" />
+			<div className="absolute inset-0 bg-primary-950/[.32] z-40 animate-fade-in" />
 
-			<aside className="absolute top-0 left-0 z-50 bg-white border-r border-primary-100 flex flex-col h-full w-[280px] min-w-[240px] max-w-[280px] py-2">
+			<aside className="absolute top-0 left-0 z-50 bg-white border-r border-primary-100 flex flex-col h-full w-[280px] min-w-[240px] max-w-[280px] py-2 animate-slide-in-left will-change-transform">
 				<div className="flex items-center px-3 py-2 w-full shrink-0">
 					<IconButton
 						icon="close"
@@ -53,19 +53,20 @@ export default function MenuScreen() {
 								{USER_INITIALS}
 							</span>
 						) : (
-							<span
-								className="size-10 rounded-full bg-neutral-50 text-primary-600 flex items-center justify-center shrink-0"
-								aria-hidden="true"
-							>
-								<Icon name="account-circle" className="size-6" />
-							</span>
+							<Icon name="account-circle" className="size-8 text-primary-600 shrink-0" />
 						)}
 
 						<div className="flex flex-1 flex-col gap-0.5 min-w-0">
 							<p className="font-body font-bold text-label-lg text-primary-600 truncate">
 								{logged ? USER_NAME : 'Acesse sua conta'}
 							</p>
-							<p className="font-body font-bold text-body-sm text-secondary-950 truncate">
+							<p
+								className={
+									logged
+										? 'font-body font-bold text-body-sm text-secondary-950 truncate'
+										: 'font-body font-normal text-body-md text-primary-600 truncate'
+								}
+							>
 								{logged ? 'Minha conta' : 'ou cadastra-se grátis'}
 							</p>
 						</div>
@@ -94,26 +95,17 @@ export default function MenuScreen() {
 						))}
 					</nav>
 
-					{logged ? (
-						<a
-							href="/home"
-							className="flex gap-3 h-14 items-center pl-6 pr-4 py-2 w-full hover:bg-neutral-50 transition-colors"
-						>
-							<Icon name="logout" className="size-5 text-primary-600" />
-							<span className="flex-1 font-body font-bold text-label-lg text-primary-600">Sair</span>
-						</a>
-					) : null}
-				</div>
+					{/* Rodapé flui com o conteúdo (não fica fixo no rodapé da viewport) */}
+					<div className="flex flex-col gap-4 items-start px-5 py-4 w-full">
+						<Button label="Anuncie" href="/anuncie" type="filled" size="medium" className="w-full" />
 
-				<div className="flex flex-col gap-4 items-start px-5 py-2 w-full shrink-0">
-					<Button label="Anuncie" href="/anuncie" type="filled" size="medium" className="w-full" />
+						<Divider />
 
-					<Divider />
-
-					<div className="h-[34px] flex items-center">
-						<span className="font-display font-bold text-title-lg text-primary-600">
-							informa
-						</span>
+						<div className="h-[34px] flex items-center">
+							<span className="font-display font-bold text-title-lg text-primary-600">
+								informa
+							</span>
+						</div>
 					</div>
 				</div>
 			</aside>
