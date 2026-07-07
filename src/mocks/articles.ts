@@ -130,6 +130,27 @@ export const VIDEOS_LIST: Article[] = [
 	{ id: 'vid3', seed: 'vid3', category: 'Food Service', categoryColor: 'mint', title: 'Tendência de fermentados exóticos: kimchi, missô e kombucha' },
 ]
 
+export interface VideoArticle extends Article {
+	image: string
+}
+
+export const VIDEOS_SECTION: VideoArticle[] = [
+	{
+		id: 'vid-hero',
+		seed: 'vid-hero',
+		image: picsumSrc('vid-hero', 1200, 675),
+		category: 'Categoria',
+		categoryColor: 'mint',
+		title: 'Como fazer um plano de logística integrada na indústria de alimentos',
+		lead: 'Entenda os métodos da logística de alimentos com planejamento, análise, integração de sistemas e ações de contingência.',
+	},
+	...VIDEOS_LIST.map((vid) => ({
+		...vid,
+		image: picsumSrc(vid.seed, 640, 360),
+		categoryColor: 'mint' as const,
+	})),
+]
+
 export const FISPAL_LIST: Article[] = [
 	{
 		id: 'fispal1',
