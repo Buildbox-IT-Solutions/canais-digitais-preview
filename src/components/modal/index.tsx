@@ -73,7 +73,7 @@ export function Modal({
 						: 'rounded-lg shadow-lg max-h-[90vh]',
 					padded
 						? mobileFullScreen
-							? 'overflow-y-auto flex flex-col items-center justify-center p-6 lg:block lg:p-8'
+							? 'overflow-y-auto flex flex-col items-center p-6 lg:block lg:p-8'
 							: 'overflow-y-auto p-6 md:p-8'
 						: 'flex items-stretch overflow-hidden',
 					mobileFullScreen ? SIZE_MAP_MOBILE_FULLSCREEN[size] : SIZE_MAP[size],
@@ -94,7 +94,11 @@ export function Modal({
 					</div>
 				) : null}
 
-				{children}
+				{padded && mobileFullScreen ? (
+					<div className="w-full my-auto lg:contents">{children}</div>
+				) : (
+					children
+				)}
 			</div>
 		</div>
 	)
