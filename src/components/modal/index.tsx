@@ -7,6 +7,7 @@ import type { IModalProps, ModalSize } from './types'
  * Figma: 6268:18394 (deriva do markup de login-modal + acessibilidade do Drawer)
  * Modo padrão: painel único com padding. Modo `padded={false}`: painel em flex (duas colunas,
  * ex.: form + ProofPanelMinimal), recortado com overflow-hidden.
+ * `mobileFullScreen`: no mobile (<lg) o painel vira tela cheia (usado pelos fluxos de auth).
  * Tokens: --color-primary-600, --color-primary-950, --color-secondary-950, --color-neutral-50,
  *         --color-white
  */
@@ -23,6 +24,7 @@ export function Modal({
 	children,
 	size = 'md',
 	padded = true,
+	mobileFullScreen = false,
 	closeHref,
 	onClose,
 	labelledById,
@@ -41,7 +43,10 @@ export function Modal({
 
 	return (
 		<div
-			className="fixed inset-0 z-50 flex items-center justify-center p-4"
+			className={twMerge(
+				'fixed inset-0 z-50 flex items-center justify-center',
+				mobileFullScreen ? 'p-0 lg:p-4' : 'p-4',
+			)}
 			role="dialog"
 			aria-modal="true"
 			aria-labelledby={labelledById}
@@ -55,8 +60,15 @@ export function Modal({
 
 			<div
 				className={twMerge(
-					'relative bg-white w-full rounded-lg shadow-lg max-h-[90vh] animate-fade-up-sm',
-					padded ? 'p-6 md:p-8 overflow-y-auto' : 'flex items-stretch overflow-hidden',
+					'relative bg-white w-full animate-fade-up-sm',
+					mobileFullScreen
+						? 'h-full max-h-none rounded-none shadow-none lg:h-auto lg:max-h-[90vh] lg:rounded-lg lg:shadow-lg'
+						: 'rounded-lg shadow-lg max-h-[90vh]',
+					padded
+						? mobileFullScreen
+							? 'overflow-y-auto flex flex-col items-center justify-center p-6 lg:block lg:p-8'
+							: 'overflow-y-auto p-6 md:p-8'
+						: 'flex items-stretch overflow-hidden',
 					SIZE_MAP[size],
 					className,
 				)}

@@ -13,6 +13,13 @@ export interface IModalProps {
 	 * recorta com overflow-hidden e cada coluna controla seu padding/scroll.
 	 */
 	padded?: boolean
+	/**
+	 * No mobile (<lg), o painel ocupa a tela cheia (sem cantos arredondados, sombra ou
+	 * padding do wrapper). No desktop (≥lg) comporta-se normalmente (card centralizado).
+	 * Default: false. Usado pelos fluxos de auth (login, cadastro, recupera-senha,
+	 * redefine-senha, confirmação de e-mail) e pelo AuthTerminalModal.
+	 */
+	mobileFullScreen?: boolean
 	/** href para o scrim/botão fechar (modo navegação por rota). Tem precedência sobre onClose. */
 	closeHref?: string
 	/** callback de fechamento (modo controlado) */
