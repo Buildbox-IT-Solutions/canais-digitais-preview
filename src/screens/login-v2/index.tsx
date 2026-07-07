@@ -60,19 +60,22 @@ export default function LoginV2Screen() {
 
 	return (
 		<>
-			{/* Portal ao fundo */}
-			<HomeScreen />
+			{/* Portal ao fundo — só visível ≥lg (o modal cobre tudo no mobile) */}
+			<div className="hidden lg:block">
+				<HomeScreen />
+			</div>
 
 			<Modal
 				open
 				size="xl"
 				padded={false}
+				mobileFullScreen
 				showClose={false}
 				closeHref="/home"
 				labelledById="login-v2-title"
-				className="max-w-[912px] min-h-[min(696px,90vh)]"
+				className="max-w-none lg:max-w-[912px] lg:min-h-[min(696px,90vh)]"
 			>
-				<ProofPanelMinimal variant="login" size="sm" className="hidden md:flex grow basis-1/2 min-w-0" />
+				<ProofPanelMinimal variant="login" size="sm" className="hidden lg:flex grow basis-1/2 min-w-0" />
 
 				{/* Coluna do formulário */}
 				<div className="relative flex grow basis-1/2 min-w-0 min-h-0 flex-col bg-white">
