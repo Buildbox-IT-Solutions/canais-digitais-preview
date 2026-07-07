@@ -436,6 +436,12 @@ function AccessMenuMobile() {
 	const panelId = useId()
 	const titleId = useId()
 	const [open, setOpen] = useState(false)
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
+
+	// Ao cruzar o breakpoint, fecha para não deixar o sheet preso aberto no modo errado.
+	useEffect(() => {
+		if (isDesktop) setOpen(false)
+	}, [isDesktop])
 
 	return (
 		<>
@@ -475,6 +481,12 @@ function UserMenuMobile({ name, email, initials, avatar }: IUserMenuMobileProps)
 	const panelId = useId()
 	const titleId = useId()
 	const [open, setOpen] = useState(false)
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
+
+	// Ao cruzar o breakpoint, fecha para não deixar o sheet preso aberto no modo errado.
+	useEffect(() => {
+		if (isDesktop) setOpen(false)
+	}, [isDesktop])
 
 	const avatarNode = avatar ? (
 		<img src={avatar} alt="" className="size-8 rounded-full object-cover shrink-0" />
