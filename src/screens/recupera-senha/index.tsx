@@ -6,7 +6,7 @@ import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
 import { AuthResendButton } from '../_auth/resend-button'
-import { AuthStatusRing } from '../_auth/status-ring'
+import { StatusRing } from '~/components/status-ring'
 
 type RecuperaState = 'default' | 'sent'
 type RecuperaError = 'none' | 'empty' | 'invalido' | 'throttle'
@@ -74,7 +74,7 @@ export default function RecuperaSenhaScreen() {
 					<div className="flex-1 flex flex-col items-center justify-center overflow-y-auto px-6 py-8">
 						{isSent ? (
 							<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-								<AuthStatusRing accent="primary" icon="mail" size="sm" />
+								<StatusRing accent="primary" icon="mail" size="sm" />
 
 								<div className="flex flex-col gap-2 w-full">
 									<h1 className="font-display font-bold text-headline-sm text-primary-600">

@@ -21,19 +21,19 @@ export function DashboardWelcome({
 	return (
 		<div
 			className={twMerge(
-				'bg-white border border-neutral-50 rounded-lg p-6 flex items-start gap-10 w-full',
+				'bg-white border border-neutral-50 rounded-lg p-4 lg:p-6 flex flex-col items-center text-center gap-6 lg:flex-row lg:items-start lg:text-left lg:gap-10 w-full',
 				className,
 			)}
 		>
-			<div className="relative shrink-0 size-[120px]">
+			<div className="relative shrink-0 size-24 lg:size-[120px]">
 				{avatarSrc ? (
 					<img
 						src={avatarSrc}
 						alt={firstName}
-						className="size-[120px] rounded-full object-cover"
+						className="size-24 lg:size-[120px] rounded-full object-cover"
 					/>
 				) : (
-					<div className="size-[120px] rounded-full bg-primary-100 flex items-center justify-center">
+					<div className="size-24 lg:size-[120px] rounded-full bg-primary-100 flex items-center justify-center">
 						<span className="font-body font-semibold text-display-sm text-primary-600 leading-none">
 							{initials}
 						</span>
@@ -48,7 +48,7 @@ export function DashboardWelcome({
 				</button>
 			</div>
 
-			<div className="flex-1 min-w-0 flex flex-col gap-4">
+			<div className="w-full lg:flex-1 min-w-0 flex flex-col items-center lg:items-start gap-4">
 				<h1 className="font-display font-bold text-headline-md text-primary-600">
 					Olá, {firstName}!
 				</h1>

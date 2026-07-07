@@ -1,6 +1,5 @@
 import { useSearchParams, useNavigate } from 'react-router'
-import { Icon } from '~/components/icon'
-import { Modal } from '~/components/modal'
+import { Dialog } from '~/components/dialog'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthInput } from '../_auth/input'
@@ -16,182 +15,154 @@ const EMAIL_ERRORS: EmailError[] = ['none', 'invalido', 'vazio']
 const WAITING_ERRORS: WaitingError[] = ['none', 'nao-recebi']
 
 function isExistente(email: string): boolean {
-  return email.includes('+existe')
+	return email.includes('+existe')
 }
 
 function maskEmail(email: string): string {
-  return email.replace(/^[^@]+/, '****')
+	return email.replace(/^[^@]+/, '****')
 }
 
 /**
  * Tela: Gate de Download
- * Modal sobre ConteudoScreen que controla o acesso ao download de materiais.
- * Regra mock: e-mails com "+existe" → existente (state=waiting); demais → novo (/cadastro-v2).
+ * Dialog sobre ConteudoScreen que controla o acesso ao download de materiais.
+ * Regra mock: e-mails com "+existe" → existente (state=waiting); demais → novo (/cadastro?intent=download).
  * Estados: ?state=email|waiting · ?error=invalido|vazio|nao-recebi · ?email=...
- * Tokens: --color-primary-600, --color-secondary-500, --color-secondary-950, --color-neutral-*
  */
 export default function GateDownloadScreen() {
-  const [params] = useSearchParams()
-  const navigate = useNavigate()
+	const [params] = useSearchParams()
+	const navigate = useNavigate()
 
-  const stateParam = params.get('state') ?? 'email'
-  const state = (GATE_STATES.includes(stateParam as GateState) ? stateParam : 'email') as GateState
+	const stateParam = params.get('state') ?? 'email'
+	const state = (GATE_STATES.includes(stateParam as GateState) ? stateParam : 'email') as GateState
 
-  const email = params.get('email') ?? ''
+	const email = params.get('email') ?? ''
 
-  const errorParam = params.get('error') ?? 'none'
-  const validErrors = state === 'email' ? EMAIL_ERRORS : WAITING_ERRORS
-  const currentError = (validErrors as string[]).includes(errorParam) ? errorParam : 'none'
+	const errorParam = params.get('error') ?? 'none'
+	const validErrors = state === 'email' ? EMAIL_ERRORS : WAITING_ERRORS
+	const currentError = (validErrors as string[]).includes(errorParam) ? errorParam : 'none'
 
-  const emailFieldError =
-    currentError === 'invalido'
-      ? 'Digite um e-mail válido.'
-      : currentError === 'vazio'
-        ? 'Informe seu e-mail.'
-        : undefined
+	const emailFieldError =
+		currentError === 'invalido'
+			? 'Digite um e-mail válido.'
+			: currentError === 'vazio'
+				? 'Informe seu e-mail.'
+				: undefined
 
-  const emailDefaultValue = currentError === 'invalido' ? 'teste@' : email
+	const emailDefaultValue = currentError === 'invalido' ? 'teste@' : email
 
-  function handleContinuar(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const data = new FormData(e.currentTarget)
-    const value = (data.get('email') as string).trim()
+	function handleContinuar(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault()
+		const data = new FormData(e.currentTarget)
+		const value = (data.get('email') as string).trim()
 
-    if (!value) {
-      navigate('/gate-download?state=email&error=vazio')
-      return
-    }
+		if (!value) {
+			navigate('/gate-download?state=email&error=vazio')
+			return
+		}
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+			navigate('/gate-download?state=email&error=invalido')
+			return
+		}
+		if (isExistente(value)) {
+			navigate(`/gate-download?state=waiting&email=${encodeURIComponent(value)}`)
+		} else {
+			navigate(`/cadastro?step=1&email=${encodeURIComponent(value)}&intent=download`)
+		}
+	}
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      navigate('/gate-download?state=email&error=invalido')
-      return
-    }
+	return (
+		<>
+			<ConteudoScreen />
 
-    if (isExistente(value)) {
-      navigate(`/gate-download?state=waiting&email=${encodeURIComponent(value)}`)
-    } else {
-      navigate(`/cadastro?step=1&email=${encodeURIComponent(value)}&intent=download`)
-    }
-  }
+			{state === 'email' ? (
+				<Dialog
+					closeHref="/conteudo"
+					icon={{ name: 'download', tone: 'secondary' }}
+					title="Baixe este material gratuitamente"
+					description="Acesse com um clique e use todos os materiais sem preencher formulários de novo."
+					primary={{
+						label: 'Continuar',
+						type: 'submit',
+						form: 'gate-email-form',
+						icon: 'arrow-right',
+						iconPosition: 'trailing',
+					}}
+					bottomLink={<AuthBottomLink label="Já tem conta?" linkLabel="Entrar" linkHref="/login" />}
+				>
+					<form id="gate-email-form" onSubmit={handleContinuar} noValidate>
+						<AuthInput
+							label="E-mail"
+							name="email"
+							type="email"
+							required
+							autoFocus
+							autoComplete="email"
+							placeholder="seu@empresa.com.br"
+							defaultValue={emailDefaultValue}
+							error={emailFieldError}
+						/>
+					</form>
+				</Dialog>
+			) : (
+				<Dialog
+					closeHref="/conteudo"
+					icon={{ name: 'mail', tone: 'secondary' }}
+					title="Verifique seu e-mail"
+					description={
+						<>
+							Enviamos um link para{' '}
+							<strong className="font-bold text-neutral-950">
+								{maskEmail(email || 'voce@empresa.com.br')}
+							</strong>
+							. Clique no link para baixar seu material.
+						</>
+					}
+				>
+					<div className="flex flex-col gap-6">
+						{currentError === 'nao-recebi' ? (
+							<p className="font-body text-body-md text-neutral-600 bg-neutral-50 rounded-lg p-3">
+								Verifique a pasta de spam. O link expira em 24 horas. Se o problema persistir, tente
+								reenviar.
+							</p>
+						) : null}
 
-  return (
-    <>
-      <ConteudoScreen />
+						<div className="flex flex-col gap-3">
+							<AuthResendButton />
+							<a
+								href="/gate-download?state=email"
+								className="self-center font-body font-bold text-body-md text-secondary-950 hover:underline"
+							>
+								Usei outro e-mail
+							</a>
+						</div>
 
-      <Modal open size="md" closeHref="/conteudo" labelledById="gate-title">
-        {state === 'email' ? (
-          <div className="flex flex-col gap-6">
-            <div className="inline-flex items-center justify-center size-16 rounded-full bg-secondary-50">
-              <Icon name="download" className="size-8 text-secondary-500" />
-            </div>
+						<p className="text-center font-body text-label-md text-neutral-400">
+							<a href="/conteudo?logado=true" className="underline hover:text-neutral-600">
+								[Simular clique no link]
+							</a>
+						</p>
+					</div>
+				</Dialog>
+			)}
 
-            <div className="flex flex-col gap-2">
-              <h2
-                id="gate-title"
-                className="font-display font-bold text-headline-sm text-primary-600"
-              >
-                Baixe este material gratuitamente
-              </h2>
-              <p className="font-body text-body-md text-neutral-700">
-                Acesse com um clique e use todos os materiais sem preencher
-                formulários de novo.
-              </p>
-            </div>
-
-            <form onSubmit={handleContinuar} noValidate className="flex flex-col gap-4">
-              <AuthInput
-                label="E-mail"
-                name="email"
-                type="email"
-                required
-                autoFocus
-                autoComplete="email"
-                placeholder="seu@empresa.com.br"
-                defaultValue={emailDefaultValue}
-                error={emailFieldError}
-              />
-
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-3 w-full h-12 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
-              >
-                Continuar
-                <Icon name="arrow-right" className="size-6" />
-              </button>
-            </form>
-
-            <AuthBottomLink label="Já tem conta?" linkLabel="Entrar" linkHref="/login" />
-          </div>
-        ) : (
-          <div className="flex flex-col gap-6">
-            <div className="inline-flex items-center justify-center size-16 rounded-full bg-secondary-50">
-              <Icon name="mail" className="size-8 text-secondary-500" />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <h2
-                id="gate-title"
-                className="font-display font-bold text-headline-sm text-primary-600"
-              >
-                Verifique seu e-mail
-              </h2>
-              <p className="font-body text-body-lg text-neutral-700">
-                Enviamos um link para{' '}
-                <strong className="font-bold text-neutral-950">
-                  {maskEmail(email || 'voce@empresa.com.br')}
-                </strong>
-                . Clique no link para baixar seu material.
-              </p>
-
-              {currentError === 'nao-recebi' ? (
-                <p className="font-body text-body-md text-neutral-600 bg-neutral-50 rounded-lg p-3 mt-1">
-                  Verifique a pasta de spam. O link expira em 24 horas. Se o
-                  problema persistir, tente reenviar.
-                </p>
-              ) : null}
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <AuthResendButton />
-
-              <a
-                href="/gate-download?state=email"
-                className="self-center font-body font-bold text-body-md text-secondary-950 hover:underline"
-              >
-                Usei outro e-mail
-              </a>
-            </div>
-
-            <p className="text-center font-body text-label-md text-neutral-400">
-              <a
-                href="/conteudo?logado=true"
-                className="underline hover:text-neutral-600"
-              >
-                [Simular clique no link]
-              </a>
-            </p>
-          </div>
-        )}
-      </Modal>
-
-      <AuthDevNav
-        rows={[
-          {
-            paramName: 'state',
-            label: 'State',
-            options: GATE_STATES as unknown as string[],
-            current: state,
-            extraQuery: email ? `&email=${encodeURIComponent(email)}` : '',
-          },
-          {
-            paramName: 'error',
-            label: 'Erro',
-            options: validErrors as unknown as string[],
-            current: currentError,
-            extraQuery: `&state=${state}${email ? `&email=${encodeURIComponent(email)}` : ''}`,
-          },
-        ]}
-      />
-    </>
-  )
+			<AuthDevNav
+				rows={[
+					{
+						paramName: 'state',
+						label: 'State',
+						options: GATE_STATES as unknown as string[],
+						current: state,
+						extraQuery: email ? `&email=${encodeURIComponent(email)}` : '',
+					},
+					{
+						paramName: 'error',
+						label: 'Erro',
+						options: validErrors as unknown as string[],
+						current: currentError,
+						extraQuery: `&state=${state}${email ? `&email=${encodeURIComponent(email)}` : ''}`,
+					},
+				]}
+			/>
+		</>
+	)
 }

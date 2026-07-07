@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { twMerge } from '~/lib/tw-merge'
+import { useMediaQuery } from '~/lib/use-media-query'
+import { AccessInvite } from '~/components/access-invite'
+import { BottomSheet } from '~/components/bottom-sheet'
 import { Button } from '~/components/button'
 import { DropdownMenu } from '~/components/dropdown-menu'
 import { HeaderInforma } from '~/components/header-informa'
@@ -81,6 +84,9 @@ export function HeaderDesktop({
 	className,
 }: IHeaderDesktopProps) {
 	const compact = useCompactOnScroll()
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
+	// Mobile (<lg): hambúrguer sempre visível. Desktop (≥lg): mantém o gate por scroll (só no Compact).
+	const showHamburger = !isDesktop || compact
 
 	return (
 		<header
@@ -106,18 +112,18 @@ export function HeaderDesktop({
 				)}
 			>
 				<div className="max-w-screen-xl w-full flex items-center">
-					{/* Hamburger — só aparece no Compact (animado) */}
+					{/* Hamburger — sempre no mobile; no desktop só no Compact (animado) */}
 					<div
-						aria-hidden={!compact}
+						aria-hidden={!showHamburger}
 						className={twMerge(
 							'overflow-hidden transition-[width,opacity] duration-300 shrink-0',
-							compact ? 'w-12 opacity-100' : 'w-0 opacity-0',
+							compact ? 'w-12 opacity-100' : 'w-12 opacity-100 lg:w-0 lg:opacity-0',
 						)}
 					>
 						<a
-							href="/menu"
+							href={userLoggedIn ? '/menu?logged=1' : '/menu'}
 							aria-label="Abrir menu"
-							tabIndex={compact ? 0 : -1}
+							tabIndex={showHamburger ? 0 : -1}
 							className="inline-flex items-center justify-center size-12 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
 						>
 							<Icon name="menu" className="size-8" />
@@ -126,8 +132,8 @@ export function HeaderDesktop({
 
 					<div
 						className={twMerge(
-							'flex flex-col justify-center shrink-0 transition-all duration-300',
-							compact ? 'h-20 p-3' : 'h-24 px-3 py-4',
+							'flex flex-col justify-center transition-all duration-300 flex-1 items-center lg:flex-none lg:items-start',
+							compact ? 'h-20 p-3' : 'h-24 p-3 lg:px-3 lg:py-4',
 						)}
 					>
 						<a href="/home" aria-label="Food Connection — ir para a home" className="inline-flex items-center">
@@ -136,38 +142,51 @@ export function HeaderDesktop({
 								alt="Food Connection"
 								className={twMerge(
 									'w-auto transition-all duration-300',
-									compact ? 'max-h-14 max-w-[162px]' : 'max-h-16 max-w-[185px]',
+									compact
+										? 'max-h-10 max-w-[140px] lg:max-h-14 lg:max-w-[162px]'
+										: 'max-h-11 max-w-[150px] lg:max-h-16 lg:max-w-[185px]',
 								)}
 							/>
 						</a>
 					</div>
 
-					{/* Right row — py-6 constante (igual em ambos os estados) */}
-					<div className="flex flex-1 items-center justify-end gap-3 px-3 py-6 self-stretch">
-						<SearchBar placeholder="Buscar" />
+					{/* Right row — no mobile só o ícone de busca; cluster completo volta em ≥lg */}
+					<div className="flex items-center justify-end gap-3 px-0 py-6 self-stretch shrink-0 lg:flex-1 lg:px-3">
+						{/* Ícone de busca — só mobile (twin-render, padrão do pagination) */}
+						<a
+							href="/buscar"
+							aria-label="Buscar"
+							className="flex lg:hidden size-12 items-center justify-center rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
+						>
+							<Icon name="search" className="size-8" />
+						</a>
 
-						<div className="w-px self-stretch bg-neutral-200" aria-hidden="true" />
+						<SearchBar placeholder="Buscar" className="hidden lg:block" />
 
-						{userLoggedIn ? (
-							<UserMenu
-								name={userName}
-								email={userEmail}
-								initials={userInitials}
-								avatar={userAvatar}
-							/>
-						) : (
-							<AccessMenu />
-						)}
+						<div className="hidden lg:block w-px self-stretch bg-neutral-200" aria-hidden="true" />
 
-						<Button label="Anuncie" href="/anuncie" type="filled" size="medium" />
+						<div className="hidden lg:flex items-center gap-3">
+							{userLoggedIn ? (
+								<UserMenu
+									name={userName}
+									email={userEmail}
+									initials={userInitials}
+									avatar={userAvatar}
+								/>
+							) : (
+								<AccessMenu />
+							)}
+
+							<Button label="Anuncie" href="/anuncie" type="filled" size="medium" />
+						</div>
 					</div>
 				</div>
 
-				{/* Nav-list pill — só Expanded; collapse animado no Compact */}
+				{/* Nav-list pill — só desktop; e nele só no Expanded (collapse animado no Compact) */}
 				<div
 					aria-hidden={compact}
 					className={twMerge(
-						'w-full max-w-screen-xl overflow-hidden transition-[max-height,margin] duration-300',
+						'hidden lg:block w-full max-w-screen-xl overflow-hidden transition-[max-height,margin] duration-300',
 						compact ? 'max-h-0 mt-0' : 'max-h-20 mt-4',
 					)}
 				>
@@ -199,20 +218,37 @@ export function HeaderDesktop({
 }
 
 /**
- * Trigger "Acessar" (deslogado): no hover/clique abre um menu com Login e Cadastro,
- * em vez de ir direto ao modal de login (ACS-01/02).
+ * Trigger "Acessar" (deslogado): abre um convite (título + benefícios + ações de
+ * cadastro/login), em vez de ir direto ao modal (ACS-01/02). Apresentação por
+ * viewport — popover ancorado no desktop (≥1024px) e bottom sheet no mobile.
+ * O convite (AccessInvite) é o mesmo nos dois; só a casca muda. As ações levam
+ * às páginas full-page de /cadastro e /login, onde ficam os campos.
  */
 function AccessMenu() {
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
 	const [open, setOpen] = useState(false)
-	const ref = useRef<HTMLDivElement>(null)
+	const wrapperRef = useRef<HTMLDivElement>(null)
+	const triggerRef = useRef<HTMLButtonElement>(null)
+	const panelId = useId()
+	const titleId = useId()
 
+	// Ao cruzar o breakpoint, fecha para não deixar popover/sheet preso no modo errado.
 	useEffect(() => {
-		if (!open) return
+		setOpen(false)
+	}, [isDesktop])
+
+	// Popover desktop (não-modal): fecha no Esc (devolve o foco ao trigger) e no clique fora.
+	// No mobile quem cuida de Esc/backdrop/focus trap/scroll lock é o próprio BottomSheet.
+	useEffect(() => {
+		if (!open || !isDesktop) return
 		function handleClickOutside(e: MouseEvent) {
-			if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+			if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setOpen(false)
 		}
 		function handleEscape(e: KeyboardEvent) {
-			if (e.key === 'Escape') setOpen(false)
+			if (e.key === 'Escape') {
+				setOpen(false)
+				triggerRef.current?.focus()
+			}
 		}
 		document.addEventListener('mousedown', handleClickOutside)
 		document.addEventListener('keydown', handleEscape)
@@ -220,20 +256,44 @@ function AccessMenu() {
 			document.removeEventListener('mousedown', handleClickOutside)
 			document.removeEventListener('keydown', handleEscape)
 		}
-	}, [open])
+	}, [open, isDesktop])
+
+	// Setas ↑/↓ movem o foco entre as ações do popover (Tab também funciona nativamente).
+	function handlePanelArrows(e: ReactKeyboardEvent<HTMLDivElement>) {
+		if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+		const items = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('a[href],button'))
+		if (items.length === 0) return
+		e.preventDefault()
+		const current = items.indexOf(document.activeElement as HTMLElement)
+		const next =
+			e.key === 'ArrowDown'
+				? (current + 1) % items.length
+				: (current <= 0 ? items.length : current) - 1
+		items[next]?.focus()
+	}
 
 	return (
 		<div
-			ref={ref}
+			ref={wrapperRef}
 			className="relative"
-			onMouseEnter={() => setOpen(true)}
-			onMouseLeave={() => setOpen(false)}
+			onMouseEnter={isDesktop ? () => setOpen(true) : undefined}
+			onMouseLeave={isDesktop ? () => setOpen(false) : undefined}
+			onFocus={isDesktop ? () => setOpen(true) : undefined}
+			onBlur={
+				isDesktop
+					? (e) => {
+							if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false)
+						}
+					: undefined
+			}
 		>
 			<button
+				ref={triggerRef}
 				type="button"
-				aria-haspopup="true"
+				aria-haspopup="dialog"
 				aria-expanded={open}
-				onClick={() => setOpen((v) => !v)}
+				aria-controls={open ? panelId : undefined}
+				onClick={() => setOpen(true)}
 				className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-primary-600 pl-3 pr-3 py-2 text-primary-600 hover:bg-neutral-50 transition-colors font-body font-bold text-body-lg whitespace-nowrap"
 			>
 				<Icon name="account-circle" className="size-6 shrink-0" />
@@ -241,24 +301,25 @@ function AccessMenu() {
 				<Icon name="arrow-drop-down" className="size-5 shrink-0" />
 			</button>
 
-			{open ? (
-				<div className="absolute right-0 top-full pt-2 origin-top-right animate-fade-up-sm z-50">
-					<DropdownMenu tone="white" width="w-[220px]" className="py-2">
-						<MenuListItem
-							label="Login"
-							href="/login"
-							density="compact"
-							leading={<Icon name="account-circle" className="size-5" />}
-						/>
-						<MenuListItem
-							label="Cadastro"
-							href="/cadastro"
-							density="compact"
-							leading={<Icon name="plus" className="size-5" />}
-						/>
-					</DropdownMenu>
-				</div>
-			) : null}
+			{isDesktop ? (
+				open ? (
+					<div
+						id={panelId}
+						role="dialog"
+						aria-labelledby={titleId}
+						onKeyDown={handlePanelArrows}
+						className="absolute right-0 top-full pt-2 origin-top-right animate-fade-up-sm z-50"
+					>
+						<div className="w-[300px] rounded-lg border border-neutral-100 bg-white p-5 shadow-lg">
+							<AccessInvite titleId={titleId} variant="popover" />
+						</div>
+					</div>
+				) : null
+			) : (
+				<BottomSheet open={open} onClose={() => setOpen(false)} id={panelId} labelledById={titleId}>
+					<AccessInvite titleId={titleId} />
+				</BottomSheet>
+			)}
 		</div>
 	)
 }

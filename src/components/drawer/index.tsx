@@ -47,7 +47,7 @@ export function Drawer({
 			/>
 
 			<aside className="absolute inset-y-0 right-0 w-full max-w-[560px] bg-white border-l border-neutral-100 shadow-xl flex flex-col animate-slide-in-right will-change-transform">
-				<div className="flex items-center gap-4 pl-8 pr-5 py-5 shrink-0">
+				<div className="flex items-center gap-4 pl-5 pr-3 py-4 lg:pl-8 lg:pr-5 lg:py-5 shrink-0">
 					<h2
 						id="drawer-title"
 						className="flex-1 min-w-0 font-display font-bold text-headline-md text-primary-600"
@@ -74,11 +74,11 @@ export function Drawer({
 					)}
 				</div>
 
-				<div className="flex-1 min-h-0 overflow-y-auto px-8 py-6 flex flex-col gap-6">
+				<div className="flex-1 min-h-0 overflow-y-auto px-5 py-5 lg:px-8 lg:py-6 flex flex-col gap-6">
 					{children}
 				</div>
 
-				<div className="flex items-center justify-end gap-2 px-8 py-5 border-t border-neutral-50 shrink-0">
+				<div className="flex items-center justify-end gap-2 px-5 py-4 lg:px-8 lg:py-5 border-t border-neutral-50 shrink-0">
 					<CancelEl
 						{...(cancelHref
 							? { href: cancelHref }

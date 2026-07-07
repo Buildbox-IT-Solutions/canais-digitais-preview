@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
-import { Modal } from '~/components/modal'
+import { Dialog } from '~/components/dialog'
 import DashboardPerfilV4Screen from '../dashboard-perfil-v4'
 import { AuthDevNav } from '../_auth/dev-nav'
 
@@ -17,8 +17,8 @@ const DELETION_DATE = '29 de maio de 2026'
 
 /**
  * Tela: Excluir Conta (Modal) — LGPD Direito ao Esquecimento (Art. 18 IX)
- * Modal de ação direta sobre o Perfil (ACC-01), em 2 estados: confirm (padrão) → done (?state=done).
- * A rota renderiza o Perfil ao fundo + o modal, no padrão do gate-download.
+ * Ação direta sobre o Perfil (ACC-01), em 2 estados: confirm (padrão) → done (?state=done).
+ * Usa o Dialog padrão; Perfil ao fundo.
  */
 export default function ExcluirContaScreen() {
 	const [params] = useSearchParams()
@@ -29,9 +29,7 @@ export default function ExcluirContaScreen() {
 			{/* Perfil ao fundo */}
 			<DashboardPerfilV4Screen />
 
-			<Modal open size="lg" closeHref="/dashboard-perfil-v4" labelledById="excluir-title">
-				{isDone ? <DoneState /> : <ConfirmState />}
-			</Modal>
+			{isDone ? <DoneDialog /> : <ConfirmDialog />}
 
 			<AuthDevNav
 				paramName="state"
@@ -43,23 +41,28 @@ export default function ExcluirContaScreen() {
 	)
 }
 
-function ConfirmState() {
+function ConfirmDialog() {
 	return (
-		<div className="flex flex-col gap-6">
-			<div className="flex flex-col gap-2 pr-8">
-				<p className="font-body font-semibold text-label-md tracking-wider text-red-700 uppercase">
+		<Dialog
+			size="lg"
+			closeHref="/dashboard-perfil-v4"
+			eyebrow={
+				<span className="font-body font-semibold text-label-md tracking-wider text-red-700 uppercase">
 					LGPD · Art. 18 IX
-				</p>
-				<h2 id="excluir-title" className="font-display font-bold text-headline-sm text-primary-600">
-					Excluir sua conta
-				</h2>
-				<p className="font-body text-body-md text-neutral-700">
+				</span>
+			}
+			title="Excluir sua conta"
+			description={
+				<>
 					Você tem <strong className="font-bold">30 dias para cancelar</strong> após confirmar.
 					Parte dos dados pode ser mantida por obrigação legal.
-				</p>
-			</div>
-
-			<form action="/excluir-conta" method="get" className="flex flex-col gap-6" noValidate>
+				</>
+			}
+			destructive
+			secondary={{ label: 'Cancelar', href: '/dashboard-perfil-v4' }}
+			primary={{ label: 'Confirmar exclusão', type: 'submit', form: 'excluir-form' }}
+		>
+			<form id="excluir-form" action="/excluir-conta" method="get" className="flex flex-col gap-6" noValidate>
 				<input type="hidden" name="state" value="done" />
 
 				<label className="flex flex-col w-full">
@@ -126,49 +129,25 @@ function ConfirmState() {
 						pode ser mantida por obrigação legal.
 					</span>
 				</label>
-
-				<div className="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-neutral-50">
-					<a
-						href="/dashboard-perfil-v4"
-						className="inline-flex items-center justify-center h-10 px-6 rounded-full bg-transparent text-primary-600 hover:bg-neutral-50 font-body font-bold text-body-lg transition-colors"
-					>
-						Cancelar
-					</a>
-					<button
-						type="submit"
-						className="inline-flex items-center justify-center h-10 px-6 rounded-full bg-red-600 hover:bg-red-700 text-white font-body font-bold text-body-lg transition-colors"
-					>
-						Confirmar exclusão
-					</button>
-				</div>
 			</form>
-		</div>
+		</Dialog>
 	)
 }
 
-function DoneState() {
+function DoneDialog() {
 	return (
-		<div className="flex flex-col gap-6">
-			<div className="inline-flex items-center justify-center size-16 rounded-full bg-amber-50 text-amber-700">
-				<Icon name="schedule" className="size-8" />
-			</div>
-
-			<div className="flex flex-col gap-2 pr-8">
-				<h2 id="excluir-title" className="font-display font-bold text-headline-sm text-primary-600">
-					Conta marcada para exclusão
-				</h2>
-				<p className="font-body text-body-md text-neutral-700">
+		<Dialog
+			size="lg"
+			closeHref="/dashboard-perfil-v4"
+			icon={{ name: 'schedule', tone: 'warning' }}
+			title="Conta marcada para exclusão"
+			description={
+				<>
 					Sua conta será excluída em <strong className="font-bold">{DELETION_DATE}</strong> (30
 					dias). Você pode cancelar a qualquer momento até lá e nada será perdido.
-				</p>
-			</div>
-
-			<a
-				href="/dashboard-perfil-v4"
-				className="inline-flex items-center justify-center w-full h-12 px-6 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
-			>
-				Voltar ao Perfil
-			</a>
-		</div>
+				</>
+			}
+			primary={{ label: 'Voltar ao Perfil', href: '/dashboard-perfil-v4' }}
+		/>
 	)
 }

@@ -1,5 +1,5 @@
 import { Modal } from '~/components/modal'
-import { AuthStatusRing, type StatusRingAccent } from './status-ring'
+import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import type { IconName } from '~/components/icon/paths'
 
 export interface AuthTerminalButton {
@@ -44,7 +44,7 @@ export function AuthTerminalModal({
 	return (
 		<Modal open size="md" closeHref={closeHref} showClose labelledById={labelledById}>
 			<div className="flex flex-col items-center gap-8 text-center">
-				<AuthStatusRing accent={accent} icon={icon} size="sm" />
+				<StatusRing accent={accent} icon={icon} size="sm" />
 
 				<div className="flex flex-col gap-2 w-full">
 					<h2

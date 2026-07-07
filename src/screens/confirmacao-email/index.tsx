@@ -6,7 +6,7 @@ import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import { AuthDevNav } from '../_auth/dev-nav'
-import { AuthStatusRing, type StatusRingAccent } from '../_auth/status-ring'
+import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import { maskEmail } from '../_auth/mask-email'
 
 type ConfirmacaoState = 'waiting' | 'success' | 'link-expired' | 'link-used'
@@ -180,7 +180,7 @@ export default function ConfirmacaoEmailScreen() {
 					{/* page-body */}
 					<div className="flex-1 flex flex-col items-center justify-center overflow-y-auto px-6 py-8">
 						<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-							<AuthStatusRing accent={cfg.accent} icon={cfg.icon} size="sm" />
+							<StatusRing accent={cfg.accent} icon={cfg.icon} size="sm" />
 
 							<div className="flex flex-col gap-2 w-full">
 								<h1 className="font-display font-bold text-headline-sm text-primary-600">

@@ -7,7 +7,7 @@ import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthPasswordInput } from '../_auth/password-input'
-import { AuthStatusRing, type StatusRingAccent } from '../_auth/status-ring'
+import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import type { IconName } from '~/components/icon/paths'
 
 type RedefineState = 'valid' | 'loading' | 'success' | 'expired' | 'used'
@@ -126,7 +126,7 @@ export default function RedefineSenhaScreen() {
 					<div className="flex-1 flex flex-col items-center justify-center overflow-y-auto px-6 py-8">
 						{terminal ? (
 							<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
-								<AuthStatusRing accent={terminal.accent} icon={terminal.icon} />
+								<StatusRing accent={terminal.accent} icon={terminal.icon} />
 
 								<div className="flex flex-col gap-2 w-full">
 									<h1 className="font-display font-bold text-headline-lg text-primary-600">

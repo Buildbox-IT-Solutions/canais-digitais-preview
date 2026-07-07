@@ -36,6 +36,26 @@ export const PERFIL_CAMPOS: PerfilCampos = {
 	complemento: '',
 }
 
+/** Perfil totalmente preenchido — usuário "engajado" (?state=completo no dashboard-perfil-v4). */
+export const PERFIL_CAMPOS_COMPLETO: PerfilCampos = {
+	nome: 'Mariana Albuquerque',
+	email: 'mariana.albuquerque@empresa.com.br',
+	telefone: '+55 (11) 98786-9879',
+	nascimento: '15/03/1988',
+	genero: 'Feminino',
+	empresa: 'Grupo Camargo Alimentos S/A',
+	cargo: 'Gerente',
+	setor: 'Alimentos & Bebidas',
+	cpf: '123.456.789-00',
+	pais: 'Brasil',
+	estado: 'SP',
+	cidade: 'São Paulo',
+	cep: '01310-100',
+	endereco: 'Av. Paulista',
+	numero: '1000',
+	complemento: 'Conj. 51',
+}
+
 export const OPCOES_GENERO = ['Masculino', 'Feminino', 'Prefiro não informar']
 export const OPCOES_CARGO = ['Diretor(a)', 'Gerente', 'Coordenador(a)', 'Analista', 'Consultor(a)', 'Outro']
 export const OPCOES_SETOR = ['Agro', 'Alimentos & Bebidas', 'Embalagens', 'Saúde', 'Logística', 'Varejo', 'Tecnologia', 'Outro']
@@ -77,6 +97,22 @@ export const DOWNLOADS: DownloadEntry[] = [
 	{ icon: 'pdf', title: 'Revolução FoodTech no Brasil: tecnologias que estão reinventando a cadeia de A&B', date: '10 Jun 2026', size: '3.0 MB', disabled: true },
 	{ icon: 'pdf', title: 'Embalagens sustentáveis: o que muda no setor de alimentos com a nova regulamentação', date: '15 Jul 2026', size: '2.3 MB', disabled: false },
 	{ icon: 'pdf', title: 'Saúde e nutrição: como as novas diretrizes estão reformulando a indústria de alimentos', date: '22 Ago 2026', size: '2.7 MB', disabled: false },
+	{ icon: 'doc', title: 'Rastreabilidade na cadeia de proteína animal: guia prático para conformidade', date: '05 Set 2026', size: '1.4 MB', disabled: false },
+	{ icon: 'pdf', title: 'Panorama do mercado de sorvetes e sobremesas geladas no Brasil', date: '12 Set 2026', size: '2.9 MB', disabled: false },
+	{ icon: 'image', title: 'Infográfico: a jornada do grão ao atacarejo com rastreabilidade', date: '18 Set 2026', size: '4.1 MB', disabled: false },
+	{ icon: 'pdf', title: 'Tendências de embalagens inteligentes e ativas para alimentos perecíveis', date: '24 Set 2026', size: '2.2 MB', disabled: false },
+	{ icon: 'pdf', title: 'Fermentação de precisão: aplicações e regulação de novos ingredientes', date: '02 Out 2026', size: '3.5 MB', disabled: true },
+	{ icon: 'doc', title: 'Checklist de boas práticas para food service em grandes eventos', date: '09 Out 2026', size: '0.9 MB', disabled: false },
+	{ icon: 'pdf', title: 'Logística integrada na indústria de alimentos: métodos e contingência', date: '16 Out 2026', size: '2.6 MB', disabled: false },
+	{ icon: 'pdf', title: 'ESG no setor de A&B: métricas, relatórios e responsabilidade social', date: '23 Out 2026', size: '3.1 MB', disabled: false },
+	{ icon: 'image', title: 'Guia visual de cortes e rendimento na proteína bovina', date: '30 Out 2026', size: '3.8 MB', disabled: false },
+	{ icon: 'pdf', title: 'Nutrição funcional: suplementos em gomas e a nova geração de consumidores', date: '06 Nov 2026', size: '2.4 MB', disabled: false },
+	{ icon: 'doc', title: 'Modelo de plano de expansão para redes de padaria e confeitaria', date: '13 Nov 2026', size: '1.1 MB', disabled: true },
+	{ icon: 'pdf', title: 'Panorama de crédito e financiamento para FoodTechs em estágio inicial', date: '20 Nov 2026', size: '2.0 MB', disabled: false },
+	{ icon: 'pdf', title: 'Segurança de alimentos: novas diretrizes sanitárias para 2027', date: '27 Nov 2026', size: '2.8 MB', disabled: false },
+	{ icon: 'image', title: 'Cartilha ilustrada: descarte e reciclagem de embalagens no varejo', date: '04 Dez 2026', size: '3.6 MB', disabled: false },
+	{ icon: 'pdf', title: 'Proteínas alternativas: cenário competitivo e projeções de consumo', date: '11 Dez 2026', size: '2.7 MB', disabled: false },
+	{ icon: 'doc', title: 'Relatório setorial: indústria de bebidas não alcoólicas no Brasil', date: '18 Dez 2026', size: '1.7 MB', disabled: false },
 ]
 
 export const SESSIONS = [
