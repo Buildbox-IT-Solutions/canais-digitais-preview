@@ -228,8 +228,10 @@ export default function ConfirmacaoEmailV2Screen() {
 
 	return (
 		<>
-			{/* Portal ao fundo */}
-			<HomeScreen />
+			{/* Portal ao fundo — só visível ≥lg (o modal cobre tudo no mobile) */}
+			<div className="hidden lg:block">
+				<HomeScreen />
+			</div>
 
 			{errorTerminal ? (
 				<AuthTerminalModal
@@ -245,15 +247,16 @@ export default function ConfirmacaoEmailV2Screen() {
 				open
 				size="xl"
 				padded={false}
+				mobileFullScreen
 				showClose={false}
 				closeHref="/home"
 				labelledById="confirmacao-v2-title"
-				className="max-w-[912px] min-h-[min(696px,90vh)]"
+				className="max-w-none lg:max-w-[912px] lg:min-h-[min(696px,90vh)]"
 			>
 				<ProofPanelMinimal
 					variant={cfg.proof}
 					size="sm"
-					className="hidden md:flex grow basis-1/2 min-w-0"
+					className="hidden lg:flex grow basis-1/2 min-w-0"
 				/>
 
 				{/* Coluna do conteúdo */}
