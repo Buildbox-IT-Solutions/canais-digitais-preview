@@ -31,7 +31,6 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/login', label: 'Login', description: 'Modal de login sobre o portal' },
 			{ path: '/recupera-senha', label: 'Recuperar senha', description: 'Início · informa e-mail → link enviado' },
 			{ path: '/redefine-senha', label: 'Redefinir senha', description: 'Fim · define nova senha pelo link' },
-			{ path: '/gate-download', label: 'Gate de download', description: 'Cadastro acionado pelo clique em Download' },
 		],
 	},
 	{

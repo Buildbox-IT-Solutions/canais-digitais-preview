@@ -70,6 +70,16 @@ const GROUPS: ArchiveGroup[] = [
 			},
 		],
 	},
+	{
+		title: 'Download — fluxo anterior',
+		items: [
+			{
+				path: '/gate-download',
+				label: 'Gate de download',
+				reason: 'Substituída pelos modais de incentivo de download (Portal/Leitura/Download) direto no 50/50 de cadastro/login',
+			},
+		],
+	},
 ]
 
 const TOTAL = GROUPS.reduce((sum, g) => sum + g.items.length, 0)

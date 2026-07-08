@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { AdFrame } from '~/components/ad-frame'
 import { BannerNewsletter } from '~/components/banner-newsletter'
 import { CategoryColumn } from '~/components/category-column'
@@ -6,6 +8,9 @@ import { DownloadSection } from '~/components/download-section'
 import { EspecialistasSection } from '~/components/especialistas-section'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
+import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
+import { IncentivePortalDialog } from '~/components/incentive-portal-dialog'
+import { Toast } from '~/components/toast'
 import { Byline } from '~/components/byline'
 import { Categoria } from '~/components/categoria'
 import { NewsCard } from '~/components/news-card'
@@ -17,6 +22,8 @@ import { VideosSection } from '~/components/videos-section'
 import { WebstoriesSection } from '~/components/webstories-section'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
 import { WidgetPodcast } from '~/components/widget-podcast'
+import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
+import { useLogado } from '~/lib/use-logado'
 import {
 	EM_ALTA,
 	ESPECIALISTAS,
@@ -45,8 +52,58 @@ import {
  */
 export default function HomeScreen() {
 	const [hero, top2, top3] = HOME_HERO
+	const logado = useLogado()
+	const isHomeRoute = useLocation().pathname === '/home'
+	const navigate = useNavigate()
+	const [params] = useSearchParams()
+	const showDownloadToast = params.get('toast') === 'download-started'
+
+	const [portalOpen, setPortalOpen] = useState(false)
+	const [downloadOpen, setDownloadOpen] = useState(false)
+
+	useEffect(() => {
+		if (!isHomeRoute || logado) return
+		if (!shouldShowPassiveIncentive()) return
+		const timerId = setTimeout(() => {
+			markPassiveShown()
+			setPortalOpen(true)
+		}, 4000)
+		return () => clearTimeout(timerId)
+	}, [isHomeRoute, logado])
+
+	function handlePortalCreateAccount() {
+		suppressPassiveFor7Days()
+		setPortalOpen(false)
+		navigate('/cadastro?step=1&returnTo=%2Fhome')
+	}
+
+	function handlePortalLogin() {
+		suppressPassiveFor7Days()
+		setPortalOpen(false)
+		navigate('/login?returnTo=%2Fhome')
+	}
+
+	function handlePortalDismiss() {
+		suppressPassiveFor7Days()
+		setPortalOpen(false)
+	}
+
+	function handleDownloadCreateAccount() {
+		setDownloadOpen(false)
+		navigate('/cadastro?step=1&intent=download&returnTo=%2Fhome')
+	}
+
+	function handleDownloadLogin() {
+		setDownloadOpen(false)
+		navigate('/login?intent=download&returnTo=%2Fhome')
+	}
+
+	function handleDownloadDismiss() {
+		setDownloadOpen(false)
+	}
 
 	return (
+		<>
 		<main className="bg-white">
 			<HeaderDesktop />
 
@@ -98,6 +155,7 @@ export default function HomeScreen() {
 				description="Saiba como a cadeia de produção está sendo otimizada até o atacarejo com rastreabilidade e as tecnologias envolvidas nesse processo."
 				ctaLabel="Baixar agora"
 				ctaHref="/gate-download"
+				onCtaClick={!logado ? () => setDownloadOpen(true) : undefined}
 				image={picsumSrc('download-bg', 1920, 460)}
 				className="mt-10"
 			/>
@@ -197,5 +255,29 @@ export default function HomeScreen() {
 				<FooterDesktop />
 			</div>
 		</main>
+
+		{!logado ? (
+			<>
+				<IncentivePortalDialog
+					open={portalOpen}
+					onCreateAccount={handlePortalCreateAccount}
+					onLogin={handlePortalLogin}
+					onDismiss={handlePortalDismiss}
+				/>
+				<IncentiveDownloadDialog
+					open={downloadOpen}
+					onCreateAccount={handleDownloadCreateAccount}
+					onLogin={handleDownloadLogin}
+					onDismiss={handleDownloadDismiss}
+				/>
+			</>
+		) : null}
+
+		{showDownloadToast ? (
+			<div className="fixed bottom-6 right-6 z-50">
+				<Toast type="success" message="Seu download começou." />
+			</div>
+		) : null}
+		</>
 	)
 }

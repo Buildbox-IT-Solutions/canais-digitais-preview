@@ -6,6 +6,7 @@ import { Modal } from '~/components/modal'
 import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
+import { sanitizeReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthInput } from '../_auth/input'
@@ -61,20 +62,41 @@ interface ConfirmacaoConfig {
 	proof: ProofPanelMinimalVariant
 }
 
-function buildConfig(state: ConfirmacaoState): ConfirmacaoConfig {
+function buildConfig(state: ConfirmacaoState, intent: string, returnTo: string): ConfirmacaoConfig {
 	switch (state) {
-		case 'success':
+		case 'success': {
+			if (intent === 'download') {
+				return {
+					accent: 'mint',
+					icon: 'check',
+					title: 'Tudo pronto!',
+					body: 'Seu material está pronto para baixar.',
+					buttons: [
+						{
+							label: 'Baixar agora',
+							href: `${returnTo || '/home'}?logado=true&toast=download-started`,
+							variant: 'filled',
+						},
+					],
+					proof: 'confirm-welcome',
+				}
+			}
 			return {
 				accent: 'mint',
 				icon: 'check',
 				title: 'Tudo pronto!',
 				body: 'Acesse conteúdo exclusivo, análises e dados do seu setor sem restrições.',
 				buttons: [
-					{ label: 'Explorar o portal', href: '/home', variant: 'filled' },
+					{
+						label: 'Explorar o portal',
+						href: returnTo ? `${returnTo}?logado=true` : '/home',
+						variant: 'filled',
+					},
 					{ label: 'Ir para minha conta', href: '/', variant: 'ghost' },
 				],
 				proof: 'confirm-welcome',
 			}
+		}
 		default:
 			// waiting + corrigir compartilham o config base
 			return {
@@ -144,7 +166,7 @@ function ConfirmButton({ label, href, variant, isResend }: ConfirmacaoButton) {
  * é só reenviar o link para o endereço certo — sem refazer o cadastro. Submete de volta
  * para o estado "waiting" com o novo e-mail.
  */
-function CorrigirForm({ email, intent }: { email: string; intent: string }) {
+function CorrigirForm({ email, intent, returnTo }: { email: string; intent: string; returnTo: string }) {
 	return (
 		<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
 			<StatusRing accent="primary" icon="mail" size="sm" />
@@ -169,6 +191,7 @@ function CorrigirForm({ email, intent }: { email: string; intent: string }) {
 			>
 				<input type="hidden" name="state" value="waiting" />
 				{intent ? <input type="hidden" name="intent" value={intent} /> : null}
+				{returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
 
 				<AuthInput
 					label="Novo e-mail"
@@ -211,20 +234,24 @@ export default function ConfirmacaoEmailV2Screen() {
 
 	const email = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
 	const intent = params.get('intent') ?? ''
+	const hasReturnTo = params.get('returnTo') !== null
+	const returnTo = sanitizeReturnTo(params.get('returnTo'))
 
 	const isErrorTerminal = state === 'link-expired' || state === 'link-used'
 	const errorTerminal = isErrorTerminal ? ERROR_TERMINAL[state as 'link-expired' | 'link-used'] : null
 
-	const cfg = buildConfig(state)
+	const cfg = buildConfig(state, intent, hasReturnTo ? returnTo : '')
 	const isWaiting = state === 'waiting'
 	const isCorrigir = state === 'corrigir'
 	const showBack = isWaiting || isCorrigir
 
-	const backHref = isCorrigir ? `?state=waiting&email=${encodeURIComponent(email)}` : '/login'
-
-	const corrigirHref = `?state=corrigir&email=${encodeURIComponent(email)}${
-		intent ? `&intent=${encodeURIComponent(intent)}` : ''
+	const extraQuery = `${intent ? `&intent=${encodeURIComponent(intent)}` : ''}${
+		hasReturnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''
 	}`
+
+	const backHref = isCorrigir ? `?state=waiting&email=${encodeURIComponent(email)}${extraQuery}` : '/login'
+
+	const corrigirHref = `?state=corrigir&email=${encodeURIComponent(email)}${extraQuery}`
 
 	return (
 		<>
@@ -287,7 +314,7 @@ export default function ConfirmacaoEmailV2Screen() {
 					{/* body centralizado */}
 					<div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center justify-center px-6 py-8">
 						{isCorrigir ? (
-							<CorrigirForm email={email} intent={intent} />
+							<CorrigirForm email={email} intent={intent} returnTo={hasReturnTo ? returnTo : ''} />
 						) : (
 							<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
 								<StatusRing accent={cfg.accent} icon={cfg.icon} size="sm" />
@@ -340,7 +367,7 @@ export default function ConfirmacaoEmailV2Screen() {
 				label="Estado"
 				options={STATES as unknown as string[]}
 				current={state}
-				extraQuery={`&email=${encodeURIComponent(email)}`}
+				extraQuery={`&email=${encodeURIComponent(email)}${extraQuery}`}
 			/>
 		</>
 	)

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { AdFrame } from '~/components/ad-frame'
 import { Avatar } from '~/components/avatar'
 import { Button } from '~/components/button'
@@ -7,12 +9,16 @@ import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
 import { IconButton } from '~/components/icon-button'
 import type { IconName } from '~/components/icon/paths'
+import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
+import { IncentiveLeituraDialog } from '~/components/incentive-leitura-dialog'
 import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
+import { Toast } from '~/components/toast'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
-import { useSearchParams } from 'react-router'
+import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
+import { useLogado } from '~/lib/use-logado'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
 
 const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
@@ -30,9 +36,75 @@ const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
  */
 export default function ConteudoScreen() {
 	const [params] = useSearchParams()
-	const logado = params.get('logado') === 'true'
+	const logado = useLogado()
+	const isConteudoRoute = useLocation().pathname === '/conteudo'
+	const navigate = useNavigate()
+	const showDownloadToast = params.get('toast') === 'download-started'
+
+	const [leituraOpen, setLeituraOpen] = useState(false)
+	const [downloadOpen, setDownloadOpen] = useState(false)
+
+	useEffect(() => {
+		if (!isConteudoRoute || logado) return
+		if (!shouldShowPassiveIncentive()) return
+
+		let ticking = false
+
+		function evaluate() {
+			const scrollable = document.documentElement.scrollHeight - document.documentElement.clientHeight
+			if (scrollable > 0 && window.scrollY / scrollable >= 0.5) {
+				markPassiveShown()
+				setLeituraOpen(true)
+				window.removeEventListener('scroll', onScroll)
+			}
+			ticking = false
+		}
+
+		function onScroll() {
+			if (!ticking) {
+				requestAnimationFrame(evaluate)
+				ticking = true
+			}
+		}
+
+		window.addEventListener('scroll', onScroll, { passive: true })
+		evaluate()
+		return () => window.removeEventListener('scroll', onScroll)
+	}, [isConteudoRoute, logado])
+
+	function handleLeituraCreateAccount() {
+		suppressPassiveFor7Days()
+		setLeituraOpen(false)
+		navigate('/cadastro?step=1&returnTo=%2Fconteudo')
+	}
+
+	function handleLeituraLogin() {
+		suppressPassiveFor7Days()
+		setLeituraOpen(false)
+		navigate('/login?returnTo=%2Fconteudo')
+	}
+
+	function handleLeituraDismiss() {
+		suppressPassiveFor7Days()
+		setLeituraOpen(false)
+	}
+
+	function handleDownloadCreateAccount() {
+		setDownloadOpen(false)
+		navigate('/cadastro?step=1&intent=download&returnTo=%2Fconteudo')
+	}
+
+	function handleDownloadLogin() {
+		setDownloadOpen(false)
+		navigate('/login?intent=download&returnTo=%2Fconteudo')
+	}
+
+	function handleDownloadDismiss() {
+		setDownloadOpen(false)
+	}
 
 	return (
+		<>
 		<main className="bg-white">
 			<HeaderDesktop activeCategory="food-service" />
 
@@ -267,7 +339,7 @@ export default function ConteudoScreen() {
 								<div className="pt-4 pb-8 px-6 w-full">
 									<Button
 										label="Baixar material"
-										href="/gate-download"
+										onClick={() => setDownloadOpen(true)}
 										type="filled"
 										size="large"
 										className="w-full"
@@ -310,5 +382,29 @@ export default function ConteudoScreen() {
 
 			<FooterDesktop />
 		</main>
+
+		{!logado ? (
+			<>
+				<IncentiveLeituraDialog
+					open={leituraOpen}
+					onCreateAccount={handleLeituraCreateAccount}
+					onLogin={handleLeituraLogin}
+					onDismiss={handleLeituraDismiss}
+				/>
+				<IncentiveDownloadDialog
+					open={downloadOpen}
+					onCreateAccount={handleDownloadCreateAccount}
+					onLogin={handleDownloadLogin}
+					onDismiss={handleDownloadDismiss}
+				/>
+			</>
+		) : null}
+
+		{showDownloadToast ? (
+			<div className="fixed bottom-6 right-6 z-50">
+				<Toast type="success" message="Seu download começou." />
+			</div>
+		) : null}
+		</>
 	)
 }
