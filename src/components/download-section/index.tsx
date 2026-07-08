@@ -11,7 +11,7 @@ import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
 import type { IDownloadSectionProps } from './types'
 
-export function DownloadSection({ eyebrow, title, description, ctaLabel, ctaHref, image, className }: IDownloadSectionProps) {
+export function DownloadSection({ eyebrow, title, description, ctaLabel, ctaHref, onCtaClick, image, className }: IDownloadSectionProps) {
 	return (
 		<section className={twMerge('relative w-full h-[642px] lg:h-[460px] overflow-hidden', className)}>
 			<img src={image} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
@@ -27,6 +27,14 @@ export function DownloadSection({ eyebrow, title, description, ctaLabel, ctaHref
 					</div>
 					<a
 						href={ctaHref}
+						onClick={
+							onCtaClick
+								? (e) => {
+										e.preventDefault()
+										onCtaClick()
+									}
+								: undefined
+						}
 						className="bg-primary-600 inline-flex items-center justify-center gap-3 pl-5 pr-6 py-3 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg w-full lg:w-auto"
 					>
 						<Icon name="download" className="size-6" />

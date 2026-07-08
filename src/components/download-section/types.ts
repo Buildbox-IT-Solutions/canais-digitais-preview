@@ -4,6 +4,7 @@ export interface IDownloadSectionProps {
 	description: string
 	ctaLabel: string
 	ctaHref: string
+	onCtaClick?: () => void
 	image: string
 	className?: string
 }
