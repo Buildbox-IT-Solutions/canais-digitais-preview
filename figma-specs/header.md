@@ -122,4 +122,21 @@ Quando `window.scrollY > 8`, o header entra em modo Compact:
 
 Cada transição é `duration-300`. O scroll listener usa `requestAnimationFrame` para evitar layout thrash (mesma estratégia do `header-sticky.js` legado). Implementado pelo hook `useCompactOnScroll` em `src/components/header-desktop/index.tsx`.
 
-> Mobile (Expanded/Compact) ainda não foi portado — a versão React é exclusivamente desktop. As variants mobile `5754:7343` (Expanded 117px) e `5754:7352` (Compact 73px, hamburger + logo centralizado + search icon) estão documentadas mas pendentes.
+> Mobile (Expanded/Compact) foi portado — ver `useMediaQuery`/`showHamburger` em `src/components/header-desktop/index.tsx`.
+
+## v4.0 — Mobile com área logada (07/07/2026)
+
+**Figma:** Header `5754:7270`, variantes `Device=Mobile` × `Logged=Off|On` (`5754:7343`, `7411:14803`, `5754:7352`, `7411:14814`).
+
+O cluster direito mobile ganhou um **slot de conta** antes do ícone de busca: `[conta] [busca]` (antes: só busca).
+
+- **Deslogado:** ícone `account_circle` (size-8 em botão circular size-12, mesmo padrão do hambúrguer/busca). Annotation do Figma: *"Abre bottom sheet com as opções de cadastro/login"*.
+- **Logado:** avatar 40px (iniciais em `bg-primary-100 text-primary-600`, ou `<img>` se houver foto). Annotation: *"quando logado: Avatar / Abre bottom sheet"*.
+
+Ambos abrem um **bottom sheet** (nunca navegam direto):
+- Deslogado → `AccessInvite` (mesmo conteúdo do popover desktop).
+- Logado → cabeçalho (avatar+nome+e-mail) + "Meu Perfil" (`/dashboard-perfil-v4`) + "Sair" (`/home`) — o **lar canônico do logout no mobile**.
+
+Implementado por `AccessMenuMobile`/`UserMenuMobile` em `src/components/header-desktop/index.tsx` — componentes dedicados ao slot mobile, independentes do `AccessMenu`/`UserMenu` do cluster desktop (que seguem `hidden lg:flex`).
+
+Annotation adicional (nó "container", cluster direito): *"Para acomodar o botão de login/cadastro foi retirado a barra de share/rede social"* — mesma remoção aplicada ao rodapé do side menu (ver `side-menu.md`).

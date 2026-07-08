@@ -42,8 +42,15 @@ export function AuthTerminalModal({
 	closeHref = '/home',
 }: IAuthTerminalModalProps) {
 	return (
-		<Modal open size="md" closeHref={closeHref} showClose labelledById={labelledById}>
-			<div className="flex flex-col items-center gap-8 text-center">
+		<Modal
+			open
+			size="md"
+			mobileFullScreen
+			closeHref={closeHref}
+			showClose
+			labelledById={labelledById}
+		>
+			<div className="flex flex-col items-center gap-8 text-center w-full max-w-[392px] lg:max-w-none">
 				<StatusRing accent={accent} icon={icon} size="sm" />
 
 				<div className="flex flex-col gap-2 w-full">

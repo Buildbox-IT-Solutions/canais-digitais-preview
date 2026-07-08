@@ -11,6 +11,7 @@ import { LoginButton } from '~/components/login-button'
 import { MenuListItem } from '~/components/menu-list-item'
 import { NavItem } from '~/components/nav-item'
 import { SearchBar } from '~/components/search-bar'
+import { SideMenu } from '~/components/side-menu'
 import type { IHeaderDesktopProps, NavCategory } from './types'
 
 /**
@@ -87,6 +88,7 @@ export function HeaderDesktop({
 	const isDesktop = useMediaQuery('(min-width: 1024px)')
 	// Mobile (<lg): hambúrguer sempre visível. Desktop (≥lg): mantém o gate por scroll (só no Compact).
 	const showHamburger = !isDesktop || compact
+	const [menuOpen, setMenuOpen] = useState(false)
 
 	return (
 		<header
@@ -120,14 +122,17 @@ export function HeaderDesktop({
 							compact ? 'w-12 opacity-100' : 'w-12 opacity-100 lg:w-0 lg:opacity-0',
 						)}
 					>
-						<a
-							href={userLoggedIn ? '/menu?logged=1' : '/menu'}
+						<button
+							type="button"
 							aria-label="Abrir menu"
+							aria-haspopup="dialog"
+							aria-expanded={menuOpen}
 							tabIndex={showHamburger ? 0 : -1}
+							onClick={() => setMenuOpen(true)}
 							className="inline-flex items-center justify-center size-12 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
 						>
 							<Icon name="menu" className="size-8" />
-						</a>
+						</button>
 					</div>
 
 					<div
@@ -150,8 +155,22 @@ export function HeaderDesktop({
 						</a>
 					</div>
 
-					{/* Right row — no mobile só o ícone de busca; cluster completo volta em ≥lg */}
+					{/* Right row — no mobile: conta + busca; cluster completo volta em ≥lg */}
 					<div className="flex items-center justify-end gap-3 px-0 py-6 self-stretch shrink-0 lg:flex-1 lg:px-3">
+						{/* Conta — só mobile (twin-render do cluster desktop abaixo) */}
+						<div className="flex lg:hidden">
+							{userLoggedIn ? (
+								<UserMenuMobile
+									name={userName}
+									email={userEmail}
+									initials={userInitials}
+									avatar={userAvatar}
+								/>
+							) : (
+								<AccessMenuMobile />
+							)}
+						</div>
+
 						{/* Ícone de busca — só mobile (twin-render, padrão do pagination) */}
 						<a
 							href="/buscar"
@@ -212,6 +231,15 @@ export function HeaderDesktop({
 					'h-px bg-neutral-100 w-full transition-opacity duration-300',
 					compact ? 'opacity-100' : 'opacity-0',
 				)}
+			/>
+
+			<SideMenu
+				open={menuOpen}
+				onClose={() => setMenuOpen(false)}
+				logged={userLoggedIn}
+				userName={userName}
+				userInitials={userInitials}
+				userAvatar={userAvatar}
 			/>
 		</header>
 	)
@@ -410,5 +438,135 @@ function UserMenu({ name, email, initials, avatar }: IUserMenuProps) {
 				</div>
 			) : null}
 		</div>
+	)
+}
+
+/**
+ * Slot de conta mobile (deslogado): ícone `account_circle` no cluster direito do
+ * header. Abre um bottom sheet com o mesmo AccessInvite do desktop (fonte única
+ * de conteúdo). Independente do AccessMenu (que serve só o cluster ≥lg).
+ */
+function AccessMenuMobile() {
+	const panelId = useId()
+	const titleId = useId()
+	const [open, setOpen] = useState(false)
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
+
+	// Ao cruzar o breakpoint, fecha para não deixar o sheet preso aberto no modo errado.
+	useEffect(() => {
+		if (isDesktop) setOpen(false)
+	}, [isDesktop])
+
+	return (
+		<>
+			<button
+				type="button"
+				aria-haspopup="dialog"
+				aria-expanded={open}
+				aria-controls={open ? panelId : undefined}
+				aria-label="Acessar"
+				onClick={() => setOpen(true)}
+				className="inline-flex items-center justify-center size-12 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
+			>
+				<Icon name="account-circle" className="size-8" />
+			</button>
+
+			<BottomSheet open={open} onClose={() => setOpen(false)} id={panelId} labelledById={titleId}>
+				<AccessInvite titleId={titleId} />
+			</BottomSheet>
+		</>
+	)
+}
+
+interface IUserMenuMobileProps {
+	name: string
+	email: string
+	initials: string
+	avatar: string | null
+}
+
+/**
+ * Slot de conta mobile (logado): avatar no cluster direito do header. Abre um
+ * bottom sheet com cabeçalho (avatar+nome+e-mail) + Meu Perfil + Sair — o lar
+ * canônico do logout no mobile. Espelha o conteúdo do UserMenu (dropdown
+ * desktop), casca diferente.
+ */
+function UserMenuMobile({ name, email, initials, avatar }: IUserMenuMobileProps) {
+	const panelId = useId()
+	const titleId = useId()
+	const [open, setOpen] = useState(false)
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
+
+	// Ao cruzar o breakpoint, fecha para não deixar o sheet preso aberto no modo errado.
+	useEffect(() => {
+		if (isDesktop) setOpen(false)
+	}, [isDesktop])
+
+	const avatarNode = avatar ? (
+		<img src={avatar} alt="" className="size-8 rounded-full object-cover shrink-0" />
+	) : (
+		<span
+			className="size-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center shrink-0 font-body font-semibold text-label-lg"
+			aria-hidden="true"
+		>
+			{initials}
+		</span>
+	)
+
+	const avatarLarge = avatar ? (
+		<img src={avatar} alt="" className="size-10 rounded-full object-cover shrink-0" />
+	) : (
+		<span
+			className="size-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center shrink-0 font-body font-semibold text-body-lg"
+			aria-hidden="true"
+		>
+			{initials}
+		</span>
+	)
+
+	return (
+		<>
+			<button
+				type="button"
+				aria-haspopup="dialog"
+				aria-expanded={open}
+				aria-controls={open ? panelId : undefined}
+				aria-label="Minha conta"
+				onClick={() => setOpen(true)}
+				className="inline-flex items-center justify-center size-12 rounded-full hover:bg-neutral-50 transition-colors"
+			>
+				{avatarNode}
+			</button>
+
+			<BottomSheet open={open} onClose={() => setOpen(false)} id={panelId} labelledById={titleId}>
+				<div className="flex items-center gap-3 pb-4 w-full">
+					{avatarLarge}
+					<div className="flex flex-1 flex-col gap-0.5 min-w-0">
+						<p id={titleId} className="font-body font-semibold text-body-md text-primary-600 truncate">
+							{name}
+						</p>
+						{email ? (
+							<p className="font-body text-label-md text-neutral-700 truncate">{email}</p>
+						) : null}
+					</div>
+				</div>
+
+				<MenuListItem
+					label="Meu Perfil"
+					href="/dashboard-perfil-v4"
+					density="compact"
+					leading={<Icon name="account-circle" className="size-5" />}
+				/>
+
+				<div className="bg-neutral-100 h-px my-1 w-full" />
+
+				<MenuListItem
+					label="Sair"
+					href="/home"
+					density="compact"
+					leading={<Icon name="logout" className="size-5" />}
+				/>
+			</BottomSheet>
+		</>
 	)
 }

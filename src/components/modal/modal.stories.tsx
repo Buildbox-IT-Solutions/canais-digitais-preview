@@ -71,3 +71,28 @@ export const Painel: Story = {
 		),
 	},
 }
+
+export const PainelMobileFullScreen: Story = {
+	name: 'Painel — Full Screen no Mobile',
+	args: {
+		open: true,
+		size: 'xl',
+		padded: false,
+		mobileFullScreen: true,
+		ariaLabel: 'Exemplo de painel full screen no mobile',
+		children: (
+			<>
+				<section className="flex flex-col w-full md:w-[470px] shrink-0 px-8 sm:px-12 py-12">
+					<h2 className="font-display font-bold text-headline-md text-primary-600">Entrar</h2>
+					<p className="mt-2 font-body text-body-lg text-neutral-700">
+						Reduza a viewport do navegador para abaixo de 1024px: o painel ocupa a tela cheia,
+						sem cantos arredondados nem scrim visível. Acima de 1024px volta ao card centralizado.
+					</p>
+				</section>
+				<aside className="hidden md:flex flex-1 items-center p-12 bg-primary-600 text-white">
+					<p className="font-display text-display-md tracking-tight">Painel de prova</p>
+				</aside>
+			</>
+		),
+	},
+}

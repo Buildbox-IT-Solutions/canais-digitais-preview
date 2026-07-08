@@ -46,6 +46,9 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 - [x] `section-title`
 - [x] `orbit`
 - [x] `icon-tile`
+- [x] `download-section`
+- [x] `widget-podcast`
+- [x] `banner-newsletter`
 
 ### Feedback / Overlay
 - [x] `toast`

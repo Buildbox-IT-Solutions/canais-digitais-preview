@@ -5,6 +5,7 @@ import { Modal } from '~/components/modal'
 import { PasswordChecklist } from '~/components/password-checklist'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
+import { sanitizeReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
@@ -98,6 +99,10 @@ export default function CadastroV2Screen() {
 
 	const emailParam = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
 	const intent = params.get('intent') ?? ''
+	const returnTo = sanitizeReturnTo(params.get('returnTo'))
+	const crossLinkQuery = `&returnTo=${encodeURIComponent(returnTo)}${
+		intent ? `&intent=${encodeURIComponent(intent)}` : ''
+	}`
 
 	const errorParam = params.get('error') ?? 'none'
 	const validErrors = step === 1 ? STEP1_ERRORS : step === 2 ? STEP2_ERRORS : STEP3_ERRORS
@@ -138,29 +143,32 @@ export default function CadastroV2Screen() {
 	const prevStep =
 		step === 1
 			? null
-			: `/cadastro?step=${step - 1}&email=${encodeURIComponent(emailParam)}`
+			: `/cadastro?step=${step - 1}&email=${encodeURIComponent(emailParam)}${crossLinkQuery}`
 
 	// Ao concluir o passo 3, o modal é fechado e a confirmação abre em fullpage (tela 3.1).
 	const nextAction = step === 3 ? '/confirmacao-email' : '/cadastro'
 
 	return (
 		<>
-			{/* Portal ao fundo */}
-			<HomeScreen />
+			{/* Portal ao fundo — só visível ≥lg (o modal cobre tudo no mobile) */}
+			<div className="hidden lg:block">
+				<HomeScreen />
+			</div>
 
 			<Modal
 				open
 				size="xl"
 				padded={false}
+				mobileFullScreen
 				showClose={false}
 				closeHref="/home"
 				labelledById="cadastro-v2-title"
-				className="max-w-[912px] min-h-[min(696px,90vh)]"
+				className="max-w-none lg:max-w-[912px] lg:min-h-[min(696px,90vh)]"
 			>
 				<ProofPanelMinimal
 					variant={PROOF_VARIANT[step]}
 					size="sm"
-					className="hidden md:flex grow basis-1/2 min-w-0"
+					className="hidden lg:flex grow basis-1/2 min-w-0"
 				/>
 
 				{/* Coluna do formulário */}
@@ -213,6 +221,7 @@ export default function CadastroV2Screen() {
 							<input type="hidden" name="step" value={step + 1} />
 						)}
 						{intent ? <input type="hidden" name="intent" value={intent} /> : null}
+						<input type="hidden" name="returnTo" value={returnTo} />
 
 						{/* body */}
 						<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-2 pb-4 flex flex-col gap-6">
@@ -231,7 +240,9 @@ export default function CadastroV2Screen() {
 									defaultValue={emailValueByError || emailParam}
 									error={emailError}
 									helperLink={
-										errorMode === 'existente' ? { label: 'Entrar', href: '/login' } : undefined
+										errorMode === 'existente'
+											? { label: 'Entrar', href: `/login?${crossLinkQuery.slice(1)}` }
+											: undefined
 									}
 								/>
 							) : null}
@@ -383,7 +394,11 @@ export default function CadastroV2Screen() {
 							</button>
 
 							{step === 1 ? (
-								<AuthBottomLink label="Já tem uma conta?" linkLabel="Entrar" linkHref="/login" />
+								<AuthBottomLink
+									label="Já tem uma conta?"
+									linkLabel="Entrar"
+									linkHref={`/login?${crossLinkQuery.slice(1)}`}
+								/>
 							) : null}
 						</div>
 					</form>
