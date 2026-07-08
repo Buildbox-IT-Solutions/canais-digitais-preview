@@ -34,6 +34,16 @@ const GROUPS: RouteGroup[] = [
 		],
 	},
 	{
+		title: 'Incentivo ao Cadastro',
+		description: 'Modais que convertem visitante deslogado em cadastro — reusam os mesmos modais de Cadastro/Login acima.',
+		color: 'secondary',
+		items: [
+			{ path: '/home?preview=portal', label: 'Incentivo — Portal', description: 'Passivo · dispara ~4s na Home para visitante deslogado' },
+			{ path: '/conteudo?preview=leitura', label: 'Incentivo — Leitura', description: 'Passivo · dispara a ~50% de scroll no Conteúdo para visitante deslogado' },
+			{ path: '/home?preview=download', label: 'Incentivo — Download', description: 'Ativo · dispara ao clicar no CTA de download (Home e Conteúdo) para visitante deslogado' },
+		],
+	},
+	{
 		title: 'Perfil & LGPD',
 		description: 'Área logada do usuário e gestão de dados pessoais.',
 		color: 'mint',

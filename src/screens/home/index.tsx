@@ -57,19 +57,20 @@ export default function HomeScreen() {
 	const navigate = useNavigate()
 	const [params] = useSearchParams()
 	const showDownloadToast = params.get('toast') === 'download-started'
+	const previewIncentive = params.get('preview')
 
-	const [portalOpen, setPortalOpen] = useState(false)
-	const [downloadOpen, setDownloadOpen] = useState(false)
+	const [portalOpen, setPortalOpen] = useState(previewIncentive === 'portal')
+	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
 
 	useEffect(() => {
-		if (!isHomeRoute || logado) return
+		if (!isHomeRoute || logado || previewIncentive) return
 		if (!shouldShowPassiveIncentive()) return
 		const timerId = setTimeout(() => {
 			markPassiveShown()
 			setPortalOpen(true)
 		}, 4000)
 		return () => clearTimeout(timerId)
-	}, [isHomeRoute, logado])
+	}, [isHomeRoute, logado, previewIncentive])
 
 	function handlePortalCreateAccount() {
 		suppressPassiveFor7Days()
