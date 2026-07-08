@@ -367,7 +367,7 @@ export default function ConfirmacaoEmailV2Screen() {
 				label="Estado"
 				options={STATES as unknown as string[]}
 				current={state}
-				extraQuery={`&email=${encodeURIComponent(email)}`}
+				extraQuery={`&email=${encodeURIComponent(email)}${extraQuery}`}
 			/>
 		</>
 	)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { AdFrame } from '~/components/ad-frame'
 import { Avatar } from '~/components/avatar'
 import { Button } from '~/components/button'
@@ -37,6 +37,7 @@ const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
 export default function ConteudoScreen() {
 	const [params] = useSearchParams()
 	const logado = useLogado()
+	const isConteudoRoute = useLocation().pathname === '/conteudo'
 	const navigate = useNavigate()
 	const showDownloadToast = params.get('toast') === 'download-started'
 
@@ -44,7 +45,7 @@ export default function ConteudoScreen() {
 	const [downloadOpen, setDownloadOpen] = useState(false)
 
 	useEffect(() => {
-		if (logado) return
+		if (!isConteudoRoute || logado) return
 		if (!shouldShowPassiveIncentive()) return
 
 		let ticking = false
@@ -69,7 +70,7 @@ export default function ConteudoScreen() {
 		window.addEventListener('scroll', onScroll, { passive: true })
 		evaluate()
 		return () => window.removeEventListener('scroll', onScroll)
-	}, [logado])
+	}, [isConteudoRoute, logado])
 
 	function handleLeituraCreateAccount() {
 		suppressPassiveFor7Days()

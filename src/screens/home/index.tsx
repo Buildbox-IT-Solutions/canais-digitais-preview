@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { AdFrame } from '~/components/ad-frame'
 import { BannerNewsletter } from '~/components/banner-newsletter'
 import { CategoryColumn } from '~/components/category-column'
@@ -53,6 +53,7 @@ import {
 export default function HomeScreen() {
 	const [hero, top2, top3] = HOME_HERO
 	const logado = useLogado()
+	const isHomeRoute = useLocation().pathname === '/home'
 	const navigate = useNavigate()
 	const [params] = useSearchParams()
 	const showDownloadToast = params.get('toast') === 'download-started'
@@ -61,14 +62,14 @@ export default function HomeScreen() {
 	const [downloadOpen, setDownloadOpen] = useState(false)
 
 	useEffect(() => {
-		if (logado) return
+		if (!isHomeRoute || logado) return
 		if (!shouldShowPassiveIncentive()) return
 		const timerId = setTimeout(() => {
 			markPassiveShown()
 			setPortalOpen(true)
 		}, 4000)
 		return () => clearTimeout(timerId)
-	}, [logado])
+	}, [isHomeRoute, logado])
 
 	function handlePortalCreateAccount() {
 		suppressPassiveFor7Days()
