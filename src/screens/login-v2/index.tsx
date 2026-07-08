@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
+import { sanitizeReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
@@ -27,6 +28,12 @@ export default function LoginV2Screen() {
 	const errorMode = (ALLOWED_ERRORS.includes(errorParam as LoginError)
 		? errorParam
 		: 'none') as LoginError
+
+	const intent = params.get('intent') ?? ''
+	const returnTo = sanitizeReturnTo(params.get('returnTo'))
+	const crossLinkQuery = `&returnTo=${encodeURIComponent(returnTo)}${
+		intent ? `&intent=${encodeURIComponent(intent)}` : ''
+	}`
 
 	const emailDefault =
 		errorMode === 'invalid'
@@ -99,7 +106,11 @@ export default function LoginV2Screen() {
 
 							{globalError ? <AuthErrorAlert message={globalError} /> : null}
 
-							<form action="/home" method="get" className="flex flex-col gap-6" noValidate>
+							<form action={returnTo} method="get" className="flex flex-col gap-6" noValidate>
+								<input type="hidden" name="logado" value="true" />
+								{intent === 'download' ? (
+									<input type="hidden" name="toast" value="download-started" />
+								) : null}
 								<AuthInput
 									label="E-mail"
 									name="email"
@@ -143,7 +154,7 @@ export default function LoginV2Screen() {
 						<AuthBottomLink
 							label="Não tem conta?"
 							linkLabel="Criar conta"
-							linkHref="/cadastro?step=1"
+							linkHref={`/cadastro?step=1${crossLinkQuery}`}
 						/>
 					</div>
 				</div>
