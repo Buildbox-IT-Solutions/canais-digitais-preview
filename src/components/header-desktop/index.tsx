@@ -11,6 +11,7 @@ import { LoginButton } from '~/components/login-button'
 import { MenuListItem } from '~/components/menu-list-item'
 import { NavItem } from '~/components/nav-item'
 import { SearchBar } from '~/components/search-bar'
+import { SideMenu } from '~/components/side-menu'
 import type { IHeaderDesktopProps, NavCategory } from './types'
 
 /**
@@ -87,6 +88,7 @@ export function HeaderDesktop({
 	const isDesktop = useMediaQuery('(min-width: 1024px)')
 	// Mobile (<lg): hambúrguer sempre visível. Desktop (≥lg): mantém o gate por scroll (só no Compact).
 	const showHamburger = !isDesktop || compact
+	const [menuOpen, setMenuOpen] = useState(false)
 
 	return (
 		<header
@@ -120,14 +122,17 @@ export function HeaderDesktop({
 							compact ? 'w-12 opacity-100' : 'w-12 opacity-100 lg:w-0 lg:opacity-0',
 						)}
 					>
-						<a
-							href={userLoggedIn ? '/menu?logged=1' : '/menu'}
+						<button
+							type="button"
 							aria-label="Abrir menu"
+							aria-haspopup="dialog"
+							aria-expanded={menuOpen}
 							tabIndex={showHamburger ? 0 : -1}
+							onClick={() => setMenuOpen(true)}
 							className="inline-flex items-center justify-center size-12 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
 						>
 							<Icon name="menu" className="size-8" />
-						</a>
+						</button>
 					</div>
 
 					<div
@@ -226,6 +231,15 @@ export function HeaderDesktop({
 					'h-px bg-neutral-100 w-full transition-opacity duration-300',
 					compact ? 'opacity-100' : 'opacity-0',
 				)}
+			/>
+
+			<SideMenu
+				open={menuOpen}
+				onClose={() => setMenuOpen(false)}
+				logged={userLoggedIn}
+				userName={userName}
+				userInitials={userInitials}
+				userAvatar={userAvatar}
 			/>
 		</header>
 	)
