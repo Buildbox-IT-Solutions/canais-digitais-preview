@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import incentiveBannerTexture from '~/assets/images/incentive-banner-texture.png'
 import { AdFrame } from '~/components/ad-frame'
 import { BannerNewsletter } from '~/components/banner-newsletter'
 import { CategoryColumn } from '~/components/category-column'
@@ -264,6 +265,7 @@ export default function HomeScreen() {
 					title="Crie sua conta"
 					titleHighlight="gratuita"
 					description="Acesse materiais exclusivos e assine nossas newsletters sem custo."
+					backgroundImage={incentiveBannerTexture}
 					onCreateAccount={handlePortalCreateAccount}
 					onLogin={handlePortalLogin}
 					onDismiss={handlePortalDismiss}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import incentiveBannerTexture from '~/assets/images/incentive-banner-texture.png'
 import { AdFrame } from '~/components/ad-frame'
 import { Avatar } from '~/components/avatar'
 import { Button } from '~/components/button'
@@ -391,6 +392,7 @@ export default function ConteudoScreen() {
 					title="Gostando da"
 					titleHighlight="leitura?"
 					description="Crie uma conta gratuita para acessar mais conteúdos como este e receber nossas newsletters."
+					backgroundImage={incentiveBannerTexture}
 					onCreateAccount={handleLeituraCreateAccount}
 					onLogin={handleLeituraLogin}
 					onDismiss={handleLeituraDismiss}

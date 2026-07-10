@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import incentiveBannerTexture from '~/assets/images/incentive-banner-texture.png'
 import { IncentiveBanner } from './index'
 
 const meta: Meta<typeof IncentiveBanner> = {
@@ -8,6 +9,7 @@ const meta: Meta<typeof IncentiveBanner> = {
 	parameters: { layout: 'fullscreen' },
 	args: {
 		open: true,
+		backgroundImage: incentiveBannerTexture,
 		onCreateAccount: () => {},
 		onLogin: () => {},
 		onDismiss: () => {},
