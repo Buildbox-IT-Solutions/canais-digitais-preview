@@ -55,7 +55,9 @@ const GROUPS: RouteGroup[] = [
 		items: [
 			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads', status: 'em-aprovacao' },
 			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil', status: 'pronto-para-dev' },
-			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · 30 dias para cancelar', status: 'pronto-para-dev' },
+			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · 14 dias para cancelar', status: 'pronto-para-dev' },
+			{ path: '/cancelar-exclusao', label: 'Cancelar exclusão', description: 'Link do e-mail · token válido, reativa a conta', status: 'prototipando' },
+			{ path: '/cancelar-exclusao?state=invalid', label: 'Cancelar exclusão — link inválido', description: 'Token expirado / já usado, sem revelar qual', status: 'prototipando' },
 		],
 	},
 	{
@@ -88,7 +90,7 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/email-confirmacao', label: 'Confirmação de e-mail', description: 'Pós-cadastro · ativar conta', status: 'prototipando' },
 			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada', status: 'prototipando' },
 			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha', status: 'prototipando' },
-			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação · 30 dias p/ cancelar', status: 'prototipando' },
+			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação · 14 dias p/ cancelar', status: 'prototipando' },
 		],
 	},
 	{

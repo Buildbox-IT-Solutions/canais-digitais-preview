@@ -4,7 +4,9 @@ import type { IconName } from '~/components/icon/paths'
 
 export interface AuthTerminalButton {
 	label: string
-	href: string
+	/** Navega para uma rota. Omita e use `onClick` para uma ação in-page (ex.: retry). */
+	href?: string
+	onClick?: () => void
 	variant: 'filled' | 'ghost'
 }
 
@@ -29,7 +31,7 @@ interface IAuthTerminalModalProps {
 /**
  * Modal terminal compacto — estados de fim de linha (link expirado / ja usado), sem proof panel.
  * Casca unica centralizada (size md) sobre a home: anel de status + titulo + corpo + CTA(s) + fechar.
- * Compartilhado por Confirmacao de e-mail e Redefinir senha.
+ * Compartilhado por Confirmacao de e-mail, Redefinir senha e Cancelar Exclusão.
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-50
  */
 export function AuthTerminalModal({
@@ -64,11 +66,22 @@ export function AuthTerminalModal({
 				</div>
 
 				<div className="flex flex-col gap-3 w-full">
-					{buttons.map((b) => (
-						<a key={b.label} href={b.href} className={`${BTN_BASE} ${BTN_VARIANT[b.variant]}`}>
-							{b.label}
-						</a>
-					))}
+					{buttons.map((b) =>
+						b.href ? (
+							<a key={b.label} href={b.href} className={`${BTN_BASE} ${BTN_VARIANT[b.variant]}`}>
+								{b.label}
+							</a>
+						) : (
+							<button
+								key={b.label}
+								type="button"
+								onClick={b.onClick}
+								className={`${BTN_BASE} ${BTN_VARIANT[b.variant]}`}
+							>
+								{b.label}
+							</button>
+						),
+					)}
 				</div>
 			</div>
 		</Modal>

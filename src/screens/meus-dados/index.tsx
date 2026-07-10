@@ -14,10 +14,11 @@ export default function MeusDadosScreen() {
 
 			<Dialog
 				closeHref="/dashboard-perfil-v4"
+				mobileFullScreen
 				icon={{ name: 'download', tone: 'secondary' }}
 				title="Baixar dados pessoais"
 				description="Faça o download de uma cópia completa dos seus dados cadastrados, conforme a LGPD (Art. 18 V). O arquivo é gerado na hora."
-				secondary={{ label: 'Fechar', href: '/dashboard-perfil-v4' }}
+				secondary={{ label: 'Cancelar', href: '/dashboard-perfil-v4' }}
 				primary={{ label: 'Baixar arquivo', href: '#', icon: 'download' }}
 			/>
 		</>

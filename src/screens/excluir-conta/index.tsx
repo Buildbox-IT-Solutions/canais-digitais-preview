@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Dialog } from '~/components/dialog'
@@ -42,25 +43,46 @@ export default function ExcluirContaScreen() {
 }
 
 function ConfirmDialog() {
+	const [mode, setMode] = useState<'grace' | 'immediate'>('grace')
+	const [dadosOpen, setDadosOpen] = useState(false)
+	const isImmediate = mode === 'immediate'
+
 	return (
 		<Dialog
 			size="lg"
 			closeHref="/dashboard-perfil-v4"
-			eyebrow={
-				<span className="font-body font-semibold text-label-md tracking-wider text-red-700 uppercase">
-					LGPD · Art. 18 IX
-				</span>
-			}
+			mobileFullScreen
 			title="Excluir sua conta"
 			description={
-				<>
-					Você tem <strong className="font-bold">30 dias para cancelar</strong> após confirmar.
-					Parte dos dados pode ser mantida por obrigação legal.
-				</>
+				isImmediate ? (
+					<strong className="font-bold text-red-700">
+						A exclusão imediata é permanente e não pode ser desfeita.
+					</strong>
+				) : (
+					<>
+						Depois de confirmar, você tem <strong className="font-bold">14 dias</strong> para
+						reativar sua conta. Passado esse prazo, a exclusão é permanente.
+					</>
+				)
 			}
 			destructive
 			secondary={{ label: 'Cancelar', href: '/dashboard-perfil-v4' }}
-			primary={{ label: 'Confirmar exclusão', type: 'submit', form: 'excluir-form' }}
+			primary={{
+				label: isImmediate ? 'Excluir permanentemente' : 'Confirmar exclusão',
+				type: 'submit',
+				form: 'excluir-form',
+			}}
+			bottomLink={
+				!isImmediate ? (
+					<button
+						type="button"
+						onClick={() => setMode('immediate')}
+						className="font-body text-body-md text-neutral-600 hover:text-neutral-950 hover:underline transition-colors"
+					>
+						Prefiro excluir agora, sem período de recuperação
+					</button>
+				) : undefined
+			}
 		>
 			<form id="excluir-form" action="/excluir-conta" method="get" className="flex flex-col gap-6" noValidate>
 				<input type="hidden" name="state" value="done" />
@@ -124,11 +146,32 @@ function ConfirmDialog() {
 						</svg>
 					</span>
 					<span className="flex-1 font-body text-body-md text-neutral-900">
-						Entendo que após 30 dias da confirmação, esta ação{' '}
-						<strong className="font-bold">não pode ser desfeita</strong> e que parte dos meus dados
-						pode ser mantida por obrigação legal.
+						Entendo que, após 14 dias, esta ação{' '}
+						<strong className="font-bold">não pode ser desfeita</strong>.
 					</span>
 				</label>
+
+				<div className="flex flex-col gap-2">
+					<button
+						type="button"
+						onClick={() => setDadosOpen((v) => !v)}
+						aria-expanded={dadosOpen}
+						className="self-start inline-flex items-center gap-1 font-body text-body-md text-neutral-600 hover:text-neutral-950 transition-colors"
+					>
+						O que acontece com meus dados?
+						<Icon
+							name="arrow-drop-down"
+							className={`size-4 transition-transform ${dadosOpen ? 'rotate-180' : ''}`}
+						/>
+					</button>
+					{dadosOpen ? (
+						<p className="font-body text-body-md text-neutral-600">
+							A maior parte dos seus dados é excluída. Uma pequena parte pode ser mantida por
+							tempo limitado apenas para cumprir obrigações legais (por exemplo, registros exigidos
+							por lei) e depois também é eliminada.
+						</p>
+					) : null}
+				</div>
 			</form>
 		</Dialog>
 	)
@@ -139,11 +182,12 @@ function DoneDialog() {
 		<Dialog
 			size="lg"
 			closeHref="/dashboard-perfil-v4"
+			mobileFullScreen
 			icon={{ name: 'schedule', tone: 'warning' }}
 			title="Conta marcada para exclusão"
 			description={
 				<>
-					Sua conta será excluída em <strong className="font-bold">{DELETION_DATE}</strong> (30
+					Sua conta será excluída em <strong className="font-bold">{DELETION_DATE}</strong> (14
 					dias). Você pode cancelar a qualquer momento até lá e nada será perdido.
 				</>
 			}

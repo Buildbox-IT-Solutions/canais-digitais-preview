@@ -71,6 +71,7 @@ function ActionButton({
 export function Dialog({
 	open = true,
 	size = 'md',
+	mobileFullScreen = false,
 	closeHref,
 	onClose,
 	labelledById,
@@ -88,7 +89,14 @@ export function Dialog({
 	const titleId = labelledById ?? generatedId
 
 	return (
-		<Modal open={open} size={size} closeHref={closeHref} onClose={onClose} labelledById={titleId}>
+		<Modal
+			open={open}
+			size={size}
+			mobileFullScreen={mobileFullScreen}
+			closeHref={closeHref}
+			onClose={onClose}
+			labelledById={titleId}
+		>
 			<div className="flex flex-col gap-6">
 				{icon ? (
 					<StatusRing accent={TONE_TO_ACCENT[icon.tone ?? 'primary']} icon={icon.name} size="sm" />
