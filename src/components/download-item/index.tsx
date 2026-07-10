@@ -5,8 +5,9 @@ import type { IDownloadItemProps } from './types'
 
 /**
  * Componente: Download Item
- * Figma: 6105:6258
- * Icon-tile + título (link) + meta + botão Baixar (ghost) ou "Indisponível".
+ * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=6989-10370
+ * Icon-tile + título (link) + meta + botão Baixar ou "Indisponível".
+ * Desktop: linha única, botão ghost. Mobile: empilhado (ícone / conteúdo / botão full-width com borda).
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-50, --color-neutral-100,
  *         --color-neutral-200, --color-neutral-600
  */
@@ -25,7 +26,7 @@ export function DownloadItem({
 
 	return (
 		<div className={twMerge(!isLast && 'border-b border-neutral-100', 'px-1', className)}>
-			<div className="flex items-start gap-4 py-4">
+			<div className="flex flex-col lg:flex-row lg:items-start gap-4 py-4">
 				<IconTile icon={icon} tone={disabled ? 'disabled' : 'neutral'} />
 
 				<div className="flex-1 min-w-0 flex flex-col gap-1">
@@ -64,7 +65,7 @@ export function DownloadItem({
 					<a
 						href={fileHref}
 						download
-						className="inline-flex items-center justify-center gap-2 h-10 pl-4 pr-5 rounded-full font-body font-bold text-body-lg text-primary-600 hover:bg-neutral-50 transition-colors shrink-0"
+						className="inline-flex items-center justify-center gap-2 h-10 pl-4 pr-5 rounded-full border-[1.5px] border-primary-600 lg:border-0 font-body font-bold text-body-lg text-primary-600 hover:bg-neutral-50 transition-colors shrink-0"
 					>
 						<Icon name="download" className="size-6" />
 						Baixar
