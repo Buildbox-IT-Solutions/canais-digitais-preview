@@ -9,7 +9,8 @@ import type { BadgeTone, IBadgeProps } from './types'
  * Diferença vs. Tag/Categoria: Badge = status (Ativo/Em breve/Bloqueado).
  * Tag = keyword clicável. Categoria = etiqueta editorial colorida.
  * Tokens: --color-mint-light, --color-mint, --color-coral-light, --color-coral,
- *         --color-neutral-100, --color-neutral-900, --color-secondary-50, --color-secondary-950
+ *         --color-neutral-100, --color-neutral-900, --color-secondary-50, --color-secondary-950,
+ *         --color-saffron
  */
 
 const TONE_CLASSES: Record<BadgeTone, string> = {
@@ -17,6 +18,9 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
 	neutral: 'bg-neutral-100 text-neutral-900',
 	coral: 'bg-coral-light text-coral',
 	secondary: 'bg-secondary-50 text-secondary-950',
+	// Sem token "-light" dedicado pro saffron (só existe --color-saffron) — tint via opacidade,
+	// mesmo padrão de overlay já usado no resto da codebase (ex.: state layers MD3).
+	saffron: 'bg-saffron/10 text-saffron',
 }
 
 export function Badge({

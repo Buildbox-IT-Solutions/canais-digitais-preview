@@ -15,7 +15,7 @@ const meta: Meta<typeof Badge> = {
 		docs: {
 			description: {
 				component:
-					'Pill informativo / status (label-sm 11px, semibold). Tons: `mint` (Ativo) · `neutral` (Em breve) · `coral` (Bloqueado / Erro) · `secondary` (Destaque). Shapes: `square` (rounded-sm) · `pill` (rounded-full).',
+					'Pill informativo / status (label-sm 11px, semibold). Tons: `mint` (Ativo) · `neutral` (Em breve) · `coral` (Bloqueado / Erro) · `secondary` (Destaque) · `saffron` (Em aprovação). Shapes: `square` (rounded-sm) · `pill` (rounded-full).',
 			},
 		},
 	},
@@ -42,6 +42,10 @@ export const Coral: Story = {
 
 export const Secondary: Story = {
 	args: { tone: 'secondary', label: 'Destaque' },
+}
+
+export const Saffron: Story = {
+	args: { tone: 'saffron', label: 'Em aprovação' },
 }
 
 export const Pill: Story = {
