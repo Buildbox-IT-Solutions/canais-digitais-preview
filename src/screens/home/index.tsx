@@ -8,8 +8,8 @@ import { DownloadSection } from '~/components/download-section'
 import { EspecialistasSection } from '~/components/especialistas-section'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
+import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
-import { IncentivePortalDialog } from '~/components/incentive-portal-dialog'
 import { Toast } from '~/components/toast'
 import { Byline } from '~/components/byline'
 import { Categoria } from '~/components/categoria'
@@ -258,8 +258,12 @@ export default function HomeScreen() {
 
 		{!logado ? (
 			<>
-				<IncentivePortalDialog
+				<IncentiveBanner
 					open={portalOpen}
+					icon="account-circle"
+					title="Crie sua conta"
+					titleHighlight="gratuita"
+					description="Acesse materiais exclusivos e assine nossas newsletters sem custo."
 					onCreateAccount={handlePortalCreateAccount}
 					onLogin={handlePortalLogin}
 					onDismiss={handlePortalDismiss}
