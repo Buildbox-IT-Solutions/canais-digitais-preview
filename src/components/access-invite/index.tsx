@@ -51,7 +51,7 @@ export function AccessInvite({ titleId, variant = 'sheet', className }: IAccessI
 
 			<div className="flex flex-col gap-3">
 				<Button
-					label="Cadastrar-se"
+					label="Criar conta"
 					href="/cadastro"
 					type="filled"
 					size={buttonSize}
