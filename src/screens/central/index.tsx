@@ -90,6 +90,7 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/email-confirmacao', label: 'Confirmação de e-mail', description: 'Pós-cadastro · ativar conta', status: 'prototipando' },
 			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada', status: 'prototipando' },
 			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha', status: 'prototipando' },
+			{ path: '/email-senha-alterada', label: 'Senha alterada', description: 'Confirmação pós-redefinição · aviso de segurança', status: 'prototipando' },
 			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação · 14 dias p/ cancelar', status: 'prototipando' },
 		],
 	},

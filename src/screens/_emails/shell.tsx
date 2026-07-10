@@ -1,10 +1,12 @@
+import { Children } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
+import foodConnectionLogoWhite from '~/assets/images/FC-Grad-White_rgb@2x.png'
 
 /**
  * Primitivas de PREVIEW de e-mail transacional.
  * Reproduzem fielmente os templates HTML de docs/legacy-reference/emails/ — por isso usam
- * inline styles + cores hex + fonte Georgia (e-mails não suportam Tailwind/tokens; os devs
- * enviam o HTML). Exceção consciente à regra "só Tailwind" da codebase, restrita a e-mails.
+ * inline styles + cores hex (e-mails não suportam Tailwind/tokens; os devs enviam o HTML).
+ * Exceção consciente à regra "só Tailwind" da codebase, restrita a e-mails.
  */
 
 const INK = '#283857'
@@ -15,42 +17,33 @@ const NAVY = '#002244'
 const BG = '#F7F8FA'
 const LINE = '#D6D8DD'
 const SANS = "'Open Sans', Arial, sans-serif"
-const SERIF = 'Georgia, serif'
 
 export function EmailShell({
 	brand = 'Food Connection',
 	children,
-	showUnsubscribe = true,
 }: {
 	brand?: string
 	children: ReactNode
-	showUnsubscribe?: boolean
 }) {
 	return (
 		<div style={{ background: BG, minHeight: '100vh', padding: '24px 16px', fontFamily: SANS, color: INK }}>
 			<div style={{ maxWidth: 600, margin: '0 auto', background: '#FFFFFF', borderRadius: 8, overflow: 'hidden' }}>
 				<div style={{ background: NAVY, padding: 24, textAlign: 'center' }}>
-					<span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 22, color: '#FFFFFF', letterSpacing: '0.2px' }}>
-						{brand}
-					</span>
+					<img
+						src={foodConnectionLogoWhite}
+						alt={brand}
+						width={170}
+						height={59}
+						style={{ display: 'block', margin: '0 auto', width: 170, height: 'auto' }}
+					/>
 				</div>
 
 				{children}
 
 				<div style={{ background: BG, padding: '24px 32px', borderTop: `1px solid ${LINE}`, textAlign: 'center' }}>
-					<p style={{ margin: '0 0 8px 0', fontSize: 12, lineHeight: 1.6, color: INK_SOFT }}>
-						<a href="#" style={{ color: INK_SOFT, textDecoration: 'underline' }}>Política de Privacidade</a>
-						{' · '}
-						<a href="#" style={{ color: INK_SOFT, textDecoration: 'underline' }}>Termos de Uso</a>
-						{showUnsubscribe ? (
-							<>
-								{' · '}
-								<a href="#" style={{ color: INK_SOFT, textDecoration: 'underline' }}>Descadastrar</a>
-							</>
-						) : null}
-					</p>
 					<p style={{ margin: 0, fontSize: 11, lineHeight: 1.6, color: INK_MUTED }}>
-						Informa Markets Brasil — Rua Bela Cintra, 967, Consolação, São Paulo/SP, 01415-000
+						© 2026 Informa Markets Brasil — Av. Dra. Ruth Cardoso, 7221, Edifício Birmann 21 —
+						Pinheiros, São Paulo/SP, 05425-902
 					</p>
 				</div>
 			</div>
@@ -64,7 +57,7 @@ export function EmailBody({ children, style }: { children: ReactNode; style?: CS
 
 export function EmailH1({ children }: { children: ReactNode }) {
 	return (
-		<h1 style={{ margin: '0 0 16px 0', fontFamily: SERIF, fontWeight: 700, fontSize: 28, lineHeight: 1.2, color: INK }}>
+		<h1 style={{ margin: '0 0 16px 0', fontFamily: SANS, fontWeight: 700, fontSize: 28, lineHeight: 1.2, color: INK }}>
 			{children}
 		</h1>
 	)
@@ -105,6 +98,14 @@ export function EmailButton({ href = '#', label }: { href?: string; label: strin
 	)
 }
 
+export function EmailLink({ href, children }: { href: string; children: ReactNode }) {
+	return (
+		<a href={href} style={{ color: LINK, textDecoration: 'underline' }}>
+			{children}
+		</a>
+	)
+}
+
 export function EmailFallback({ href = '#' }: { href?: string }) {
 	return (
 		<div style={{ padding: '0 32px 24px 32px' }}>
@@ -127,9 +128,22 @@ export function EmailDivider() {
 }
 
 export function EmailNote({ children }: { children: ReactNode }) {
+	const paragraphs = Children.toArray(children)
 	return (
 		<div style={{ padding: '24px 32px 32px 32px' }}>
-			<p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: INK_MUTED }}>{children}</p>
+			{paragraphs.map((paragraph, i) => (
+				<p
+					key={i}
+					style={{
+						margin: i === paragraphs.length - 1 ? 0 : '0 0 8px 0',
+						fontSize: 13,
+						lineHeight: 1.5,
+						color: INK_MUTED,
+					}}
+				>
+					{paragraph}
+				</p>
+			))}
 		</div>
 	)
 }

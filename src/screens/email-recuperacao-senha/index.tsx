@@ -16,9 +16,9 @@ import {
  * Referência: docs/legacy-reference/emails/email-recuperacao-senha.html
  */
 export default function EmailRecuperacaoSenhaScreen() {
-	// Endpoint de redefinição: o token gateia o acesso e o "servidor" abre o formulário de nova senha.
-	// No protótipo, /redefinir resolve o token → tela de formulário (ver router.tsx).
-	const link = '/redefinir?token=[TOKEN]'
+	// URL absoluta (real e-mail não resolve caminho relativo). O endpoint /redefinir
+	// segue existindo no protótipo pra teste direto (token → tela de formulário, ver router.tsx).
+	const link = 'https://foodconnection.com.br/redefinir?token=[TOKEN]'
 	return (
 		<EmailShell>
 			<EmailBody>
@@ -36,8 +36,14 @@ export default function EmailRecuperacaoSenhaScreen() {
 			<EmailFallback href={link} />
 			<EmailDivider />
 			<EmailNote>
-				<EmailStrong>Não solicitou essa mudança?</EmailStrong> Pode ignorar este e-mail — sua senha
-				atual continua válida.
+				<>
+					<EmailStrong>Não solicitou essa mudança?</EmailStrong> Pode ignorar este e-mail com
+					segurança — sua senha atual continua válida e nada é alterado sem o link acima.
+				</>
+				<>
+					Se você recebe estes pedidos com frequência ou não reconhece esta atividade, recomendamos
+					trocar sua senha por precaução.
+				</>
 			</EmailNote>
 		</EmailShell>
 	)

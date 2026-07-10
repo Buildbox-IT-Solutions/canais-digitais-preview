@@ -14,13 +14,12 @@ import {
 /**
  * E-mail transacional: Confirmação de exclusão de conta (prazo de 14 dias p/ cancelar).
  * Referência: docs/legacy-reference/emails/email-exclusao-conta.html
- * SEM link de descadastrar no footer (contexto legal/transacional). Genericizado (sem "todos
- * os portais Informa").
+ * Genericizado (sem "todos os portais Informa").
  */
 export default function EmailExclusaoContaScreen() {
 	const link = 'https://foodconnection.com.br/cancelar-exclusao?token=[TOKEN]'
 	return (
-		<EmailShell showUnsubscribe={false}>
+		<EmailShell>
 			<EmailBody>
 				<EmailH1>Recebemos sua solicitação</EmailH1>
 				<EmailP>
@@ -51,7 +50,7 @@ export default function EmailExclusaoContaScreen() {
 					<p
 						style={{
 							margin: '0 0 8px 0',
-							fontFamily: 'Georgia, serif',
+							fontFamily: "'Open Sans', Arial, sans-serif",
 							fontWeight: 700,
 							fontSize: 15,
 							color: '#283857',
@@ -70,8 +69,9 @@ export default function EmailExclusaoContaScreen() {
 			<EmailFallback href={link} />
 			<EmailDivider />
 			<EmailNote>
-				Se não reconhece esta solicitação, entre em contato imediatamente pelo suporte — podemos
-				estornar o pedido e investigar o acesso.
+				<EmailStrong>Não reconhece esta solicitação?</EmailStrong> Isso pode significar que outra
+				pessoa tem acesso à sua conta. Clique em "Cancelar exclusão" acima — além de manter sua conta
+				ativa, você poderá trocar a senha e proteger seu acesso na mesma página.
 			</EmailNote>
 		</EmailShell>
 	)
