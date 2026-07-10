@@ -1,4 +1,6 @@
 import { Link } from 'react-router'
+import { Badge } from '~/components/badge'
+import type { BadgeTone } from '~/components/badge/types'
 
 /**
  * Tela: Central de navegação do protótipo
@@ -6,10 +8,13 @@ import { Link } from 'react-router'
  * disponíveis no preview, agrupadas por contexto.
  */
 
+type RouteStatus = 'prototipando' | 'em-aprovacao' | 'pronto-para-dev'
+
 interface RouteItem {
 	path: string
 	label: string
 	description?: string
+	status: RouteStatus
 }
 
 interface RouteGroup {
@@ -25,12 +30,22 @@ const GROUPS: RouteGroup[] = [
 		description: 'Fluxos de entrada — na ordem do mapa: cadastro → login → recuperação → download.',
 		color: 'secondary',
 		items: [
-			{ path: '/cadastro', label: 'Cadastro', description: 'Início · modal em 3 passos → termina na Confirmação de e-mail' },
-			{ path: '/confirmacao-email', label: 'Confirmação de e-mail', description: 'Fim do cadastro · verificação do e-mail' },
-			{ path: '/confirmacao-email?state=link-expired', label: 'Confirmação — link inválido', description: 'Link expirado / já usado · modal sobre o portal' },
-			{ path: '/login', label: 'Login', description: 'Modal de login sobre o portal' },
-			{ path: '/recupera-senha', label: 'Recuperar senha', description: 'Início · informa e-mail → link enviado' },
-			{ path: '/redefine-senha', label: 'Redefinir senha', description: 'Fim · define nova senha pelo link' },
+			{ path: '/cadastro', label: 'Cadastro', description: 'Início · modal em 3 passos → termina na Confirmação de e-mail', status: 'pronto-para-dev' },
+			{ path: '/confirmacao-email', label: 'Confirmação de e-mail', description: 'Fim do cadastro · verificação do e-mail', status: 'pronto-para-dev' },
+			{ path: '/confirmacao-email?state=link-expired', label: 'Confirmação — link inválido', description: 'Link expirado / já usado · modal sobre o portal', status: 'pronto-para-dev' },
+			{ path: '/login', label: 'Login', description: 'Modal de login sobre o portal', status: 'pronto-para-dev' },
+			{ path: '/recupera-senha', label: 'Recuperar senha', description: 'Início · informa e-mail → link enviado', status: 'pronto-para-dev' },
+			{ path: '/redefine-senha', label: 'Redefinir senha', description: 'Fim · define nova senha pelo link', status: 'pronto-para-dev' },
+		],
+	},
+	{
+		title: 'Incentivo ao Cadastro',
+		description: 'Modais que convertem visitante deslogado em cadastro — reusam os mesmos modais de Cadastro/Login acima.',
+		color: 'secondary',
+		items: [
+			{ path: '/home?preview=portal', label: 'Incentivo — Portal', description: 'Passivo · dispara ~4s na Home para visitante deslogado', status: 'prototipando' },
+			{ path: '/conteudo?preview=leitura', label: 'Incentivo — Leitura', description: 'Passivo · dispara a ~50% de scroll no Conteúdo para visitante deslogado', status: 'prototipando' },
+			{ path: '/home?preview=download', label: 'Incentivo — Download', description: 'Ativo · dispara ao clicar no CTA de download (Home e Conteúdo) para visitante deslogado', status: 'prototipando' },
 		],
 	},
 	{
@@ -38,10 +53,9 @@ const GROUPS: RouteGroup[] = [
 		description: 'Área logada do usuário e gestão de dados pessoais.',
 		color: 'mint',
 		items: [
-			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads' },
-			{ path: '/consentimentos', label: 'Consentimentos (LGPD)', description: 'Gestão de consentimentos' },
-			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil' },
-			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · 30 dias para cancelar' },
+			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads', status: 'em-aprovacao' },
+			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil', status: 'pronto-para-dev' },
+			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · 30 dias para cancelar', status: 'pronto-para-dev' },
 		],
 	},
 	{
@@ -49,11 +63,11 @@ const GROUPS: RouteGroup[] = [
 		description: 'Telas públicas de leitura e navegação — templates válidos mantidos.',
 		color: 'primary',
 		items: [
-			{ path: '/home', label: 'Home', description: 'Página inicial — capa editorial completa' },
-			{ path: '/categoria', label: 'Categoria', description: 'Listagem de conteúdos por categoria' },
-			{ path: '/conteudo', label: 'Conteúdo', description: 'Página interna de matéria (Post)' },
-			{ path: '/buscar', label: 'Buscar', description: 'Resultados de busca' },
-			{ path: '/menu', label: 'Menu', description: 'Menu principal expandido' },
+			{ path: '/home', label: 'Home', description: 'Página inicial — capa editorial completa', status: 'pronto-para-dev' },
+			{ path: '/categoria', label: 'Categoria', description: 'Listagem de conteúdos por categoria', status: 'pronto-para-dev' },
+			{ path: '/conteudo', label: 'Conteúdo', description: 'Página interna de matéria (Post)', status: 'pronto-para-dev' },
+			{ path: '/buscar', label: 'Buscar', description: 'Resultados de busca', status: 'pronto-para-dev' },
+			{ path: '/menu', label: 'Menu', description: 'Menu principal expandido', status: 'prototipando' },
 		],
 	},
 	{
@@ -61,9 +75,9 @@ const GROUPS: RouteGroup[] = [
 		description: 'Páginas estáticas e formulários.',
 		color: 'coral',
 		items: [
-			{ path: '/sobre', label: 'Sobre' },
-			{ path: '/contato', label: 'Contato' },
-			{ path: '/anuncie', label: 'Anuncie' },
+			{ path: '/sobre', label: 'Sobre', status: 'pronto-para-dev' },
+			{ path: '/contato', label: 'Contato', status: 'pronto-para-dev' },
+			{ path: '/anuncie', label: 'Anuncie', status: 'pronto-para-dev' },
 		],
 	},
 	{
@@ -71,10 +85,10 @@ const GROUPS: RouteGroup[] = [
 		description: 'Templates de e-mail transacional (preview).',
 		color: 'secondary',
 		items: [
-			{ path: '/email-confirmacao', label: 'Confirmação de e-mail', description: 'Pós-cadastro · ativar conta' },
-			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada' },
-			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha' },
-			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação · 30 dias p/ cancelar' },
+			{ path: '/email-confirmacao', label: 'Confirmação de e-mail', description: 'Pós-cadastro · ativar conta', status: 'prototipando' },
+			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada', status: 'prototipando' },
+			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha', status: 'prototipando' },
+			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação · 30 dias p/ cancelar', status: 'prototipando' },
 		],
 	},
 	{
@@ -86,10 +100,17 @@ const GROUPS: RouteGroup[] = [
 				path: '/_rota-inexistente',
 				label: '404 — Página não encontrada',
 				description: 'Catch-all: qualquer rota não mapeada cai aqui',
+				status: 'pronto-para-dev',
 			},
 		],
 	},
 ]
+
+const STATUS_META: Record<RouteStatus, { label: string; tone: BadgeTone }> = {
+	prototipando: { label: 'Prototipando', tone: 'neutral' },
+	'em-aprovacao': { label: 'Em aprovação', tone: 'secondary' },
+	'pronto-para-dev': { label: 'Pronto para dev', tone: 'mint' },
+}
 
 const COLOR_STYLES: Record<RouteGroup['color'], { dot: string; badge: string; hover: string }> = {
 	primary: {
@@ -154,6 +175,12 @@ export default function CentralScreen() {
 						agrupadas por contexto. Clique em qualquer card para abrir a tela. A home do produto
 						vive em <code className="bg-white border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">/home</code>.
 					</p>
+					<p className="font-body text-body-sm text-neutral-700 flex flex-wrap items-center gap-x-2 gap-y-1.5">
+						<span className="font-semibold">Status de cada tela:</span>
+						<Badge label="Prototipando" tone="neutral" /> ainda sendo desenhada, pode mudar ·{' '}
+						<Badge label="Em aprovação" tone="secondary" /> com o cliente para validar ·{' '}
+						<Badge label="Pronto para dev" tone="mint" /> validada, pode ser construída pela engenharia.
+					</p>
 				</header>
 
 				<div className="flex flex-col gap-12 pt-12">
@@ -181,13 +208,18 @@ export default function CentralScreen() {
 												to={item.path}
 												className={`group flex flex-col gap-1 bg-white border border-neutral-100 rounded-lg p-4 transition-colors h-full ${colors.hover}`}
 											>
-												<div className="flex items-center justify-between gap-2">
-													<span className="font-display font-bold text-title-md text-primary-600 group-hover:text-current transition-colors">
+												<div className="flex items-center gap-2">
+													<span className="flex-1 min-w-0 font-display font-bold text-title-md text-primary-600 group-hover:text-current transition-colors">
 														{item.label}
 													</span>
+													<Badge
+														label={STATUS_META[item.status].label}
+														tone={STATUS_META[item.status].tone}
+														className="shrink-0"
+													/>
 													<span
 														aria-hidden="true"
-														className="font-body text-label-md text-neutral-500 group-hover:translate-x-0.5 transition-transform"
+														className="shrink-0 font-body text-label-md text-neutral-500 group-hover:translate-x-0.5 transition-transform"
 													>
 														→
 													</span>

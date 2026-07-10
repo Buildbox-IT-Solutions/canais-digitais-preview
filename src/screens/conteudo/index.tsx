@@ -41,12 +41,13 @@ export default function ConteudoScreen() {
 	const isConteudoRoute = useLocation().pathname === '/conteudo'
 	const navigate = useNavigate()
 	const showDownloadToast = params.get('toast') === 'download-started'
+	const previewIncentive = params.get('preview')
 
-	const [leituraOpen, setLeituraOpen] = useState(false)
-	const [downloadOpen, setDownloadOpen] = useState(false)
+	const [leituraOpen, setLeituraOpen] = useState(previewIncentive === 'leitura')
+	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
 
 	useEffect(() => {
-		if (!isConteudoRoute || logado) return
+		if (!isConteudoRoute || logado || previewIncentive) return
 		if (!shouldShowPassiveIncentive()) return
 
 		let ticking = false
@@ -71,7 +72,7 @@ export default function ConteudoScreen() {
 		window.addEventListener('scroll', onScroll, { passive: true })
 		evaluate()
 		return () => window.removeEventListener('scroll', onScroll)
-	}, [isConteudoRoute, logado])
+	}, [isConteudoRoute, logado, previewIncentive])
 
 	function handleLeituraCreateAccount() {
 		suppressPassiveFor7Days()

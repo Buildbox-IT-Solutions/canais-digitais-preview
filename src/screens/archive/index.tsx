@@ -55,6 +55,16 @@ const GROUPS: ArchiveGroup[] = [
 		],
 	},
 	{
+		title: 'Perfil & LGPD — descontinuadas',
+		items: [
+			{
+				path: '/consentimentos',
+				label: 'Consentimentos (LGPD)',
+				reason: 'Fora do escopo da versão enxuta',
+			},
+		],
+	},
+	{
 		title: 'Institucionais & Forms — descontinuadas',
 		items: [
 			{ path: '/patrocinadores', label: 'Patrocinadores', reason: 'Fora do escopo da versão enxuta' },
