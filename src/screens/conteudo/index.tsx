@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import incentiveBannerTexture from '~/assets/images/incentive-banner-texture.png'
 import { AdFrame } from '~/components/ad-frame'
 import { Avatar } from '~/components/avatar'
 import { Button } from '~/components/button'
@@ -9,8 +10,8 @@ import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
 import { IconButton } from '~/components/icon-button'
 import type { IconName } from '~/components/icon/paths'
+import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
-import { IncentiveLeituraDialog } from '~/components/incentive-leitura-dialog'
 import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
 import { Tag } from '~/components/tag'
@@ -385,8 +386,13 @@ export default function ConteudoScreen() {
 
 		{!logado ? (
 			<>
-				<IncentiveLeituraDialog
+				<IncentiveBanner
 					open={leituraOpen}
+					icon="description"
+					title="Gostando da"
+					titleHighlight="leitura?"
+					description="Crie uma conta gratuita para acessar mais conteúdos como este e receber nossas newsletters."
+					backgroundImage={incentiveBannerTexture}
 					onCreateAccount={handleLeituraCreateAccount}
 					onLogin={handleLeituraLogin}
 					onDismiss={handleLeituraDismiss}
