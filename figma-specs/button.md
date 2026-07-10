@@ -5,6 +5,16 @@
 
 Botão pill (`rounded-full`), Open Sans Bold. 81 variants do Figma colapsadas em **3 tipos × 3 tamanhos**, com `state` (hover/disabled) implementado por pseudo-classes CSS — não por variant separada.
 
+**`tone` (extensão dev-side, não é variant do componente Figma `3185:47973`)**: `default | inverse`. O Figma nunca teve um eixo "Tone" no Button — mas o padrão "botão inverso sobre fundo escuro" já existia descrito ad hoc em `banner-newsletter.md`/`banner-download.md` ("Botão inverso: bg-white text-primary-600") e implementado inline (sem componente) no Incentive Banner. Generalizamos isso pra `tone="inverse"`, combinável com os 3 `type`:
+
+| Tipo (inverse) | Enabled | Hover | Disabled |
+|---|---|---|---|
+| **Filled** | `bg-white` text-primary-600 | `bg-neutral-50` | `bg-white/40` text `primary-600/40` |
+| **Outlined** | border 1.5px `white`, text `white` | + `bg-white/10` | border+text `white/40` |
+| **Ghost** | text `white`, sem fundo | `bg-white/10` | text `white/40` |
+
+Hover do outline/ghost inverse (`bg-white/10`) segue o padrão já usado nos ícones do footer (`border border-white ... hover:bg-white/10`). Se o Figma formalizar essa variante futuramente, revisitar contra o node oficial.
+
 | Tipo | Enabled | Hover | Disabled |
 |---|---|---|---|
 | **Filled** | `bg-primary-600` text-white | `bg-secondary-950` | `bg-neutral-200` |

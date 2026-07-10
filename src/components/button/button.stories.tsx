@@ -20,3 +20,24 @@ export const Large: Story = { args: { type: 'filled', size: 'large', icon: 'arro
 export const Small: Story = { args: { type: 'filled', size: 'small' } }
 export const Disabled: Story = { args: { type: 'filled', size: 'medium', disabled: true } }
 export const AsLink: Story = { args: { type: 'filled', size: 'medium', href: '#' } }
+
+const onDark: Story['decorators'] = [
+	(Story) => (
+		<div className="bg-gradient-to-br from-primary-600 to-secondary-950 p-8 rounded-lg">
+			<Story />
+		</div>
+	),
+]
+
+export const InverseFilled: Story = {
+	args: { type: 'filled', tone: 'inverse', size: 'medium' },
+	decorators: onDark,
+}
+export const InverseOutlined: Story = {
+	args: { type: 'outlined', tone: 'inverse', size: 'medium' },
+	decorators: onDark,
+}
+export const InverseGhost: Story = {
+	args: { type: 'ghost', tone: 'inverse', size: 'medium' },
+	decorators: onDark,
+}

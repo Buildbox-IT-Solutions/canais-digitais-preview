@@ -1,3 +1,4 @@
+import { Button } from '~/components/button'
 import { Icon } from '~/components/icon'
 import type { IIncentiveBannerProps } from './types'
 
@@ -7,8 +8,10 @@ import type { IIncentiveBannerProps } from './types'
  * Variantes: portal (Home) | leitura (Post) — mesma estrutura, ícone/copy por prop.
  * Barra sticky na base da viewport (fixed, sem scrim) — não bloqueia a página atrás.
  * Desktop: ícone + texto + CTAs pareados + X numa linha. Mobile: sem ícone, texto+X em
- * cima, CTAs empilhados full-width embaixo.
- * Tokens: --color-primary-600, --color-secondary-950, --color-secondary-500, --color-white
+ * cima, CTAs empilhados full-width embaixo. CTAs usam Button (type=filled/outlined,
+ * tone="inverse") — ver src/components/button.
+ * Tokens: --color-primary-600, --color-secondary-950, --color-secondary-500, --color-white,
+ *         --color-neutral-50
  */
 export function IncentiveBanner({
 	open,
@@ -62,20 +65,20 @@ export function IncentiveBanner({
 				</div>
 
 				<div className="flex flex-col lg:flex-row gap-3 lg:gap-4 lg:items-center lg:shrink-0">
-					<button
-						type="button"
+					<Button
+						label="Criar conta"
 						onClick={onCreateAccount}
-						className="w-full lg:w-auto inline-flex items-center justify-center rounded-full bg-white px-6 py-2 font-body font-bold text-body-lg text-primary-600"
-					>
-						Criar conta
-					</button>
-					<button
-						type="button"
+						type="filled"
+						tone="inverse"
+						className="w-full lg:w-auto"
+					/>
+					<Button
+						label="Entrar"
 						onClick={onLogin}
-						className="w-full lg:w-auto inline-flex items-center justify-center rounded-full border-2 border-white px-6 py-2 font-body font-bold text-body-lg text-white"
-					>
-						Entrar
-					</button>
+						type="outlined"
+						tone="inverse"
+						className="w-full lg:w-auto"
+					/>
 				</div>
 
 				<button
