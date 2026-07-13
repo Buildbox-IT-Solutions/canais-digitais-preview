@@ -61,3 +61,10 @@ Removidos os 5 ícones sociais (WhatsApp, LinkedIn, Facebook, YouTube, X). Rodap
 A variante `Level 2` ("← Menu Title" + lista) existe no Figma para o drill-in de categorias com submenu (Eventos, Indústria A&B, ESG). **Fora do escopo desta leva** — o menu atual lista as editorias sem navegação para um segundo nível. Fica registrado como próximo passo caso o drill-in de categorias seja endereçado.
 
 Implementado em `src/screens/menu/index.tsx`.
+
+## v2.1 — Rodapé sticky + logo real (13/07/2026)
+
+Template reaproveitado por vários portais com listas de tamanhos muito diferentes (3-4 itens vs 13+). O rodapé (Anuncie + logo) precisa se comportar como um rodapé de verdade — colado ao fim do painel — só quando a lista é curta; quando a lista é longa e a área rola, o rodapé deve fluir imediatamente após o último item, não flutuar sobre o conteúdo.
+
+- Estrutura: área de rolagem (`overflow-y-auto flex-1 min-h-0`) contém um wrapper `flex flex-col min-h-full`; o rodapé ganha `mt-auto`. Isso empurra o rodapé para o fim quando a lista não preenche o painel, e o deixa fluir junto do scroll quando a lista excede a altura visível — sem JS, sem medir alturas.
+- Logo textual "informa" (Aleo Bold) substituída pela marca real `OneLine_Solid_Indigo.svg` (`src/assets/images/`), `max-height: 32px` (`h-8 w-auto`), mantendo a proporção original do arquivo.

@@ -122,7 +122,7 @@ export function DashboardWelcome({
 
 				<a
 					href={logoutHref}
-					className="inline-flex items-center gap-2 pl-4 pr-5 py-1.5 rounded-full border-[1.5px] border-primary-600 text-primary-600 hover:bg-neutral-50 transition-colors font-body font-bold text-body-md shrink-0"
+					className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors font-body font-bold text-body-md shrink-0"
 				>
 					<Icon name="logout" className="size-5" />
 					Sair

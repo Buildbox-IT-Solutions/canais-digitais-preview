@@ -5,6 +5,7 @@ import { Divider } from '~/components/divider'
 import { Icon } from '~/components/icon'
 import { IconButton } from '~/components/icon-button'
 import { MENU_ITEMS } from '~/mocks/articles'
+import InformaLogo from '~/assets/images/OneLine_Solid_Indigo.svg'
 import type { ISideMenuProps } from './types'
 
 /**
@@ -103,64 +104,70 @@ export function SideMenu({
 					<IconButton icon="close" type="ghost" size="large" label="Fechar menu" onClick={onClose} />
 				</div>
 
-				<div className="flex flex-col flex-1 min-h-0 overflow-y-auto w-full">
-					<a
-						href={logged ? '/dashboard-perfil-v4' : '/login'}
-						className="flex items-center gap-3 px-5 py-3 w-full hover:bg-black/8 transition-colors"
-					>
-						{logged ? (
-							avatarNode
-						) : (
-							<Icon name="account-circle" className="size-8 text-primary-600 shrink-0" />
-						)}
+				<div className="flex-1 min-h-0 overflow-y-auto w-full">
+					{/*
+						min-h-full + mt-auto no rodapé = sticky footer clássico: quando a lista (nav)
+						não preenche a área de rolagem, o rodapé (Anuncie + logo) é empurrado para o
+						fim do painel. Quando a lista é maior que a área visível, o wrapper cresce
+						além de min-h-full e o rodapé passa a fluir imediatamente após o último item,
+						rolando junto com o conteúdo.
+					*/}
+					<div className="flex flex-col min-h-full w-full">
+						<a
+							href={logged ? '/dashboard-perfil-v4' : '/login'}
+							className="flex items-center gap-3 px-5 py-3 w-full hover:bg-black/8 transition-colors"
+						>
+							{logged ? (
+								avatarNode
+							) : (
+								<Icon name="account-circle" className="size-8 text-primary-600 shrink-0" />
+							)}
 
-						<div className="flex flex-1 flex-col gap-0.5 min-w-0">
-							<p className="font-body font-bold text-label-lg text-primary-600 truncate">
-								{logged ? userName : 'Acesse sua conta'}
-							</p>
-							<p
-								className={
-									logged
-										? 'font-body font-bold text-body-sm text-secondary-950 truncate'
-										: 'font-body font-normal text-body-md text-primary-600 truncate'
-								}
-							>
-								{logged ? 'Minha conta' : 'ou cadastra-se grátis'}
-							</p>
+							<div className="flex flex-1 flex-col gap-0.5 min-w-0">
+								<p className="font-body font-bold text-label-lg text-primary-600 truncate">
+									{logged ? userName : 'Acesse sua conta'}
+								</p>
+								<p
+									className={
+										logged
+											? 'font-body font-bold text-body-sm text-secondary-950 truncate'
+											: 'font-body font-normal text-body-md text-primary-600 truncate'
+									}
+								>
+									{logged ? 'Minha conta' : 'ou cadastra-se grátis'}
+								</p>
+							</div>
+
+							<Icon name="chevron-right" className="size-6 text-primary-600 shrink-0" />
+						</a>
+
+						<div className="px-5 py-2 w-full">
+							<Divider />
 						</div>
 
-						<Icon name="chevron-right" className="size-6 text-primary-600 shrink-0" />
-					</a>
+						<nav className="flex flex-col items-start w-full">
+							{MENU_ITEMS.map((item) => (
+								<a
+									key={item.label}
+									href="/categoria"
+									className="flex gap-3 h-14 items-center pl-6 pr-4 py-2 w-full hover:bg-neutral-50 transition-colors"
+								>
+									<span className="flex-1 font-body font-bold text-label-lg text-primary-600">
+										{item.label}
+									</span>
+									{item.dropdown ? (
+										<Icon name="chevron-right" className="size-6 text-primary-600" />
+									) : null}
+								</a>
+							))}
+						</nav>
 
-					<div className="px-5 py-2 w-full">
-						<Divider />
-					</div>
+						<div className="mt-auto flex flex-col gap-4 items-start px-5 py-4 w-full shrink-0">
+							<Button label="Anuncie" href="/anuncie" type="filled" size="medium" className="w-full" />
 
-					<nav className="flex flex-col items-start w-full">
-						{MENU_ITEMS.map((item) => (
-							<a
-								key={item.label}
-								href="/categoria"
-								className="flex gap-3 h-14 items-center pl-6 pr-4 py-2 w-full hover:bg-neutral-50 transition-colors"
-							>
-								<span className="flex-1 font-body font-bold text-label-lg text-primary-600">
-									{item.label}
-								</span>
-								{item.dropdown ? (
-									<Icon name="chevron-right" className="size-6 text-primary-600" />
-								) : null}
-							</a>
-						))}
-					</nav>
+							<Divider />
 
-					{/* Rodapé flui com o conteúdo (não fica fixo no rodapé da viewport) */}
-					<div className="flex flex-col gap-4 items-start px-5 py-4 w-full">
-						<Button label="Anuncie" href="/anuncie" type="filled" size="medium" className="w-full" />
-
-						<Divider />
-
-						<div className="h-[34px] flex items-center">
-							<span className="font-display font-bold text-title-lg text-primary-600">informa</span>
+							<InformaLogo className="h-8 w-auto shrink-0" role="img" aria-label="Informa" />
 						</div>
 					</div>
 				</div>
