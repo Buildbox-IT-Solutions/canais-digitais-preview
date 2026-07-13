@@ -4,6 +4,7 @@ import ArchiveScreen from './screens/archive'
 import BuscarScreen from './screens/buscar'
 import CadastroScreen from './screens/cadastro'
 import CadastroV2Screen from './screens/cadastro-v2'
+import CancelarExclusaoScreen from './screens/cancelar-exclusao'
 import CategoriaScreen from './screens/categoria'
 import CentralScreen from './screens/central'
 import ConfirmacaoEmailScreen from './screens/confirmacao-email'
@@ -18,6 +19,7 @@ import EmailBoasVindasScreen from './screens/email-boas-vindas'
 import EmailConfirmacaoScreen from './screens/email-confirmacao'
 import EmailExclusaoContaScreen from './screens/email-exclusao-conta'
 import EmailRecuperacaoSenhaScreen from './screens/email-recuperacao-senha'
+import EmailSenhaAlteradaScreen from './screens/email-senha-alterada'
 import ExcluirContaScreen from './screens/excluir-conta'
 import GateDownloadScreen from './screens/gate-download'
 import FormNewsletterScreen from './screens/form-newsletter'
@@ -66,6 +68,7 @@ const router = createBrowserRouter([
 	{ path: '/meus-dados', element: <MeusDadosScreen /> },
 	{ path: '/consentimentos', element: <ConsentimentosScreen /> },
 	{ path: '/excluir-conta', element: <ExcluirContaScreen /> },
+	{ path: '/cancelar-exclusao', element: <CancelarExclusaoScreen /> },
 	{ path: '/contato', element: <ContatoScreen /> },
 	{ path: '/sobre', element: <SobreScreen /> },
 	{ path: '/anuncie', element: <AnuncieScreen /> },
@@ -76,6 +79,7 @@ const router = createBrowserRouter([
 	{ path: '/email-confirmacao', element: <EmailConfirmacaoScreen /> },
 	{ path: '/email-boas-vindas', element: <EmailBoasVindasScreen /> },
 	{ path: '/email-recuperacao-senha', element: <EmailRecuperacaoSenhaScreen /> },
+	{ path: '/email-senha-alterada', element: <EmailSenhaAlteradaScreen /> },
 	{ path: '/email-exclusao-conta', element: <EmailExclusaoContaScreen /> },
 	{ path: '/archive', element: <ArchiveScreen /> },
 	{ path: '*', element: <NotFoundScreen /> },

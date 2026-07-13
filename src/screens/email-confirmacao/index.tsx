@@ -16,9 +16,9 @@ import {
  * Referência: docs/legacy-reference/emails/email-confirmacao.html
  */
 export default function EmailConfirmacaoScreen() {
-	// Endpoint de confirmação: o token identifica a conta e o "servidor" decide o desfecho.
-	// No protótipo, /confirmar resolve o token → estado "success" (ver router.tsx).
-	const link = '/confirmar?token=[TOKEN]'
+	// URL absoluta (real e-mail não resolve caminho relativo). O endpoint /confirmar
+	// segue existindo no protótipo pra teste direto (token → estado "success", ver router.tsx).
+	const link = 'https://foodconnection.com.br/confirmar?token=[TOKEN]'
 	return (
 		<EmailShell>
 			<EmailBody>

@@ -17,6 +17,11 @@ export interface DialogAction {
 export interface IDialogProps {
 	open?: boolean
 	size?: DialogSize
+	/**
+	 * No mobile (<lg), o dialog ocupa a tela cheia em vez de card centralizado.
+	 * Default: false. Ver `Modal.mobileFullScreen`.
+	 */
+	mobileFullScreen?: boolean
 	closeHref?: string
 	onClose?: () => void
 	labelledById?: string

@@ -26,11 +26,20 @@ export const Destructive: Story = {
 	args: {
 		closeHref: '#',
 		size: 'lg',
-		eyebrow: (
-			<span className="font-body font-semibold text-label-md tracking-wider text-red-700 uppercase">
-				LGPD · Art. 18 IX
-			</span>
-		),
+		title: 'Excluir sua conta',
+		description: 'Esta ação não pode ser desfeita após 30 dias. Parte dos dados pode ser mantida por obrigação legal.',
+		destructive: true,
+		secondary: { label: 'Cancelar', href: '#' },
+		primary: { label: 'Confirmar exclusão', href: '#' },
+	},
+}
+
+/** Reduza a viewport do navegador para abaixo de 1024px para ver o dialog em tela cheia (sem cantos arredondados nem scrim visível). */
+export const MobileFullScreen: Story = {
+	args: {
+		closeHref: '#',
+		size: 'lg',
+		mobileFullScreen: true,
 		title: 'Excluir sua conta',
 		description: 'Esta ação não pode ser desfeita após 30 dias. Parte dos dados pode ser mantida por obrigação legal.',
 		destructive: true,
