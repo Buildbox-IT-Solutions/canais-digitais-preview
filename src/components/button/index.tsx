@@ -1,19 +1,31 @@
 import { isValidElement } from 'react'
 import { twMerge } from '~/lib/tw-merge'
-import type { ButtonIcon, ButtonSize, ButtonType, IButtonProps } from './types'
+import type { ButtonIcon, ButtonSize, ButtonTone, ButtonType, IButtonProps } from './types'
 
 /**
  * Componente: Button [1.1]
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3185-47973
- * Variantes: type × size × icon (81 variants)
+ * Variantes: type × tone × size × icon
+ * `tone="inverse"` não é uma variante oficial do componente Figma (que só tem type × size ×
+ * icon) — é extensão dev-side documentada em figma-specs/button.md, generalizando o padrão
+ * "botão inverso" já descrito ad hoc nos specs de Banner Newsletter/Download e usado inline
+ * (sem componente) no Incentive Banner.
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-50, --color-neutral-200, --color-white
  */
 
-const TYPE_CLASSES: Record<ButtonType, string> = {
-	filled: 'bg-primary-600 text-white hover:bg-secondary-950 disabled:bg-neutral-200',
-	outlined:
-		'bg-transparent text-primary-600 border-[1.5px] border-primary-600 hover:bg-neutral-50 disabled:border-neutral-200 disabled:text-neutral-200',
-	ghost: 'bg-transparent text-primary-600 hover:bg-neutral-50 disabled:text-neutral-200',
+const TYPE_CLASSES: Record<ButtonTone, Record<ButtonType, string>> = {
+	default: {
+		filled: 'bg-primary-600 text-white hover:bg-secondary-950 disabled:bg-neutral-200',
+		outlined:
+			'bg-transparent text-primary-600 border-[1.5px] border-primary-600 hover:bg-neutral-50 disabled:border-neutral-200 disabled:text-neutral-200',
+		ghost: 'bg-transparent text-primary-600 hover:bg-neutral-50 disabled:text-neutral-200',
+	},
+	inverse: {
+		filled: 'bg-white text-primary-600 hover:bg-neutral-50 disabled:bg-white/40 disabled:text-primary-600/40',
+		outlined:
+			'bg-transparent text-white border-[1.5px] border-white hover:bg-white/10 disabled:border-white/40 disabled:text-white/40',
+		ghost: 'bg-transparent text-white hover:bg-white/10 disabled:text-white/40',
+	},
 }
 
 const SIZE_HEIGHT: Record<ButtonSize, string> = {
@@ -76,6 +88,7 @@ export function Button({
 	label,
 	href,
 	type = 'filled',
+	tone = 'default',
 	size = 'medium',
 	icon = 'none',
 	disabled,
@@ -85,7 +98,7 @@ export function Button({
 	const hasIcon = icon !== 'none'
 	const classes = twMerge(
 		'inline-flex items-center justify-center rounded-full font-body font-bold transition-colors disabled:cursor-not-allowed',
-		TYPE_CLASSES[type],
+		TYPE_CLASSES[tone][type],
 		SIZE_HEIGHT[size],
 		hasIcon ? PADDING_WITH_ICON[size] : PADDING_NO_ICON[size],
 		className,
