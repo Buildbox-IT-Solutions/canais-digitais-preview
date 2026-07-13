@@ -18,6 +18,7 @@ const meta: Meta<typeof DownloadItem> = {
 export default meta
 type Story = StoryObj<typeof DownloadItem>
 
+/** Reduza a viewport do navegador para abaixo de 1024px para ver o layout empilhado mobile (botão full-width com borda). */
 export const Enabled: Story = {}
 export const Disabled: Story = { args: { disabled: true } }
 export const Doc: Story = { args: { icon: 'doc', title: 'Política de privacidade — versão revisada' } }
