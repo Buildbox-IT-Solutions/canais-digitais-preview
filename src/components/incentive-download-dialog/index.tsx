@@ -71,14 +71,14 @@ function DownloadDialogContent({ titleId, onCreateAccount, onLogin }: IDownloadD
 				<button
 					type="button"
 					onClick={onCreateAccount}
-					className="w-full h-12 inline-flex items-center justify-center rounded-full bg-primary-600 text-white font-body font-bold text-body-lg"
+					className="w-full h-12 inline-flex items-center justify-center rounded-full bg-primary-600 text-white font-body font-bold text-body-lg hover:bg-secondary-950 transition-colors"
 				>
 					Criar conta grátis
 				</button>
 				<button
 					type="button"
 					onClick={onLogin}
-					className="w-full h-12 inline-flex items-center justify-center rounded-full border-2 border-primary-600 text-primary-600 font-body font-bold text-body-lg"
+					className="w-full h-12 inline-flex items-center justify-center rounded-full border-2 border-primary-600 text-primary-600 font-body font-bold text-body-lg hover:bg-neutral-50 transition-colors"
 				>
 					Já tenho conta • Entrar
 				</button>
