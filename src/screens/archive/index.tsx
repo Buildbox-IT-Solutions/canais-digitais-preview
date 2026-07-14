@@ -73,11 +73,6 @@ const GROUPS: ArchiveGroup[] = [
 				label: 'Patrocinador (individual)',
 				reason: 'Fora do escopo da versão enxuta',
 			},
-			{
-				path: '/form-newsletter',
-				label: 'Form — Newsletter',
-				reason: 'Fora do escopo da versão enxuta (Newsletter fica "Em breve" no perfil)',
-			},
 		],
 	},
 	{

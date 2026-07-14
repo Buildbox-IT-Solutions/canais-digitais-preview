@@ -22,7 +22,6 @@ import EmailRecuperacaoSenhaScreen from './screens/email-recuperacao-senha'
 import EmailSenhaAlteradaScreen from './screens/email-senha-alterada'
 import ExcluirContaScreen from './screens/excluir-conta'
 import GateDownloadScreen from './screens/gate-download'
-import FormNewsletterScreen from './screens/form-newsletter'
 import HomeScreen from './screens/home'
 import { HomeV2Screen } from './screens/home-v2'
 import LoginScreen from './screens/login'
@@ -74,7 +73,6 @@ const router = createBrowserRouter([
 	{ path: '/anuncie', element: <AnuncieScreen /> },
 	{ path: '/patrocinadores', element: <PatrocinadoresScreen /> },
 	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
-	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
 	{ path: '/gate-download', element: <GateDownloadScreen /> },
 	{ path: '/email-confirmacao', element: <EmailConfirmacaoScreen /> },
 	{ path: '/email-boas-vindas', element: <EmailBoasVindasScreen /> },
