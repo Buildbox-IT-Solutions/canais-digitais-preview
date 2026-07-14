@@ -5,7 +5,7 @@
 
 **Figma:** https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0
 
-**Status legend:** ⏳ pendente · 🔄 em progresso · ✅ implementado
+**Status legend:** ⏳ pendente · 🔄 em progresso · ✅ implementado · 📝 em aprovação
 
 ---
 
@@ -100,6 +100,15 @@
 | Image | `30:3878` | 9 | ✅ [`image.php`](../src/components/image.php) · [spec](./image.md) |
 | Video Image 2.0 | `2790:25832` | 8 | ✅ [`video-image.php`](../src/components/video-image.php) · [spec](./video-image.md) |
 | .Video Image | `1678:21003` | 4 | ✅ (coberto em [`video-image.php`](../src/components/video-image.php)) |
+
+### Incentivo — (sem nodeId Figma dedicado)
+Modais/banners de incentivo de cadastro, criados in-house a partir dos mockups de Home/Leitura/Download (node `7469:34686` e adjacentes) — não fazem parte da extração original via Plugin API.
+
+| Componente | Variants | Status |
+|---|---|---|
+| Incentive Banner | Portal · Leitura | ✅ [`src/components/incentive-banner`](../src/components/incentive-banner/index.tsx) · [spec](../docs/superpowers/specs/2026-07-09-incentive-banner-unification-design.md) |
+| Incentive Download Dialog | Modal (desktop) · Bottom Sheet (mobile) | ✅ [`src/components/incentive-download-dialog`](../src/components/incentive-download-dialog/index.tsx) · [spec](../docs/superpowers/specs/2026-07-07-modais-incentivo-cadastro-design.md) |
+| Incentive Newsletter Dialog | Modal (desktop) · Bottom Sheet (mobile) | 📝 Em aprovação — [`src/components/incentive-newsletter-dialog`](../src/components/incentive-newsletter-dialog/index.tsx) · [spec](../docs/superpowers/specs/2026-07-14-newsletter-incentive-signup-design.md) |
 
 ### Menus — `1061:14878`
 | Componente | nodeId | Variants | Status |
