@@ -108,7 +108,7 @@ Modais/banners de incentivo de cadastro, criados in-house a partir dos mockups d
 |---|---|---|
 | Incentive Banner | Portal · Leitura | ✅ [`src/components/incentive-banner`](../src/components/incentive-banner/index.tsx) · [spec](../docs/superpowers/specs/2026-07-09-incentive-banner-unification-design.md) |
 | Incentive Download Dialog | Modal (desktop) · Bottom Sheet (mobile) | ✅ [`src/components/incentive-download-dialog`](../src/components/incentive-download-dialog/index.tsx) · [spec](../docs/superpowers/specs/2026-07-07-modais-incentivo-cadastro-design.md) |
-| Incentive Newsletter Dialog | Modal (desktop) · Bottom Sheet (mobile) | 📝 Em aprovação (desenho em brainstorming, mesmo padrão do Download) |
+| Incentive Newsletter Dialog | Modal (desktop) · Bottom Sheet (mobile) | 📝 Em aprovação — [`src/components/incentive-newsletter-dialog`](../src/components/incentive-newsletter-dialog/index.tsx) · [spec](../docs/superpowers/specs/2026-07-14-newsletter-incentive-signup-design.md) |
 
 ### Menus — `1061:14878`
 | Componente | nodeId | Variants | Status |

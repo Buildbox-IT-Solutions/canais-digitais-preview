@@ -12,7 +12,7 @@ import type { IIncentiveNewsletterDialogProps } from './types'
  * Mesma exceção do Incentive Download Dialog: sempre modal/dialog próprio, nunca banner,
  * sem cooldown/supressão/storage. Desktop: Modal centralizado. Mobile: BottomSheet
  * (ganha o swipe-to-dismiss de fábrica). Dispensa só pelo X (sem link "Agora não").
- * Tokens: --color-primary-600, --color-secondary-500, --color-neutral-900, --color-white
+ * Tokens: --color-primary-600, --color-secondary-500, --color-secondary-950, --color-neutral-900, --color-neutral-50, --color-white
  */
 export function IncentiveNewsletterDialog({
 	open,

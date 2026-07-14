@@ -302,7 +302,8 @@ export default function ConteudoScreen() {
 							<div className="pt-4 pb-8 px-6 w-full">
 								<Button
 									label="Assine agora"
-									onClick={() => setNewsletterOpen(true)}
+									href={logado ? '/dashboard-perfil-v4?tab=newsletter' : undefined}
+									onClick={!logado ? () => setNewsletterOpen(true) : undefined}
 									type="filled"
 									size="large"
 									className="w-full"
