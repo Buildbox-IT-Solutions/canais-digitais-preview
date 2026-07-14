@@ -81,6 +81,22 @@ function buildConfig(state: ConfirmacaoState, intent: string, returnTo: string):
 					proof: 'confirm-welcome',
 				}
 			}
+			if (intent === 'newsletter') {
+				return {
+					accent: 'mint',
+					icon: 'check',
+					title: 'Tudo pronto!',
+					body: 'Você já está inscrito na newsletter Food Connection.',
+					buttons: [
+						{
+							label: 'Ir para o portal',
+							href: `${returnTo || '/home'}?logado=true&toast=newsletter-subscribed`,
+							variant: 'filled',
+						},
+					],
+					proof: 'confirm-welcome',
+				}
+			}
 			return {
 				accent: 'mint',
 				icon: 'check',
@@ -222,8 +238,8 @@ function CorrigirForm({ email, intent, returnTo }: { email: string; intent: stri
  * estados de fim de linha (link-expired/link-used) usam o AuthTerminalModal compacto, sem proof.
  * O link do e-mail abre este modal sobre a home; a full page /confirmacao-email-full foi arquivada.
  * Extras exclusivos do modal: estado "corrigir" (EML-02, troca de e-mail sem refazer cadastro)
- * e roteamento intent=download.
- * Estados: ?state=waiting|corrigir|success|link-expired|link-used · ?email=... · ?intent=download
+ * e roteamento intent=download|newsletter.
+ * Estados: ?state=waiting|corrigir|success|link-expired|link-used · ?email=... · ?intent=download|newsletter
  */
 export default function ConfirmacaoEmailV2Screen() {
 	const [params] = useSearchParams()

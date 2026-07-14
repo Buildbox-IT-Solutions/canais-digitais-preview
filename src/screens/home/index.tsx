@@ -11,6 +11,7 @@ import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
+import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { Toast } from '~/components/toast'
 import { Byline } from '~/components/byline'
 import { Categoria } from '~/components/categoria'
@@ -58,10 +59,12 @@ export default function HomeScreen() {
 	const navigate = useNavigate()
 	const [params] = useSearchParams()
 	const showDownloadToast = params.get('toast') === 'download-started'
+	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
 	const previewIncentive = params.get('preview')
 
 	const [portalOpen, setPortalOpen] = useState(previewIncentive === 'portal')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
+	const [newsletterOpen, setNewsletterOpen] = useState(previewIncentive === 'newsletter')
 
 	useEffect(() => {
 		if (!isHomeRoute || logado || previewIncentive) return
@@ -102,6 +105,20 @@ export default function HomeScreen() {
 
 	function handleDownloadDismiss() {
 		setDownloadOpen(false)
+	}
+
+	function handleNewsletterCreateAccount() {
+		setNewsletterOpen(false)
+		navigate('/cadastro?step=1&intent=newsletter&returnTo=%2Fhome')
+	}
+
+	function handleNewsletterLogin() {
+		setNewsletterOpen(false)
+		navigate('/login?intent=newsletter&returnTo=%2Fhome')
+	}
+
+	function handleNewsletterDismiss() {
+		setNewsletterOpen(false)
 	}
 
 	return (
@@ -198,7 +215,8 @@ export default function HomeScreen() {
 				title="O melhor conteúdo do setor alimentício, direto na sua caixa de entrada."
 				description="Junte-se a milhares de construtores que já assinam nossa newsletter gratuita."
 				ctaLabel="Assine agora"
-				ctaHref="/form-newsletter"
+				ctaHref="/dashboard-perfil-v4?tab=newsletter"
+				onCtaClick={!logado ? () => setNewsletterOpen(true) : undefined}
 			/>
 
 			{/* §12 — Ad 970×90 (desktop) / 360×142 (mobile) */}
@@ -277,12 +295,24 @@ export default function HomeScreen() {
 					onLogin={handleDownloadLogin}
 					onDismiss={handleDownloadDismiss}
 				/>
+				<IncentiveNewsletterDialog
+					open={newsletterOpen}
+					onCreateAccount={handleNewsletterCreateAccount}
+					onLogin={handleNewsletterLogin}
+					onDismiss={handleNewsletterDismiss}
+				/>
 			</>
 		) : null}
 
 		{showDownloadToast ? (
 			<div className="fixed bottom-6 right-6 z-50">
 				<Toast type="success" message="Seu download começou." />
+			</div>
+		) : null}
+
+		{showNewsletterToast ? (
+			<div className="fixed bottom-6 right-6 z-50">
+				<Toast type="success" message="Inscrição confirmada." />
 			</div>
 		) : null}
 		</>

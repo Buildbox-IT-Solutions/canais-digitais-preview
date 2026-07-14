@@ -18,7 +18,7 @@ export const Default: Story = {
 		title: 'O melhor conteúdo do setor alimentício, direto na sua caixa de entrada.',
 		description: 'Junte-se a milhares de construtores que já assinam nossa newsletter gratuita.',
 		ctaLabel: 'Assine agora',
-		ctaHref: '/form-newsletter',
+		ctaHref: '/dashboard-perfil-v4?tab=newsletter',
 	},
 	render: (args) => (
 		<div className="w-[1280px]">

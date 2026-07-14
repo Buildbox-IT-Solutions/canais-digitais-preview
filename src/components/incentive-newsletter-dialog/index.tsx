@@ -4,29 +4,29 @@ import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
 import { StatusRing } from '~/components/status-ring'
 import { useMediaQuery } from '~/lib/use-media-query'
-import type { IIncentiveDownloadDialogProps } from './types'
+import type { IIncentiveNewsletterDialogProps } from './types'
 
 /**
- * Componente: Incentive Download Dialog
+ * Componente: Incentive Newsletter Dialog
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=7469-34686
- * Exceção aos incentivos passivos (Portal/Leitura): sempre modal/dialog próprio, nunca
- * banner, sem cooldown/supressão/storage. Desktop: Modal centralizado. Mobile: BottomSheet
+ * Mesma exceção do Incentive Download Dialog: sempre modal/dialog próprio, nunca banner,
+ * sem cooldown/supressão/storage. Desktop: Modal centralizado. Mobile: BottomSheet
  * (ganha o swipe-to-dismiss de fábrica). Dispensa só pelo X (sem link "Agora não").
  * Tokens: --color-primary-600, --color-secondary-500, --color-secondary-950, --color-neutral-900, --color-neutral-50, --color-white
  */
-export function IncentiveDownloadDialog({
+export function IncentiveNewsletterDialog({
 	open,
 	onCreateAccount,
 	onLogin,
 	onDismiss,
-}: IIncentiveDownloadDialogProps) {
+}: IIncentiveNewsletterDialogProps) {
 	const titleId = useId()
 	const isDesktop = useMediaQuery('(min-width: 1024px)')
 
 	if (isDesktop) {
 		return (
 			<Modal open={open} size="sm" onClose={onDismiss} labelledById={titleId}>
-				<DownloadDialogContent titleId={titleId} onCreateAccount={onCreateAccount} onLogin={onLogin} />
+				<NewsletterDialogContent titleId={titleId} onCreateAccount={onCreateAccount} onLogin={onLogin} />
 			</Modal>
 		)
 	}
@@ -41,29 +41,29 @@ export function IncentiveDownloadDialog({
 			>
 				<Icon name="close" className="size-4" />
 			</button>
-			<DownloadDialogContent titleId={titleId} onCreateAccount={onCreateAccount} onLogin={onLogin} />
+			<NewsletterDialogContent titleId={titleId} onCreateAccount={onCreateAccount} onLogin={onLogin} />
 		</BottomSheet>
 	)
 }
 
-interface IDownloadDialogContentProps {
+interface INewsletterDialogContentProps {
 	titleId: string
 	onCreateAccount: () => void
 	onLogin: () => void
 }
 
-function DownloadDialogContent({ titleId, onCreateAccount, onLogin }: IDownloadDialogContentProps) {
+function NewsletterDialogContent({ titleId, onCreateAccount, onLogin }: INewsletterDialogContentProps) {
 	return (
 		<div className="flex flex-col gap-6">
-			<StatusRing accent="primary" icon="download" size="sm" />
+			<StatusRing accent="primary" icon="mail" size="sm" />
 
 			<div className="flex flex-col gap-1">
 				<p id={titleId} className="font-display font-normal text-headline-md text-primary-600">
-					Crie sua conta para <span className="font-bold text-secondary-500">baixar</span>
+					Crie sua conta para <span className="font-bold text-secondary-500">assinar</span>
 				</p>
 				<p className="font-body text-body-lg text-neutral-900">
-					Baixe este material agora e tenha acesso a todos os outros com um clique, sem preencher
-					formulários de novo.
+					Assine a Food Connection e receba as principais notícias do setor direto no seu
+					e-mail, sem preencher formulários de novo.
 				</p>
 			</div>
 
