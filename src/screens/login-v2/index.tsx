@@ -14,6 +14,11 @@ type LoginError = 'none' | 'empty' | 'invalid' | 'locked'
 
 const ALLOWED_ERRORS: LoginError[] = ['none', 'empty', 'invalid', 'locked']
 
+const TOAST_BY_INTENT: Record<string, string> = {
+	download: 'download-started',
+	newsletter: 'newsletter-subscribed',
+}
+
 /**
  * Tela: Login (Modal) — v2
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=6930-43699
@@ -108,8 +113,8 @@ export default function LoginV2Screen() {
 
 							<form action={returnTo} method="get" className="flex flex-col gap-6" noValidate>
 								<input type="hidden" name="logado" value="true" />
-								{intent === 'download' ? (
-									<input type="hidden" name="toast" value="download-started" />
+								{TOAST_BY_INTENT[intent] ? (
+									<input type="hidden" name="toast" value={TOAST_BY_INTENT[intent]} />
 								) : null}
 								<AuthInput
 									label="E-mail"
