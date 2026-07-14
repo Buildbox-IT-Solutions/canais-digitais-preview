@@ -4,5 +4,6 @@ export interface IBannerNewsletterProps {
 	description: string
 	ctaLabel: string
 	ctaHref: string
+	onCtaClick?: () => void
 	className?: string
 }
