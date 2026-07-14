@@ -12,6 +12,7 @@ import { IconButton } from '~/components/icon-button'
 import type { IconName } from '~/components/icon/paths'
 import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
+import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
 import { Tag } from '~/components/tag'
@@ -41,10 +42,12 @@ export default function ConteudoScreen() {
 	const isConteudoRoute = useLocation().pathname === '/conteudo'
 	const navigate = useNavigate()
 	const showDownloadToast = params.get('toast') === 'download-started'
+	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
 	const previewIncentive = params.get('preview')
 
 	const [leituraOpen, setLeituraOpen] = useState(previewIncentive === 'leitura')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
+	const [newsletterOpen, setNewsletterOpen] = useState(previewIncentive === 'newsletter')
 
 	useEffect(() => {
 		if (!isConteudoRoute || logado || previewIncentive) return
@@ -103,6 +106,20 @@ export default function ConteudoScreen() {
 
 	function handleDownloadDismiss() {
 		setDownloadOpen(false)
+	}
+
+	function handleNewsletterCreateAccount() {
+		setNewsletterOpen(false)
+		navigate('/cadastro?step=1&intent=newsletter&returnTo=%2Fconteudo')
+	}
+
+	function handleNewsletterLogin() {
+		setNewsletterOpen(false)
+		navigate('/login?intent=newsletter&returnTo=%2Fconteudo')
+	}
+
+	function handleNewsletterDismiss() {
+		setNewsletterOpen(false)
 	}
 
 	return (
@@ -282,12 +299,13 @@ export default function ConteudoScreen() {
 									conteúdos selecionados pelo Food Connection.
 								</p>
 							</div>
-							<div className="pt-4 pb-8 px-6 w-full [&>a]:w-full">
+							<div className="pt-4 pb-8 px-6 w-full">
 								<Button
 									label="Assine agora"
-									href="/form-newsletter"
+									onClick={() => setNewsletterOpen(true)}
 									type="filled"
 									size="large"
+									className="w-full"
 								/>
 							</div>
 						</div>
@@ -404,12 +422,24 @@ export default function ConteudoScreen() {
 					onLogin={handleDownloadLogin}
 					onDismiss={handleDownloadDismiss}
 				/>
+				<IncentiveNewsletterDialog
+					open={newsletterOpen}
+					onCreateAccount={handleNewsletterCreateAccount}
+					onLogin={handleNewsletterLogin}
+					onDismiss={handleNewsletterDismiss}
+				/>
 			</>
 		) : null}
 
 		{showDownloadToast ? (
 			<div className="fixed bottom-6 right-6 z-50">
 				<Toast type="success" message="Seu download começou." />
+			</div>
+		) : null}
+
+		{showNewsletterToast ? (
+			<div className="fixed bottom-6 right-6 z-50">
+				<Toast type="success" message="Inscrição confirmada." />
 			</div>
 		) : null}
 		</>
