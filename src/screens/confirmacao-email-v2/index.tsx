@@ -81,6 +81,22 @@ function buildConfig(state: ConfirmacaoState, intent: string, returnTo: string):
 					proof: 'confirm-welcome',
 				}
 			}
+			if (intent === 'newsletter') {
+				return {
+					accent: 'mint',
+					icon: 'check',
+					title: 'Tudo pronto!',
+					body: 'Você já está inscrito na newsletter Food Connection.',
+					buttons: [
+						{
+							label: 'Ir para o portal',
+							href: `${returnTo || '/home'}?logado=true&toast=newsletter-subscribed`,
+							variant: 'filled',
+						},
+					],
+					proof: 'confirm-welcome',
+				}
+			}
 			return {
 				accent: 'mint',
 				icon: 'check',
