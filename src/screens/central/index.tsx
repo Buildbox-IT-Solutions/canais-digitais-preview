@@ -46,7 +46,7 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/home?preview=portal', label: 'Incentivo — Portal', description: 'Passivo · dispara ~4s na Home para visitante deslogado', status: 'pronto-para-dev' },
 			{ path: '/conteudo?preview=leitura', label: 'Incentivo — Leitura', description: 'Passivo · dispara a ~50% de scroll no Conteúdo para visitante deslogado', status: 'pronto-para-dev' },
 			{ path: '/home?preview=download', label: 'Incentivo — Download', description: 'Ativo · dispara ao clicar no CTA de download (Home e Conteúdo) para visitante deslogado', status: 'pronto-para-dev' },
-			{ path: '/home?preview=newsletter', label: 'Incentivo — Newsletter', description: 'Ativo · dispara ao clicar no CTA de newsletter (Home e Conteúdo) para visitante deslogado', status: 'em-aprovacao' },
+			{ path: '/home?preview=newsletter', label: 'Incentivo — Newsletter', description: 'Ativo · dispara ao clicar no CTA de newsletter (Home e Conteúdo) para visitante deslogado', status: 'pronto-para-dev' },
 		],
 	},
 	{
