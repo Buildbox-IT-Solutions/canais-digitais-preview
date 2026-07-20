@@ -143,11 +143,12 @@ function GeralPane({ pct, missing, isEmpty }: { pct: number; missing: number; is
 					</div>
 					<div className="flex-1 min-w-0 flex flex-col gap-4">
 						<h2 className="font-display font-bold text-headline-sm text-primary-600 leading-tight">
-							Receba conteúdos mais relevantes para você
+							Complete seu perfil
 						</h2>
 						<p className="font-body text-body-md text-primary-600">
 							<strong className="font-bold">Faltam {missing} campos para chegar a 100%</strong>.
-							Cada informação afina o que chega até você em conteúdos, newsletters e eventos.
+							Mantenha seu cadastro atualizado para continuar recebendo conteúdos, newsletters e
+							convites de eventos.
 						</p>
 						<a
 							href="?tab=perfil"
