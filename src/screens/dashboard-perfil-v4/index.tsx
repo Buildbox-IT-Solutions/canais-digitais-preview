@@ -33,7 +33,7 @@ import {
 type Tab = 'perfil' | 'ultimas' | 'newsletter' | 'downloads'
 type Drawer = 'dados-pessoais' | 'dados-profissionais' | 'dados-fiscais'
 
-const TABS: Tab[] = ['perfil', 'ultimas', 'downloads', 'newsletter']
+const TABS: Tab[] = ['perfil', 'downloads', 'newsletter', 'ultimas']
 const DRAWERS: Drawer[] = ['dados-pessoais', 'dados-profissionais', 'dados-fiscais']
 
 const BASE_HREF = '/dashboard-perfil-v4'
@@ -46,7 +46,7 @@ const PER_PAGE = 10
 
 /**
  * Tela: Dashboard de Perfil v4 — modelo tabbed (deriva de dashboard-perfil-v3)
- * Abas MVP: Meu Perfil (padrão) + Downloads; Últimas leituras / Favoritos / Newsletter como "Em breve".
+ * Abas MVP: Meu Perfil (padrão) + Downloads + Newsletter; Últimas leituras / Favoritos como "Em breve".
  * "Minha Conta" removida: Baixar dados + Excluir conta vivem na aba Perfil (seção LGPD);
  * Alterar senha no DashboardWelcome. Sessões e login social saíram (fora de escopo do MVP).
  * Drawer overlay em perfil: ?drawer=dados-pessoais|dados-profissionais|dados-fiscais
