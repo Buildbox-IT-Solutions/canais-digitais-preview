@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Modal } from '~/components/modal'
 import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import type { IconName } from '~/components/icon/paths'
@@ -22,16 +23,18 @@ interface IAuthTerminalModalProps {
 	accent: StatusRingAccent
 	icon: IconName
 	title: string
-	body: string
-	buttons: AuthTerminalButton[]
+	body: ReactNode
+	buttons?: AuthTerminalButton[]
 	labelledById: string
 	closeHref?: string
 }
 
 /**
- * Modal terminal compacto — estados de fim de linha (link expirado / ja usado), sem proof panel.
- * Casca unica centralizada (size md) sobre a home: anel de status + titulo + corpo + CTA(s) + fechar.
- * Compartilhado por Confirmacao de e-mail, Redefinir senha e Cancelar Exclusão.
+ * Modal terminal compacto — estados de fim de linha (link expirado / ja usado / conta excluída),
+ * sem proof panel. Casca unica centralizada (size md) sobre a home: anel de status + titulo +
+ * corpo + CTA(s) opcionais + fechar. Sem `buttons`, o conteúdo ganha padding extra no rodapé pra
+ * não ficar colado na borda do modal.
+ * Compartilhado por Confirmacao de e-mail, Redefinir senha e Excluir conta.
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-50
  */
 export function AuthTerminalModal({
@@ -39,7 +42,7 @@ export function AuthTerminalModal({
 	icon,
 	title,
 	body,
-	buttons,
+	buttons = [],
 	labelledById,
 	closeHref = '/home',
 }: IAuthTerminalModalProps) {
@@ -52,7 +55,9 @@ export function AuthTerminalModal({
 			showClose
 			labelledById={labelledById}
 		>
-			<div className="flex flex-col items-center gap-8 text-center w-full max-w-[392px] lg:max-w-none">
+			<div
+				className={`flex flex-col items-center gap-8 text-center w-full max-w-[392px] mx-auto lg:max-w-none ${buttons.length === 0 ? 'pb-6' : ''}`}
+			>
 				<StatusRing accent={accent} icon={icon} size="sm" />
 
 				<div className="flex flex-col gap-2 w-full">
@@ -65,24 +70,26 @@ export function AuthTerminalModal({
 					<p className="font-body text-body-md text-neutral-900">{body}</p>
 				</div>
 
-				<div className="flex flex-col gap-3 w-full">
-					{buttons.map((b) =>
-						b.href ? (
-							<a key={b.label} href={b.href} className={`${BTN_BASE} ${BTN_VARIANT[b.variant]}`}>
-								{b.label}
-							</a>
-						) : (
-							<button
-								key={b.label}
-								type="button"
-								onClick={b.onClick}
-								className={`${BTN_BASE} ${BTN_VARIANT[b.variant]}`}
-							>
-								{b.label}
-							</button>
-						),
-					)}
-				</div>
+				{buttons.length > 0 ? (
+					<div className="flex flex-col gap-3 w-full">
+						{buttons.map((b) =>
+							b.href ? (
+								<a key={b.label} href={b.href} className={`${BTN_BASE} ${BTN_VARIANT[b.variant]}`}>
+									{b.label}
+								</a>
+							) : (
+								<button
+									key={b.label}
+									type="button"
+									onClick={b.onClick}
+									className={`${BTN_BASE} ${BTN_VARIANT[b.variant]}`}
+								>
+									{b.label}
+								</button>
+							),
+						)}
+					</div>
+				) : null}
 			</div>
 		</Modal>
 	)

@@ -30,7 +30,7 @@ export const ExcluirConta: Story = {
 	args: {
 		icon: 'delete',
 		title: 'Excluir conta',
-		desc: 'Removemos seus dados permanentemente após 30 dias.',
+		desc: 'Direito ao esquecimento. Exclusão imediata e irreversível.',
 		danger: true,
 	},
 }

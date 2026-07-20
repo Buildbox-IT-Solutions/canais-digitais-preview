@@ -362,7 +362,7 @@ function PerfilPane({
 					<GeneralItem
 						icon="delete"
 						title="Excluir minha conta"
-						desc="Direito ao esquecimento. Processamos em até 30 dias."
+						desc="Direito ao esquecimento. Exclusão imediata e irreversível."
 						href="/excluir-conta"
 						danger
 						isLast

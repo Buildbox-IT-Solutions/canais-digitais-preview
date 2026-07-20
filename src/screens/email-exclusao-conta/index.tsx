@@ -1,48 +1,35 @@
-import {
-	EmailShell,
-	EmailBody,
-	EmailH1,
-	EmailP,
-	EmailPMuted,
-	EmailStrong,
-	EmailButton,
-	EmailFallback,
-	EmailDivider,
-	EmailNote,
-} from '../_emails/shell'
+import { EmailShell, EmailBody, EmailH1, EmailP, EmailPMuted, EmailStrong, EmailButton } from '../_emails/shell'
 
 /**
- * E-mail transacional: Confirmação de exclusão de conta (prazo de 14 dias p/ cancelar).
- * Referência: docs/legacy-reference/emails/email-exclusao-conta.html
+ * E-mail transacional: Confirmação de exclusão de conta (exclusão direta e imediata, sem
+ * janela de recuperação nem token de cancelamento).
+ * Assunto: "Sua conta foi excluída"
  * Genericizado (sem "todos os portais Informa").
  */
 export default function EmailExclusaoContaScreen() {
-	const link = 'https://foodconnection.com.br/cancelar-exclusao?token=[TOKEN]'
 	return (
 		<EmailShell>
 			<EmailBody>
-				<EmailH1>Recebemos sua solicitação</EmailH1>
+				<EmailH1>Sua conta foi excluída</EmailH1>
 				<EmailP>
-					Olá, [NOME]. Confirmamos o pedido de exclusão da sua conta em{' '}
+					Olá, [NOME]. Confirmamos a exclusão da sua conta na Food Connection, solicitada em{' '}
 					<EmailStrong>[DATA_SOLICITACAO]</EmailStrong>.
 				</EmailP>
 				<EmailP>
-					Esta ação encerrará seu acesso à Food Connection. Sua conta será{' '}
-					<EmailStrong>permanentemente removida em 14 dias</EmailStrong> — até lá, você pode cancelar
-					a exclusão se mudar de ideia.
+					Seus dados de perfil e preferências de newsletter foram removidos.
 				</EmailP>
 				<EmailPMuted>
-					Uma pequena parte dos seus dados (como registros de acesso e download) pode ser mantida
-					por tempo limitado apenas para cumprir obrigações legais, e não será usada para novas
+					Uma pequena parte dos dados (como registros de acesso e download) pode ser mantida por
+					tempo limitado apenas para cumprir obrigações legais, e não será usada para novas
 					comunicações. Depois desse prazo, também é eliminada.
 				</EmailPMuted>
 			</EmailBody>
 
-			<div style={{ padding: '8px 32px 16px 32px' }}>
+			<div style={{ padding: '8px 32px 24px 32px' }}>
 				<div
 					style={{
-						background: '#FEF3C7',
-						borderLeft: '4px solid #F59E0B',
+						background: '#F7F8FA',
+						borderLeft: '4px solid #D6D8DD',
 						padding: '16px 20px',
 						borderRadius: 4,
 					}}
@@ -56,7 +43,7 @@ export default function EmailExclusaoContaScreen() {
 							color: '#283857',
 						}}
 					>
-						O que será excluído:
+						O que foi excluído:
 					</p>
 					<ul style={{ margin: 0, paddingLeft: 20, fontSize: 14, lineHeight: 1.6, color: '#5A6E8F' }}>
 						<li>Dados de perfil (nome, foto, telefone, endereço)</li>
@@ -65,14 +52,11 @@ export default function EmailExclusaoContaScreen() {
 				</div>
 			</div>
 
-			<EmailButton href={link} label="Cancelar exclusão" />
-			<EmailFallback href={link} />
-			<EmailDivider />
-			<EmailNote>
-				<EmailStrong>Não reconhece esta solicitação?</EmailStrong> Isso pode significar que outra
-				pessoa tem acesso à sua conta. Clique em "Cancelar exclusão" acima — além de manter sua conta
-				ativa, você poderá trocar a senha e proteger seu acesso na mesma página.
-			</EmailNote>
+			<EmailBody style={{ padding: '0 32px 8px 32px' }}>
+				<EmailP>Sentiremos sua falta! Quando quiser, é só criar uma nova conta pra voltar a acessar a Food Connection.</EmailP>
+			</EmailBody>
+
+			<EmailButton href="https://foodconnection.com.br/cadastro" label="Criar nova conta" />
 		</EmailShell>
 	)
 }
