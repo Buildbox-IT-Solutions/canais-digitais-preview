@@ -733,7 +733,7 @@ const LGPD_LINKS: Array<{
 	{
 		icon: 'delete',
 		label: 'Excluir minha conta',
-		desc: 'Direito ao esquecimento. Processamos em até 30 dias.',
+		desc: 'Direito ao esquecimento. Exclusão imediata e irreversível.',
 		danger: true,
 		href: '/excluir-conta',
 	},

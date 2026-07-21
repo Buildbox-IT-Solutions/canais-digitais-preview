@@ -43,10 +43,10 @@ const GROUPS: RouteGroup[] = [
 		description: 'Modais que convertem visitante deslogado em cadastro — reusam os mesmos modais de Cadastro/Login acima.',
 		color: 'secondary',
 		items: [
-			{ path: '/home?preview=portal', label: 'Incentivo — Portal', description: 'Passivo · dispara ~4s na Home para visitante deslogado', status: 'em-aprovacao' },
-			{ path: '/conteudo?preview=leitura', label: 'Incentivo — Leitura', description: 'Passivo · dispara a ~50% de scroll no Conteúdo para visitante deslogado', status: 'em-aprovacao' },
-			{ path: '/home?preview=download', label: 'Incentivo — Download', description: 'Ativo · dispara ao clicar no CTA de download (Home e Conteúdo) para visitante deslogado', status: 'em-aprovacao' },
-			{ path: '/home?preview=newsletter', label: 'Incentivo — Newsletter', description: 'Ativo · dispara ao clicar no CTA de newsletter (Home e Conteúdo) para visitante deslogado', status: 'em-aprovacao' },
+			{ path: '/home?preview=portal', label: 'Incentivo — Portal', description: 'Passivo · dispara ~4s na Home para visitante deslogado', status: 'pronto-para-dev' },
+			{ path: '/conteudo?preview=leitura', label: 'Incentivo — Leitura', description: 'Passivo · dispara a ~50% de scroll no Conteúdo para visitante deslogado', status: 'pronto-para-dev' },
+			{ path: '/home?preview=download', label: 'Incentivo — Download', description: 'Ativo · dispara ao clicar no CTA de download (Home e Conteúdo) para visitante deslogado', status: 'pronto-para-dev' },
+			{ path: '/home?preview=newsletter', label: 'Incentivo — Newsletter', description: 'Ativo · dispara ao clicar no CTA de newsletter (Home e Conteúdo) para visitante deslogado', status: 'pronto-para-dev' },
 		],
 	},
 	{
@@ -54,11 +54,9 @@ const GROUPS: RouteGroup[] = [
 		description: 'Área logada do usuário e gestão de dados pessoais.',
 		color: 'mint',
 		items: [
-			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads', status: 'em-aprovacao' },
-			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil', status: 'em-aprovacao' },
-			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · 14 dias para cancelar', status: 'em-aprovacao' },
-			{ path: '/cancelar-exclusao', label: 'Cancelar exclusão', description: 'Link do e-mail · token válido, reativa a conta', status: 'em-aprovacao' },
-			{ path: '/cancelar-exclusao?state=invalid', label: 'Cancelar exclusão — link inválido', description: 'Token expirado / já usado, sem revelar qual', status: 'em-aprovacao' },
+			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads', status: 'pronto-para-dev' },
+			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil', status: 'pronto-para-dev' },
+			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · exclusão imediata e irreversível', status: 'em-aprovacao' },
 		],
 	},
 	{
@@ -70,7 +68,7 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/categoria', label: 'Categoria', description: 'Listagem de conteúdos por categoria', status: 'pronto-para-dev' },
 			{ path: '/conteudo', label: 'Conteúdo', description: 'Página interna de matéria (Post)', status: 'pronto-para-dev' },
 			{ path: '/buscar', label: 'Buscar', description: 'Resultados de busca', status: 'pronto-para-dev' },
-			{ path: '/menu', label: 'Menu', description: 'Menu principal expandido', status: 'em-aprovacao' },
+			{ path: '/menu', label: 'Menu', description: 'Menu principal expandido', status: 'pronto-para-dev' },
 		],
 	},
 	{
@@ -88,11 +86,11 @@ const GROUPS: RouteGroup[] = [
 		description: 'Templates de e-mail transacional (preview).',
 		color: 'secondary',
 		items: [
-			{ path: '/email-confirmacao', label: 'Confirmação de e-mail', description: 'Pós-cadastro · ativar conta', status: 'em-aprovacao' },
-			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada', status: 'em-aprovacao' },
-			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha', status: 'em-aprovacao' },
-			{ path: '/email-senha-alterada', label: 'Senha alterada', description: 'Confirmação pós-redefinição · aviso de segurança', status: 'em-aprovacao' },
-			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação · 14 dias p/ cancelar', status: 'em-aprovacao' },
+			{ path: '/email-confirmacao', label: 'Confirmação de e-mail', description: 'Pós-cadastro · ativar conta', status: 'pronto-para-dev' },
+			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada', status: 'pronto-para-dev' },
+			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha', status: 'pronto-para-dev' },
+			{ path: '/email-senha-alterada', label: 'Senha alterada', description: 'Confirmação pós-redefinição · aviso de segurança', status: 'pronto-para-dev' },
+			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação de exclusão imediata', status: 'em-aprovacao' },
 		],
 	},
 	{

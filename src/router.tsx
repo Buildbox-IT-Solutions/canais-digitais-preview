@@ -4,7 +4,6 @@ import ArchiveScreen from './screens/archive'
 import BuscarScreen from './screens/buscar'
 import CadastroScreen from './screens/cadastro'
 import CadastroV2Screen from './screens/cadastro-v2'
-import CancelarExclusaoScreen from './screens/cancelar-exclusao'
 import CategoriaScreen from './screens/categoria'
 import CentralScreen from './screens/central'
 import ConfirmacaoEmailScreen from './screens/confirmacao-email'
@@ -67,7 +66,6 @@ const router = createBrowserRouter([
 	{ path: '/meus-dados', element: <MeusDadosScreen /> },
 	{ path: '/consentimentos', element: <ConsentimentosScreen /> },
 	{ path: '/excluir-conta', element: <ExcluirContaScreen /> },
-	{ path: '/cancelar-exclusao', element: <CancelarExclusaoScreen /> },
 	{ path: '/contato', element: <ContatoScreen /> },
 	{ path: '/sobre', element: <SobreScreen /> },
 	{ path: '/anuncie', element: <AnuncieScreen /> },

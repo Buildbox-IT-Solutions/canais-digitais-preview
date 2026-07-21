@@ -1,7 +1,8 @@
-import type { InputHTMLAttributes } from 'react'
+import type { InputHTMLAttributes, ReactNode } from 'react'
 
 export interface IFormCheckboxProps
 	extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-	label: string
+	label: ReactNode
+	indeterminate?: boolean
 	className?: string
 }

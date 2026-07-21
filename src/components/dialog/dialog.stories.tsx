@@ -27,10 +27,10 @@ export const Destructive: Story = {
 		closeHref: '#',
 		size: 'lg',
 		title: 'Excluir sua conta',
-		description: 'Esta ação não pode ser desfeita após 30 dias. Parte dos dados pode ser mantida por obrigação legal.',
+		description: 'A exclusão é imediata, permanente e não pode ser desfeita.',
 		destructive: true,
 		secondary: { label: 'Cancelar', href: '#' },
-		primary: { label: 'Confirmar exclusão', href: '#' },
+		primary: { label: 'Excluir permanentemente', href: '#' },
 	},
 }
 
@@ -41,20 +41,20 @@ export const MobileFullScreen: Story = {
 		size: 'lg',
 		mobileFullScreen: true,
 		title: 'Excluir sua conta',
-		description: 'Esta ação não pode ser desfeita após 30 dias. Parte dos dados pode ser mantida por obrigação legal.',
+		description: 'A exclusão é imediata, permanente e não pode ser desfeita.',
 		destructive: true,
 		secondary: { label: 'Cancelar', href: '#' },
-		primary: { label: 'Confirmar exclusão', href: '#' },
+		primary: { label: 'Excluir permanentemente', href: '#' },
 	},
 }
 
 export const SingleAction: Story = {
 	args: {
 		closeHref: '#',
-		icon: { name: 'schedule', tone: 'warning' },
-		title: 'Conta marcada para exclusão',
-		description: 'Sua conta será excluída em 30 dias. Você pode cancelar a qualquer momento até lá.',
-		primary: { label: 'Voltar ao Perfil', href: '#' },
+		icon: { name: 'check', tone: 'success' },
+		title: 'Conta excluída',
+		description: 'Sua conta foi excluída permanentemente. Sentiremos sua falta!',
+		primary: { label: 'Criar nova conta', href: '#' },
 	},
 }
 
