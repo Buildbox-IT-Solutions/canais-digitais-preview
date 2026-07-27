@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '~/components/button'
 import { Icon } from '~/components/icon'
 import type { IIncentiveBannerProps } from './types'
@@ -10,6 +11,8 @@ import type { IIncentiveBannerProps } from './types'
  * Desktop: ícone + texto + CTAs pareados + X numa linha. Mobile: sem ícone, texto+X em
  * cima, CTAs empilhados full-width embaixo. CTAs usam Button (type=filled/outlined,
  * tone="inverse") — ver src/components/button.
+ * Reserva um spacer com a altura real da barra (ResizeObserver) logo após o container
+ * fixed, para o fim da página nunca ficar preso atrás dela em nenhum breakpoint.
  * Tokens: --color-primary-600, --color-secondary-950, --color-secondary-500, --color-white,
  *         --color-neutral-50
  */
@@ -24,10 +27,23 @@ export function IncentiveBanner({
 	onLogin,
 	onDismiss,
 }: IIncentiveBannerProps) {
+	const barRef = useRef<HTMLDivElement>(null)
+	const [barHeight, setBarHeight] = useState(0)
+
+	useEffect(() => {
+		if (!open || !barRef.current) return
+		const el = barRef.current
+		const observer = new ResizeObserver(([entry]) => setBarHeight(entry.contentRect.height))
+		observer.observe(el)
+		return () => observer.disconnect()
+	}, [open])
+
 	if (!open) return null
 
 	return (
+		<>
 		<div
+			ref={barRef}
 			role="region"
 			aria-label={`${title} ${titleHighlight}`}
 			className="fixed inset-x-0 bottom-0 z-50 overflow-hidden bg-gradient-to-br from-primary-600 to-secondary-950 shadow-xl animate-slide-up"
@@ -91,5 +107,7 @@ export function IncentiveBanner({
 				</button>
 			</div>
 		</div>
+		<div aria-hidden="true" style={{ height: barHeight }} />
+		</>
 	)
 }
