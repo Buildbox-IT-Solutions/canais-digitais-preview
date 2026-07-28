@@ -230,8 +230,8 @@ export default function HomeScreen() {
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 py-10 flex flex-col lg:flex-row gap-8 lg:gap-6">
 					<div className="flex flex-col gap-8 flex-1">
 						{NEWS_PODCAST.map((card) => (
-							<article key={card.id} className="group flex flex-row items-center gap-6 w-full">
-								<div className="shrink-0 w-[288px]">
+							<article key={card.id} className="group flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6 w-full">
+								<div className="w-full lg:w-[288px] lg:shrink-0">
 									<Thumbnail src={picsumSrc(card.seed, 600, 338)} alt="Capa" href="/conteudo" ratio="video" />
 								</div>
 								<div className="flex flex-col gap-2 flex-1 min-w-0">

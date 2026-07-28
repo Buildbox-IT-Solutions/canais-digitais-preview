@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '~/components/card'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
@@ -8,11 +9,13 @@ import { FooterDesktop } from '~/components/footer-desktop'
 import { GeneralItem } from '~/components/general-item'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
-import { NewsletterItem } from '~/components/newsletter-item'
+import type { IconName } from '~/components/icon/paths'
+import { IconTile } from '~/components/icon-tile'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
 import { RecentNewsItem } from '~/components/recent-news-item'
 import { StatusRing } from '~/components/status-ring'
+import { Switch } from '~/components/switch'
 import { Toast } from '~/components/toast'
 import {
 	DOWNLOADS,
@@ -30,7 +33,7 @@ import {
 type Tab = 'perfil' | 'ultimas' | 'newsletter' | 'downloads'
 type Drawer = 'dados-pessoais' | 'dados-profissionais' | 'dados-fiscais'
 
-const TABS: Tab[] = ['perfil', 'ultimas', 'newsletter', 'downloads']
+const TABS: Tab[] = ['perfil', 'downloads', 'newsletter', 'ultimas']
 const DRAWERS: Drawer[] = ['dados-pessoais', 'dados-profissionais', 'dados-fiscais']
 
 const BASE_HREF = '/dashboard-perfil-v4'
@@ -43,7 +46,7 @@ const PER_PAGE = 10
 
 /**
  * Tela: Dashboard de Perfil v4 — modelo tabbed (deriva de dashboard-perfil-v3)
- * Abas MVP: Meu Perfil (padrão) + Downloads; Últimas leituras / Favoritos / Newsletter como "Em breve".
+ * Abas MVP: Meu Perfil (padrão) + Downloads + Newsletter; Últimas leituras / Favoritos como "Em breve".
  * "Minha Conta" removida: Baixar dados + Excluir conta vivem na aba Perfil (seção LGPD);
  * Alterar senha no DashboardWelcome. Sessões e login social saíram (fora de escopo do MVP).
  * Drawer overlay em perfil: ?drawer=dados-pessoais|dados-profissionais|dados-fiscais
@@ -377,6 +380,7 @@ function PerfilPane({
 function NewsletterPane() {
 	const totalNl = NEWSLETTERS.length
 	const activeNl = NEWSLETTERS.filter((n) => n.checked).length
+	const isSingle = NEWSLETTERS.length === 1
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -393,19 +397,57 @@ function NewsletterPane() {
 				</p>
 			</div>
 
-			<div className="flex flex-col">
+			<div
+				className={
+					isSingle
+						? 'w-full max-w-[420px] mx-auto'
+						: 'w-full max-w-[720px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-4'
+				}
+			>
 				{NEWSLETTERS.map((nl, i) => (
-					<NewsletterItem
+					<NewsletterCard
 						key={i}
 						id={`nl-v4-${i}`}
+						icon={nl.icon}
 						title={nl.title}
 						desc={nl.desc}
 						checked={nl.checked}
-						isLast={i === NEWSLETTERS.length - 1}
 					/>
 				))}
 			</div>
 		</div>
+	)
+}
+
+function NewsletterCard({
+	id,
+	icon,
+	title,
+	desc,
+	checked,
+}: {
+	id: string
+	icon: IconName
+	title: string
+	desc: string
+	checked: boolean
+}) {
+	return (
+		<Card>
+			<CardHeader className="flex-row items-start gap-4">
+				<IconTile icon={icon} />
+				<div className="flex flex-col gap-1 min-w-0">
+					<CardTitle>{title}</CardTitle>
+					<CardDescription className="truncate">{desc}</CardDescription>
+				</div>
+			</CardHeader>
+			<CardFooter className="border-t border-neutral-100 justify-between">
+				<label htmlFor={id} className="flex-1 min-w-0 font-body font-semibold text-label-lg text-neutral-950 cursor-pointer">
+					{checked ? 'Assinado' : 'Assinar'}
+				</label>
+				<Switch id={id} defaultChecked={checked} />
+			</CardFooter>
+		</Card>
 	)
 }
 

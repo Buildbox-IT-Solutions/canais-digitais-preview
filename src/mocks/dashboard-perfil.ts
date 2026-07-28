@@ -1,3 +1,5 @@
+import type { IconName } from '~/components/icon/paths'
+
 export interface PerfilCampos {
 	nome: string
 	email: string
@@ -69,13 +71,20 @@ export const RECENT_NEWS = [
 	{ category: 'Tecnocarne', title: 'Smart Processing: inovação ao vivo na Tecnocarne South America', when: 'há 1 ano' },
 ]
 
-export const NEWSLETTERS = [
-	{ title: 'Novidades e ofertas da Informa Markets', desc: 'Comunicações comerciais, convites para eventos e lançamentos institucionais.', checked: true },
-	{ title: 'Food Connection', desc: 'O canal de conteúdo oficial das feiras FiSA, Fispal Tecnologia, Tecnocarne e Fispal Food Service. Tendências, entrevistas e novidades para quem move a cadeia de alimentos e bebidas.', checked: true },
-	{ title: 'FiSA', desc: 'Cobertura da Feira Internacional de Ingredientes, Aditivos e Tecnologia para a Indústria de Alimentos e Bebidas.', checked: false },
-	{ title: 'Fispal Tecnologia', desc: 'Conteúdo da feira de processos, embalagens e logística para a indústria de alimentos e bebidas.', checked: false },
-	{ title: 'Tecnocarne', desc: 'Tendências e inovações da indústria da carne — processamento, equipamentos, ingredientes e mercado.', checked: false },
-	{ title: 'Fispal Food Service', desc: 'O canal de conteúdo do food service brasileiro: bares, restaurantes, padarias, hotelaria, delivery e operações.', checked: false },
+export interface NewsletterEntry {
+	icon: IconName
+	title: string
+	desc: string
+	checked: boolean
+}
+
+export const NEWSLETTERS: NewsletterEntry[] = [
+	{ icon: 'mail', title: 'Novidades e ofertas da Informa Markets', desc: 'Comunicações comerciais, convites para eventos e lançamentos institucionais.', checked: true },
+	{ icon: 'mail', title: 'Food Connection', desc: 'O canal de conteúdo oficial das feiras FiSA, Fispal Tecnologia, Tecnocarne e Fispal Food Service. Tendências, entrevistas e novidades para quem move a cadeia de alimentos e bebidas.', checked: true },
+	{ icon: 'mail', title: 'FiSA', desc: 'Cobertura da Feira Internacional de Ingredientes, Aditivos e Tecnologia para a Indústria de Alimentos e Bebidas.', checked: false },
+	{ icon: 'mail', title: 'Fispal Tecnologia', desc: 'Conteúdo da feira de processos, embalagens e logística para a indústria de alimentos e bebidas.', checked: false },
+	{ icon: 'mail', title: 'Tecnocarne', desc: 'Tendências e inovações da indústria da carne — processamento, equipamentos, ingredientes e mercado.', checked: false },
+	{ icon: 'mail', title: 'Fispal Food Service', desc: 'O canal de conteúdo do food service brasileiro: bares, restaurantes, padarias, hotelaria, delivery e operações.', checked: false },
 ]
 
 export type DownloadIconType = 'pdf' | 'doc' | 'image'
