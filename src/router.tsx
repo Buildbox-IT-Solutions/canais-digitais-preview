@@ -1,4 +1,5 @@
 import { RouterProvider, createBrowserRouter, Navigate } from 'react-router'
+import { Toaster } from './components/toaster'
 import AnuncieScreen from './screens/anuncie'
 import ArchiveScreen from './screens/archive'
 import BuscarScreen from './screens/buscar'
@@ -20,6 +21,7 @@ import EmailExclusaoContaScreen from './screens/email-exclusao-conta'
 import EmailRecuperacaoSenhaScreen from './screens/email-recuperacao-senha'
 import EmailSenhaAlteradaScreen from './screens/email-senha-alterada'
 import ExcluirContaScreen from './screens/excluir-conta'
+import FormNewsletterScreen from './screens/form-newsletter'
 import GateDownloadScreen from './screens/gate-download'
 import HomeScreen from './screens/home'
 import { HomeV2Screen } from './screens/home-v2'
@@ -71,6 +73,7 @@ const router = createBrowserRouter([
 	{ path: '/anuncie', element: <AnuncieScreen /> },
 	{ path: '/patrocinadores', element: <PatrocinadoresScreen /> },
 	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
+	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
 	{ path: '/gate-download', element: <GateDownloadScreen /> },
 	{ path: '/email-confirmacao', element: <EmailConfirmacaoScreen /> },
 	{ path: '/email-boas-vindas', element: <EmailBoasVindasScreen /> },
@@ -82,5 +85,10 @@ const router = createBrowserRouter([
 ])
 
 export function Router() {
-	return <RouterProvider router={router} />
+	return (
+		<>
+			<RouterProvider router={router} />
+			<Toaster />
+		</>
+	)
 }

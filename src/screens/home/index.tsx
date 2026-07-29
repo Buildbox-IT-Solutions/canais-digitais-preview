@@ -215,8 +215,7 @@ export default function HomeScreen() {
 				title="O melhor conteúdo do setor alimentício, direto na sua caixa de entrada."
 				description="Junte-se a milhares de construtores que já assinam nossa newsletter gratuita."
 				ctaLabel="Assine agora"
-				ctaHref="/dashboard-perfil-v4?tab=newsletter"
-				onCtaClick={!logado ? () => setNewsletterOpen(true) : undefined}
+				ctaHref={logado ? '/dashboard-perfil-v4?tab=newsletter' : '/form-newsletter'}
 			/>
 
 			{/* §12 — Ad 970×90 (desktop) / 360×142 (mobile) */}

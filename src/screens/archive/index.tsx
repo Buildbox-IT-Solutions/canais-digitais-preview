@@ -85,6 +85,16 @@ const GROUPS: ArchiveGroup[] = [
 			},
 		],
 	},
+	{
+		title: 'Newsletter — fluxo anterior',
+		items: [
+			{
+				path: '/home?preview=newsletter',
+				label: 'Assinar newsletter (dialog criar conta/entrar)',
+				reason: 'Substituído pelo redirecionamento direto para o formulário completo em /form-newsletter',
+			},
+		],
+	},
 ]
 
 const TOTAL = GROUPS.reduce((sum, g) => sum + g.items.length, 0)
