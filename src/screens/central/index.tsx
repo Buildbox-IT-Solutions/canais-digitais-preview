@@ -55,7 +55,7 @@ const GROUPS: RouteGroup[] = [
 		items: [
 			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads', status: 'pronto-para-dev' },
 			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil', status: 'pronto-para-dev' },
-			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · exclusão imediata e irreversível', status: 'em-aprovacao' },
+			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · exclusão imediata e irreversível', status: 'pronto-para-dev' },
 		],
 	},
 	{
@@ -90,7 +90,7 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/email-boas-vindas', label: 'Boas-vindas', description: 'Pós-confirmação · conta ativada', status: 'pronto-para-dev' },
 			{ path: '/email-recuperacao-senha', label: 'Recuperação de senha', description: 'Link de redefinição de senha', status: 'pronto-para-dev' },
 			{ path: '/email-senha-alterada', label: 'Senha alterada', description: 'Confirmação pós-redefinição · aviso de segurança', status: 'pronto-para-dev' },
-			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação de exclusão imediata', status: 'em-aprovacao' },
+			{ path: '/email-exclusao-conta', label: 'Exclusão de conta', description: 'Confirmação de exclusão imediata', status: 'pronto-para-dev' },
 		],
 	},
 	{
