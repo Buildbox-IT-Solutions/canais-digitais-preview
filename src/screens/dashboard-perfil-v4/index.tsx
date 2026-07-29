@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
-import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '~/components/card'
+import { toast } from '~/lib/toast-store'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
@@ -9,13 +10,11 @@ import { FooterDesktop } from '~/components/footer-desktop'
 import { GeneralItem } from '~/components/general-item'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
-import type { IconName } from '~/components/icon/paths'
-import { IconTile } from '~/components/icon-tile'
+import { NewsletterItem } from '~/components/newsletter-item'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
 import { RecentNewsItem } from '~/components/recent-news-item'
 import { StatusRing } from '~/components/status-ring'
-import { Switch } from '~/components/switch'
 import { Toast } from '~/components/toast'
 import {
 	DOWNLOADS,
@@ -378,9 +377,17 @@ function PerfilPane({
 }
 
 function NewsletterPane() {
-	const totalNl = NEWSLETTERS.length
-	const activeNl = NEWSLETTERS.filter((n) => n.checked).length
-	const isSingle = NEWSLETTERS.length === 1
+	const [items, setItems] = useState(NEWSLETTERS)
+	const totalNl = items.length
+	const activeNl = items.filter((n) => n.checked).length
+
+	// Auto-save otimista: o switch muda de imediato e o toast confirma o "salvamento"
+	// (mock, sem API real) — mesmo padrão descrito para as futuras preferências de
+	// comunicação em figma-specs/_regras-de-negocio.md.
+	function handleToggle(index: number, checked: boolean) {
+		setItems((prev) => prev.map((item, i) => (i === index ? { ...item, checked } : item)))
+		toast.success(checked ? 'Newsletter assinada.' : 'Newsletter cancelada.')
+	}
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -397,57 +404,20 @@ function NewsletterPane() {
 				</p>
 			</div>
 
-			<div
-				className={
-					isSingle
-						? 'w-full max-w-[420px] mx-auto'
-						: 'w-full max-w-[720px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-4'
-				}
-			>
-				{NEWSLETTERS.map((nl, i) => (
-					<NewsletterCard
+			<div className="flex flex-col">
+				{items.map((nl, i) => (
+					<NewsletterItem
 						key={i}
 						id={`nl-v4-${i}`}
-						icon={nl.icon}
 						title={nl.title}
 						desc={nl.desc}
 						checked={nl.checked}
+						isLast={i === items.length - 1}
+						onChange={(checked) => handleToggle(i, checked)}
 					/>
 				))}
 			</div>
 		</div>
-	)
-}
-
-function NewsletterCard({
-	id,
-	icon,
-	title,
-	desc,
-	checked,
-}: {
-	id: string
-	icon: IconName
-	title: string
-	desc: string
-	checked: boolean
-}) {
-	return (
-		<Card>
-			<CardHeader className="flex-row items-start gap-4">
-				<IconTile icon={icon} />
-				<div className="flex flex-col gap-1 min-w-0">
-					<CardTitle>{title}</CardTitle>
-					<CardDescription className="truncate">{desc}</CardDescription>
-				</div>
-			</CardHeader>
-			<CardFooter className="border-t border-neutral-100 justify-between">
-				<label htmlFor={id} className="flex-1 min-w-0 font-body font-semibold text-label-lg text-neutral-950 cursor-pointer">
-					{checked ? 'Assinado' : 'Assinar'}
-				</label>
-				<Switch id={id} defaultChecked={checked} />
-			</CardFooter>
-		</Card>
 	)
 }
 
