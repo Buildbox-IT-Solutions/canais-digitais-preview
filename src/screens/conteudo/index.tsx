@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import incentiveBannerTexture from '~/assets/images/incentive-banner-texture.png'
 import { AdFrame } from '~/components/ad-frame'
+import { AiSummaryBlock } from '~/components/ai-summary-block'
+import { AudioVersionBlock } from '~/components/audio-version-block'
 import { Avatar } from '~/components/avatar'
 import { AvatarStack } from '~/components/avatar-stack'
 import { BannerDownload } from '~/components/banner-download'
@@ -182,6 +184,8 @@ export default function ConteudoScreen() {
 									authors={activePost.authors}
 									publishedAt={activePost.publishedAt}
 									updatedAt={activePost.updatedAt}
+									readingTimeMin={activePost.readingTimeMin}
+									audioVersion={activePost.media?.kind === 'podcast' ? null : activePost.audioVersion}
 								/>
 
 								<div className="flex gap-1 items-center shrink-0">
@@ -198,6 +202,15 @@ export default function ConteudoScreen() {
 								</div>
 							</div>
 						</div>
+
+						{activePost.aiSummary ? (
+							<div className="mt-6 w-full">
+								<AiSummaryBlock
+									bullets={activePost.aiSummary.bullets}
+									disclaimer={activePost.aiSummary.disclaimer}
+								/>
+							</div>
+						) : null}
 
 						<div className="mt-6 w-full">
 							<Thumbnail
@@ -356,10 +369,14 @@ function AuthorshipRow({
 	authors,
 	publishedAt,
 	updatedAt,
+	readingTimeMin,
+	audioVersion,
 }: {
 	authors: Author[]
 	publishedAt: string
 	updatedAt?: string
+	readingTimeMin: number
+	audioVersion: Post['audioVersion']
 }) {
 	const [firstAuthor, ...otherAuthors] = authors
 	const dateLabel = format(new Date(publishedAt), "dd/MM/yyyy HH'h'mm", { locale: ptBR })
@@ -387,13 +404,18 @@ function AuthorshipRow({
 						</span>
 					) : null}
 				</div>
-				<div className="flex gap-1 items-center font-body font-semibold text-label-md text-neutral-900">
+				<div className="flex flex-wrap gap-1 items-center font-body font-semibold text-label-md text-neutral-900">
 					<span>{dateLabel}</span>
+					<span>•</span>
+					<span>{readingTimeMin} min de leitura</span>
 					{updatedLabel ? (
 						<>
 							<span>•</span>
 							<span>Atualizado há {updatedLabel}</span>
 						</>
+					) : null}
+					{audioVersion ? (
+						<AudioVersionBlock durationSec={audioVersion.durationSec} className="ml-2" />
 					) : null}
 				</div>
 			</div>
