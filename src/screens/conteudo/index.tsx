@@ -21,6 +21,7 @@ import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dia
 import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
 import { SectionTitle } from '~/components/section-title'
+import { TableOfContents } from '~/components/table-of-contents'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
@@ -249,6 +250,10 @@ export default function ConteudoScreen() {
 								/>
 							</div>
 						)}
+
+						<div className="mt-6 w-full">
+							<TableOfContents headings={activePost.headings} />
+						</div>
 
 						<div className="mt-6 flex flex-col gap-9 w-full">
 							{introBlocks.map((block, i) => (
