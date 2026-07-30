@@ -7,7 +7,10 @@
  *   viewport; abre um painel com a mesma lista.
  * `activeSection` é estado único, compartilhado pelos dois estados.
  * Não renderiza nada quando `headings.length < 3`.
- * Tokens: --color-neutral-100, --color-secondary-950, --text-label-md, rounded-sm
+ * Título do Estado A estilizado igual ao header do AiSummaryBlock ("Ver
+ * resumo") — mesmo tratamento, incluindo o hover de borda (Figma node
+ * 619:7291: border neutral-100 -> neutral-900 no hover).
+ * Tokens: --color-neutral-100, --color-neutral-900, --color-secondary-950, --text-title-lg, rounded-sm
  */
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from '~/components/icon'
@@ -124,20 +127,21 @@ export function TableOfContents({ headings, className }: ITableOfContentsProps) 
 		<div className={className}>
 			{/* Estado A — bloco no início do conteúdo */}
 			<div ref={sentinelRef}>
-				<nav aria-label="Neste artigo" className="w-full border border-neutral-100 rounded-sm bg-white">
+				<nav
+					aria-label="Neste artigo"
+					className="w-full border border-neutral-100 rounded-sm bg-white transition-colors hover:border-neutral-900"
+				>
 					<button
 						type="button"
 						onClick={() => setExpanded((v) => !v)}
 						aria-expanded={expanded}
 						className="flex items-center justify-between gap-2 p-4 w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35 rounded-sm"
 					>
-						<span className="font-body font-bold text-label-md tracking-wider text-neutral-700 uppercase">
-							Neste artigo
-						</span>
+						<span className="font-display font-bold text-title-lg text-primary-600">Neste artigo</span>
 						<Icon
 							name="chevron-down"
 							className={twMerge(
-								'size-5 text-primary-600 shrink-0 motion-safe:transition-transform motion-reduce:transition-none',
+								'size-6 text-primary-600 shrink-0 motion-safe:transition-transform motion-reduce:transition-none',
 								expanded && 'rotate-180',
 							)}
 						/>
@@ -157,7 +161,7 @@ export function TableOfContents({ headings, className }: ITableOfContentsProps) 
 						aria-label="Neste artigo"
 						className="flex items-center gap-2 h-11 pl-4 pr-3 rounded-full bg-white border border-neutral-100 shadow-lg text-body-md font-body font-semibold text-primary-600 outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35"
 					>
-						<Icon name="menu" className="size-5" />
+						<Icon name="toc" className="size-5" />
 						Neste artigo
 						<Icon
 							name="chevron-down"

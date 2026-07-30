@@ -71,6 +71,21 @@ const GROUPS: RouteGroup[] = [
 		],
 	},
 	{
+		title: 'Conteúdo (Post)',
+		description:
+			'Fixtures da página de Conteúdo, cada uma testando uma combinação diferente de atributos (autoria, mídia, download, resumo IA, headings). Em prototipagem — briefing pagina-conteudo-toc.',
+		color: 'primary',
+		items: [
+			{ path: '/conteudo?scenario=post-autor-unico', label: 'Autor único', description: '1 autor · 2 headings, sem TOC', status: 'prototipando' },
+			{ path: '/conteudo?scenario=post-multiplos-autores', label: 'Múltiplos autores', description: 'N≥2 autores · avatar stack + "e outros N"', status: 'prototipando' },
+			{ path: '/conteudo?scenario=post-video', label: 'Vídeo', description: 'Mídia em vídeo no topo do artigo', status: 'prototipando' },
+			{ path: '/conteudo?scenario=post-podcast', label: 'Podcast', description: 'Mídia em podcast · oculta o player de áudio', status: 'prototipando' },
+			{ path: '/conteudo?scenario=post-download', label: 'Download', description: 'Bloco de download no corpo do artigo', status: 'prototipando' },
+			{ path: '/conteudo?scenario=post-longo-toc', label: 'TOC — artigo longo', description: '13 headings · TOC com bloco fixo e botão flutuante', status: 'prototipando' },
+			{ path: '/conteudo?scenario=post-completo', label: 'Completo', description: 'Todos os blocos combinados (áudio, resumo IA, vídeo, TOC, download)', status: 'prototipando' },
+		],
+	},
+	{
 		title: 'Institucionais & Forms',
 		description: 'Páginas estáticas e formulários.',
 		color: 'coral',

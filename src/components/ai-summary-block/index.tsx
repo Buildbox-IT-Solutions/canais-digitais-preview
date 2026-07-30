@@ -3,7 +3,8 @@
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=619-7290
  * Nota de designer ("Resumo"): resumo feito por IA, configurável no Admin,
  * começa fechado — usuário clica para ver o resumo.
- * Tokens: --color-neutral-100, --text-title-lg, --text-body-md, --text-label-sm, rounded-sm
+ * Hover (node 619:7291): borda muda de neutral-100 para neutral-900.
+ * Tokens: --color-neutral-100, --color-neutral-900, --text-title-lg, --text-body-md, --text-label-sm, rounded-sm
  */
 import { useState } from 'react'
 import { Icon } from '~/components/icon'
@@ -14,7 +15,12 @@ export function AiSummaryBlock({ bullets, disclaimer, className }: IAiSummaryBlo
 	const [open, setOpen] = useState(false)
 
 	return (
-		<div className={twMerge('bg-white border border-neutral-100 rounded-sm w-full', className)}>
+		<div
+			className={twMerge(
+				'bg-white border border-neutral-100 rounded-sm w-full transition-colors hover:border-neutral-900',
+				className,
+			)}
+		>
 			<button
 				type="button"
 				onClick={() => setOpen((v) => !v)}

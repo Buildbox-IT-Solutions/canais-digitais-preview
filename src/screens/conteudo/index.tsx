@@ -26,7 +26,7 @@ import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
-import { getPostByScenario, POSTS_BY_SCENARIO } from '~/fixtures/posts'
+import { getPostByScenario } from '~/fixtures/posts'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
@@ -391,7 +391,6 @@ export default function ConteudoScreen() {
 			</div>
 		) : null}
 
-		<ScenarioDebugPanel post={activePost} />
 		</>
 	)
 }
@@ -515,60 +514,4 @@ function ContentBlockView({ block }: { block: ContentBlock }) {
 				</blockquote>
 			)
 	}
-}
-
-/**
- * Painel de depuração da Fase 1 (briefing pagina-conteudo-toc) — confirma qual
- * fixture o `?scenario=` resolveu, para o gate de aprovação. Não faz parte do
- * design final; sai quando o TOC (Fase 5) fechar o briefing.
- */
-function ScenarioDebugPanel({ post }: { post: Post }) {
-	const scenarios = Object.keys(POSTS_BY_SCENARIO)
-
-	return (
-		<div className="fixed bottom-4 left-4 z-50 max-w-sm bg-neutral-950/95 text-white rounded-lg shadow-lg p-4 font-body text-label-md flex flex-col gap-3">
-			<div>
-				<p className="font-bold text-label-lg">Fixture ativa: {post.slug}</p>
-				<dl className="mt-1 flex flex-col gap-0.5 text-neutral-100">
-					<div className="flex gap-1">
-						<dt className="font-semibold">Autores:</dt>
-						<dd>{post.authors.map((a) => a.name).join(', ')}</dd>
-					</div>
-					<div className="flex gap-1">
-						<dt className="font-semibold">Mídia:</dt>
-						<dd>{post.media?.kind ?? 'nenhuma'}</dd>
-					</div>
-					<div className="flex gap-1">
-						<dt className="font-semibold">Áudio (TTS):</dt>
-						<dd>{post.audioVersion ? 'presente' : 'ausente'}</dd>
-					</div>
-					<div className="flex gap-1">
-						<dt className="font-semibold">Download:</dt>
-						<dd>{post.download ? 'presente' : 'ausente'}</dd>
-					</div>
-					<div className="flex gap-1">
-						<dt className="font-semibold">Resumo IA:</dt>
-						<dd>{post.aiSummary ? `${post.aiSummary.bullets.length} bullets` : 'ausente'}</dd>
-					</div>
-					<div className="flex gap-1">
-						<dt className="font-semibold">Headings:</dt>
-						<dd>{post.headings.length}</dd>
-					</div>
-				</dl>
-			</div>
-			<div className="flex flex-wrap gap-1.5 border-t border-white/20 pt-3">
-				{scenarios.map((key) => (
-					<a
-						key={key}
-						href={`/conteudo?scenario=${key}`}
-						className={`px-2 py-1 rounded-full transition-colors ${
-							key === post.slug ? 'bg-white text-primary-600' : 'bg-white/10 hover:bg-white/20'
-						}`}
-					>
-						{key}
-					</a>
-				))}
-			</div>
-		</div>
-	)
 }

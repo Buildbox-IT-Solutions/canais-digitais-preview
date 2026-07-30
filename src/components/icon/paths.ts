@@ -87,6 +87,7 @@ export const MATERIAL_ICON_PATHS = {
 		'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 13v-2h8v2H8zm0 4v-2h5v2H8z',
 	'google-mono':
 		'M12 10.2v3.6h5.1c-.2 1.3-1.6 3.9-5.1 3.9-3.1 0-5.6-2.5-5.6-5.7s2.5-5.7 5.6-5.7c1.7 0 2.9.7 3.6 1.4l2.5-2.4C16.4 3.5 14.4 2.5 12 2.5 6.8 2.5 2.5 6.8 2.5 12S6.8 21.5 12 21.5c6.5 0 10-4.6 10-9.3 0-.6-.1-1.1-.2-1.6H12z',
+	toc: 'M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z',
 } as const
 
 export const BRAND_ICON_PATHS = {
