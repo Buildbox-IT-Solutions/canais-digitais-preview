@@ -19,6 +19,7 @@ import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { NewsCard } from '~/components/news-card'
+import { PlayButton } from '~/components/play-button'
 import { SectionTitle } from '~/components/section-title'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
@@ -158,17 +159,22 @@ export default function ConteudoScreen() {
 			<HeaderDesktop activeCategory="food-service" />
 
 			{/* §2 — Ad 970×250 */}
-			<section className="flex flex-col items-center py-6 w-full">
+			<section className="flex flex-col items-center py-6 w-full overflow-hidden">
 				<AdFrame width={970} height={250} />
 			</section>
 
-			{/* §3 — Article + sidebar */}
+			{/* §3 — Article + sidebar. Empilha abaixo de lg (1024px); vira grid 11 col a partir daí. */}
 			<section className="w-full">
-				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 grid grid-cols-11 gap-6 items-start">
-					<article className="col-span-7 flex flex-col items-start">
+				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 flex flex-col lg:grid lg:grid-cols-11 gap-6 lg:items-start">
+					<article className="lg:col-span-7 flex flex-col items-start min-w-0">
 						<div className="flex flex-col gap-8 w-full">
 							<div className="flex flex-col gap-4 w-full">
-								<Categoria color="saffron" label={activePost.kicker} href="/categoria" />
+								<Categoria
+									color="saffron"
+									label={activePost.kicker}
+									href="/categoria"
+									className="inline-block py-3.5 -my-3.5"
+								/>
 								<h1 className="font-display font-bold text-display-sm text-primary-600">
 									{activePost.title}
 								</h1>
@@ -179,14 +185,14 @@ export default function ConteudoScreen() {
 								) : null}
 							</div>
 
-							<div className="flex gap-8 items-center w-full">
+							<div className="flex flex-wrap gap-4 lg:gap-8 items-center w-full">
 								<AuthorshipRow
 									authors={activePost.authors}
 									publishedAt={activePost.publishedAt}
 									updatedAt={activePost.updatedAt}
 								/>
 
-								<div className="flex gap-1 items-center shrink-0">
+								<div className="flex gap-1 items-center shrink-0 max-w-full overflow-x-auto">
 									{SHARE_ICONS.map((s) => (
 										<IconButton
 											key={s.icon}
@@ -216,13 +222,33 @@ export default function ConteudoScreen() {
 							</div>
 						) : null}
 
-						<div className="mt-6 w-full">
-							<Thumbnail
-								src={picsumSrc(activePost.slug, 1408, 939)}
-								alt="Imagem de destaque"
-								ratio="photo"
-							/>
-						</div>
+						{activePost.media?.kind === 'video' ? (
+							<div className="mt-6 w-full">
+								<div className="relative w-full aspect-video rounded-sm overflow-hidden bg-neutral-950">
+									<img
+										src={picsumSrc(`${activePost.slug}-video`, 1408, 792)}
+										alt=""
+										className="w-full h-full object-cover opacity-70"
+									/>
+									<div className="absolute inset-0 flex items-center justify-center">
+										<PlayButton as="div" size="xlarge" />
+									</div>
+									<div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+										<p className="font-body font-semibold text-body-md text-white">
+											{activePost.media.title}
+										</p>
+									</div>
+								</div>
+							</div>
+						) : (
+							<div className="mt-6 w-full">
+								<Thumbnail
+									src={picsumSrc(activePost.slug, 1408, 939)}
+									alt="Imagem de destaque"
+									ratio="photo"
+								/>
+							</div>
+						)}
 
 						<div className="mt-6 flex flex-col gap-9 w-full">
 							{introBlocks.map((block, i) => (
@@ -242,14 +268,14 @@ export default function ConteudoScreen() {
 							<p className="font-display font-bold text-title-md text-neutral-950">Temas</p>
 							<div className="flex flex-wrap gap-2">
 								{ARTICLE_TAGS.map((t) => (
-									<Tag key={t} label={t} href="/categoria" />
+									<Tag key={t} label={t} href="/categoria" className="py-3 -my-2" />
 								))}
 							</div>
 						</div>
 					</article>
 
-					{/* Sidebar — só Em Alta, Newsletter e anúncio (Download saiu, ver GATE 2) */}
-					<aside className="col-span-4 flex flex-col gap-10">
+					{/* Sidebar — só Em Alta, Newsletter e anúncio (Download saiu, ver GATE 2). Empilha abaixo do artigo em <lg. */}
+					<aside className="lg:col-span-4 flex flex-col items-center lg:items-start gap-10">
 						{/* Widget Em Alta */}
 						<WidgetEmAlta
 							items={EM_ALTA.map((title) => ({ title }))}
@@ -286,7 +312,7 @@ export default function ConteudoScreen() {
 						</div>
 
 						{/* Ad 300×250 */}
-						<div className="bg-white p-4 flex justify-center">
+						<div className="bg-white p-4 flex justify-center w-full overflow-hidden">
 							<AdFrame width={300} height={250} />
 						</div>
 					</aside>
@@ -313,7 +339,7 @@ export default function ConteudoScreen() {
 			</section>
 
 			{/* §5 — Ad 728×90 */}
-			<section className="flex flex-col items-center py-6 w-full">
+			<section className="flex flex-col items-center py-6 w-full overflow-hidden">
 				<AdFrame width={728} height={90} />
 			</section>
 
@@ -394,7 +420,7 @@ function AuthorshipRow({
 					<span className="font-body font-semibold text-label-lg text-neutral-900">Por</span>
 					<a
 						href="/categoria"
-						className="font-body font-bold text-label-lg text-secondary-950 hover:underline"
+						className="inline-block py-3 -my-3 font-body font-bold text-label-lg text-secondary-950 hover:underline"
 					>
 						{firstAuthor.name}
 					</a>
