@@ -77,11 +77,18 @@ export function TableOfContentsMargin({ headings, className }: ITableOfContentsM
 
 			{/* Estado B — régua na margem esquerda, só em telas largas o bastante pra ter espaço vazio de verdade fora do container */}
 			{!blockVisible ? (
+				/* Outer wrapper width must be ≥ rail (~20px) + ml-3 (12px) + panel (288px) when panel is open.
+				   Panel's left-full resolves against inner relative inline-block (not this wrapper), so the inner
+				   div is essential — don't remove it or change to block/full-width. Width is conditional on panelOpen
+				   to avoid blocking article content interaction when panel is closed. */
 				<div
 					ref={wrapperRef}
 					onMouseEnter={() => setPanelOpen(true)}
 					onMouseLeave={() => setPanelOpen(false)}
-					className="hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30 w-96"
+					className={twMerge(
+						'hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30',
+						panelOpen && 'w-96',
+					)}
 				>
 					<div className="relative inline-block">
 						<button
