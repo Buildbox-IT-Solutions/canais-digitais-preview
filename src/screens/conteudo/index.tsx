@@ -22,6 +22,7 @@ import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
 import { SectionTitle } from '~/components/section-title'
 import { TableOfContents } from '~/components/table-of-contents'
+import { TableOfContentsIcon } from '~/components/table-of-contents-icon'
 import { TableOfContentsMargin } from '~/components/table-of-contents-margin'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
@@ -256,6 +257,8 @@ export default function ConteudoScreen() {
 						<div className="mt-6 w-full">
 							{tocVariant === 'margem' ? (
 								<TableOfContentsMargin headings={activePost.headings} />
+							) : tocVariant === 'icone' ? (
+								<TableOfContentsIcon headings={activePost.headings} />
 							) : (
 								<TableOfContents headings={activePost.headings} />
 							)}
