@@ -13,14 +13,16 @@
  * 619:7291: border neutral-100 -> neutral-900 no hover).
  * Tokens: --color-neutral-100, --color-neutral-900, --color-secondary-950, --text-title-lg, rounded-sm
  */
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Icon } from '~/components/icon'
-import { prefersReducedMotion } from '~/lib/prefers-reduced-motion'
+import { scrollToHeading } from '~/lib/scroll-to-heading'
 import { twMerge } from '~/lib/tw-merge'
+import { useClickAwayAndEscape } from '~/lib/use-click-away-and-escape'
 import { useSentinelVisibility } from '~/lib/use-sentinel-visibility'
 import { useTocScrollspy } from '~/lib/use-toc-scrollspy'
 import { TocInlineBlock } from './toc-inline-block'
 import { TocList } from './toc-list'
+import { TocPanel } from './toc-panel'
 import type { ITableOfContentsProps } from './types'
 
 export function TableOfContents({ headings, className }: ITableOfContentsProps) {
@@ -35,32 +37,12 @@ export function TableOfContents({ headings, className }: ITableOfContentsProps) 
 	const activeId = useTocScrollspy(headings, hasEnoughHeadings)
 	const blockVisible = useSentinelVisibility(sentinelRef, hasEnoughHeadings)
 
-	// Painel do Estado B fecha ao clicar fora ou pressionar Escape.
-	useEffect(() => {
-		if (!panelOpen) return
-
-		function handleClickOutside(e: MouseEvent) {
-			const target = e.target as Node
-			if (panelRef.current?.contains(target) || triggerRef.current?.contains(target)) return
-			setPanelOpen(false)
-		}
-		function handleEscape(e: KeyboardEvent) {
-			if (e.key === 'Escape') setPanelOpen(false)
-		}
-
-		document.addEventListener('mousedown', handleClickOutside)
-		document.addEventListener('keydown', handleEscape)
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside)
-			document.removeEventListener('keydown', handleEscape)
-		}
-	}, [panelOpen])
+	useClickAwayAndEscape(triggerRef, panelRef, panelOpen, () => setPanelOpen(false))
 
 	if (!hasEnoughHeadings) return null
 
 	function handleSelect(id: string) {
-		document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' })
-		window.history.replaceState(null, '', `#${id}`)
+		scrollToHeading(id)
 		setPanelOpen(false)
 	}
 
@@ -97,14 +79,11 @@ export function TableOfContents({ headings, className }: ITableOfContentsProps) 
 						/>
 					</button>
 					{panelOpen ? (
-						<div
-							ref={panelRef}
-							className="absolute right-0 mt-2 w-72 max-h-[70vh] overflow-y-auto p-4 rounded-sm bg-white border border-neutral-100 shadow-lg"
-						>
+						<TocPanel ref={panelRef} className="absolute right-0 mt-2">
 							<nav aria-label="Neste artigo">
 								<TocList headings={headings} activeId={activeId} onSelect={handleSelect} />
 							</nav>
-						</div>
+						</TocPanel>
 					) : null}
 				</div>
 			) : null}

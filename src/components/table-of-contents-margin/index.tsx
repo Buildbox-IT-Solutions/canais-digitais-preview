@@ -21,7 +21,8 @@
 import type { FocusEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { TocList } from '~/components/table-of-contents/toc-list'
-import { prefersReducedMotion } from '~/lib/prefers-reduced-motion'
+import { TocPanel } from '~/components/table-of-contents/toc-panel'
+import { scrollToHeading } from '~/lib/scroll-to-heading'
 import { twMerge } from '~/lib/tw-merge'
 import { useTocScrollspy } from '~/lib/use-toc-scrollspy'
 import type { ITableOfContentsMarginProps } from './types'
@@ -46,8 +47,7 @@ export function TableOfContentsMargin({ headings, className }: ITableOfContentsM
 	if (!hasEnoughHeadings) return null
 
 	function handleSelect(id: string) {
-		document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' })
-		window.history.replaceState(null, '', `#${id}`)
+		scrollToHeading(id)
 		setPanelOpen(false)
 	}
 
@@ -101,15 +101,15 @@ export function TableOfContentsMargin({ headings, className }: ITableOfContentsM
 					</button>
 
 					{panelOpen ? (
-						<div
+						<TocPanel
 							onFocus={() => setPanelOpen(true)}
 							onBlur={handleBlur}
-							className="absolute left-full ml-3 top-1/2 -translate-y-1/2 w-72 max-h-[70vh] overflow-y-auto p-4 rounded-sm bg-white border border-neutral-100 shadow-lg"
+							className="absolute left-full ml-3 top-1/2 -translate-y-1/2"
 						>
 							<nav aria-label="Neste artigo">
 								<TocList headings={headings} activeId={activeId} onSelect={handleSelect} />
 							</nav>
-						</div>
+						</TocPanel>
 					) : null}
 				</div>
 			</div>
