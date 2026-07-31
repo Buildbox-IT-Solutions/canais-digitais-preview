@@ -72,7 +72,7 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 				/>
 			) : null}
 
-			<div className="2xl:hidden fixed top-32 right-4 lg:right-6 z-30">
+			<div className="2xl:hidden fixed top-24 right-4 lg:right-6 z-30">
 				<button
 					ref={triggerRef}
 					type="button"
