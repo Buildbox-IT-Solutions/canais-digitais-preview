@@ -13,10 +13,15 @@
  * Abaixo desse limiar, cai para um botão flutuante com texto "Neste
  * artigo" (reaproveitado da Opção 1 arquivada), fixo top-right, clique
  * abre/fecha — esse continua sempre visível desde o carregamento, sem
- * gate de scroll (só a régua precisa do gate). Os dois blocos (régua e
- * botão) ficam montados ao mesmo tempo; a visibilidade por breakpoint é
- * só CSS (`hidden 2xl:block` / `2xl:hidden`) — elementos com
- * `display:none` saem da árvore de foco/tab.
+ * gate de scroll (só a régua precisa do gate). A distância até o header
+ * é a mesma da margem direita (`right-4`/`lg:right-6`), mas medida a
+ * partir da altura REAL do header (`useHeaderHeight`) em vez de um valor
+ * fixo — o header alterna Expanded/Compact e muda de altura por
+ * breakpoint, então um `top-N` fixo grudava ou afastava demais dependendo
+ * do estado (feedback do PO em 2026-07-31, terceira rodada de ajuste).
+ * Os dois blocos (régua e botão) ficam montados ao mesmo tempo; a
+ * visibilidade por breakpoint é só CSS (`hidden 2xl:block` / `2xl:hidden`)
+ * — elementos com `display:none` saem da árvore de foco/tab.
  * Seta do botão é `arrow-drop-down` (mesmo ícone do botão "Acessar" do
  * header), não `chevron-down` — padronização pedida na revisão com o PO.
  * O popover (tanto da régua quanto do botão) ganha o título muted "Neste
@@ -33,6 +38,8 @@ import { TocPanel } from '~/components/table-of-contents/toc-panel'
 import { scrollToHeading } from '~/lib/scroll-to-heading'
 import { twMerge } from '~/lib/tw-merge'
 import { useClickAwayAndEscape } from '~/lib/use-click-away-and-escape'
+import { useHeaderHeight } from '~/lib/use-header-height'
+import { useMediaQuery } from '~/lib/use-media-query'
 import { useScrolledPast } from '~/lib/use-scrolled-past'
 import { useTocScrollspy } from '~/lib/use-toc-scrollspy'
 import type { ITableOfContentsIconProps } from './types'
@@ -47,6 +54,10 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 	const hasEnoughHeadings = headings.length >= 3
 	const activeId = useTocScrollspy(headings, hasEnoughHeadings)
 	const pastHero = useScrolledPast(railAnchorRef, hasEnoughHeadings)
+	const headerHeight = useHeaderHeight()
+	const isLgUp = useMediaQuery('(min-width: 1024px)')
+	// Mesma distância que o botão já tem da margem direita (right-4/lg:right-6).
+	const buttonTop = headerHeight + (isLgUp ? 24 : 16)
 
 	useClickAwayAndEscape(triggerRef, panelRef, panelOpen, () => setPanelOpen(false))
 
@@ -72,7 +83,7 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 				/>
 			) : null}
 
-			<div className="2xl:hidden fixed top-24 right-4 lg:right-6 z-30">
+			<div className="2xl:hidden fixed right-4 lg:right-6 z-30" style={{ top: buttonTop }}>
 				<button
 					ref={triggerRef}
 					type="button"
