@@ -282,7 +282,7 @@ export default function ConteudoScreen() {
 							<p className="font-display font-bold text-title-md text-neutral-950">Temas</p>
 							<div className="flex flex-wrap gap-2">
 								{ARTICLE_TAGS.map((t) => (
-									<Tag key={t} label={t} href="/categoria" className="py-3 -my-2" />
+									<Tag key={t} label={t} href="/categoria" />
 								))}
 							</div>
 						</div>
