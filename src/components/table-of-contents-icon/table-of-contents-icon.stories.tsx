@@ -21,11 +21,13 @@ export default meta
 type Story = StoryObj<typeof TableOfContentsIcon>
 
 /**
- * Híbrido: abaixo de 1536px, botão flutuante fixo desde o carregamento,
- * clique abre/fecha o painel (clique fora ou Escape também fecha). A partir
- * de 1536px, o botão some e entra a mesma régua na margem da Opção 2 (abre
- * no hover) — no viewport padrão do Storybook (menor que 1536px), só o
- * botão é visível.
+ * Versão final do TOC: abaixo de 1536px, botão flutuante com texto "Neste
+ * artigo" fixo top-right desde o carregamento, clique abre/fecha o painel
+ * (clique fora ou Escape também fecha). A partir de 1536px, o botão some e
+ * entra a régua na margem (abre no hover) — no viewport padrão do
+ * Storybook (menor que 1536px), só o botão é visível. O painel, em ambos os
+ * estados, mostra o título "Neste artigo" e itens com espaçamento
+ * compacto.
  */
 export const BotaoFlutuante: Story = {
 	args: { headings: HEADINGS },

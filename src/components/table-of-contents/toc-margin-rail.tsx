@@ -9,21 +9,25 @@ interface ITocMarginRailProps {
 	headings: Heading[]
 	activeId: string | null
 	onSelect: (id: string) => void
+	/** Título muted acima da lista do painel. Só passado pela versão final (table-of-contents-icon) — a Opção 2 arquivada (table-of-contents-margin) não passa, mantendo o visual congelado. */
+	title?: string
+	/** Espaçamento mais compacto entre itens do painel. Mesma regra do `title` acima. */
+	dense?: boolean
 }
 
 /**
  * Régua de tracinhos na margem esquerda + painel no hover — visual e
- * interação do Medium. Reaproveitada pela Opção 2 (table-of-contents-margin,
- * onde sempre é a única UI) e pela Opção 3 (table-of-contents-icon, onde é a
- * metade "tela larga" do híbrido — a outra metade é o botão flutuante,
- * visível só abaixo de 2xl).
+ * interação do Medium. Reaproveitada pela Opção 2 arquivada
+ * (table-of-contents-margin, congelada, nunca passa `title`/`dense`) e pela
+ * versão final (table-of-contents-icon, onde é a metade "tela larga" do
+ * híbrido — a outra metade é o botão flutuante, visível só abaixo de 2xl).
  * Só existe em 2xl: (>=1536px, onde existe espaço vazio de verdade fora do
  * container de max-w-screen-xl — 1280px / 2 = 640px + 40px de respiro =
  * 680px do centro da viewport). Abaixo de 2xl não renderiza nada (visível).
  * Abre no hover (mouseenter) e no foco por teclado — nunca no clique.
  * Fecha no mouseleave, blur pra fora do wrapper, ou Escape.
  */
-export function TocMarginRail({ headings, activeId, onSelect }: ITocMarginRailProps) {
+export function TocMarginRail({ headings, activeId, onSelect, title, dense }: ITocMarginRailProps) {
 	const [panelOpen, setPanelOpen] = useState(false)
 	const wrapperRef = useRef<HTMLDivElement>(null)
 
@@ -87,12 +91,13 @@ export function TocMarginRail({ headings, activeId, onSelect }: ITocMarginRailPr
 
 				{panelOpen ? (
 					<TocPanel
+						title={title}
 						onFocus={() => setPanelOpen(true)}
 						onBlur={handleBlur}
 						className="absolute left-full ml-3 top-1/2 -translate-y-1/2"
 					>
 						<nav aria-label="Neste artigo">
-							<TocList headings={headings} activeId={activeId} onSelect={onSelect} />
+							<TocList headings={headings} activeId={activeId} onSelect={onSelect} dense={dense} />
 						</nav>
 					</TocPanel>
 				) : null}

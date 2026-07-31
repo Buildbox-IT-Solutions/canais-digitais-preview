@@ -1,5 +1,10 @@
 /**
  * Componente: TableOfContentsMargin — "Neste artigo" (Opção 2, régua na margem)
+ * ARQUIVADO em 2026-07-31 — só a Opção 3 (table-of-contents-icon) segue pra
+ * produção. Mantido congelado, acessível via `?toc=margem` a partir de
+ * `/archive` (referência histórica; não recebe mais ajustes de design —
+ * por isso não passa `title`/`dense` pra <TocMarginRail>, diferente da
+ * Opção 3, que reusa o mesmo componente com esses extras).
  * Sem referência no Figma — protótipo de comparação com a Opção 1
  * (table-of-contents/index.tsx) pro briefing pagina-conteudo-toc, inspirado
  * no TOC do Medium (régua de traços na margem esquerda + painel no hover).

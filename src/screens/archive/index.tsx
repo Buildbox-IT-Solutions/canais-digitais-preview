@@ -95,6 +95,22 @@ const GROUPS: ArchiveGroup[] = [
 			},
 		],
 	},
+	{
+		title: 'TOC — variantes descartadas (Página de Conteúdo)',
+		items: [
+			{
+				path: '/conteudo?scenario=post-longo-toc&toc=pill',
+				label: 'TOC — bloco + botão com texto',
+				reason: 'Substituída pelo TOC único (régua na margem + botão flutuante)',
+			},
+			{
+				path: '/conteudo?scenario=post-longo-toc&toc=margem',
+				label: 'TOC — só régua na margem',
+				reason:
+					'Substituída pelo TOC único, que reaproveita esta régua e complementa com botão flutuante abaixo de 1536px',
+			},
+		],
+	},
 ]
 
 const TOTAL = GROUPS.reduce((sum, g) => sum + g.items.length, 0)

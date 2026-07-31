@@ -1,5 +1,8 @@
 /**
  * Componente: TableOfContents — "Neste artigo" (TOC híbrido, Opção 1)
+ * ARQUIVADO em 2026-07-31 — só a Opção 3 (table-of-contents-icon) segue
+ * pra produção. Mantido congelado, acessível via `?toc=pill` a partir de
+ * `/archive` (referência histórica; não recebe mais ajustes de design).
  * Sem referência no Figma (feature nova da Fase 5 do briefing
  * pagina-conteudo-toc). Um único componente cobre os dois estados:
  *   Estado A — bloco colapsável no início do conteúdo, aberto por padrão

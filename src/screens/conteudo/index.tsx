@@ -257,10 +257,10 @@ export default function ConteudoScreen() {
 						<div className="mt-6 w-full">
 							{tocVariant === 'margem' ? (
 								<TableOfContentsMargin headings={activePost.headings} />
-							) : tocVariant === 'icone' ? (
-								<TableOfContentsIcon headings={activePost.headings} />
-							) : (
+							) : tocVariant === 'pill' ? (
 								<TableOfContents headings={activePost.headings} />
+							) : (
+								<TableOfContentsIcon headings={activePost.headings} />
 							)}
 						</div>
 
