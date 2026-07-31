@@ -22,6 +22,7 @@ import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
 import { SectionTitle } from '~/components/section-title'
 import { TableOfContents } from '~/components/table-of-contents'
+import { TableOfContentsMargin } from '~/components/table-of-contents-margin'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
@@ -58,6 +59,7 @@ export default function ConteudoScreen() {
 	const showDownloadToast = params.get('toast') === 'download-started'
 	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
 	const previewIncentive = params.get('preview')
+	const tocVariant = params.get('toc')
 
 	const activePost = getPostByScenario(params.get('scenario'))
 
@@ -252,7 +254,11 @@ export default function ConteudoScreen() {
 						)}
 
 						<div className="mt-6 w-full">
-							<TableOfContents headings={activePost.headings} />
+							{tocVariant === 'margem' ? (
+								<TableOfContentsMargin headings={activePost.headings} />
+							) : (
+								<TableOfContents headings={activePost.headings} />
+							)}
 						</div>
 
 						<div className="mt-6 flex flex-col gap-9 w-full">

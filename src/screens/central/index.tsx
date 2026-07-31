@@ -82,6 +82,7 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/conteudo?scenario=post-podcast', label: 'Podcast', description: 'Mídia em podcast · oculta o player de áudio', status: 'prototipando' },
 			{ path: '/conteudo?scenario=post-download', label: 'Download', description: 'Bloco de download no corpo do artigo', status: 'prototipando' },
 			{ path: '/conteudo?scenario=post-longo-toc', label: 'TOC — artigo longo', description: '13 headings · TOC com bloco fixo e botão flutuante', status: 'prototipando' },
+			{ path: '/conteudo?scenario=post-longo-toc&toc=margem', label: 'TOC — Opção 2 (régua na margem)', description: '13 headings · régua fixa na margem esquerda (>=1536px) + painel hover, inspirada no Medium', status: 'prototipando' },
 			{ path: '/conteudo?scenario=post-completo', label: 'Completo', description: 'Todos os blocos combinados (áudio, resumo IA, vídeo, TOC, download)', status: 'prototipando' },
 		],
 	},
