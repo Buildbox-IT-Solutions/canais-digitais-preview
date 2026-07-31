@@ -6,10 +6,16 @@
  * `?toc=pill`/`?toc=margem` a partir de `/archive`.
  * Em telas largas (2xl/>=1536px), se comporta como a régua na margem
  * (<TocMarginRail> compartilhada com a Opção 2 arquivada) — abre no hover.
+ * A régua só aparece depois que a página rola além de um marcador logo
+ * abaixo da imagem destaque (`useScrolledPast`) — no carregamento da
+ * página ela ficaria na mesma faixa vertical do título/cabeçalho, o que
+ * ficava visualmente ruim (feedback do PO em 2026-07-31).
  * Abaixo desse limiar, cai para um botão flutuante com texto "Neste
  * artigo" (reaproveitado da Opção 1 arquivada), fixo top-right, clique
- * abre/fecha. Os dois blocos ficam montados ao mesmo tempo; a visibilidade
- * é só CSS (`hidden 2xl:block` / `2xl:hidden`) — elementos com
+ * abre/fecha — esse continua sempre visível desde o carregamento, sem
+ * gate de scroll (só a régua precisa do gate). Os dois blocos (régua e
+ * botão) ficam montados ao mesmo tempo; a visibilidade por breakpoint é
+ * só CSS (`hidden 2xl:block` / `2xl:hidden`) — elementos com
  * `display:none` saem da árvore de foco/tab.
  * Seta do botão é `arrow-drop-down` (mesmo ícone do botão "Acessar" do
  * header), não `chevron-down` — padronização pedida na revisão com o PO.
@@ -27,6 +33,7 @@ import { TocPanel } from '~/components/table-of-contents/toc-panel'
 import { scrollToHeading } from '~/lib/scroll-to-heading'
 import { twMerge } from '~/lib/tw-merge'
 import { useClickAwayAndEscape } from '~/lib/use-click-away-and-escape'
+import { useScrolledPast } from '~/lib/use-scrolled-past'
 import { useTocScrollspy } from '~/lib/use-toc-scrollspy'
 import type { ITableOfContentsIconProps } from './types'
 
@@ -35,9 +42,11 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 
 	const triggerRef = useRef<HTMLButtonElement>(null)
 	const panelRef = useRef<HTMLDivElement>(null)
+	const railAnchorRef = useRef<HTMLDivElement>(null)
 
 	const hasEnoughHeadings = headings.length >= 3
 	const activeId = useTocScrollspy(headings, hasEnoughHeadings)
+	const pastHero = useScrolledPast(railAnchorRef, hasEnoughHeadings)
 
 	useClickAwayAndEscape(triggerRef, panelRef, panelOpen, () => setPanelOpen(false))
 
@@ -50,15 +59,20 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 
 	return (
 		<div className={className}>
-			<TocMarginRail
-				headings={headings}
-				activeId={activeId}
-				onSelect={scrollToHeading}
-				title="Neste artigo"
-				dense
-			/>
+			{/* Marcador logo abaixo da imagem destaque — só define quando a régua pode aparecer. h-px (não h-0) porque um sentinel de altura zero é observado de forma inconsistente pelo IntersectionObserver entre browsers. */}
+			<div ref={railAnchorRef} aria-hidden="true" className="h-px" />
 
-			<div className="2xl:hidden fixed top-[100px] right-4 lg:right-6 z-30">
+			{pastHero ? (
+				<TocMarginRail
+					headings={headings}
+					activeId={activeId}
+					onSelect={scrollToHeading}
+					title="Neste artigo"
+					dense
+				/>
+			) : null}
+
+			<div className="2xl:hidden fixed top-32 right-4 lg:right-6 z-30">
 				<button
 					ref={triggerRef}
 					type="button"

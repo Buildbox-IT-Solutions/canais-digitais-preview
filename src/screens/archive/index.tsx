@@ -96,6 +96,31 @@ const GROUPS: ArchiveGroup[] = [
 		],
 	},
 	{
+		title: 'Conteúdo (Post) — cenários fora da rodada de aprovação',
+		items: [
+			{
+				path: '/conteudo?scenario=post-multiplos-autores',
+				label: 'Múltiplos autores',
+				reason: 'Fora da rodada de aprovação atual com o PO — só Autor único, Download e TOC seguem na Central',
+			},
+			{
+				path: '/conteudo?scenario=post-video',
+				label: 'Vídeo',
+				reason: 'Fora da rodada de aprovação atual com o PO — só Autor único, Download e TOC seguem na Central',
+			},
+			{
+				path: '/conteudo?scenario=post-podcast',
+				label: 'Podcast',
+				reason: 'Fora da rodada de aprovação atual com o PO — só Autor único, Download e TOC seguem na Central',
+			},
+			{
+				path: '/conteudo?scenario=post-completo',
+				label: 'Completo',
+				reason: 'Fora da rodada de aprovação atual com o PO — só Autor único, Download e TOC seguem na Central',
+			},
+		],
+	},
+	{
 		title: 'TOC — variantes descartadas (Página de Conteúdo)',
 		items: [
 			{
