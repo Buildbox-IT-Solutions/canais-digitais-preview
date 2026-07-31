@@ -83,38 +83,40 @@ export function TableOfContentsMargin({ headings, className }: ITableOfContentsM
 					onMouseLeave={() => setPanelOpen(false)}
 					className="hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30 w-96"
 				>
-					<button
-						type="button"
-						aria-label="Neste artigo"
-						aria-expanded={panelOpen}
-						onFocus={() => setPanelOpen(true)}
-						onBlur={handleBlur}
-						className="flex flex-col gap-3 py-1 outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35 rounded-xs"
-					>
-						{headings.map((h) => (
-							<span
-								key={h.id}
-								aria-hidden="true"
-								className={twMerge(
-									'block h-0.5 rounded-full transition-colors motion-reduce:transition-none',
-									h.level === 3 ? 'w-3 ml-2' : 'w-4',
-									activeId === h.id ? 'bg-secondary-950' : 'bg-neutral-300',
-								)}
-							/>
-						))}
-					</button>
-
-					{panelOpen ? (
-						<div
+					<div className="relative inline-block">
+						<button
+							type="button"
+							aria-label="Neste artigo"
+							aria-expanded={panelOpen}
 							onFocus={() => setPanelOpen(true)}
 							onBlur={handleBlur}
-							className="absolute left-full ml-3 top-1/2 -translate-y-1/2 w-72 max-h-[70vh] overflow-y-auto p-4 rounded-sm bg-white border border-neutral-100 shadow-lg"
+							className="flex flex-col gap-3 py-1 outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35 rounded-xs"
 						>
-							<nav aria-label="Neste artigo">
-								<TocList headings={headings} activeId={activeId} onSelect={handleSelect} />
-							</nav>
-						</div>
-					) : null}
+							{headings.map((h) => (
+								<span
+									key={h.id}
+									aria-hidden="true"
+									className={twMerge(
+										'block h-0.5 rounded-full transition-colors motion-reduce:transition-none',
+										h.level === 3 ? 'w-3 ml-2' : 'w-4',
+										activeId === h.id ? 'bg-secondary-950' : 'bg-neutral-300',
+									)}
+								/>
+							))}
+						</button>
+
+						{panelOpen ? (
+							<div
+								onFocus={() => setPanelOpen(true)}
+								onBlur={handleBlur}
+								className="absolute left-full ml-3 top-1/2 -translate-y-1/2 w-72 max-h-[70vh] overflow-y-auto p-4 rounded-sm bg-white border border-neutral-100 shadow-lg"
+							>
+								<nav aria-label="Neste artigo">
+									<TocList headings={headings} activeId={activeId} onSelect={handleSelect} />
+								</nav>
+							</div>
+						) : null}
+					</div>
 				</div>
 			) : null}
 		</div>
