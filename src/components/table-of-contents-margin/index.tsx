@@ -81,7 +81,7 @@ export function TableOfContentsMargin({ headings, className }: ITableOfContentsM
 					ref={wrapperRef}
 					onMouseEnter={() => setPanelOpen(true)}
 					onMouseLeave={() => setPanelOpen(false)}
-					className="hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30"
+					className="hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30 w-96"
 				>
 					<button
 						type="button"
