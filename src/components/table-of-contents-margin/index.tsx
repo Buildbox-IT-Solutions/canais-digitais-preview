@@ -6,113 +6,27 @@
  * Diferente da Opção 1: não tem bloco "Neste artigo" no início do artigo —
  * só a régua, sempre visível em telas largas o bastante (correção do
  * usuário em 2026-07-31, pós-primeira rodada de revisão com o cliente).
- * Só existe em 2xl: (>=1536px, onde existe espaço vazio de verdade fora do
- * container de max-w-screen-xl — 1280px / 2 = 640px + 40px de respiro =
- * 680px do centro da viewport). Abaixo de 2xl não há nenhum affordance —
- * fiel ao Medium fora do desktop largo.
- * Traços de heading nível 2 (H3) ficam alinhados à esquerda com os de
- * nível 1 (H2) — sem indentação — diferenciados só pelo tamanho, fiel ao
- * Medium.
- * Abre no hover (mouseenter) e no foco por teclado — nunca no clique
- * (fiel ao Medium). Fecha no mouseleave, blur pra fora do wrapper, ou Escape.
+ * A régua em si (tracinhos, hover/foco/blur/Escape, painel) vive em
+ * <TocMarginRail>, compartilhada com a Opção 3 (table-of-contents-icon),
+ * que reusa a mesma régua em telas largas e cai pro botão flutuante abaixo
+ * do breakpoint em que ela deixa de caber.
  * Não renderiza nada quando `headings.length < 3`.
  * Tokens: --color-neutral-100, --color-neutral-300, --color-neutral-900, --color-secondary-950, rounded-sm
  */
-import type { FocusEvent } from 'react'
-import { useEffect, useRef, useState } from 'react'
-import { TocList } from '~/components/table-of-contents/toc-list'
-import { TocPanel } from '~/components/table-of-contents/toc-panel'
+import { TocMarginRail } from '~/components/table-of-contents/toc-margin-rail'
 import { scrollToHeading } from '~/lib/scroll-to-heading'
-import { twMerge } from '~/lib/tw-merge'
 import { useTocScrollspy } from '~/lib/use-toc-scrollspy'
 import type { ITableOfContentsMarginProps } from './types'
 
 export function TableOfContentsMargin({ headings, className }: ITableOfContentsMarginProps) {
-	const [panelOpen, setPanelOpen] = useState(false)
-	const wrapperRef = useRef<HTMLDivElement>(null)
-
 	const hasEnoughHeadings = headings.length >= 3
 	const activeId = useTocScrollspy(headings, hasEnoughHeadings)
 
-	// Painel fecha com Escape, além do mouseleave/blur tratados inline.
-	useEffect(() => {
-		if (!panelOpen) return
-		function handleEscape(e: KeyboardEvent) {
-			if (e.key === 'Escape') setPanelOpen(false)
-		}
-		document.addEventListener('keydown', handleEscape)
-		return () => document.removeEventListener('keydown', handleEscape)
-	}, [panelOpen])
-
 	if (!hasEnoughHeadings) return null
-
-	function handleSelect(id: string) {
-		scrollToHeading(id)
-		setPanelOpen(false)
-	}
-
-	// Foco saindo do wrapper (régua + painel) fecha; foco se movendo entre
-	// os dois (ex.: da régua pro link dentro do painel) mantém aberto.
-	// Tipado como HTMLElement (não HTMLDivElement/HTMLButtonElement) porque é
-	// usado como onBlur tanto do <button> da régua quanto do <div> do painel.
-	function handleBlur(e: FocusEvent<HTMLElement>) {
-		if (wrapperRef.current?.contains(e.relatedTarget as Node | null)) return
-		setPanelOpen(false)
-	}
 
 	return (
 		<div className={className}>
-			{/*
-				Largura do wrapper externo precisa ser >= régua (~16px) + ml-3
-				(12px) + painel (288px) quando o painel está aberto — daí o w-96
-				condicional. O left-full do painel resolve contra o div interno
-				relative inline-block (não este wrapper), então esse div interno
-				é essencial — não remover nem trocar por block/w-full.
-			*/}
-			<div
-				ref={wrapperRef}
-				onMouseEnter={() => setPanelOpen(true)}
-				onMouseLeave={() => setPanelOpen(false)}
-				className={twMerge(
-					'hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30',
-					panelOpen && 'w-96',
-				)}
-			>
-				<div className="relative inline-block">
-					<button
-						type="button"
-						aria-label="Neste artigo"
-						aria-expanded={panelOpen}
-						onFocus={() => setPanelOpen(true)}
-						onBlur={handleBlur}
-						className="flex flex-col gap-2 py-1 outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35 rounded-xs"
-					>
-						{headings.map((h) => (
-							<span
-								key={h.id}
-								aria-hidden="true"
-								className={twMerge(
-									'block h-0.5 rounded-full transition-colors motion-reduce:transition-none',
-									h.level === 3 ? 'w-2' : 'w-4',
-									activeId === h.id ? 'bg-secondary-950' : 'bg-neutral-300',
-								)}
-							/>
-						))}
-					</button>
-
-					{panelOpen ? (
-						<TocPanel
-							onFocus={() => setPanelOpen(true)}
-							onBlur={handleBlur}
-							className="absolute left-full ml-3 top-1/2 -translate-y-1/2"
-						>
-							<nav aria-label="Neste artigo">
-								<TocList headings={headings} activeId={activeId} onSelect={handleSelect} />
-							</nav>
-						</TocPanel>
-					) : null}
-				</div>
-			</div>
+			<TocMarginRail headings={headings} activeId={activeId} onSelect={scrollToHeading} />
 		</div>
 	)
 }

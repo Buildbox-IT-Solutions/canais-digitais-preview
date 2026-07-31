@@ -83,7 +83,7 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/conteudo?scenario=post-download', label: 'Download', description: 'Bloco de download no corpo do artigo', status: 'prototipando' },
 			{ path: '/conteudo?scenario=post-longo-toc', label: 'TOC — artigo longo', description: '13 headings · TOC com bloco fixo e botão flutuante', status: 'prototipando' },
 			{ path: '/conteudo?scenario=post-longo-toc&toc=margem', label: 'TOC — Opção 2 (régua na margem)', description: '13 headings · régua fixa na margem esquerda (>=1536px) + painel hover, inspirada no Medium', status: 'prototipando' },
-			{ path: '/conteudo?scenario=post-longo-toc&toc=icone', label: 'TOC — Opção 3 (ícone flutuante)', description: '13 headings · botão flutuante só com ícone, fixo em qualquer breakpoint, estilo Claude', status: 'prototipando' },
+			{ path: '/conteudo?scenario=post-longo-toc&toc=icone', label: 'TOC — Opção 3 (híbrido)', description: '13 headings · abaixo de 1536px, botão flutuante estilo Claude; a partir de 1536px, mesma régua da Opção 2', status: 'prototipando' },
 			{ path: '/conteudo?scenario=post-completo', label: 'Completo', description: 'Todos os blocos combinados (áudio, resumo IA, vídeo, TOC, download)', status: 'prototipando' },
 		],
 	},

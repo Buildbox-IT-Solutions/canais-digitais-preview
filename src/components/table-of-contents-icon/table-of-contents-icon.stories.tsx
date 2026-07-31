@@ -21,9 +21,11 @@ export default meta
 type Story = StoryObj<typeof TableOfContentsIcon>
 
 /**
- * Botão fixo desde o carregamento, em qualquer largura de tela — sem bloco
- * no topo, sem gate de scroll. Clique abre o painel; clique fora ou Escape
- * fecha.
+ * Híbrido: abaixo de 1536px, botão flutuante fixo desde o carregamento,
+ * clique abre/fecha o painel (clique fora ou Escape também fecha). A partir
+ * de 1536px, o botão some e entra a mesma régua na margem da Opção 2 (abre
+ * no hover) — no viewport padrão do Storybook (menor que 1536px), só o
+ * botão é visível.
  */
 export const BotaoFlutuante: Story = {
 	args: { headings: HEADINGS },
