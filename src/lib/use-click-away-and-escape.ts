@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 
 /**
@@ -12,16 +12,19 @@ export function useClickAwayAndEscape(
 	enabled: boolean,
 	onClose: () => void,
 ): void {
+	const onCloseRef = useRef(onClose)
+	onCloseRef.current = onClose
+
 	useEffect(() => {
 		if (!enabled) return
 
 		function handleClickOutside(e: MouseEvent) {
 			const target = e.target as Node
 			if (panelRef.current?.contains(target) || triggerRef.current?.contains(target)) return
-			onClose()
+			onCloseRef.current()
 		}
 		function handleEscape(e: KeyboardEvent) {
-			if (e.key === 'Escape') onClose()
+			if (e.key === 'Escape') onCloseRef.current()
 		}
 
 		document.addEventListener('mousedown', handleClickOutside)
@@ -30,5 +33,5 @@ export function useClickAwayAndEscape(
 			document.removeEventListener('mousedown', handleClickOutside)
 			document.removeEventListener('keydown', handleEscape)
 		}
-	}, [triggerRef, panelRef, enabled, onClose])
+	}, [triggerRef, panelRef, enabled])
 }
