@@ -21,12 +21,13 @@ export default meta
 type Story = StoryObj<typeof TableOfContentsMargin>
 
 /**
- * Role a página: o bloco do topo (Estado A) desaparece e a régua na margem
- * esquerda aparece (só visível com a janela do navegador >= 1536px de
- * largura — abaixo disso, propositalmente, nada flutua). Passe o mouse
- * sobre a régua (ou dê Tab até ela pelo teclado) pra abrir o painel.
+ * A régua na margem esquerda já aparece de cara — sem bloco "Neste artigo"
+ * no topo do artigo (diferença da Opção 1). Só visível com a janela do
+ * navegador >= 1536px de largura — abaixo disso, propositalmente, nada
+ * aparece. Passe o mouse sobre a régua (ou dê Tab até ela pelo teclado)
+ * pra abrir o painel.
  */
-export const RoleParaVerOsDoisEstados: Story = {
+export const ReguaNaMargem: Story = {
 	args: { headings: HEADINGS },
 	render: (args) => (
 		<div className="max-w-[704px] mx-auto p-6 flex flex-col gap-8">

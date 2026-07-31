@@ -3,14 +3,16 @@
  * Sem referência no Figma — protótipo de comparação com a Opção 1
  * (table-of-contents/index.tsx) pro briefing pagina-conteudo-toc, inspirado
  * no TOC do Medium (régua de traços na margem esquerda + painel no hover).
- * Estado A (bloco no início do artigo) é idêntico à Opção 1 — reaproveita
- * <TocInlineBlock>. Estado B muda: em vez do botão pill flutuante, uma
- * régua fixa na margem esquerda que só existe em 2xl: (>=1536px, onde
- * existe espaço vazio de verdade fora do container de max-w-screen-xl —
- * 1280px / 2 = 640px + 40px de respiro = 680px do centro da viewport).
- * Abaixo de 2xl não há nenhum affordance flutuante — fiel ao
- * comportamento do Medium fora do desktop largo (decisão confirmada com o
- * usuário em 2026-07-31).
+ * Diferente da Opção 1: não tem bloco "Neste artigo" no início do artigo —
+ * só a régua, sempre visível em telas largas o bastante (correção do
+ * usuário em 2026-07-31, pós-primeira rodada de revisão com o cliente).
+ * Só existe em 2xl: (>=1536px, onde existe espaço vazio de verdade fora do
+ * container de max-w-screen-xl — 1280px / 2 = 640px + 40px de respiro =
+ * 680px do centro da viewport). Abaixo de 2xl não há nenhum affordance —
+ * fiel ao Medium fora do desktop largo.
+ * Traços de heading nível 2 (H3) ficam alinhados à esquerda com os de
+ * nível 1 (H2) — sem indentação — diferenciados só pelo tamanho, fiel ao
+ * Medium.
  * Abre no hover (mouseenter) e no foco por teclado — nunca no clique
  * (fiel ao Medium). Fecha no mouseleave, blur pra fora do wrapper, ou Escape.
  * Não renderiza nada quando `headings.length < 3`.
@@ -18,24 +20,18 @@
  */
 import type { FocusEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { TocInlineBlock } from '~/components/table-of-contents/toc-inline-block'
 import { TocList } from '~/components/table-of-contents/toc-list'
 import { prefersReducedMotion } from '~/lib/prefers-reduced-motion'
 import { twMerge } from '~/lib/tw-merge'
-import { useSentinelVisibility } from '~/lib/use-sentinel-visibility'
 import { useTocScrollspy } from '~/lib/use-toc-scrollspy'
 import type { ITableOfContentsMarginProps } from './types'
 
 export function TableOfContentsMargin({ headings, className }: ITableOfContentsMarginProps) {
-	const [expanded, setExpanded] = useState(true)
 	const [panelOpen, setPanelOpen] = useState(false)
-
-	const sentinelRef = useRef<HTMLDivElement>(null)
 	const wrapperRef = useRef<HTMLDivElement>(null)
 
 	const hasEnoughHeadings = headings.length >= 3
 	const activeId = useTocScrollspy(headings, hasEnoughHeadings)
-	const blockVisible = useSentinelVisibility(sentinelRef, hasEnoughHeadings)
 
 	// Painel fecha com Escape, além do mouseleave/blur tratados inline.
 	useEffect(() => {
@@ -66,66 +62,57 @@ export function TableOfContentsMargin({ headings, className }: ITableOfContentsM
 
 	return (
 		<div className={className}>
-			<TocInlineBlock
-				headings={headings}
-				activeId={activeId}
-				expanded={expanded}
-				onToggleExpanded={() => setExpanded((v) => !v)}
-				onSelect={handleSelect}
-				sentinelRef={sentinelRef}
-			/>
+			{/*
+				Largura do wrapper externo precisa ser >= régua (~16px) + ml-3
+				(12px) + painel (288px) quando o painel está aberto — daí o w-96
+				condicional. O left-full do painel resolve contra o div interno
+				relative inline-block (não este wrapper), então esse div interno
+				é essencial — não remover nem trocar por block/w-full.
+			*/}
+			<div
+				ref={wrapperRef}
+				onMouseEnter={() => setPanelOpen(true)}
+				onMouseLeave={() => setPanelOpen(false)}
+				className={twMerge(
+					'hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30',
+					panelOpen && 'w-96',
+				)}
+			>
+				<div className="relative inline-block">
+					<button
+						type="button"
+						aria-label="Neste artigo"
+						aria-expanded={panelOpen}
+						onFocus={() => setPanelOpen(true)}
+						onBlur={handleBlur}
+						className="flex flex-col gap-2 py-1 outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35 rounded-xs"
+					>
+						{headings.map((h) => (
+							<span
+								key={h.id}
+								aria-hidden="true"
+								className={twMerge(
+									'block h-0.5 rounded-full transition-colors motion-reduce:transition-none',
+									h.level === 3 ? 'w-2' : 'w-4',
+									activeId === h.id ? 'bg-secondary-950' : 'bg-neutral-300',
+								)}
+							/>
+						))}
+					</button>
 
-			{/* Estado B — régua na margem esquerda, só em telas largas o bastante pra ter espaço vazio de verdade fora do container */}
-			{!blockVisible ? (
-				/* Outer wrapper width must be ≥ rail (~20px) + ml-3 (12px) + panel (288px) when panel is open.
-				   Panel's left-full resolves against inner relative inline-block (not this wrapper), so the inner
-				   div is essential — don't remove it or change to block/full-width. Width is conditional on panelOpen
-				   to avoid blocking article content interaction when panel is closed. */
-				<div
-					ref={wrapperRef}
-					onMouseEnter={() => setPanelOpen(true)}
-					onMouseLeave={() => setPanelOpen(false)}
-					className={twMerge(
-						'hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30',
-						panelOpen && 'w-96',
-					)}
-				>
-					<div className="relative inline-block">
-						<button
-							type="button"
-							aria-label="Neste artigo"
-							aria-expanded={panelOpen}
+					{panelOpen ? (
+						<div
 							onFocus={() => setPanelOpen(true)}
 							onBlur={handleBlur}
-							className="flex flex-col gap-3 py-1 outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35 rounded-xs"
+							className="absolute left-full ml-3 top-1/2 -translate-y-1/2 w-72 max-h-[70vh] overflow-y-auto p-4 rounded-sm bg-white border border-neutral-100 shadow-lg"
 						>
-							{headings.map((h) => (
-								<span
-									key={h.id}
-									aria-hidden="true"
-									className={twMerge(
-										'block h-0.5 rounded-full transition-colors motion-reduce:transition-none',
-										h.level === 3 ? 'w-3 ml-2' : 'w-4',
-										activeId === h.id ? 'bg-secondary-950' : 'bg-neutral-300',
-									)}
-								/>
-							))}
-						</button>
-
-						{panelOpen ? (
-							<div
-								onFocus={() => setPanelOpen(true)}
-								onBlur={handleBlur}
-								className="absolute left-full ml-3 top-1/2 -translate-y-1/2 w-72 max-h-[70vh] overflow-y-auto p-4 rounded-sm bg-white border border-neutral-100 shadow-lg"
-							>
-								<nav aria-label="Neste artigo">
-									<TocList headings={headings} activeId={activeId} onSelect={handleSelect} />
-								</nav>
-							</div>
-						) : null}
-					</div>
+							<nav aria-label="Neste artigo">
+								<TocList headings={headings} activeId={activeId} onSelect={handleSelect} />
+							</nav>
+						</div>
+					) : null}
 				</div>
-			) : null}
+			</div>
 		</div>
 	)
 }
