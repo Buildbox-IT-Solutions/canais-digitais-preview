@@ -22,8 +22,7 @@
  * Os dois blocos (régua e botão) ficam montados ao mesmo tempo; a
  * visibilidade por breakpoint é só CSS (`hidden 2xl:block` / `2xl:hidden`)
  * — elementos com `display:none` saem da árvore de foco/tab.
- * Seta do botão é `arrow-drop-down` (mesmo ícone do botão "Acessar" do
- * header), não `chevron-down` — padronização pedida na revisão com o PO.
+ * Botão sem seta indicadora — só ícone `toc` + texto (pedido do PO em 2026-08-03).
  * O popover (tanto da régua quanto do botão) ganha o título muted "Neste
  * artigo" e itens mais compactos (`dense`) — só nesta versão; a régua da
  * Opção 2 arquivada continua sem título e com o espaçamento original.
@@ -36,7 +35,6 @@ import { TocList } from '~/components/table-of-contents/toc-list'
 import { TocMarginRail } from '~/components/table-of-contents/toc-margin-rail'
 import { TocPanel } from '~/components/table-of-contents/toc-panel'
 import { scrollToHeading } from '~/lib/scroll-to-heading'
-import { twMerge } from '~/lib/tw-merge'
 import { useClickAwayAndEscape } from '~/lib/use-click-away-and-escape'
 import { useHeaderHeight } from '~/lib/use-header-height'
 import { useMediaQuery } from '~/lib/use-media-query'
@@ -94,13 +92,6 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 				>
 					<Icon name="toc" className="size-5" />
 					Neste artigo
-					<Icon
-						name="arrow-drop-down"
-						className={twMerge(
-							'size-4 motion-safe:transition-transform motion-reduce:transition-none',
-							panelOpen && 'rotate-180',
-						)}
-					/>
 				</button>
 				{panelOpen ? (
 					<TocPanel ref={panelRef} title="Neste artigo" className="absolute right-0 mt-2">
