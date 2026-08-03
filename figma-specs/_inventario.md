@@ -21,12 +21,12 @@
 | Componente | nodeId | Variants | Status |
 |---|---|---|---|
 | Avatar | `751:3445` | 4 | ✅ [`avatar.php`](../src/components/avatar.php) · [spec](./avatar.md) |
-| Avatar Stack | `3422:29955` | 5 | ✅ [`avatar-stack.php`](../src/components/avatar-stack.php) · [spec](./avatar-stack.md) |
+| Avatar Stack | `3422:29955` | 5 | ✅ [`avatar-stack`](../src/components/avatar-stack/index.tsx) · [spec](./avatar-stack.md) |
 
 ### Banners — `1061:21500`
 | Componente | nodeId | Variants | Status |
 |---|---|---|---|
-| Banner Download | `925:11171` | 4 | ✅ [`banner-download.php`](../src/components/banner-download.php) · [spec](./banner-download.md) |
+| Banner Download | `925:11171` | 4 | ✅ [`banner-download`](../src/components/banner-download/index.tsx) · [spec](./banner-download.md) |
 | Banner Newsletter | `1188:11621` | 4 | ✅ [`banner-newsletter.php`](../src/components/banner-newsletter.php) · [spec](./banner-newsletter.md) |
 
 ### Buttons — `1061:13417`

@@ -1,27 +1,38 @@
+import { format, formatDistanceToNowStrict } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import incentiveBannerTexture from '~/assets/images/incentive-banner-texture.png'
 import { AdFrame } from '~/components/ad-frame'
+import { AiSummaryBlock } from '~/components/ai-summary-block'
+import { AudioVersionBlock } from '~/components/audio-version-block'
 import { Avatar } from '~/components/avatar'
+import { AvatarStack } from '~/components/avatar-stack'
+import { BannerDownload } from '~/components/banner-download'
 import { Button } from '~/components/button'
 import { Categoria } from '~/components/categoria'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
-import { Icon } from '~/components/icon'
 import { IconButton } from '~/components/icon-button'
 import type { IconName } from '~/components/icon/paths'
 import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { NewsCard } from '~/components/news-card'
+import { PlayButton } from '~/components/play-button'
 import { SectionTitle } from '~/components/section-title'
+import { TableOfContents } from '~/components/table-of-contents'
+import { TableOfContentsIcon } from '~/components/table-of-contents-icon'
+import { TableOfContentsMargin } from '~/components/table-of-contents-margin'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
+import { getPostByScenario } from '~/fixtures/posts'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
+import type { Author, ContentBlock, Post } from '~/types/post'
 
 const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
 	{ icon: 'print', label: 'Imprimir' },
@@ -31,6 +42,11 @@ const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
 	{ icon: 'twitter', label: 'Twitter' },
 	{ icon: 'share', label: 'Compartilhar' },
 ]
+
+// Fase 2 (briefing pagina-conteudo-toc) — decisão pendente de validação com
+// Pedro/Micaelly (ver GATE 2): posição default é o final do corpo; troque
+// para 'apos-introducao' para testar a alternativa.
+const DOWNLOAD_BLOCK_POSITION: 'fim-do-corpo' | 'apos-introducao' = 'fim-do-corpo'
 
 /**
  * Tela: Conteúdo — Página interna de artigo
@@ -44,6 +60,9 @@ export default function ConteudoScreen() {
 	const showDownloadToast = params.get('toast') === 'download-started'
 	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
 	const previewIncentive = params.get('preview')
+	const tocVariant = params.get('toc')
+
+	const activePost = getPostByScenario(params.get('scenario'))
 
 	const [leituraOpen, setLeituraOpen] = useState(previewIncentive === 'leitura')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
@@ -122,62 +141,62 @@ export default function ConteudoScreen() {
 		setNewsletterOpen(false)
 	}
 
+	// Fase 2: <BannerDownload> vive no fluxo do corpo, no final por default —
+	// separamos os blocos em duas fatias só quando a posição alternativa
+	// ("após a introdução", isto é, antes do primeiro heading) está ativa.
+	const introBreakIndex =
+		DOWNLOAD_BLOCK_POSITION === 'apos-introducao' ? activePost.body.findIndex((b) => b.type === 'heading') : -1
+	const introBlocks = introBreakIndex > -1 ? activePost.body.slice(0, introBreakIndex) : activePost.body
+	const restBlocks = introBreakIndex > -1 ? activePost.body.slice(introBreakIndex) : []
+
+	const downloadBanner = activePost.download ? (
+		<PostDownloadBanner
+			download={activePost.download}
+			logado={logado}
+			onRequestAccess={() => setDownloadOpen(true)}
+		/>
+	) : null
+
 	return (
 		<>
 		<main className="bg-white">
 			<HeaderDesktop activeCategory="food-service" />
 
 			{/* §2 — Ad 970×250 */}
-			<section className="flex flex-col items-center py-6 w-full">
+			<section className="flex flex-col items-center py-6 w-full overflow-hidden">
 				<AdFrame width={970} height={250} />
 			</section>
 
-			{/* §3 — Article + sidebar */}
+			{/* §3 — Article + sidebar. Empilha abaixo de lg (1024px); vira grid 11 col a partir daí. */}
 			<section className="w-full">
-				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 grid grid-cols-11 gap-6 items-start">
-					<article className="col-span-7 flex flex-col items-start">
+				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 flex flex-col lg:grid lg:grid-cols-11 gap-6 lg:items-start">
+					<article className="lg:col-span-7 flex flex-col items-start min-w-0">
 						<div className="flex flex-col gap-8 w-full">
 							<div className="flex flex-col gap-4 w-full">
-								<Categoria color="saffron" label="Food Service" href="/categoria" />
+								<Categoria
+									color="saffron"
+									label={activePost.kicker}
+									href="/categoria"
+									className="inline-block py-3.5 -my-3.5"
+								/>
 								<h1 className="font-display font-bold text-display-sm text-primary-600">
-									Análise sensorial com IA: como funciona, aplicações na indústria de
-									alimentos
+									{activePost.title}
 								</h1>
-								<p className="font-body text-body-lg text-neutral-900 tracking-[0.5px]">
-									A análise sensorial com IA combina sensores digitais e algoritmos para
-									avaliar sabor, aroma e textura em alimentos.
-								</p>
+								{activePost.subtitle ? (
+									<p className="font-body text-body-lg text-neutral-900 tracking-[0.5px]">
+										{activePost.subtitle}
+									</p>
+								) : null}
 							</div>
 
-							<div className="flex gap-8 items-center w-full">
-								<div className="flex items-center gap-2 flex-1">
-									<Avatar
-										src="https://i.pravatar.cc/80?img=12"
-										alt="Redação Food Connection"
-										shape="rounded"
-										className="size-10"
-									/>
-									<div className="flex flex-col gap-1">
-										<div className="flex flex-wrap gap-x-1 gap-y-0.5 items-center">
-											<span className="font-body font-semibold text-label-lg text-neutral-900">
-												Por
-											</span>
-											<a
-												href="/categoria"
-												className="font-body font-bold text-label-lg text-secondary-950 hover:underline"
-											>
-												Redação Food Connection
-											</a>
-										</div>
-										<div className="flex gap-1 items-center font-body font-semibold text-label-md text-neutral-900">
-											<span>dd/mm/aaaa 00h00</span>
-											<span>•</span>
-											<span>Atualizado há 22 horas</span>
-										</div>
-									</div>
-								</div>
+							<div className="flex flex-wrap gap-4 lg:gap-8 items-center w-full">
+								<AuthorshipRow
+									authors={activePost.authors}
+									publishedAt={activePost.publishedAt}
+									updatedAt={activePost.updatedAt}
+								/>
 
-								<div className="flex gap-1 items-center shrink-0">
+								<div className="flex gap-1 items-center shrink-0 max-w-full overflow-x-auto">
 									{SHARE_ICONS.map((s) => (
 										<IconButton
 											key={s.icon}
@@ -192,75 +211,71 @@ export default function ConteudoScreen() {
 							</div>
 						</div>
 
+						{activePost.audioVersion && activePost.media?.kind !== 'podcast' ? (
+							<div className="mt-6 w-full">
+								<AudioVersionBlock durationSec={activePost.audioVersion.durationSec} />
+							</div>
+						) : null}
+
+						{activePost.aiSummary ? (
+							<div className="mt-6 w-full">
+								<AiSummaryBlock
+									bullets={activePost.aiSummary.bullets}
+									disclaimer={activePost.aiSummary.disclaimer}
+								/>
+							</div>
+						) : null}
+
+						{activePost.media?.kind === 'video' ? (
+							<div className="mt-6 w-full">
+								<div className="relative w-full aspect-video rounded-sm overflow-hidden bg-neutral-950">
+									<img
+										src={picsumSrc(`${activePost.slug}-video`, 1408, 792)}
+										alt=""
+										className="w-full h-full object-cover opacity-70"
+									/>
+									<div className="absolute inset-0 flex items-center justify-center">
+										<PlayButton as="div" size="xlarge" />
+									</div>
+									<div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+										<p className="font-body font-semibold text-body-md text-white">
+											{activePost.media.title}
+										</p>
+									</div>
+								</div>
+							</div>
+						) : (
+							<div className="mt-6 w-full">
+								<Thumbnail
+									src={picsumSrc(activePost.slug, 1408, 939)}
+									alt="Imagem de destaque"
+									ratio="photo"
+								/>
+							</div>
+						)}
+
 						<div className="mt-6 w-full">
-							<Thumbnail
-								src={picsumSrc('conteudo-hero', 1408, 939)}
-								alt="Imagem de destaque"
-								ratio="photo"
-							/>
+							{tocVariant === 'margem' ? (
+								<TableOfContentsMargin headings={activePost.headings} />
+							) : tocVariant === 'pill' ? (
+								<TableOfContents headings={activePost.headings} />
+							) : (
+								<TableOfContentsIcon headings={activePost.headings} />
+							)}
 						</div>
 
 						<div className="mt-6 flex flex-col gap-9 w-full">
-							<p className="font-body text-body-xl text-neutral-950">
-								A análise sensorial é uma metodologia essencial na indústria alimentícia
-								para medir atributos como sabor, aroma, textura e aparência. Tradicionalmente,
-								ela depende de painéis humanos treinados, o que traz limitações de escala e
-								subjetividade.
-							</p>
-							<p className="font-body text-body-xl text-neutral-950">
-								Com o avanço da inteligência artificial, sensores eletrônicos — como narizes
-								e línguas artificiais — associados a algoritmos de machine learning estão
-								transformando a forma como avaliamos alimentos. A IA permite processar
-								milhares de amostras com consistência, identificando padrões sutis que o
-								paladar humano pode perder.
-							</p>
+							{introBlocks.map((block, i) => (
+								<ContentBlockView key={block.type === 'heading' ? block.id : i} block={block} />
+							))}
 
-							<h2 className="font-display font-bold text-headline-lg text-primary-600">
-								Como funciona a análise sensorial com IA
-							</h2>
-							<p className="font-body text-body-xl text-neutral-950">
-								O processo envolve três etapas: coleta de dados sensoriais por meio de
-								dispositivos eletrônicos, treinamento do modelo de IA com datasets rotulados
-								por painelistas humanos, e inferência em tempo real sobre novas amostras.
-							</p>
+							{DOWNLOAD_BLOCK_POSITION === 'apos-introducao' ? downloadBanner : null}
 
-							<h2 className="font-display font-bold text-headline-lg text-primary-600">
-								Áreas de aplicação na indústria
-							</h2>
-							<p className="font-body text-body-xl text-neutral-950">
-								As aplicações abrangem controle de qualidade em linhas de produção,
-								desenvolvimento de novos produtos, detecção de adulteração e monitoramento de
-								shelf-life. Empresas como Nestlé e Danone já utilizam IA sensorial em escala
-								para garantir consistência global de seus produtos.
-							</p>
+							{restBlocks.map((block, i) => (
+								<ContentBlockView key={block.type === 'heading' ? block.id : `rest-${i}`} block={block} />
+							))}
 
-							<figure className="w-full">
-								<div className="aspect-video rounded-sm overflow-hidden bg-neutral-100">
-									<img
-										src={picsumSrc('conteudo-inline', 1408, 792)}
-										alt="Imagem no artigo"
-										className="w-full h-full object-cover"
-									/>
-								</div>
-								<figcaption className="font-body font-semibold text-body-sm text-neutral-900 mt-2">
-									Sensores eletrônicos analisam amostras em laboratório de alimentos.
-								</figcaption>
-							</figure>
-
-							<h2 className="font-display font-bold text-headline-lg text-primary-600">
-								Desafios e futuro
-							</h2>
-							<p className="font-body text-body-xl text-neutral-950">
-								Apesar dos avanços, a calibração dos sensores e a representatividade dos
-								dados de treinamento continuam sendo desafios. O futuro aponta para modelos
-								multimodais que combinam dados sensoriais, visuais e químicos para uma
-								avaliação holística do alimento.
-							</p>
-							<p className="font-body text-body-xl text-neutral-950">
-								A integração com blockchain para rastreabilidade sensorial e a
-								personalização de sabor via digital twins são tendências que devem ganhar
-								tração nos próximos anos.
-							</p>
+							{DOWNLOAD_BLOCK_POSITION === 'fim-do-corpo' ? downloadBanner : null}
 						</div>
 
 						<div className="py-10 flex flex-col gap-2 w-full">
@@ -273,8 +288,8 @@ export default function ConteudoScreen() {
 						</div>
 					</article>
 
-					{/* Sidebar */}
-					<aside className="col-span-4 flex flex-col gap-10">
+					{/* Sidebar — só Em Alta, Newsletter e anúncio (Download saiu, ver GATE 2). Empilha abaixo do artigo em <lg. */}
+					<aside className="lg:col-span-4 flex flex-col items-center lg:items-start gap-10">
 						{/* Widget Em Alta */}
 						<WidgetEmAlta
 							items={EM_ALTA.map((title) => ({ title }))}
@@ -310,66 +325,8 @@ export default function ConteudoScreen() {
 							</div>
 						</div>
 
-						{/* Card Download */}
-						{logado ? (
-							<div className="bg-white border border-neutral-100 flex flex-col gap-6 items-start rounded-sm shadow-sm p-8 w-full max-w-[392px]">
-								<div className="inline-flex items-center justify-center size-16 rounded-full bg-[#DCFCE7]">
-									<Icon name="check" className="size-8 text-[#16A34A]" />
-								</div>
-								<div className="flex flex-col gap-2 w-full">
-									<h3 className="font-display font-bold text-title-xl text-neutral-950">
-										Tudo pronto!
-									</h3>
-									<p className="font-body text-body-md text-neutral-700">
-										Seu material está pronto para baixar.
-									</p>
-								</div>
-								<a
-									href="#"
-									className="bg-primary-600 inline-flex gap-3 items-center justify-center w-full h-12 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg"
-								>
-									<Icon name="download" className="size-6" />
-									Baixar agora
-								</a>
-								<p className="font-body text-label-md text-neutral-500">
-									Não é você?{' '}
-									<a href="/home" className="font-bold text-secondary-950 hover:underline">
-										Sair da conta
-									</a>
-									.
-								</p>
-							</div>
-						) : (
-							<div className="bg-primary-100 flex flex-col items-start overflow-hidden rounded-sm w-full max-w-[392px]">
-								<div className="aspect-[3/2] w-full overflow-hidden bg-secondary-50">
-									<img
-										src={picsumSrc('material-capa', 392, 261)}
-										alt="Capa do material"
-										className="w-full h-full object-cover"
-									/>
-								</div>
-								<div className="flex flex-col gap-4 pt-8 pb-4 px-6 text-primary-600">
-									<h3 className="font-display font-bold text-title-lg">
-										10 tendências em Food Service para 2026
-									</h3>
-									<p className="font-body text-body-md text-neutral-700">
-										Baixe sem custo. Acesse com um clique e use todos os materiais.
-									</p>
-								</div>
-								<div className="pt-4 pb-8 px-6 w-full">
-									<Button
-										label="Baixar material"
-										onClick={() => setDownloadOpen(true)}
-										type="filled"
-										size="large"
-										className="w-full"
-									/>
-								</div>
-							</div>
-						)}
-
 						{/* Ad 300×250 */}
-						<div className="bg-white p-4 flex justify-center">
+						<div className="bg-white p-4 flex justify-center w-full overflow-hidden">
 							<AdFrame width={300} height={250} />
 						</div>
 					</aside>
@@ -396,7 +353,7 @@ export default function ConteudoScreen() {
 			</section>
 
 			{/* §5 — Ad 728×90 */}
-			<section className="flex flex-col items-center py-6 w-full">
+			<section className="flex flex-col items-center py-6 w-full overflow-hidden">
 				<AdFrame width={728} height={90} />
 			</section>
 
@@ -442,6 +399,128 @@ export default function ConteudoScreen() {
 				<Toast type="success" message="Inscrição confirmada." />
 			</div>
 		) : null}
+
 		</>
 	)
+}
+
+/**
+ * Fase 2: assinatura de autoria — mesmo componente suporta 1 ou N autores
+ * (regra do briefing: N>=2 vira avatar stack + "Nome e outros N").
+ */
+function AuthorshipRow({
+	authors,
+	publishedAt,
+	updatedAt,
+}: {
+	authors: Author[]
+	publishedAt: string
+	updatedAt?: string
+}) {
+	const [firstAuthor, ...otherAuthors] = authors
+	const dateLabel = format(new Date(publishedAt), "dd/MM/yyyy HH'h'mm", { locale: ptBR })
+	const updatedLabel = updatedAt ? formatDistanceToNowStrict(new Date(updatedAt), { locale: ptBR }) : null
+
+	return (
+		<div className="flex items-center gap-3 flex-1">
+			{otherAuthors.length > 0 ? (
+				<AvatarStack authors={authors} />
+			) : (
+				<Avatar src={firstAuthor.avatarUrl} alt={firstAuthor.name} shape="rounded" className="size-10" />
+			)}
+			<div className="flex flex-col gap-1">
+				<div className="flex flex-wrap gap-x-1 gap-y-0.5 items-center">
+					<span className="font-body font-semibold text-label-lg text-neutral-900">Por</span>
+					<a
+						href="/categoria"
+						className="inline-block py-3 -my-3 font-body font-bold text-label-lg text-secondary-950 hover:underline"
+					>
+						{firstAuthor.name}
+					</a>
+					{otherAuthors.length > 0 ? (
+						<span className="font-body font-semibold text-label-lg text-neutral-900">
+							e outros {otherAuthors.length}
+						</span>
+					) : null}
+				</div>
+				<div className="flex gap-1 items-center font-body font-semibold text-label-md text-neutral-900">
+					<span>{dateLabel}</span>
+					{updatedLabel ? (
+						<>
+							<span>•</span>
+							<span>Atualizado há {updatedLabel}</span>
+						</>
+					) : null}
+				</div>
+			</div>
+		</div>
+	)
+}
+
+/** Fase 2: <BannerDownload> no fluxo do conteúdo — substitui o card da sidebar. */
+function PostDownloadBanner({
+	download,
+	logado,
+	onRequestAccess,
+}: {
+	download: NonNullable<Post['download']>
+	logado: boolean
+	onRequestAccess: () => void
+}) {
+	const gated = !logado && download.requiresAuth
+
+	return (
+		<BannerDownload
+			title={download.title}
+			description={download.description}
+			ctaLabel={download.ctaLabel}
+			ctaHref="#"
+			onCtaClick={gated ? onRequestAccess : undefined}
+		/>
+	)
+}
+
+function ContentBlockView({ block }: { block: ContentBlock }) {
+	switch (block.type) {
+		case 'paragraph':
+			return <p className="font-body text-body-xl text-neutral-950">{block.text}</p>
+
+		case 'heading':
+			return block.level === 2 ? (
+				<h2
+					id={block.id}
+					className="font-display font-bold text-headline-lg text-primary-600 scroll-mt-24"
+				>
+					{block.text}
+				</h2>
+			) : (
+				<h3
+					id={block.id}
+					className="font-display font-bold text-headline-md text-primary-600 scroll-mt-24"
+				>
+					{block.text}
+				</h3>
+			)
+
+		case 'image':
+			return (
+				<figure className="w-full">
+					<div className="aspect-video rounded-sm overflow-hidden bg-neutral-100">
+						<img src={block.src} alt={block.alt} className="w-full h-full object-cover" />
+					</div>
+					{block.caption ? (
+						<figcaption className="font-body font-semibold text-body-sm text-neutral-900 mt-2">
+							{block.caption}
+						</figcaption>
+					) : null}
+				</figure>
+			)
+
+		case 'highlight':
+			return (
+				<blockquote className="border-l-4 border-neutral-50 pl-8 py-6 font-display text-title-xl text-primary-600">
+					{block.text}
+				</blockquote>
+			)
+	}
 }

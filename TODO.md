@@ -9,6 +9,7 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 ### Foundations
 - [x] `divider`
 - [x] `avatar`
+- [x] `avatar-stack`
 - [x] `badge`
 - [x] `tag`
 - [x] `image`
@@ -49,6 +50,7 @@ Marque com `x` conforme for migrando. Ao marcar, **apague o equivalente em `lega
 - [x] `download-section`
 - [x] `widget-podcast`
 - [x] `banner-newsletter`
+- [x] `banner-download`
 
 ### Feedback / Overlay
 - [x] `toast`

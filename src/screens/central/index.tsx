@@ -71,6 +71,17 @@ const GROUPS: RouteGroup[] = [
 		],
 	},
 	{
+		title: 'Conteúdo (Post)',
+		description:
+			'Fixtures da página de Conteúdo selecionadas para a rodada de aprovação com o PO — briefing pagina-conteudo-toc. Os demais cenários testados seguem em /archive.',
+		color: 'primary',
+		items: [
+			{ path: '/conteudo?scenario=post-autor-unico', label: 'Autor único', description: '1 autor · 2 headings, sem TOC', status: 'pronto-para-dev' },
+			{ path: '/conteudo?scenario=post-download', label: 'Download', description: 'Bloco de download no corpo do artigo', status: 'pronto-para-dev' },
+			{ path: '/conteudo?scenario=post-longo-toc', label: 'Table of Contents (TOC)', description: '13 headings · régua na margem esquerda a partir de 1536px, botão flutuante "Neste artigo" abaixo disso', status: 'em-aprovacao' },
+		],
+	},
+	{
 		title: 'Institucionais & Forms',
 		description: 'Páginas estáticas e formulários.',
 		color: 'coral',
