@@ -88,7 +88,7 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 					onClick={() => setPanelOpen((v) => !v)}
 					aria-expanded={panelOpen}
 					aria-label="Neste artigo"
-					className="flex items-center gap-2 h-11 pl-4 pr-3 rounded-full bg-white border border-neutral-100 shadow-lg text-body-md font-body font-semibold text-primary-600 outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35"
+					className="flex items-center gap-2 h-11 px-4 rounded-full bg-white border border-neutral-100 shadow-lg text-body-md font-body font-semibold text-primary-600 outline-none focus-visible:ring-2 focus-visible:ring-secondary-950/35"
 				>
 					<Icon name="toc" className="size-5" />
 					Neste artigo
