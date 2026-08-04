@@ -1,5 +1,6 @@
 import { RouterProvider, createBrowserRouter, Navigate } from 'react-router'
 import { Toaster } from './components/toaster'
+import { ScenarioBar } from './dev/ScenarioBar'
 import AnuncieScreen from './screens/anuncie'
 import ArchiveScreen from './screens/archive'
 import BuscarScreen from './screens/buscar'
@@ -89,6 +90,7 @@ export function Router() {
 		<>
 			<RouterProvider router={router} />
 			<Toaster />
+			<ScenarioBar />
 		</>
 	)
 }

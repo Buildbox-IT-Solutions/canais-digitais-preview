@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
 import { toast } from '~/lib/toast-store'
+import { useScenarios } from '~/dev/use-scenarios'
+import type { ScenarioDef } from '~/dev/scenario-store'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
@@ -44,19 +46,51 @@ const USER_INITIALS = 'MA'
 
 const PER_PAGE = 10
 
+// Registro único pra ScenarioBar (src/dev) — a única declaração dos cenários desta
+// tela; a lógica de estado abaixo deriva dos mesmos ids, nunca duplica os literais.
+const SCENARIOS: ScenarioDef[] = [
+	{ id: 'perfil-incompleto', label: 'Incompleto', group: 'Perfil', tab: 'perfil' },
+	{ id: 'perfil-completo', label: 'Completo', group: 'Perfil', tab: 'perfil' },
+	{ id: 'downloads-vazio', label: 'Vazio', group: 'Downloads', tab: 'downloads' },
+	{ id: 'leituras-vazio', label: 'Vazio', group: 'Leituras', tab: 'ultimas' },
+	{ id: 'leituras-carregando', label: 'Carregando', group: 'Leituras', tab: 'ultimas' },
+	{ id: 'leituras-com-erro', label: 'Com erro', group: 'Leituras', tab: 'ultimas' },
+]
+
+// TODO remover na próxima iteração — alias temporário pra links antigos com ?state=.
+// `empty` era compartilhado entre Downloads e Últimas leituras, desambiguado só pelo
+// ?tab= que acompanhava o link original.
+function resolveLegacyState(state: string, tab: string | null): { cenario: string; tab: Tab } | null {
+	if (state === 'completo') return { cenario: 'perfil-completo', tab: 'perfil' }
+	if (state === 'saved') return { cenario: 'perfil-salvo', tab: 'perfil' }
+	if (state === 'carregando') return { cenario: 'leituras-carregando', tab: 'ultimas' }
+	if (state === 'erro') return { cenario: 'leituras-com-erro', tab: 'ultimas' }
+	if (state === 'empty') {
+		return tab === 'downloads'
+			? { cenario: 'downloads-vazio', tab: 'downloads' }
+			: { cenario: 'leituras-vazio', tab: 'ultimas' }
+	}
+	return null
+}
+
 /**
  * Tela: Dashboard de Perfil v4 — modelo tabbed (deriva de dashboard-perfil-v3)
  * Abas MVP: Meu Perfil (padrão) + Downloads + Newsletter + Últimas leituras; Favoritos como "Em breve".
  * "Minha Conta" removida: Baixar dados + Excluir conta vivem na aba Perfil (seção LGPD);
  * Alterar senha no DashboardWelcome. Sessões e login social saíram (fora de escopo do MVP).
  * Drawer overlay em perfil: ?drawer=dados-pessoais|dados-profissionais|dados-fiscais
- * Estados: ?state=saved (toast) | empty (novo usuário) | completo (perfil 100%).
- * Switcher de cenários (ScenarioNav) fixo no rodapé para o cliente navegar sem editar URL.
+ * Cenários (ver ScenarioBar): ?cenario=perfil-completo|downloads-vazio|leituras-vazio etc.
  */
 export default function DashboardPerfilV4Screen() {
-	const [params] = useSearchParams()
+	const [params, setSearchParams] = useSearchParams()
+	useScenarios(SCENARIOS)
 
-	const tabParam = params.get('tab') ?? 'perfil'
+	const cenarioParam = params.get('cenario')
+	const legacyStateParam = params.get('state')
+	const legacyResolved =
+		!cenarioParam && legacyStateParam ? resolveLegacyState(legacyStateParam, params.get('tab')) : null
+
+	const tabParam = legacyResolved?.tab ?? params.get('tab') ?? 'perfil'
 	const tab = (TABS.includes(tabParam as Tab) ? tabParam : 'perfil') as Tab
 
 	const drawerParam = params.get('drawer')
@@ -64,15 +98,32 @@ export default function DashboardPerfilV4Screen() {
 		? drawerParam
 		: null) as Drawer | null
 
-	const state = params.get('state')
-	const isSaved = state === 'saved'
-	const isEmpty = state === 'empty'
-	const isCompleto = state === 'completo'
-	const isLoading = state === 'carregando'
-	const isErro = state === 'erro'
+	const cenario = cenarioParam ?? legacyResolved?.cenario ?? null
+	const isSaved = cenario === 'perfil-salvo'
+	const isEmpty = cenario === 'downloads-vazio' || cenario === 'leituras-vazio'
+	const isCompleto = cenario === 'perfil-completo'
+	const isLoading = cenario === 'leituras-carregando'
+	const isErro = cenario === 'leituras-com-erro'
 
-	// "Engajado" (?state=completo): perfil todo preenchido; a tela suprime o andaime
-	// de completude (banner de progresso, badges e infos de % restantes).
+	// Migra o link antigo assim que a tela monta: reescreve a URL pra ?cenario= (sem
+	// empilhar no histórico) e avisa uma vez no console. Não bloqueia o primeiro
+	// render — os booleans acima já usam `legacyResolved` de forma síncrona.
+	useEffect(() => {
+		if (cenarioParam || !legacyStateParam) return
+		const resolved = resolveLegacyState(legacyStateParam, params.get('tab'))
+		if (!resolved) return
+		console.warn(
+			`[dashboard-perfil-v4] ?state=${legacyStateParam} está obsoleto — use ?cenario=${resolved.cenario}.`,
+		)
+		const next = new URLSearchParams(params)
+		next.delete('state')
+		next.set('cenario', resolved.cenario)
+		next.set('tab', resolved.tab)
+		setSearchParams(next, { replace: true })
+	}, [])
+
+	// "Engajado" (?cenario=perfil-completo): perfil todo preenchido; a tela suprime o
+	// andaime de completude (banner de progresso, badges e infos de % restantes).
 	const campos = isCompleto ? PERFIL_CAMPOS_COMPLETO : PERFIL_CAMPOS
 	const totalFields = Object.keys(campos).length
 	const filledFields = Object.values(campos).filter((v) => v !== '').length
@@ -121,63 +172,7 @@ export default function DashboardPerfilV4Screen() {
 					<Toast type="success" message="Alterações salvas." />
 				</div>
 			) : null}
-			<ScenarioNav tab={tab} state={state} />
 		</main>
-	)
-}
-
-/**
- * Switcher de cenários (estilo "tweaks"/dev-nav) fixo no rodapé — cada botão leva
- * à aba + estado do cenário, para o cliente demonstrar sem digitar URL.
- */
-function ScenarioNav({ tab, state }: { tab: Tab; state: string | null }) {
-	const items = [
-		{
-			label: 'Perfil incompleto',
-			href: `${BASE_HREF}?tab=perfil`,
-			active: tab === 'perfil' && state !== 'completo',
-		},
-		{
-			label: 'Perfil completo',
-			href: `${BASE_HREF}?tab=perfil&state=completo`,
-			active: tab === 'perfil' && state === 'completo',
-		},
-		{
-			label: 'Download vazio',
-			href: `${BASE_HREF}?tab=downloads&state=empty`,
-			active: tab === 'downloads' && state === 'empty',
-		},
-		{
-			label: 'Leituras carregando',
-			href: `${BASE_HREF}?tab=ultimas&state=carregando`,
-			active: tab === 'ultimas' && state === 'carregando',
-		},
-		{
-			label: 'Leituras vazio',
-			href: `${BASE_HREF}?tab=ultimas&state=empty`,
-			active: tab === 'ultimas' && state === 'empty',
-		},
-		{
-			label: 'Leituras com erro',
-			href: `${BASE_HREF}?tab=ultimas&state=erro`,
-			active: tab === 'ultimas' && state === 'erro',
-		},
-	]
-	return (
-		<div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-wrap gap-1.5 justify-center max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-sm border border-neutral-100 rounded-full px-3 py-1.5 shadow-md z-50 font-body text-label-md">
-			<span className="text-neutral-500 self-center pr-1">Cenários:</span>
-			{items.map((it) => (
-				<a
-					key={it.label}
-					href={it.href}
-					className={`px-2.5 py-1 rounded-full transition-colors ${
-						it.active ? 'bg-primary-600 text-white' : 'text-neutral-700 hover:bg-neutral-50'
-					}`}
-				>
-					{it.label}
-				</a>
-			))}
-		</div>
 	)
 }
 
@@ -612,7 +607,7 @@ function PerfilDrawer({ drawer }: { drawer: Drawer }) {
 			title={cfg.title}
 			closeHref={`${BASE_HREF}?tab=perfil`}
 			cancelHref={`${BASE_HREF}?tab=perfil`}
-			saveHref={`${BASE_HREF}?tab=perfil&state=saved`}
+			saveHref={`${BASE_HREF}?tab=perfil&cenario=perfil-salvo`}
 		>
 			<div
 				style={{
