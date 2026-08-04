@@ -1,17 +1,20 @@
 // PROVISÓRIO — será substituído pelo Handoff Tour.
-// Não importar deste diretório fora do shell (ver Router em src/router.tsx).
-//
-// Fica montada como irmã do <RouterProvider> (ver Router()), fora da árvore
-// roteada — por isso usa window.location/history direto em vez de
-// useSearchParams do react-router, que exige contexto de <Router>.
-import { useEffect, useState, useSyncExternalStore } from 'react'
+// Não importar deste diretório fora do shell (ver RootLayout em src/router.tsx).
+// Montada dentro de RootLayout (irmã de <Outlet />), por isso tem contexto de
+// <Router> e pode usar useSearchParams normalmente — troca de cenário é uma
+// navegação client-side (setSearchParams), não um reload de página.
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useSearchParams } from 'react-router'
 import { getActiveScenarios, subscribeScenarios } from './scenario-store'
 
 // Fica acima de qualquer overlay do produto (modal, drawer, bottom sheet, toast).
 const Z_INDEX = 999999
 
-function isTypingTarget(el: Element | null): boolean {
+// Atalhos continuam ativos com foco dentro da própria barra (ex.: no <select>) —
+// só ficam inertes em campos de formulário do resto da aplicação.
+function isTypingTarget(el: Element | null, barEl: HTMLElement | null): boolean {
 	if (!el) return false
+	if (barEl?.contains(el)) return false
 	const tag = el.tagName
 	if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true
 	return el instanceof HTMLElement && el.isContentEditable
@@ -19,19 +22,10 @@ function isTypingTarget(el: Element | null): boolean {
 
 export function ScenarioBar() {
 	const scenarios = useSyncExternalStore(subscribeScenarios, getActiveScenarios, getActiveScenarios)
+	const [params, setSearchParams] = useSearchParams()
+	const containerRef = useRef<HTMLDivElement>(null)
 
-	const [params, setParams] = useState(() => new URLSearchParams(window.location.search))
 	const [manuallyHidden, setManuallyHidden] = useState(() => params.get('ui') === '0')
-
-	// A URL só muda hoje via navegação de página inteira (padrão do app inteiro —
-	// nenhuma tela usa <Link> do SPA) — reler no popstate cobre voltar/avançar.
-	useEffect(() => {
-		function onPopState() {
-			setParams(new URLSearchParams(window.location.search))
-		}
-		window.addEventListener('popstate', onPopState)
-		return () => window.removeEventListener('popstate', onPopState)
-	}, [])
 
 	const eligible = import.meta.env.DEV || params.get('dev') === '1'
 	const visible = eligible && !manuallyHidden && scenarios.length > 0
@@ -42,15 +36,15 @@ export function ScenarioBar() {
 		return scenarios[0]?.id ?? ''
 	})()
 
-	// Navegação de página inteira (replace) — mesmo modelo do resto do app, que
-	// não usa <Link> do SPA em lugar nenhum. "replace" pra não empilhar no histórico.
+	// Client-side (mesma navegação que o resto da tela usa pra ?state=/?cenario=):
+	// preserva scroll e não recarrega o documento. "replace" pra não empilhar no
+	// histórico — o botão voltar do navegador não deve percorrer trocas de cenário.
 	function selectScenario(id: string) {
 		const scenario = scenarios.find((s) => s.id === id)
-		const next = new URLSearchParams(window.location.search)
+		const next = new URLSearchParams(params)
 		next.set('cenario', id)
 		if (scenario?.tab) next.set('tab', scenario.tab)
-		const url = `${window.location.pathname}?${next.toString()}`
-		window.location.replace(url)
+		setSearchParams(next, { replace: true })
 	}
 
 	// Atalhos só existem enquanto elegível — em produção sem ?dev=1 o componente
@@ -59,7 +53,7 @@ export function ScenarioBar() {
 		if (!eligible) return
 
 		function onKeyDown(e: KeyboardEvent) {
-			if (!e.altKey || isTypingTarget(document.activeElement)) return
+			if (!e.altKey || isTypingTarget(document.activeElement, containerRef.current)) return
 
 			if (e.key === '0') {
 				e.preventDefault()
@@ -79,7 +73,7 @@ export function ScenarioBar() {
 
 		window.addEventListener('keydown', onKeyDown)
 		return () => window.removeEventListener('keydown', onKeyDown)
-	}, [eligible, scenarios, activeId])
+	}, [eligible, scenarios, activeId, params])
 
 	if (!visible) return null
 
@@ -92,6 +86,7 @@ export function ScenarioBar() {
 
 	return (
 		<div
+			ref={containerRef}
 			style={{
 				position: 'fixed',
 				left: 8,

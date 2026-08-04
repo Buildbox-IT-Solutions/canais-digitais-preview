@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter, Navigate } from 'react-router'
+import { Outlet, RouterProvider, createBrowserRouter, Navigate } from 'react-router'
 import { Toaster } from './components/toaster'
 import { ScenarioBar } from './dev/ScenarioBar'
 import AnuncieScreen from './screens/anuncie'
@@ -39,50 +39,67 @@ import SobreScreen from './screens/sobre'
 import { PatrocinadoresScreen } from './screens/patrocinadores'
 import { PatrocinadorScreen } from './screens/patrocinador'
 
+// Raiz só pra dar contexto de Router a <ScenarioBar /> (useSearchParams/useLocation) —
+// sem isso ela ficaria de fora da árvore roteada. Nenhum outro papel (sem errorElement,
+// sem loader): é só o ponto de montagem.
+function RootLayout() {
+	return (
+		<>
+			<Outlet />
+			<ScenarioBar />
+		</>
+	)
+}
+
 const router = createBrowserRouter([
-	{ path: '/', element: <CentralScreen /> },
-	{ path: '/home', element: <HomeScreen /> },
-	{ path: '/home-v2', element: <HomeV2Screen /> },
-	{ path: '/categoria', element: <CategoriaScreen /> },
-	{ path: '/conteudo', element: <ConteudoScreen /> },
-	{ path: '/menu', element: <MenuScreen /> },
-	{ path: '/buscar', element: <BuscarScreen /> },
-	{ path: '/login-full', element: <LoginScreen /> },
-	{ path: '/login', element: <LoginV2Screen /> },
-	{ path: '/cadastro-full', element: <CadastroScreen /> },
-	{ path: '/cadastro', element: <CadastroV2Screen /> },
-	{ path: '/recupera-senha-full', element: <RecuperaSenhaScreen /> },
-	{ path: '/recupera-senha', element: <RecuperaSenhaV2Screen /> },
-	{ path: '/redefine-senha-full', element: <RedefineSenhaScreen /> },
-	{ path: '/redefine-senha', element: <RedefineSenhaV2Screen /> },
-	{ path: '/confirmacao-email-full', element: <ConfirmacaoEmailScreen /> },
-	{ path: '/confirmacao-email', element: <ConfirmacaoEmailV2Screen /> },
-	// Endpoint do link do e-mail de confirmacao. O token identifica a conta; no prototipo
-	// simulamos o clique valido -> modal de sucesso sobre a home (portal publico ao fundo).
-	{ path: '/confirmar', element: <Navigate to="/confirmacao-email?state=success" replace /> },
-	// Endpoint do link do e-mail de recuperacao de senha. O token gateia o acesso; no prototipo
-	// simulamos o clique valido -> modal de nova senha sobre a home.
-	{ path: '/redefinir', element: <Navigate to="/redefine-senha" replace /> },
-	{ path: '/dashboard', element: <DashboardScreen /> },
-	{ path: '/dashboard-perfil-v3', element: <DashboardPerfilV3Screen /> },
-	{ path: '/dashboard-perfil-v4', element: <DashboardPerfilV4Screen /> },
-	{ path: '/meus-dados', element: <MeusDadosScreen /> },
-	{ path: '/consentimentos', element: <ConsentimentosScreen /> },
-	{ path: '/excluir-conta', element: <ExcluirContaScreen /> },
-	{ path: '/contato', element: <ContatoScreen /> },
-	{ path: '/sobre', element: <SobreScreen /> },
-	{ path: '/anuncie', element: <AnuncieScreen /> },
-	{ path: '/patrocinadores', element: <PatrocinadoresScreen /> },
-	{ path: '/patrocinador', element: <PatrocinadorScreen /> },
-	{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
-	{ path: '/gate-download', element: <GateDownloadScreen /> },
-	{ path: '/email-confirmacao', element: <EmailConfirmacaoScreen /> },
-	{ path: '/email-boas-vindas', element: <EmailBoasVindasScreen /> },
-	{ path: '/email-recuperacao-senha', element: <EmailRecuperacaoSenhaScreen /> },
-	{ path: '/email-senha-alterada', element: <EmailSenhaAlteradaScreen /> },
-	{ path: '/email-exclusao-conta', element: <EmailExclusaoContaScreen /> },
-	{ path: '/archive', element: <ArchiveScreen /> },
-	{ path: '*', element: <NotFoundScreen /> },
+	{
+		element: <RootLayout />,
+		children: [
+			{ path: '/', element: <CentralScreen /> },
+			{ path: '/home', element: <HomeScreen /> },
+			{ path: '/home-v2', element: <HomeV2Screen /> },
+			{ path: '/categoria', element: <CategoriaScreen /> },
+			{ path: '/conteudo', element: <ConteudoScreen /> },
+			{ path: '/menu', element: <MenuScreen /> },
+			{ path: '/buscar', element: <BuscarScreen /> },
+			{ path: '/login-full', element: <LoginScreen /> },
+			{ path: '/login', element: <LoginV2Screen /> },
+			{ path: '/cadastro-full', element: <CadastroScreen /> },
+			{ path: '/cadastro', element: <CadastroV2Screen /> },
+			{ path: '/recupera-senha-full', element: <RecuperaSenhaScreen /> },
+			{ path: '/recupera-senha', element: <RecuperaSenhaV2Screen /> },
+			{ path: '/redefine-senha-full', element: <RedefineSenhaScreen /> },
+			{ path: '/redefine-senha', element: <RedefineSenhaV2Screen /> },
+			{ path: '/confirmacao-email-full', element: <ConfirmacaoEmailScreen /> },
+			{ path: '/confirmacao-email', element: <ConfirmacaoEmailV2Screen /> },
+			// Endpoint do link do e-mail de confirmacao. O token identifica a conta; no prototipo
+			// simulamos o clique valido -> modal de sucesso sobre a home (portal publico ao fundo).
+			{ path: '/confirmar', element: <Navigate to="/confirmacao-email?state=success" replace /> },
+			// Endpoint do link do e-mail de recuperacao de senha. O token gateia o acesso; no prototipo
+			// simulamos o clique valido -> modal de nova senha sobre a home.
+			{ path: '/redefinir', element: <Navigate to="/redefine-senha" replace /> },
+			{ path: '/dashboard', element: <DashboardScreen /> },
+			{ path: '/dashboard-perfil-v3', element: <DashboardPerfilV3Screen /> },
+			{ path: '/dashboard-perfil-v4', element: <DashboardPerfilV4Screen /> },
+			{ path: '/meus-dados', element: <MeusDadosScreen /> },
+			{ path: '/consentimentos', element: <ConsentimentosScreen /> },
+			{ path: '/excluir-conta', element: <ExcluirContaScreen /> },
+			{ path: '/contato', element: <ContatoScreen /> },
+			{ path: '/sobre', element: <SobreScreen /> },
+			{ path: '/anuncie', element: <AnuncieScreen /> },
+			{ path: '/patrocinadores', element: <PatrocinadoresScreen /> },
+			{ path: '/patrocinador', element: <PatrocinadorScreen /> },
+			{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
+			{ path: '/gate-download', element: <GateDownloadScreen /> },
+			{ path: '/email-confirmacao', element: <EmailConfirmacaoScreen /> },
+			{ path: '/email-boas-vindas', element: <EmailBoasVindasScreen /> },
+			{ path: '/email-recuperacao-senha', element: <EmailRecuperacaoSenhaScreen /> },
+			{ path: '/email-senha-alterada', element: <EmailSenhaAlteradaScreen /> },
+			{ path: '/email-exclusao-conta', element: <EmailExclusaoContaScreen /> },
+			{ path: '/archive', element: <ArchiveScreen /> },
+			{ path: '*', element: <NotFoundScreen /> },
+		],
+	},
 ])
 
 export function Router() {
@@ -90,7 +107,6 @@ export function Router() {
 		<>
 			<RouterProvider router={router} />
 			<Toaster />
-			<ScenarioBar />
 		</>
 	)
 }

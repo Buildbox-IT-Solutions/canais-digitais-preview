@@ -90,7 +90,13 @@ export default function DashboardPerfilV4Screen() {
 	const legacyResolved =
 		!cenarioParam && legacyStateParam ? resolveLegacyState(legacyStateParam, params.get('tab')) : null
 
-	const tabParam = legacyResolved?.tab ?? params.get('tab') ?? 'perfil'
+	const cenario = cenarioParam ?? legacyResolved?.cenario ?? null
+	const activeScenario = SCENARIOS.find((s) => s.id === cenario) ?? null
+
+	// ?cenario= é a fonte única de verdade: quando reconhecido, a aba vem do próprio
+	// registro do cenário — dispensa um ?tab= manual em paralelo e evita estados
+	// incoerentes (ex.: só ?cenario=leituras-vazio, sem ?tab=ultimas, abrindo a aba errada).
+	const tabParam = activeScenario?.tab ?? legacyResolved?.tab ?? params.get('tab') ?? 'perfil'
 	const tab = (TABS.includes(tabParam as Tab) ? tabParam : 'perfil') as Tab
 
 	const drawerParam = params.get('drawer')
@@ -98,7 +104,6 @@ export default function DashboardPerfilV4Screen() {
 		? drawerParam
 		: null) as Drawer | null
 
-	const cenario = cenarioParam ?? legacyResolved?.cenario ?? null
 	const isSaved = cenario === 'perfil-salvo'
 	const isEmpty = cenario === 'downloads-vazio' || cenario === 'leituras-vazio'
 	const isCompleto = cenario === 'perfil-completo'
