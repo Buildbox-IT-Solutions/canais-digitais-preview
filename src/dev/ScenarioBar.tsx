@@ -33,7 +33,11 @@ export function ScenarioBar() {
 	const activeId = (() => {
 		const current = params.get('cenario')
 		if (current && scenarios.some((s) => s.id === current)) return current
-		return scenarios[0]?.id ?? ''
+		// Sem ?cenario=: se a aba atual tem um estado "Preenchido"/default registrado,
+		// reflete ele no select em vez de cair sempre no primeiro item da lista.
+		const effectiveTab = params.get('tab') ?? 'perfil'
+		const defaultForTab = scenarios.find((s) => s.isDefault && s.tab === effectiveTab)
+		return defaultForTab?.id ?? scenarios[0]?.id ?? ''
 	})()
 
 	// Client-side (mesma navegação que o resto da tela usa pra ?state=/?cenario=):
@@ -42,7 +46,13 @@ export function ScenarioBar() {
 	function selectScenario(id: string) {
 		const scenario = scenarios.find((s) => s.id === id)
 		const next = new URLSearchParams(params)
-		next.set('cenario', id)
+		// "Preenchido"/default não tem valor de cenario próprio — remove em vez de gravar,
+		// senão não haveria como voltar ao estado normal sem editar a URL na mão.
+		if (scenario?.isDefault) {
+			next.delete('cenario')
+		} else {
+			next.set('cenario', id)
+		}
 		if (scenario?.tab) next.set('tab', scenario.tab)
 		setSearchParams(next, { replace: true })
 	}

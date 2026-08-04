@@ -7,6 +7,9 @@ export interface ScenarioDef {
 	group: string
 	/** Se presente, selecionar este cenário também navega para essa aba (?tab=). */
 	tab?: string
+	/** Estado "populado"/default do grupo — sem valor de cenario próprio. Selecionar
+	 * remove `?cenario=` da URL em vez de gravar `id`. */
+	isDefault?: boolean
 }
 
 type Listener = () => void

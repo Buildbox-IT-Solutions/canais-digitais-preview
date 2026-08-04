@@ -51,7 +51,9 @@ const PER_PAGE = 10
 const SCENARIOS: ScenarioDef[] = [
 	{ id: 'perfil-incompleto', label: 'Incompleto', group: 'Perfil', tab: 'perfil' },
 	{ id: 'perfil-completo', label: 'Completo', group: 'Perfil', tab: 'perfil' },
+	{ id: 'downloads-padrao', label: 'Preenchido', group: 'Downloads', tab: 'downloads', isDefault: true },
 	{ id: 'downloads-vazio', label: 'Vazio', group: 'Downloads', tab: 'downloads' },
+	{ id: 'leituras-padrao', label: 'Preenchido', group: 'Leituras', tab: 'ultimas', isDefault: true },
 	{ id: 'leituras-vazio', label: 'Vazio', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'leituras-carregando', label: 'Carregando', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'leituras-com-erro', label: 'Com erro', group: 'Leituras', tab: 'ultimas' },
@@ -93,11 +95,16 @@ export default function DashboardPerfilV4Screen() {
 	const cenario = cenarioParam ?? legacyResolved?.cenario ?? null
 	const activeScenario = SCENARIOS.find((s) => s.id === cenario) ?? null
 
-	// ?cenario= é a fonte única de verdade: quando reconhecido, a aba vem do próprio
-	// registro do cenário — dispensa um ?tab= manual em paralelo e evita estados
-	// incoerentes (ex.: só ?cenario=leituras-vazio, sem ?tab=ultimas, abrindo a aba errada).
-	const tabParam = activeScenario?.tab ?? legacyResolved?.tab ?? params.get('tab') ?? 'perfil'
-	const tab = (TABS.includes(tabParam as Tab) ? tabParam : 'perfil') as Tab
+	// ?tab= explícito sempre vence — o cenário só deriva a aba quando ?tab= está ausente
+	// ou inválido. Isso cobre dois casos: link só com ?cenario= (dispensa ?tab= manual,
+	// evita abrir a aba errada) e link editado à mão com os dois presentes (não perde a
+	// aba pedida por causa do cenário).
+	const explicitTabParam = params.get('tab')
+	const tabParam =
+		explicitTabParam && TABS.includes(explicitTabParam as Tab)
+			? explicitTabParam
+			: (activeScenario?.tab ?? legacyResolved?.tab ?? 'perfil')
+	const tab = tabParam as Tab
 
 	const drawerParam = params.get('drawer')
 	const drawer = (DRAWERS.includes(drawerParam as Drawer) && tab === 'perfil'
