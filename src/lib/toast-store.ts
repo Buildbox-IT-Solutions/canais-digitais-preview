@@ -1,10 +1,17 @@
-import type { ToastType } from '~/components/toast/types'
+import type { ToastAction, ToastType } from '~/components/toast/types'
 
 export interface ToastRecord {
 	id: number
 	type: ToastType
 	message: string
+	action?: ToastAction
 	leaving: boolean
+}
+
+export interface ToastOptions {
+	action?: ToastAction
+	/** Sobrescreve o auto-dismiss padrão (4s) — ex.: toasts com ação "Desfazer" usam uma janela maior. */
+	durationMs?: number
 }
 
 const AUTO_DISMISS_MS = 4000
@@ -31,11 +38,11 @@ export function dismissToast(id: number): void {
 	}, LEAVE_MS)
 }
 
-function pushToast(type: ToastType, message: string): number {
+function pushToast(type: ToastType, message: string, options?: ToastOptions): number {
 	const id = nextId++
-	toasts = [...toasts, { id, type, message, leaving: false }]
+	toasts = [...toasts, { id, type, message, action: options?.action, leaving: false }]
 	emitChange()
-	setTimeout(() => dismissToast(id), AUTO_DISMISS_MS)
+	setTimeout(() => dismissToast(id), options?.durationMs ?? AUTO_DISMISS_MS)
 	return id
 }
 
@@ -46,10 +53,10 @@ function pushToast(type: ToastType, message: string): number {
  * vez na raiz, ver router.tsx) é quem renderiza a pilha.
  */
 export const toast = {
-	success: (message: string) => pushToast('success', message),
-	error: (message: string) => pushToast('error', message),
-	warning: (message: string) => pushToast('warning', message),
-	info: (message: string) => pushToast('info', message),
+	success: (message: string, options?: ToastOptions) => pushToast('success', message, options),
+	error: (message: string, options?: ToastOptions) => pushToast('error', message, options),
+	warning: (message: string, options?: ToastOptions) => pushToast('warning', message, options),
+	info: (message: string, options?: ToastOptions) => pushToast('info', message, options),
 }
 
 export function subscribeToasts(listener: Listener): () => void {

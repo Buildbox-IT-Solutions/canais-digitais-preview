@@ -43,6 +43,15 @@ export const Playground: Story = {
 				onClick={() => toast.warning('Sessão expira em 1 minuto.')}
 			/>
 			<DemoButton label="Disparar info" onClick={() => toast.info('Dispositivo reconhecido.')} />
+			<DemoButton
+				label="Disparar com ação (Desfazer)"
+				onClick={() =>
+					toast.info('Removido de Últimas leituras.', {
+						durationMs: 5000,
+						action: { label: 'Desfazer', onClick: () => toast.success('Desfeito.') },
+					})
+				}
+			/>
 			<Toaster />
 		</div>
 	),

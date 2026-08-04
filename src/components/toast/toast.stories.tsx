@@ -16,3 +16,12 @@ export const Success: Story = { args: { type: 'success' } }
 export const Error: Story = { args: { type: 'error', message: 'Erro ao salvar. Tente novamente.' } }
 export const Warning: Story = { args: { type: 'warning', message: 'Sessão expira em 1 minuto.' } }
 export const Info: Story = { args: { type: 'info', message: 'Dispositivo reconhecido.' } }
+
+/** Com ação — ex.: "Desfazer" numa remoção otimista. Usado pelo ReadListItem. */
+export const ComAcao: Story = {
+	args: {
+		type: 'info',
+		message: 'Removido de Últimas leituras.',
+		action: { label: 'Desfazer', onClick: () => {} },
+	},
+}

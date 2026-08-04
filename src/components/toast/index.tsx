@@ -35,7 +35,7 @@ const TYPE_META: Record<ToastType, { iconPath: string; accent: string; border: s
 	},
 }
 
-export function Toast({ type = 'info', message, id, onDismiss, className }: IToastProps) {
+export function Toast({ type = 'info', message, action, id, onDismiss, className }: IToastProps) {
 	const meta = TYPE_META[type]
 	const isAlert = type === 'error' || type === 'warning'
 
@@ -59,6 +59,15 @@ export function Toast({ type = 'info', message, id, onDismiss, className }: IToa
 				<path d={meta.iconPath} />
 			</svg>
 			<p className="flex-1 font-body text-body-md text-neutral-950">{message}</p>
+			{action ? (
+				<button
+					type="button"
+					onClick={action.onClick}
+					className="shrink-0 font-body font-bold text-body-md text-secondary-950 hover:underline"
+				>
+					{action.label}
+				</button>
+			) : null}
 			<button
 				type="button"
 				aria-label="Fechar notificação"
