@@ -5,8 +5,8 @@ import type { DashboardTab, IDashboardTabsV4Props } from './types'
 /**
  * Componente: Dashboard Tabs v4
  * Figma: 6045:6002 (deriva de dashboard-tabs-v3)
- * Ordem: Perfil (ativa por padrão), Downloads, Newsletter — ativas; Últimas leituras e
- * Favoritos seguem desabilitadas ("Em breve"). "Visão geral" foi removida.
+ * Ordem: Perfil (ativa por padrão), Downloads, Newsletter, Últimas leituras — ativas;
+ * Favoritos segue desabilitada ("Em breve"). "Visão geral" foi removida.
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-100, --color-neutral-400,
  *         --color-neutral-900
  */
@@ -15,7 +15,7 @@ const DEFAULT_TABS: DashboardTab[] = [
 	{ id: 'perfil', label: 'Meu Perfil' },
 	{ id: 'downloads', label: 'Downloads' },
 	{ id: 'newsletter', label: 'Newsletter' },
-	{ id: 'ultimas', label: 'Últimas leituras', disabled: true, chip: 'Em breve' },
+	{ id: 'ultimas', label: 'Últimas leituras' },
 	{ id: 'favoritos', label: 'Favoritos', disabled: true, chip: 'Em breve' },
 ]
 

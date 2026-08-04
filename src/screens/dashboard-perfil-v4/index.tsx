@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
 import { toast } from '~/lib/toast-store'
@@ -13,7 +13,8 @@ import { Icon } from '~/components/icon'
 import { NewsletterItem } from '~/components/newsletter-item'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
-import { RecentNewsItem } from '~/components/recent-news-item'
+import { ReadListItem } from '~/components/read-list-item'
+import { ReadListItemSkeleton } from '~/components/read-list-item/read-list-item-skeleton'
 import { StatusRing } from '~/components/status-ring'
 import { Toast } from '~/components/toast'
 import {
@@ -26,8 +27,8 @@ import {
 	PERFIL_CAMPOS,
 	PERFIL_CAMPOS_COMPLETO,
 	type PerfilCampos,
-	RECENT_NEWS,
 } from '~/mocks/dashboard-perfil'
+import { READ_HISTORY, resolveReadHistory } from '~/mocks/leituras'
 
 type Tab = 'perfil' | 'ultimas' | 'newsletter' | 'downloads'
 type Drawer = 'dados-pessoais' | 'dados-profissionais' | 'dados-fiscais'
@@ -45,7 +46,7 @@ const PER_PAGE = 10
 
 /**
  * Tela: Dashboard de Perfil v4 — modelo tabbed (deriva de dashboard-perfil-v3)
- * Abas MVP: Meu Perfil (padrão) + Downloads + Newsletter; Últimas leituras / Favoritos como "Em breve".
+ * Abas MVP: Meu Perfil (padrão) + Downloads + Newsletter + Últimas leituras; Favoritos como "Em breve".
  * "Minha Conta" removida: Baixar dados + Excluir conta vivem na aba Perfil (seção LGPD);
  * Alterar senha no DashboardWelcome. Sessões e login social saíram (fora de escopo do MVP).
  * Drawer overlay em perfil: ?drawer=dados-pessoais|dados-profissionais|dados-fiscais
@@ -67,6 +68,8 @@ export default function DashboardPerfilV4Screen() {
 	const isSaved = state === 'saved'
 	const isEmpty = state === 'empty'
 	const isCompleto = state === 'completo'
+	const isLoading = state === 'carregando'
+	const isErro = state === 'erro'
 
 	// "Engajado" (?state=completo): perfil todo preenchido; a tela suprime o andaime
 	// de completude (banner de progresso, badges e infos de % restantes).
@@ -102,7 +105,9 @@ export default function DashboardPerfilV4Screen() {
 				{tab === 'perfil' ? (
 					<PerfilPane pct={pct} missing={missing} complete={isCompleto} campos={campos} />
 				) : null}
-				{tab === 'ultimas' ? <UltimasPane isEmpty={isEmpty} /> : null}
+				{tab === 'ultimas' ? (
+					<UltimasPane isEmpty={isEmpty} isLoading={isLoading} isErro={isErro} />
+				) : null}
 				{tab === 'newsletter' ? <NewsletterPane /> : null}
 				{tab === 'downloads' ? <DownloadsPane isEmpty={isEmpty} /> : null}
 			</div>
@@ -141,6 +146,21 @@ function ScenarioNav({ tab, state }: { tab: Tab; state: string | null }) {
 			label: 'Download vazio',
 			href: `${BASE_HREF}?tab=downloads&state=empty`,
 			active: tab === 'downloads' && state === 'empty',
+		},
+		{
+			label: 'Leituras carregando',
+			href: `${BASE_HREF}?tab=ultimas&state=carregando`,
+			active: tab === 'ultimas' && state === 'carregando',
+		},
+		{
+			label: 'Leituras vazio',
+			href: `${BASE_HREF}?tab=ultimas&state=empty`,
+			active: tab === 'ultimas' && state === 'empty',
+		},
+		{
+			label: 'Leituras com erro',
+			href: `${BASE_HREF}?tab=ultimas&state=erro`,
+			active: tab === 'ultimas' && state === 'erro',
 		},
 	]
 	return (
@@ -212,17 +232,96 @@ function ProfileMetrics({ pct, missing }: { pct: number; missing: number }) {
 	)
 }
 
-function UltimasPane({ isEmpty }: { isEmpty: boolean }) {
+function UltimasPane({
+	isEmpty,
+	isLoading,
+	isErro,
+}: {
+	isEmpty: boolean
+	isLoading: boolean
+	isErro: boolean
+}) {
+	const [params] = useSearchParams()
+	const pageRaw = Number(params.get('page') ?? 1)
+
+	// Filtro acontece aqui, antes da paginação: resolveReadHistory já descarta ids sem
+	// artigo correspondente (despublicado/removido) — a contagem de páginas reflete só
+	// o que sobra, nunca o histórico bruto.
+	const resolved = resolveReadHistory(READ_HISTORY)
+	const totalPages = Math.max(1, Math.ceil(resolved.length / PER_PAGE))
+	const page = Math.min(Math.max(1, pageRaw), totalPages)
+	const offset = (page - 1) * PER_PAGE
+	const slice = resolved.slice(offset, offset + PER_PAGE)
+	const isReallyEmpty = isEmpty || resolved.length === 0
+
+	// Remoção otimista: só esconde localmente (sem refetch/reindexação da página) —
+	// reconcilia sozinha ao trocar de página, já que aí a screen inteira remonta.
+	const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set())
+	const visibleSlice = slice.filter((item) => !hiddenIds.has(item.id))
+
+	function handleRemove(id: string) {
+		setHiddenIds((prev) => new Set(prev).add(id))
+		toast.info('Removido de Últimas leituras.', {
+			durationMs: 5000,
+			action: {
+				label: 'Desfazer',
+				onClick: () => {
+					setHiddenIds((prev) => {
+						const next = new Set(prev)
+						next.delete(id)
+						return next
+					})
+				},
+			},
+		})
+	}
+
+	const headingRef = useRef<HTMLHeadingElement>(null)
+	const listRef = useRef<HTMLDivElement>(null)
+
+	// Troca de página: como a Pagination navega por <a href> (nova URL, não SPA), o
+	// browser volta o scroll pro topo do documento por padrão — aqui devolvemos o
+	// scroll pro topo da LISTA e o foco pro cabeçalho, pra não perder quem usa teclado.
+	useEffect(() => {
+		if (params.get('page') === null) return
+		listRef.current?.scrollIntoView({ block: 'start' })
+		headingRef.current?.focus()
+	}, [])
+
 	return (
 		<section className="flex flex-col gap-6">
 			<header className="flex flex-col gap-1">
-				<h2 className="font-display font-bold text-title-xl text-primary-600">Últimas leituras</h2>
+				<h2
+					ref={headingRef}
+					tabIndex={-1}
+					className="font-display font-bold text-title-xl text-primary-600 outline-none rounded-sm focus-visible:ring-2 focus-visible:ring-secondary-950/35"
+				>
+					Últimas leituras
+				</h2>
 				<p className="font-body text-body-md text-neutral-600">
 					Os artigos que você abriu aparecem aqui automaticamente.
 				</p>
 			</header>
 
-			{isEmpty ? (
+			{isLoading ? (
+				<ul className="flex flex-col">
+					{Array.from({ length: 10 }, (_, i) => (
+						<ReadListItemSkeleton key={i} isLast={i === 9} />
+					))}
+				</ul>
+			) : isErro ? (
+				<div className="flex flex-col items-center text-center gap-4 py-12">
+					<p className="font-body text-body-md text-neutral-700 max-w-md">
+						Não foi possível carregar suas últimas leituras.
+					</p>
+					<a
+						href={`${BASE_HREF}?tab=ultimas`}
+						className="inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full border-[1.5px] border-primary-600 text-primary-600 hover:bg-neutral-50 font-body font-bold text-body-md transition-colors"
+					>
+						Tentar de novo
+					</a>
+				</div>
+			) : isReallyEmpty ? (
 				<div className="flex flex-col items-center text-center gap-4 py-12">
 					<StatusRing accent="primary" icon="book" size="sm" />
 					<h3 className="font-display font-bold text-title-xl text-primary-600">
@@ -240,17 +339,26 @@ function UltimasPane({ isEmpty }: { isEmpty: boolean }) {
 					</a>
 				</div>
 			) : (
-				<div className="flex flex-col">
-					{RECENT_NEWS.map((r, i) => (
-						<RecentNewsItem
-							key={i}
-							category={r.category}
-							title={r.title}
-							when={r.when}
-							href="/conteudo"
-							isLast={i === RECENT_NEWS.length - 1}
-						/>
-					))}
+				<div ref={listRef} className="flex flex-col gap-6">
+					<ul className="flex flex-col">
+						{visibleSlice.map((item, i) => (
+							<ReadListItem
+								key={item.id}
+								category={item.category}
+								categoryColor={item.categoryColor}
+								title={item.title}
+								href={item.href ?? '/conteudo'}
+								readAt={item.readAt}
+								image={item.image}
+								isLast={i === visibleSlice.length - 1}
+								onRemove={() => handleRemove(item.id)}
+							/>
+						))}
+					</ul>
+
+					{totalPages > 1 ? (
+						<Pagination current={page} total={totalPages} baseHref={`${BASE_HREF}?tab=ultimas`} />
+					) : null}
 				</div>
 			)}
 		</section>
