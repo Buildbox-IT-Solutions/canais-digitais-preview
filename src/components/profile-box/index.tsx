@@ -47,7 +47,7 @@ export function ProfileBox({
 		<div className={twMerge('bg-white border border-neutral-100 rounded-lg w-full', className)}>
 			{incomplete ? (
 				<div className="px-4 lg:px-6 pt-4 flex">
-					<Badge label={chip} tone="mint" icon={<Icon name="star-filled" className="size-4" />} />
+					<Badge label={chip} tone="mint" icon={<Icon name="star" className="size-4" />} />
 				</div>
 			) : null}
 

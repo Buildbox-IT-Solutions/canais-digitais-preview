@@ -1,13 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Thumbnail } from '.'
+import { Icon } from '~/components/icon'
 
 const SAMPLE_SRC = 'https://images.unsplash.com/photo-1506765515384-028b60a970df?w=800&q=80'
 
 const PlayOverlayPlaceholder = (
 	<div className="rounded-full bg-white/80 size-12 flex items-center justify-center">
-		<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="size-6 text-primary-600">
-			<path d="M8 5v14l11-7z" />
-		</svg>
+		<Icon name="play-arrow" className="size-6 text-primary-600" />
 	</div>
 )
 
