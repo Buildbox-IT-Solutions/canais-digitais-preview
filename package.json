@@ -16,6 +16,7 @@
 		"storybook:build": "storybook build"
 	},
 	"dependencies": {
+		"@material-icons/svg": "1.0.33",
 		"date-fns": "^4.1.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
