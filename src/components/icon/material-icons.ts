@@ -42,6 +42,12 @@ import Cancel from '@material-icons/svg/svg/cancel/baseline.svg'
 import Warning from '@material-icons/svg/svg/warning/baseline.svg'
 import Info from '@material-icons/svg/svg/info/baseline.svg'
 import RadioButtonUnchecked from '@material-icons/svg/svg/radio_button_unchecked/baseline.svg'
+import Download from '@material-icons/svg/svg/download/baseline.svg'
+import ChevronLeft from '@material-icons/svg/svg/chevron_left/baseline.svg'
+import ChevronRight from '@material-icons/svg/svg/chevron_right/baseline.svg'
+import Smartphone from '@material-icons/svg/svg/smartphone/baseline.svg'
+import Laptop from '@material-icons/svg/svg/laptop/baseline.svg'
+import DesktopIcon from '@material-icons/svg/svg/desktop_mac/baseline.svg'
 
 /**
  * Ícones Material sourced diretamente do pacote `@material-icons/svg` (mesma
@@ -96,6 +102,12 @@ export const MATERIAL_ICONS = {
 	warning: Warning,
 	info: Info,
 	'radio-button-unchecked': RadioButtonUnchecked,
+	download: Download,
+	'chevron-left': ChevronLeft,
+	'chevron-right': ChevronRight,
+	smartphone: Smartphone,
+	laptop: Laptop,
+	desktop: DesktopIcon,
 } as const
 
 export type PackagedMaterialIconName = keyof typeof MATERIAL_ICONS
