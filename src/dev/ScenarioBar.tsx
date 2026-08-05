@@ -136,9 +136,17 @@ export function ScenarioBar() {
 				}}
 			>
 				{[...groups.entries()].map(([group, items]) => (
-					<optgroup key={group} label={group}>
+					<optgroup
+						key={group}
+						label={group}
+						style={{ background: '#1c1c1e', color: '#8e8e93' }}
+					>
 						{items.map((s) => (
-							<option key={s.id} value={s.id}>
+							<option
+								key={s.id}
+								value={s.id}
+								style={{ background: '#1c1c1e', color: '#e5e5e5' }}
+							>
 								{s.label}
 							</option>
 						))}
