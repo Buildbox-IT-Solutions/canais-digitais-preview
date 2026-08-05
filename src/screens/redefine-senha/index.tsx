@@ -4,6 +4,7 @@ import { Icon } from '~/components/icon'
 import { PasswordStrength } from '~/components/password-strength'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
+import { Spinner } from '~/components/spinner'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthPasswordInput } from '../_auth/password-input'
@@ -186,27 +187,7 @@ export default function RedefineSenhaScreen() {
 										>
 											{isLoading ? (
 												<>
-													<svg
-														className="size-5 animate-spin"
-														viewBox="0 0 24 24"
-														fill="none"
-														aria-hidden="true"
-													>
-														<circle
-															cx="12"
-															cy="12"
-															r="10"
-															stroke="currentColor"
-															strokeWidth="3"
-															strokeOpacity=".25"
-														/>
-														<path
-															d="M12 2a10 10 0 0 1 10 10"
-															stroke="currentColor"
-															strokeWidth="3"
-															strokeLinecap="round"
-														/>
-													</svg>
+													<Spinner />
 													Redefinindo...
 												</>
 											) : (
