@@ -66,9 +66,7 @@ export function AuthPasswordInput({
 			</div>
 			{error ? (
 				<p className="mt-1.5 px-1 flex items-center gap-1.5 font-body font-semibold text-label-md text-red-600">
-					<svg className="size-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-						<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-					</svg>
+					<Icon name="error" className="size-3.5 shrink-0" />
 					{error}
 				</p>
 			) : null}
