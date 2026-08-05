@@ -28,7 +28,7 @@ import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
-import { getPostByScenario } from '~/fixtures/posts'
+import { getPostByParam } from '~/fixtures/posts'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
@@ -62,7 +62,7 @@ export default function ConteudoScreen() {
 	const previewIncentive = params.get('preview')
 	const tocVariant = params.get('toc')
 
-	const activePost = getPostByScenario(params.get('scenario'))
+	const activePost = getPostByParam(params.get('post'))
 
 	const [leituraOpen, setLeituraOpen] = useState(previewIncentive === 'leitura')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')

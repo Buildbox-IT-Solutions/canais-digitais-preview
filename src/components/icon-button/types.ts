@@ -11,5 +11,8 @@ export interface IIconButtonProps {
 	href?: string
 	disabled?: boolean
 	onClick?: () => void
+	ariaHasPopup?: 'menu' | 'dialog' | 'listbox' | 'true'
+	ariaExpanded?: boolean
+	ariaControls?: string
 	className?: string
 }

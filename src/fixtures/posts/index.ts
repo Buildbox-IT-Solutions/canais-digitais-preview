@@ -7,7 +7,7 @@ import { POST_MULTIPLOS_AUTORES } from './post-multiplos-autores'
 import { POST_PODCAST } from './post-podcast'
 import { POST_VIDEO } from './post-video'
 
-export const POSTS_BY_SCENARIO: Record<string, Post> = {
+export const POSTS_BY_ID: Record<string, Post> = {
 	'post-autor-unico': POST_AUTOR_UNICO,
 	'post-multiplos-autores': POST_MULTIPLOS_AUTORES,
 	'post-video': POST_VIDEO,
@@ -17,13 +17,14 @@ export const POSTS_BY_SCENARIO: Record<string, Post> = {
 	'post-completo': POST_COMPLETO,
 }
 
-export const DEFAULT_SCENARIO = 'post-completo'
+export const DEFAULT_POST_ID = 'post-completo'
 
-export function getPostByScenario(scenario: string | null): Post {
-	if (scenario && scenario in POSTS_BY_SCENARIO) {
-		return POSTS_BY_SCENARIO[scenario]
+/** `id` vem de `?post=` em /conteudo — nome do fixture, não um "cenário" de teste. */
+export function getPostByParam(id: string | null): Post {
+	if (id && id in POSTS_BY_ID) {
+		return POSTS_BY_ID[id]
 	}
-	return POSTS_BY_SCENARIO[DEFAULT_SCENARIO]
+	return POSTS_BY_ID[DEFAULT_POST_ID]
 }
 
 export {

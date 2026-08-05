@@ -1,5 +1,6 @@
 import { isValidElement } from 'react'
 import { twMerge } from '~/lib/tw-merge'
+import { Icon } from '~/components/icon'
 import type { ButtonIcon, ButtonSize, ButtonTone, ButtonType, IButtonProps } from './types'
 
 /**
@@ -47,41 +48,9 @@ const PADDING_WITH_ICON: Record<ButtonSize, string> = {
 }
 
 function BuiltInIcon({ icon, size }: { icon: ButtonIcon; size: ButtonSize }) {
+	if (icon !== 'arrow-right' && icon !== 'plus') return null
 	const iconSize = size === 'small' ? 'size-5' : 'size-6'
-	if (icon === 'arrow-right') {
-		return (
-			<svg
-				className={iconSize}
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				aria-hidden="true"
-			>
-				<path d="M5 12h14M13 5l7 7-7 7" />
-			</svg>
-		)
-	}
-	if (icon === 'plus') {
-		return (
-			<svg
-				className={iconSize}
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				aria-hidden="true"
-			>
-				<circle cx="12" cy="12" r="10" />
-				<path d="M12 8v8M8 12h8" />
-			</svg>
-		)
-	}
-	return null
+	return <Icon name={icon} className={iconSize} />
 }
 
 export function Button({

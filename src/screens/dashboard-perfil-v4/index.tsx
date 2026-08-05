@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
 import { toast } from '~/lib/toast-store'
+import { useScenarios } from '~/dev/use-scenarios'
+import type { ScenarioDef } from '~/dev/scenario-store'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
@@ -13,7 +15,8 @@ import { Icon } from '~/components/icon'
 import { NewsletterItem } from '~/components/newsletter-item'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
-import { RecentNewsItem } from '~/components/recent-news-item'
+import { ReadListItem } from '~/components/read-list-item'
+import { ReadListItemSkeleton } from '~/components/read-list-item/read-list-item-skeleton'
 import { StatusRing } from '~/components/status-ring'
 import { Toast } from '~/components/toast'
 import {
@@ -26,8 +29,8 @@ import {
 	PERFIL_CAMPOS,
 	PERFIL_CAMPOS_COMPLETO,
 	type PerfilCampos,
-	RECENT_NEWS,
 } from '~/mocks/dashboard-perfil'
+import { READ_HISTORY, resolveReadHistory } from '~/mocks/leituras'
 
 type Tab = 'perfil' | 'ultimas' | 'newsletter' | 'downloads'
 type Drawer = 'dados-pessoais' | 'dados-profissionais' | 'dados-fiscais'
@@ -43,33 +46,96 @@ const USER_INITIALS = 'MA'
 
 const PER_PAGE = 10
 
+// Registro único pra ScenarioBar (src/dev) — a única declaração dos cenários desta
+// tela; a lógica de estado abaixo deriva dos mesmos ids, nunca duplica os literais.
+const SCENARIOS: ScenarioDef[] = [
+	{ id: 'perfil-incompleto', label: 'Incompleto', group: 'Perfil', tab: 'perfil', isDefault: true },
+	{ id: 'perfil-completo', label: 'Completo', group: 'Perfil', tab: 'perfil' },
+	{ id: 'downloads-padrao', label: 'Preenchido', group: 'Downloads', tab: 'downloads', isDefault: true },
+	{ id: 'downloads-vazio', label: 'Vazio', group: 'Downloads', tab: 'downloads' },
+	{ id: 'leituras-padrao', label: 'Preenchido', group: 'Leituras', tab: 'ultimas', isDefault: true },
+	{ id: 'leituras-vazio', label: 'Vazio', group: 'Leituras', tab: 'ultimas' },
+	{ id: 'leituras-carregando', label: 'Carregando', group: 'Leituras', tab: 'ultimas' },
+	{ id: 'leituras-com-erro', label: 'Com erro', group: 'Leituras', tab: 'ultimas' },
+]
+
+// TODO remover na próxima iteração — alias temporário pra links antigos com ?state=.
+// `empty` era compartilhado entre Downloads e Últimas leituras, desambiguado só pelo
+// ?tab= que acompanhava o link original.
+function resolveLegacyState(state: string, tab: string | null): { cenario: string; tab: Tab } | null {
+	if (state === 'completo') return { cenario: 'perfil-completo', tab: 'perfil' }
+	if (state === 'saved') return { cenario: 'perfil-salvo', tab: 'perfil' }
+	if (state === 'carregando') return { cenario: 'leituras-carregando', tab: 'ultimas' }
+	if (state === 'erro') return { cenario: 'leituras-com-erro', tab: 'ultimas' }
+	if (state === 'empty') {
+		return tab === 'downloads'
+			? { cenario: 'downloads-vazio', tab: 'downloads' }
+			: { cenario: 'leituras-vazio', tab: 'ultimas' }
+	}
+	return null
+}
+
 /**
  * Tela: Dashboard de Perfil v4 — modelo tabbed (deriva de dashboard-perfil-v3)
- * Abas MVP: Meu Perfil (padrão) + Downloads + Newsletter; Últimas leituras / Favoritos como "Em breve".
+ * Abas MVP: Meu Perfil (padrão) + Downloads + Newsletter + Últimas leituras; Favoritos como "Em breve".
  * "Minha Conta" removida: Baixar dados + Excluir conta vivem na aba Perfil (seção LGPD);
  * Alterar senha no DashboardWelcome. Sessões e login social saíram (fora de escopo do MVP).
  * Drawer overlay em perfil: ?drawer=dados-pessoais|dados-profissionais|dados-fiscais
- * Estados: ?state=saved (toast) | empty (novo usuário) | completo (perfil 100%).
- * Switcher de cenários (ScenarioNav) fixo no rodapé para o cliente navegar sem editar URL.
+ * Cenários (ver ScenarioBar): ?cenario=perfil-completo|downloads-vazio|leituras-vazio etc.
  */
 export default function DashboardPerfilV4Screen() {
-	const [params] = useSearchParams()
+	const [params, setSearchParams] = useSearchParams()
+	useScenarios(SCENARIOS)
 
-	const tabParam = params.get('tab') ?? 'perfil'
-	const tab = (TABS.includes(tabParam as Tab) ? tabParam : 'perfil') as Tab
+	const cenarioParam = params.get('cenario')
+	const legacyStateParam = params.get('state')
+	const legacyResolved =
+		!cenarioParam && legacyStateParam ? resolveLegacyState(legacyStateParam, params.get('tab')) : null
+
+	const cenario = cenarioParam ?? legacyResolved?.cenario ?? null
+	const activeScenario = SCENARIOS.find((s) => s.id === cenario) ?? null
+
+	// ?tab= explícito sempre vence — o cenário só deriva a aba quando ?tab= está ausente
+	// ou inválido. Isso cobre dois casos: link só com ?cenario= (dispensa ?tab= manual,
+	// evita abrir a aba errada) e link editado à mão com os dois presentes (não perde a
+	// aba pedida por causa do cenário).
+	const explicitTabParam = params.get('tab')
+	const tabParam =
+		explicitTabParam && TABS.includes(explicitTabParam as Tab)
+			? explicitTabParam
+			: (activeScenario?.tab ?? legacyResolved?.tab ?? 'perfil')
+	const tab = tabParam as Tab
 
 	const drawerParam = params.get('drawer')
 	const drawer = (DRAWERS.includes(drawerParam as Drawer) && tab === 'perfil'
 		? drawerParam
 		: null) as Drawer | null
 
-	const state = params.get('state')
-	const isSaved = state === 'saved'
-	const isEmpty = state === 'empty'
-	const isCompleto = state === 'completo'
+	const isSaved = cenario === 'perfil-salvo'
+	const isEmpty = cenario === 'downloads-vazio' || cenario === 'leituras-vazio'
+	const isCompleto = cenario === 'perfil-completo'
+	const isLoading = cenario === 'leituras-carregando'
+	const isErro = cenario === 'leituras-com-erro'
 
-	// "Engajado" (?state=completo): perfil todo preenchido; a tela suprime o andaime
-	// de completude (banner de progresso, badges e infos de % restantes).
+	// Migra o link antigo assim que a tela monta: reescreve a URL pra ?cenario= (sem
+	// empilhar no histórico) e avisa uma vez no console. Não bloqueia o primeiro
+	// render — os booleans acima já usam `legacyResolved` de forma síncrona.
+	useEffect(() => {
+		if (cenarioParam || !legacyStateParam) return
+		const resolved = resolveLegacyState(legacyStateParam, params.get('tab'))
+		if (!resolved) return
+		console.warn(
+			`[dashboard-perfil-v4] ?state=${legacyStateParam} está obsoleto — use ?cenario=${resolved.cenario}.`,
+		)
+		const next = new URLSearchParams(params)
+		next.delete('state')
+		next.set('cenario', resolved.cenario)
+		next.set('tab', resolved.tab)
+		setSearchParams(next, { replace: true })
+	}, [])
+
+	// "Engajado" (?cenario=perfil-completo): perfil todo preenchido; a tela suprime o
+	// andaime de completude (banner de progresso, badges e infos de % restantes).
 	const campos = isCompleto ? PERFIL_CAMPOS_COMPLETO : PERFIL_CAMPOS
 	const totalFields = Object.keys(campos).length
 	const filledFields = Object.values(campos).filter((v) => v !== '').length
@@ -102,7 +168,9 @@ export default function DashboardPerfilV4Screen() {
 				{tab === 'perfil' ? (
 					<PerfilPane pct={pct} missing={missing} complete={isCompleto} campos={campos} />
 				) : null}
-				{tab === 'ultimas' ? <UltimasPane isEmpty={isEmpty} /> : null}
+				{tab === 'ultimas' ? (
+					<UltimasPane isEmpty={isEmpty} isLoading={isLoading} isErro={isErro} />
+				) : null}
 				{tab === 'newsletter' ? <NewsletterPane /> : null}
 				{tab === 'downloads' ? <DownloadsPane isEmpty={isEmpty} /> : null}
 			</div>
@@ -116,48 +184,7 @@ export default function DashboardPerfilV4Screen() {
 					<Toast type="success" message="Alterações salvas." />
 				</div>
 			) : null}
-			<ScenarioNav tab={tab} state={state} />
 		</main>
-	)
-}
-
-/**
- * Switcher de cenários (estilo "tweaks"/dev-nav) fixo no rodapé — cada botão leva
- * à aba + estado do cenário, para o cliente demonstrar sem digitar URL.
- */
-function ScenarioNav({ tab, state }: { tab: Tab; state: string | null }) {
-	const items = [
-		{
-			label: 'Perfil incompleto',
-			href: `${BASE_HREF}?tab=perfil`,
-			active: tab === 'perfil' && state !== 'completo',
-		},
-		{
-			label: 'Perfil completo',
-			href: `${BASE_HREF}?tab=perfil&state=completo`,
-			active: tab === 'perfil' && state === 'completo',
-		},
-		{
-			label: 'Download vazio',
-			href: `${BASE_HREF}?tab=downloads&state=empty`,
-			active: tab === 'downloads' && state === 'empty',
-		},
-	]
-	return (
-		<div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-wrap gap-1.5 justify-center max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-sm border border-neutral-100 rounded-full px-3 py-1.5 shadow-md z-50 font-body text-label-md">
-			<span className="text-neutral-500 self-center pr-1">Cenários:</span>
-			{items.map((it) => (
-				<a
-					key={it.label}
-					href={it.href}
-					className={`px-2.5 py-1 rounded-full transition-colors ${
-						it.active ? 'bg-primary-600 text-white' : 'text-neutral-700 hover:bg-neutral-50'
-					}`}
-				>
-					{it.label}
-				</a>
-			))}
-		</div>
 	)
 }
 
@@ -212,17 +239,96 @@ function ProfileMetrics({ pct, missing }: { pct: number; missing: number }) {
 	)
 }
 
-function UltimasPane({ isEmpty }: { isEmpty: boolean }) {
+function UltimasPane({
+	isEmpty,
+	isLoading,
+	isErro,
+}: {
+	isEmpty: boolean
+	isLoading: boolean
+	isErro: boolean
+}) {
+	const [params] = useSearchParams()
+	const pageRaw = Number(params.get('page') ?? 1)
+
+	// Filtro acontece aqui, antes da paginação: resolveReadHistory já descarta ids sem
+	// artigo correspondente (despublicado/removido) — a contagem de páginas reflete só
+	// o que sobra, nunca o histórico bruto.
+	const resolved = resolveReadHistory(READ_HISTORY)
+	const totalPages = Math.max(1, Math.ceil(resolved.length / PER_PAGE))
+	const page = Math.min(Math.max(1, pageRaw), totalPages)
+	const offset = (page - 1) * PER_PAGE
+	const slice = resolved.slice(offset, offset + PER_PAGE)
+	const isReallyEmpty = isEmpty || resolved.length === 0
+
+	// Remoção otimista: só esconde localmente (sem refetch/reindexação da página) —
+	// reconcilia sozinha ao trocar de página, já que aí a screen inteira remonta.
+	const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set())
+	const visibleSlice = slice.filter((item) => !hiddenIds.has(item.id))
+
+	function handleRemove(id: string) {
+		setHiddenIds((prev) => new Set(prev).add(id))
+		toast.info('Removido de Últimas leituras.', {
+			durationMs: 5000,
+			action: {
+				label: 'Desfazer',
+				onClick: () => {
+					setHiddenIds((prev) => {
+						const next = new Set(prev)
+						next.delete(id)
+						return next
+					})
+				},
+			},
+		})
+	}
+
+	const headingRef = useRef<HTMLHeadingElement>(null)
+	const listRef = useRef<HTMLDivElement>(null)
+
+	// Troca de página: como a Pagination navega por <a href> (nova URL, não SPA), o
+	// browser volta o scroll pro topo do documento por padrão — aqui devolvemos o
+	// scroll pro topo da LISTA e o foco pro cabeçalho, pra não perder quem usa teclado.
+	useEffect(() => {
+		if (params.get('page') === null) return
+		listRef.current?.scrollIntoView({ block: 'start' })
+		headingRef.current?.focus()
+	}, [])
+
 	return (
 		<section className="flex flex-col gap-6">
 			<header className="flex flex-col gap-1">
-				<h2 className="font-display font-bold text-title-xl text-primary-600">Últimas leituras</h2>
+				<h2
+					ref={headingRef}
+					tabIndex={-1}
+					className="font-display font-bold text-title-xl text-primary-600 outline-none rounded-sm focus-visible:ring-2 focus-visible:ring-secondary-950/35"
+				>
+					Últimas leituras
+				</h2>
 				<p className="font-body text-body-md text-neutral-600">
 					Os artigos que você abriu aparecem aqui automaticamente.
 				</p>
 			</header>
 
-			{isEmpty ? (
+			{isLoading ? (
+				<ul className="flex flex-col">
+					{Array.from({ length: 10 }, (_, i) => (
+						<ReadListItemSkeleton key={i} isLast={i === 9} />
+					))}
+				</ul>
+			) : isErro ? (
+				<div className="flex flex-col items-center text-center gap-4 py-12">
+					<p className="font-body text-body-md text-neutral-700 max-w-md">
+						Não foi possível carregar suas últimas leituras.
+					</p>
+					<a
+						href={`${BASE_HREF}?tab=ultimas`}
+						className="inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full border-[1.5px] border-primary-600 text-primary-600 hover:bg-neutral-50 font-body font-bold text-body-md transition-colors"
+					>
+						Tentar de novo
+					</a>
+				</div>
+			) : isReallyEmpty ? (
 				<div className="flex flex-col items-center text-center gap-4 py-12">
 					<StatusRing accent="primary" icon="book" size="sm" />
 					<h3 className="font-display font-bold text-title-xl text-primary-600">
@@ -240,17 +346,26 @@ function UltimasPane({ isEmpty }: { isEmpty: boolean }) {
 					</a>
 				</div>
 			) : (
-				<div className="flex flex-col">
-					{RECENT_NEWS.map((r, i) => (
-						<RecentNewsItem
-							key={i}
-							category={r.category}
-							title={r.title}
-							when={r.when}
-							href="/conteudo"
-							isLast={i === RECENT_NEWS.length - 1}
-						/>
-					))}
+				<div ref={listRef} className="flex flex-col gap-6">
+					<ul className="flex flex-col">
+						{visibleSlice.map((item, i) => (
+							<ReadListItem
+								key={item.id}
+								category={item.category}
+								categoryColor={item.categoryColor}
+								title={item.title}
+								href={item.href ?? '/conteudo'}
+								readAt={item.readAt}
+								image={item.image}
+								isLast={i === visibleSlice.length - 1}
+								onRemove={() => handleRemove(item.id)}
+							/>
+						))}
+					</ul>
+
+					{totalPages > 1 ? (
+						<Pagination current={page} total={totalPages} baseHref={`${BASE_HREF}?tab=ultimas`} />
+					) : null}
 				</div>
 			)}
 		</section>
@@ -504,7 +619,7 @@ function PerfilDrawer({ drawer }: { drawer: Drawer }) {
 			title={cfg.title}
 			closeHref={`${BASE_HREF}?tab=perfil`}
 			cancelHref={`${BASE_HREF}?tab=perfil`}
-			saveHref={`${BASE_HREF}?tab=perfil&state=saved`}
+			saveHref={`${BASE_HREF}?tab=perfil&cenario=perfil-salvo`}
 		>
 			<div
 				style={{

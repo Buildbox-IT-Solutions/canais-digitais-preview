@@ -46,7 +46,22 @@ function ToasterSlot({ toast: t }: { toast: ToastRecord }) {
 				entered && !t.leaving ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2',
 			)}
 		>
-			<Toast type={t.type} message={t.message} onDismiss={() => dismissToast(t.id)} />
+			<Toast
+				type={t.type}
+				message={t.message}
+				action={
+					t.action
+						? {
+								label: t.action.label,
+								onClick: () => {
+									t.action?.onClick()
+									dismissToast(t.id)
+								},
+							}
+						: undefined
+				}
+				onDismiss={() => dismissToast(t.id)}
+			/>
 		</div>
 	)
 }

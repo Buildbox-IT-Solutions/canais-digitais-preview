@@ -1,4 +1,5 @@
 import { twMerge } from '~/lib/tw-merge'
+import { Icon } from '~/components/icon'
 import type { IPlayButtonProps, PlayButtonSize } from './types'
 
 /**
@@ -34,13 +35,7 @@ export function PlayButton({
 	onClick,
 	className,
 }: IPlayButtonProps) {
-	const iconPath = type === 'play' ? 'M8 5v14l11-7L8 5z' : 'M6 5h4v14H6zM14 5h4v14h-4z'
-
-	const icon = (
-		<svg className={ICON_SIZE[size]} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-			<path d={iconPath} />
-		</svg>
-	)
+	const icon = <Icon name={type === 'play' ? 'play-arrow' : 'pause'} className={ICON_SIZE[size]} />
 
 	if (as === 'div') {
 		return (
