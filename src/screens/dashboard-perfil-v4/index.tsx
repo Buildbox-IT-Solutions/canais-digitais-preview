@@ -49,7 +49,7 @@ const PER_PAGE = 10
 // Registro único pra ScenarioBar (src/dev) — a única declaração dos cenários desta
 // tela; a lógica de estado abaixo deriva dos mesmos ids, nunca duplica os literais.
 const SCENARIOS: ScenarioDef[] = [
-	{ id: 'perfil-incompleto', label: 'Incompleto', group: 'Perfil', tab: 'perfil' },
+	{ id: 'perfil-incompleto', label: 'Incompleto', group: 'Perfil', tab: 'perfil', isDefault: true },
 	{ id: 'perfil-completo', label: 'Completo', group: 'Perfil', tab: 'perfil' },
 	{ id: 'downloads-padrao', label: 'Preenchido', group: 'Downloads', tab: 'downloads', isDefault: true },
 	{ id: 'downloads-vazio', label: 'Vazio', group: 'Downloads', tab: 'downloads' },
