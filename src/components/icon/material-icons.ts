@@ -47,7 +47,11 @@ import ChevronLeft from '@material-icons/svg/svg/chevron_left/baseline.svg'
 import ChevronRight from '@material-icons/svg/svg/chevron_right/baseline.svg'
 import Smartphone from '@material-icons/svg/svg/smartphone/baseline.svg'
 import Laptop from '@material-icons/svg/svg/laptop/baseline.svg'
-import DesktopIcon from '@material-icons/svg/svg/desktop_mac/baseline.svg'
+import MoreVert from '@material-icons/svg/svg/more_vert/baseline.svg'
+import Favorite from '@material-icons/svg/svg/favorite/baseline.svg'
+import Home from '@material-icons/svg/svg/home/baseline.svg'
+import Notifications from '@material-icons/svg/svg/notifications/baseline.svg'
+import Shield from '@material-icons/svg/svg/shield/baseline.svg'
 
 /**
  * Ícones Material sourced diretamente do pacote `@material-icons/svg` (mesma
@@ -107,7 +111,11 @@ export const MATERIAL_ICONS = {
 	'chevron-right': ChevronRight,
 	smartphone: Smartphone,
 	laptop: Laptop,
-	desktop: DesktopIcon,
+	'more-vert': MoreVert,
+	heart: Favorite,
+	home: Home,
+	notifications: Notifications,
+	shield: Shield,
 } as const
 
 export type PackagedMaterialIconName = keyof typeof MATERIAL_ICONS

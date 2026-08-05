@@ -10,6 +10,14 @@ import type { PackagedMaterialIconName } from './material-icons'
  *   diferença de serialização).
  * - `description`: não tem correspondente exato em nenhum arquivo do pacote
  *   (a chave `doc`, que é outro glifo, é quem bate com `description/baseline.svg`).
+ * - `desktop`: o glifo em produção é o "monitor" (tela vazada) do MDI (Material
+ *   Design Icons, projeto da comunidade), não existe no pacote oficial do
+ *   Google — o candidato mais próximo (`desktop_mac`) é um iMac sólido,
+ *   visualmente muito diferente.
+ * - `phone`/`lock`: sem uso hoje (mantidos por não fazer parte do escopo de
+ *   remover ícones não utilizados); o path do pacote diverge em detalhes do
+ *   desenho (fone com orelha invertida, cadeado com proporção de argola
+ *   diferente) e não há call site para justificar validar a migração agora.
  */
 export const MATERIAL_ICON_EXCEPTIONS = {
 	'account-circle':
@@ -17,6 +25,11 @@ export const MATERIAL_ICON_EXCEPTIONS = {
 	book: 'M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 8l-3-2-3 2V4h6v6z',
 	description:
 		'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 13v-2h8v2H8zm0 4v-2h5v2H8z',
+	desktop:
+		'M21 16H3V4h18m0-2H3c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h7v2H8v2h8v-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z',
+	phone:
+		'M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.58l2.2-2.21c.28-.27.36-.66.25-1.01C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z',
+	lock: 'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm3 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z',
 } as const
 
 export const BRAND_ICON_PATHS = {
