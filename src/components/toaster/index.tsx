@@ -27,6 +27,16 @@ export function Toaster({ className }: IToasterProps) {
 		setHeights((prev) => (prev[id] === height ? prev : { ...prev, [id]: height }))
 	}, [])
 
+	// Se todos os toasts visíveis forem fechados (via X) enquanto o mouse ainda está sobre o
+	// container, ele desmonta sem disparar `onMouseLeave` — sem isso `expanded` ficaria preso em
+	// `true` e o próximo toast apareceria já expandido. Roda antes do early return (Rules of Hooks).
+	useEffect(() => {
+		if (visible.length === 0 && expanded) {
+			setExpanded(false)
+			resumeAll()
+		}
+	}, [visible.length, expanded])
+
 	if (visible.length === 0) return null
 
 	const frontHeight = heights[visible[0].id] ?? 0

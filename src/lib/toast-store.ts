@@ -28,6 +28,10 @@ type Listener = () => void
 let toasts: ToastRecord[] = []
 let listeners: Listener[] = []
 let nextId = 1
+/** `true` enquanto a pilha estiver expandida no hover (ver `pauseAll`/`resumeAll`) — toasts que
+ *  entram em `visible` nesse período (push novo ou promoção da fila) não ganham timer; `resumeAll`
+ *  arma o timer deles quando o hover termina. */
+let paused = false
 
 function emitChange() {
 	for (const listener of listeners) listener()
@@ -43,14 +47,14 @@ function startTimer(id: number, ms: number): void {
 	toasts = toasts.map((t) => (t.id === id ? { ...t, timeoutId, startedAt, remainingMs: ms } : t))
 }
 
-/** Promove o próximo toast em fila para visível, se houver vaga — inicia o timer só agora (tempo em fila não conta como tempo de vida). */
+/** Promove o próximo toast em fila para visível, se houver vaga — inicia o timer só agora (tempo em fila não conta como tempo de vida), a menos que a pilha esteja pausada em hover. */
 function promoteQueued(): void {
 	if (visibleCount() >= MAX_VISIBLE) return
 	const next = toasts.find((t) => t.status === 'queued')
 	if (!next) return
 	toasts = toasts.map((t) => (t.id === next.id ? { ...t, status: 'visible' } : t))
 	emitChange()
-	startTimer(next.id, next.remainingMs)
+	if (!paused) startTimer(next.id, next.remainingMs)
 }
 
 /** Marca o toast como "saindo" (permite animação de saída) e remove do store logo em seguida. */
@@ -76,12 +80,13 @@ function pushToast(type: ToastType, message: string, options?: ToastOptions): nu
 		{ id, type, message, action: options?.action, leaving: false, status, remainingMs: durationMs },
 	]
 	emitChange()
-	if (status === 'visible') startTimer(id, durationMs)
+	if (status === 'visible' && !paused) startTimer(id, durationMs)
 	return id
 }
 
 /** Pausa o auto-dismiss de todos os toasts visíveis (pilha expandida no hover), preservando o tempo restante de cada um. */
 export function pauseAll(): void {
+	paused = true
 	const now = Date.now()
 	toasts = toasts.map((t) => {
 		if (t.status !== 'visible' || t.leaving || !t.timeoutId) return t
@@ -93,6 +98,7 @@ export function pauseAll(): void {
 
 /** Retoma o auto-dismiss de todos os toasts visíveis pausados, usando o `remainingMs` salvo. */
 export function resumeAll(): void {
+	paused = false
 	for (const t of toasts) {
 		if (t.status === 'visible' && !t.leaving && !t.timeoutId) startTimer(t.id, t.remainingMs)
 	}
