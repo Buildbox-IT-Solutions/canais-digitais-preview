@@ -25,3 +25,12 @@ export const ComAcao: Story = {
 		action: { label: 'Desfazer', onClick: () => {} },
 	},
 }
+
+/** Com título — estrutura title (negrito) + description, igual ao shadcn. Sem título, `message` ocupa o lugar único (variantes acima). */
+export const ComTitulo: Story = {
+	args: {
+		type: 'success',
+		title: 'Perfil atualizado',
+		message: 'Suas alterações foram salvas com sucesso.',
+	},
+}

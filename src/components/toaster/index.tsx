@@ -1,50 +1,127 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { twMerge } from '~/lib/tw-merge'
 import { Toast } from '~/components/toast'
-import { dismissToast, getToasts, subscribeToasts, type ToastRecord } from '~/lib/toast-store'
+import { dismissToast, getToasts, pauseAll, resumeAll, subscribeToasts, type ToastRecord } from '~/lib/toast-store'
 import type { IToasterProps } from './types'
+
+const COLLAPSE_OFFSET = 14
+const EXPANDED_GAP = 12
 
 /**
  * Componente: Toaster
  * Container global que empilha os toasts disparados via `toast.success(...)` /
- * `toast.error(...)` (ver `~/lib/toast-store`) — API imperativa + pilha com
- * auto-dismiss, mesmo padrão do shadcn/ui Toast (https://ui.shadcn.com/docs/components/base/toast),
- * sem instalar a lib (sonner) em si. Montado uma única vez na raiz do app (ver router.tsx).
+ * `toast.error(...)` (ver `~/lib/toast-store`) — pilha colapsada estilo sonner (mais
+ * nova na frente, anteriores "espiando" atrás), expande em lista no hover e pausa o
+ * auto-dismiss enquanto expandida. Montado uma única vez na raiz do app (ver router.tsx).
  * Tokens: herdados do componente `Toast`.
  */
 export function Toaster({ className }: IToasterProps) {
 	const toasts = useSyncExternalStore(subscribeToasts, getToasts, getToasts)
+	const [expanded, setExpanded] = useState(false)
+	const [heights, setHeights] = useState<Record<number, number>>({})
 
-	if (toasts.length === 0) return null
+	// [0] = toast mais nova (na frente); [1], [2]... = mais antigas (espiando atrás).
+	const visible = useMemo(() => [...toasts].filter((t) => t.status === 'visible').reverse(), [toasts])
+
+	const reportHeight = useCallback((id: number, height: number) => {
+		setHeights((prev) => (prev[id] === height ? prev : { ...prev, [id]: height }))
+	}, [])
+
+	// Se todos os toasts visíveis forem fechados (via X) enquanto o mouse ainda está sobre o
+	// container, ele desmonta sem disparar `onMouseLeave` — sem isso `expanded` ficaria preso em
+	// `true` e o próximo toast apareceria já expandido. Roda antes do early return (Rules of Hooks).
+	useEffect(() => {
+		if (visible.length === 0 && expanded) {
+			setExpanded(false)
+			resumeAll()
+		}
+	}, [visible.length, expanded])
+
+	if (visible.length === 0) return null
+
+	const frontHeight = heights[visible[0].id] ?? 0
+	const containerHeight = expanded
+		? visible.reduce((sum, t) => sum + (heights[t.id] ?? 0), 0) + (visible.length - 1) * EXPANDED_GAP
+		: frontHeight + (visible.length - 1) * COLLAPSE_OFFSET
+
+	let expandedOffset = 0
 
 	return (
 		<div
-			className={twMerge(
-				'fixed bottom-6 right-6 z-50 flex flex-col gap-3 w-[calc(100%-3rem)] max-w-[420px]',
-				className,
-			)}
+			className={twMerge('fixed bottom-6 right-6 z-50 w-[calc(100%-3rem)] max-w-[420px]', className)}
+			style={{ height: containerHeight, transition: 'height 300ms ease-out' }}
+			onMouseEnter={() => {
+				setExpanded(true)
+				pauseAll()
+			}}
+			onMouseLeave={() => {
+				setExpanded(false)
+				resumeAll()
+			}}
 		>
-			{toasts.map((t) => (
-				<ToasterSlot key={t.id} toast={t} />
-			))}
+			{visible.map((t, index) => {
+				const translateY = expanded ? -expandedOffset : -(index * COLLAPSE_OFFSET)
+				if (expanded) expandedOffset += (heights[t.id] ?? 0) + EXPANDED_GAP
+				const scale = expanded ? 1 : index === 0 ? 1 : index === 1 ? 0.95 : 0.9
+				return (
+					<ToasterSlot
+						key={t.id}
+						toast={t}
+						translateY={translateY}
+						scale={scale}
+						zIndex={visible.length - index}
+						onHeight={reportHeight}
+					/>
+				)
+			})}
 		</div>
 	)
 }
 
-function ToasterSlot({ toast: t }: { toast: ToastRecord }) {
+function ToasterSlot({
+	toast: t,
+	translateY,
+	scale,
+	zIndex,
+	onHeight,
+}: {
+	toast: ToastRecord
+	translateY: number
+	scale: number
+	zIndex: number
+	onHeight: (id: number, height: number) => void
+}) {
 	const [entered, setEntered] = useState(false)
+	const ref = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
 		const raf = requestAnimationFrame(() => setEntered(true))
 		return () => cancelAnimationFrame(raf)
 	}, [])
 
+	useEffect(() => {
+		const el = ref.current
+		if (!el) return
+		const observer = new ResizeObserver((entries) => {
+			const entry = entries[0]
+			if (entry) onHeight(t.id, entry.contentRect.height)
+		})
+		observer.observe(el)
+		return () => observer.disconnect()
+	}, [t.id, onHeight])
+
 	return (
 		<div
+			ref={ref}
 			className={twMerge(
-				'transition-all duration-200 ease-out',
-				entered && !t.leaving ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2',
+				'absolute inset-x-0 bottom-0 transition-all duration-300 ease-out',
+				entered && !t.leaving ? 'opacity-100' : 'opacity-0',
 			)}
+			style={{
+				transform: `translateY(${entered ? translateY : translateY + 8}px) scale(${scale})`,
+				transformOrigin: 'bottom',
+				zIndex,
+			}}
 		>
 			<Toast
 				type={t.type}

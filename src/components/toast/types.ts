@@ -7,6 +7,7 @@ export interface ToastAction {
 
 export interface IToastProps {
 	type?: ToastType
+	title?: string
 	message: string
 	action?: ToastAction
 	id?: string

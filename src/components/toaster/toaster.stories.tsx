@@ -52,6 +52,12 @@ export const Playground: Story = {
 					})
 				}
 			/>
+			<DemoButton
+				label="Disparar 5x (valida fila e pilha)"
+				onClick={() => {
+					for (let i = 1; i <= 5; i++) toast.info(`Notificação ${i}`)
+				}}
+			/>
 			<Toaster />
 		</div>
 	),

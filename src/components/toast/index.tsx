@@ -5,19 +5,20 @@ import type { IToastProps, ToastType } from './types'
 
 /**
  * Componente: Toast
- * Notificação flutuante com ícone, mensagem e dismiss.
- * Tokens: --color-white, --color-neutral-100, --color-neutral-500, --color-neutral-950,
- *         --color-secondary-950. Status colors via hex universais.
+ * Notificação flutuante com ícone, mensagem e dismiss — fiel à estrutura do shadcn/ui
+ * (card neutro + ícone colorido, sem borda de destaque), temizado com os tokens do projeto.
+ * Tokens: --color-white, --color-neutral-200, --color-neutral-500, --color-neutral-600,
+ *         --color-neutral-950, --color-secondary-950. Status colors via hex universais.
  */
 
-const TYPE_META: Record<ToastType, { icon: IconName; accent: string; border: string }> = {
-	success: { icon: 'check-circle', accent: 'text-[#16A34A]', border: 'border-l-[#16A34A]' },
-	error: { icon: 'cancel', accent: 'text-[#bf0413]', border: 'border-l-[#bf0413]' },
-	warning: { icon: 'warning', accent: 'text-[#F59E0B]', border: 'border-l-[#F59E0B]' },
-	info: { icon: 'info', accent: 'text-secondary-950', border: 'border-l-secondary-950' },
+const TYPE_META: Record<ToastType, { icon: IconName; accent: string }> = {
+	success: { icon: 'check-circle', accent: 'text-[#16A34A]' },
+	error: { icon: 'cancel', accent: 'text-[#bf0413]' },
+	warning: { icon: 'warning', accent: 'text-[#F59E0B]' },
+	info: { icon: 'info', accent: 'text-secondary-950' },
 }
 
-export function Toast({ type = 'info', message, action, id, onDismiss, className }: IToastProps) {
+export function Toast({ type = 'info', title, message, action, id, onDismiss, className }: IToastProps) {
 	const meta = TYPE_META[type]
 	const isAlert = type === 'error' || type === 'warning'
 
@@ -27,18 +28,22 @@ export function Toast({ type = 'info', message, action, id, onDismiss, className
 			role={isAlert ? 'alert' : 'status'}
 			aria-live={isAlert ? 'assertive' : 'polite'}
 			className={twMerge(
-				'flex items-start gap-3 w-full max-w-[420px] bg-white border border-neutral-100 border-l-4 rounded-lg shadow-lg p-4',
-				meta.border,
+				'flex items-center gap-3 w-full max-w-[420px] bg-white border border-neutral-200 rounded-lg shadow-lg p-4',
 				className,
 			)}
 		>
 			<Icon name={meta.icon} className={twMerge('size-5 shrink-0', meta.accent)} />
-			<p className="flex-1 font-body text-body-md text-neutral-950">{message}</p>
+			<div className="flex-1 flex flex-col gap-0.5">
+				{title ? <p className="font-body font-bold text-body-md text-neutral-950">{title}</p> : null}
+				<p className={twMerge('font-body text-neutral-950', title ? 'text-body-sm text-neutral-600' : 'text-body-md')}>
+					{message}
+				</p>
+			</div>
 			{action ? (
 				<button
 					type="button"
 					onClick={action.onClick}
-					className="shrink-0 font-body font-bold text-body-md text-secondary-950 hover:underline"
+					className="shrink-0 h-8 px-3 rounded-full border border-neutral-200 font-body font-semibold text-label-lg text-neutral-950 hover:bg-neutral-50 transition-colors"
 				>
 					{action.label}
 				</button>
