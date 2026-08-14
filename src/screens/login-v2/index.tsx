@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
-import { sanitizeReturnTo } from '~/lib/sanitize-return-to'
+import { sanitizeReturnTo, serializeReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
@@ -39,7 +39,14 @@ export default function LoginV2Screen() {
 	// destino já que login não tem passos intermediários.
 	const favoritar = params.get('favoritar') ?? ''
 	const returnTo = sanitizeReturnTo(params.get('returnTo'))
-	const crossLinkQuery = `&returnTo=${encodeURIComponent(returnTo)}${
+	// Campos ocultos com os nomes ORIGINAIS dos parâmetros preservados (ex.: `post`)
+	// — não um `returnTo` único: o form abaixo submete com GET direto pro destino
+	// (`action={returnTo.path}`), e um form GET descarta qualquer querystring já
+	// presente no seu próprio `action` ao montar a URL de submit. Reconstituir via
+	// campos ocultos com o nome de cada parâmetro é o que faz o navegador
+	// remontar `action?os-mesmos-parametros` sozinho.
+	const returnToQueryFields = Array.from(new URLSearchParams(returnTo.query))
+	const crossLinkQuery = `&returnTo=${encodeURIComponent(serializeReturnTo(returnTo))}${
 		intent ? `&intent=${encodeURIComponent(intent)}` : ''
 	}${favoritar ? `&favoritar=${encodeURIComponent(favoritar)}` : ''}`
 
@@ -114,12 +121,15 @@ export default function LoginV2Screen() {
 
 							{globalError ? <AuthErrorAlert message={globalError} /> : null}
 
-							<form action={returnTo} method="get" className="flex flex-col gap-6" noValidate>
+							<form action={returnTo.path} method="get" className="flex flex-col gap-6" noValidate>
 								<input type="hidden" name="logado" value="true" />
 								{TOAST_BY_INTENT[intent] ? (
 									<input type="hidden" name="toast" value={TOAST_BY_INTENT[intent]} />
 								) : null}
 								{favoritar ? <input type="hidden" name="favoritar" value={favoritar} /> : null}
+								{returnToQueryFields.map(([key, val]) => (
+									<input key={key} type="hidden" name={key} value={val} />
+								))}
 								<AuthInput
 									label="E-mail"
 									name="email"

@@ -5,7 +5,7 @@ import { Modal } from '~/components/modal'
 import { PasswordChecklist } from '~/components/password-checklist'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
-import { sanitizeReturnTo } from '~/lib/sanitize-return-to'
+import { sanitizeReturnTo, serializeReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
@@ -104,7 +104,11 @@ export default function CadastroV2Screen() {
 	// o retorno pós-confirmação de e-mail (ver confirmacao-email-v2 e 00-mapa.md).
 	const favoritar = params.get('favoritar') ?? ''
 	const returnTo = sanitizeReturnTo(params.get('returnTo'))
-	const crossLinkQuery = `&returnTo=${encodeURIComponent(returnTo)}${
+	// `serializeReturnTo` recompõe path+query num único texto — aqui vira valor de
+	// campo (querystring de link ou hidden input abaixo), nunca `action` de form,
+	// então não tem o problema do form GET descartando a query do próprio action.
+	const returnToSerialized = serializeReturnTo(returnTo)
+	const crossLinkQuery = `&returnTo=${encodeURIComponent(returnToSerialized)}${
 		intent ? `&intent=${encodeURIComponent(intent)}` : ''
 	}${favoritar ? `&favoritar=${encodeURIComponent(favoritar)}` : ''}`
 
@@ -226,7 +230,7 @@ export default function CadastroV2Screen() {
 						)}
 						{intent ? <input type="hidden" name="intent" value={intent} /> : null}
 						{favoritar ? <input type="hidden" name="favoritar" value={favoritar} /> : null}
-						<input type="hidden" name="returnTo" value={returnTo} />
+						<input type="hidden" name="returnTo" value={returnToSerialized} />
 
 						{/* body */}
 						<div className="flex-1 min-h-0 overflow-y-auto px-8 pt-2 pb-4 flex flex-col gap-6">

@@ -10,9 +10,11 @@
  * `favoritar=<contentId>`) e o mesmo retorno (`returnTo=<path atual>`), porque quem
  * entra por login também precisa voltar com o favorito aplicado. Ver
  * src/lib/use-favorito-toggle.ts pra como a intenção é retomada na volta.
- * `returnTo` é só o pathname (sem querystring) porque `sanitizeReturnTo` valida
- * contra uma lista fixa de paths exatos — uma busca com `?q=` perde o filtro no
- * retorno; ver nota no relatório.
+ * `returnTo` carrega path + querystring da rota atual (`location.pathname +
+ * location.search`) — necessário pra voltar pro MESMO artigo (`/conteudo?post=`)
+ * em vez de cair no fixture default. `sanitizeReturnTo`, do lado de quem recebe,
+ * valida o path contra allowlist exata e a query contra allowlist de
+ * parâmetros nomeados (nunca "aceita qualquer querystring") — ver esse arquivo.
  */
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
@@ -32,7 +34,7 @@ export function useFavoritoAuthModal(contentId: string): UseFavoritoAuthModalRes
 
 	// Comuns aos dois destinos — só o path muda (/cadastro vs /login).
 	function intentQuery(): string {
-		const returnTo = encodeURIComponent(location.pathname)
+		const returnTo = encodeURIComponent(location.pathname + location.search)
 		const favoritar = encodeURIComponent(contentId)
 		return `intent=favoritar&favoritar=${favoritar}&returnTo=${returnTo}`
 	}

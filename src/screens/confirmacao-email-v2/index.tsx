@@ -6,7 +6,7 @@ import { Modal } from '~/components/modal'
 import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
-import { sanitizeReturnTo } from '~/lib/sanitize-return-to'
+import { buildReturnToHref, sanitizeReturnTo, serializeReturnTo, type SanitizedReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthInput } from '../_auth/input'
@@ -65,9 +65,16 @@ interface ConfirmacaoConfig {
 function buildConfig(
 	state: ConfirmacaoState,
 	intent: string,
-	returnTo: string,
+	// `null` quando a URL não tinha `?returnTo=` (distinto de "tinha, mas
+	// inválido" — sanitizeReturnTo já resolve esse caso caindo pra /home).
+	returnTo: SanitizedReturnTo | null,
 	favoritar: string,
 ): ConfirmacaoConfig {
+	// Base pros 3 intents "sempre volta com querystring extra" — mesmo quando não
+	// havia returnTo, o destino cai em /home mas SEMPRE ganha `logado=true` (e o
+	// favoritar/toast do intent), diferente do intent genérico logo abaixo.
+	const returnToOrHome: SanitizedReturnTo = returnTo ?? { path: '/home', query: '' }
+
 	switch (state) {
 		case 'success': {
 			if (intent === 'favoritar' && favoritar) {
@@ -84,7 +91,7 @@ function buildConfig(
 					buttons: [
 						{
 							label: 'Explorar o portal',
-							href: `${returnTo || '/home'}?logado=true&favoritar=${encodeURIComponent(favoritar)}`,
+							href: buildReturnToHref(returnToOrHome, { logado: 'true', favoritar }),
 							variant: 'filled',
 						},
 					],
@@ -100,7 +107,7 @@ function buildConfig(
 					buttons: [
 						{
 							label: 'Baixar agora',
-							href: `${returnTo || '/home'}?logado=true&toast=download-started`,
+							href: buildReturnToHref(returnToOrHome, { logado: 'true', toast: 'download-started' }),
 							variant: 'filled',
 						},
 					],
@@ -116,7 +123,7 @@ function buildConfig(
 					buttons: [
 						{
 							label: 'Ir para o portal',
-							href: `${returnTo || '/home'}?logado=true&toast=newsletter-subscribed`,
+							href: buildReturnToHref(returnToOrHome, { logado: 'true', toast: 'newsletter-subscribed' }),
 							variant: 'filled',
 						},
 					],
@@ -131,7 +138,7 @@ function buildConfig(
 				buttons: [
 					{
 						label: 'Explorar o portal',
-						href: returnTo ? `${returnTo}?logado=true` : '/home',
+						href: returnTo ? buildReturnToHref(returnTo, { logado: 'true' }) : '/home',
 						variant: 'filled',
 					},
 					{ label: 'Ir para minha conta', href: '/', variant: 'ghost' },
@@ -299,13 +306,13 @@ export default function ConfirmacaoEmailV2Screen() {
 	const isErrorTerminal = state === 'link-expired' || state === 'link-used'
 	const errorTerminal = isErrorTerminal ? ERROR_TERMINAL[state as 'link-expired' | 'link-used'] : null
 
-	const cfg = buildConfig(state, intent, hasReturnTo ? returnTo : '', favoritar)
+	const cfg = buildConfig(state, intent, hasReturnTo ? returnTo : null, favoritar)
 	const isWaiting = state === 'waiting'
 	const isCorrigir = state === 'corrigir'
 	const showBack = isWaiting || isCorrigir
 
 	const extraQuery = `${intent ? `&intent=${encodeURIComponent(intent)}` : ''}${
-		hasReturnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''
+		hasReturnTo ? `&returnTo=${encodeURIComponent(serializeReturnTo(returnTo))}` : ''
 	}${favoritar ? `&favoritar=${encodeURIComponent(favoritar)}` : ''}`
 
 	const backHref = isCorrigir ? `?state=waiting&email=${encodeURIComponent(email)}${extraQuery}` : '/login'
@@ -376,7 +383,7 @@ export default function ConfirmacaoEmailV2Screen() {
 							<CorrigirForm
 							email={email}
 							intent={intent}
-							returnTo={hasReturnTo ? returnTo : ''}
+							returnTo={hasReturnTo ? serializeReturnTo(returnTo) : ''}
 							favoritar={favoritar}
 						/>
 						) : (
