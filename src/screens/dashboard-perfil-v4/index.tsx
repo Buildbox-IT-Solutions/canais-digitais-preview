@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
 import { toast } from '~/lib/toast-store'
 import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
-import { desfavoritar, existeHistoricoDeFavoritos, useFavoritos } from '~/lib/favoritos-store'
-import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
+import { desfavoritar, favoritar, existeHistoricoDeFavoritos, useFavorito, useFavoritos } from '~/lib/favoritos-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import type { ScenarioDef } from '~/dev/scenario-store'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
@@ -374,8 +373,17 @@ function UltimasPane({
 }
 
 // Uma linha de Últimas leituras — componente próprio (não inline no .map) porque
-// "Salvar como favorito" precisa de useFavoritoToggle, e hooks não podem ser
+// "Salvar como favorito" precisa de hooks (useFavorito), e hooks não podem ser
 // chamados dentro de um callback de array.
+//
+// Não usa useFavoritoToggle/useFavoritoAuthModal (o par usado em NewsCard/
+// CategoryColumn/conteudo): aquele hook trava a ação atrás de `useLogado()`
+// (`?logado=true` na URL) e abre o convite de criar conta se deslogado — faz
+// sentido em conteúdo público, mas não aqui. Esta tela inteira É a área logada
+// (chegar aqui já pressupõe login, mesmo sem guard de rota) — pedir pra "criar
+// conta" dentro da própria conta não faz sentido nenhum. Mesmo raciocínio já
+// usado em FavoritosListRow.handleRemove logo abaixo: ação direta na store +
+// toast, sem gate de login.
 function UltimasListRow({
 	item,
 	isLast,
@@ -386,14 +394,27 @@ function UltimasListRow({
 	onRemove: (id: string) => void
 }) {
 	const href = item.href ?? '/conteudo'
-	const { pressed, onPressedChange } = useFavoritoToggle(item.id)
+	const navigate = useNavigate()
+	const pressed = useFavorito(item.id)
+
+	function handleToggleFavorito() {
+		if (pressed) {
+			desfavoritar(item.id)
+			toast.success('Removido dos favoritos.')
+		} else {
+			favoritar(item.id)
+			toast.success('Conteúdo salvo com sucesso!', {
+				action: { label: 'Ver', onClick: () => navigate(`${BASE_HREF}?tab=favoritos`) },
+			})
+		}
+	}
 
 	const actions: ReadListItemMenuAction[] = [
 		{ label: 'Compartilhar', icon: 'share', onClick: () => compartilharConteudo(item.title, href) },
 		{
 			label: pressed ? 'Remover dos favoritos' : 'Salvar como favorito',
 			icon: pressed ? 'bookmark' : 'bookmark-border',
-			onClick: () => onPressedChange(!pressed),
+			onClick: handleToggleFavorito,
 		},
 		{ label: 'Remover de últimas leituras', icon: 'delete-outline', onClick: () => onRemove(item.id) },
 	]
