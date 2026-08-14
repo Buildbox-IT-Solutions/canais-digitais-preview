@@ -59,6 +59,7 @@ export default function CategoriaScreen() {
 							{featured.slice(0, 2).map((article) => (
 								<NewsCard
 									key={article.id}
+									contentId={article.id}
 									size="small"
 									orientation="vertical"
 									title={article.title}
@@ -72,6 +73,7 @@ export default function CategoriaScreen() {
 							{featured.slice(2, 3).map((article) => (
 								<NewsCard
 									key={article.id}
+									contentId={article.id}
 									size="small"
 									orientation="vertical"
 									title={article.title}

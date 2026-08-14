@@ -99,10 +99,14 @@ export default function CadastroV2Screen() {
 
 	const emailParam = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
 	const intent = params.get('intent') ?? ''
+	// Intenção de favoritar viaja como parâmetro próprio (não pelo `intent`, que só
+	// escolhe qual toast mostrar) — precisa sobreviver a todo o fluxo multi-step até
+	// o retorno pós-confirmação de e-mail (ver confirmacao-email-v2 e 00-mapa.md).
+	const favoritar = params.get('favoritar') ?? ''
 	const returnTo = sanitizeReturnTo(params.get('returnTo'))
 	const crossLinkQuery = `&returnTo=${encodeURIComponent(returnTo)}${
 		intent ? `&intent=${encodeURIComponent(intent)}` : ''
-	}`
+	}${favoritar ? `&favoritar=${encodeURIComponent(favoritar)}` : ''}`
 
 	const errorParam = params.get('error') ?? 'none'
 	const validErrors = step === 1 ? STEP1_ERRORS : step === 2 ? STEP2_ERRORS : STEP3_ERRORS
@@ -221,6 +225,7 @@ export default function CadastroV2Screen() {
 							<input type="hidden" name="step" value={step + 1} />
 						)}
 						{intent ? <input type="hidden" name="intent" value={intent} /> : null}
+						{favoritar ? <input type="hidden" name="favoritar" value={favoritar} /> : null}
 						<input type="hidden" name="returnTo" value={returnTo} />
 
 						{/* body */}

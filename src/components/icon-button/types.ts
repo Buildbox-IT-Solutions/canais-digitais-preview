@@ -14,5 +14,7 @@ export interface IIconButtonProps {
 	ariaHasPopup?: 'menu' | 'dialog' | 'listbox' | 'true'
 	ariaExpanded?: boolean
 	ariaControls?: string
+	/** Só se aplica ao branch `<button>` (sem `href`) — usado pelo componente Toggle. */
+	ariaPressed?: boolean
 	className?: string
 }

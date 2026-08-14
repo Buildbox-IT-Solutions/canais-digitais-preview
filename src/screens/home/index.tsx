@@ -196,6 +196,7 @@ export default function HomeScreen() {
 					{FISPAL_LIST.map((card) => (
 						<NewsCard
 							key={card.id}
+							contentId={card.id}
 							size="medium"
 							orientation="vertical"
 							image={picsumSrc(card.seed, 800, 450)}

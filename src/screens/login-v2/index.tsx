@@ -35,10 +35,13 @@ export default function LoginV2Screen() {
 		: 'none') as LoginError
 
 	const intent = params.get('intent') ?? ''
+	// Ver comentário equivalente em cadastro-v2 — mesma convenção, ida direta pro
+	// destino já que login não tem passos intermediários.
+	const favoritar = params.get('favoritar') ?? ''
 	const returnTo = sanitizeReturnTo(params.get('returnTo'))
 	const crossLinkQuery = `&returnTo=${encodeURIComponent(returnTo)}${
 		intent ? `&intent=${encodeURIComponent(intent)}` : ''
-	}`
+	}${favoritar ? `&favoritar=${encodeURIComponent(favoritar)}` : ''}`
 
 	const emailDefault =
 		errorMode === 'invalid'
@@ -116,6 +119,7 @@ export default function LoginV2Screen() {
 								{TOAST_BY_INTENT[intent] ? (
 									<input type="hidden" name="toast" value={TOAST_BY_INTENT[intent]} />
 								) : null}
+								{favoritar ? <input type="hidden" name="favoritar" value={favoritar} /> : null}
 								<AuthInput
 									label="E-mail"
 									name="email"

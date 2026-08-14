@@ -38,6 +38,7 @@ export function IconButton({
 	ariaHasPopup,
 	ariaExpanded,
 	ariaControls,
+	ariaPressed,
 	className,
 }: IIconButtonProps) {
 	const classes = twMerge(
@@ -63,6 +64,7 @@ export function IconButton({
 			aria-haspopup={ariaHasPopup}
 			aria-expanded={ariaExpanded}
 			aria-controls={ariaControls}
+			aria-pressed={ariaPressed}
 			onClick={onClick}
 			disabled={disabled}
 			className={classes}

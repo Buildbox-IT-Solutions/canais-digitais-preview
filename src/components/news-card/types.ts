@@ -6,8 +6,14 @@ export type NewsCardOrientation = 'vertical' | 'horizontal'
 
 export interface INewsCardProps {
 	title: string
-	image: string
+	/** Sem imagem, o card renderiza só categoria + título + descrição (bool "Image" do Figma). */
+	image?: string
 	href?: string
+	/**
+	 * Id do conteúdo, usado só para ligar o toggle de favoritar. Sem essa prop, o
+	 * card renderiza exatamente como antes da feature Favoritos — sem toggle.
+	 */
+	contentId?: string
 	size?: NewsCardSize
 	orientation?: NewsCardOrientation
 	categoria?: Pick<ICategoriaProps, 'label' | 'color' | 'href' | 'chip'>

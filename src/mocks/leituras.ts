@@ -16,7 +16,9 @@ import {
 
 // Pool de artigos "publicados" — o histórico guarda só o id e resolve os dados aqui,
 // na leitura. Um id sem correspondência (despublicado/removido) some da lista sozinho.
-const ARTICLE_POOL: Article[] = [
+// Exportado para outros mocks (ex.: favoritos) resolverem contra o mesmo pool, em vez
+// de declarar uma segunda lista de artigos.
+export const ARTICLE_POOL: Article[] = [
 	...HOME_HERO,
 	...HOME_HERO_TEXT,
 	...HOME_HERO_BOTTOM,
@@ -30,7 +32,7 @@ const ARTICLE_POOL: Article[] = [
 	...NOT_FOUND_CARDS,
 ]
 
-const ARTICLES_BY_ID: Record<string, Article> = Object.fromEntries(
+export const ARTICLES_BY_ID: Record<string, Article> = Object.fromEntries(
 	ARTICLE_POOL.map((article) => [article.id, article]),
 )
 
