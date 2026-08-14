@@ -136,7 +136,7 @@ export default function HomeScreen() {
 
 			{/* §3 — 3 colunas: Ingredientes · Food Service · Em Alta */}
 			<section className="w-full">
-				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 					<CategoryColumn
 						color="mint"
 						label="Ingredientes"
@@ -154,11 +154,8 @@ export default function HomeScreen() {
 					/>
 					<div className="flex flex-col gap-6 pt-6 lg:pt-10">
 						<WidgetEmAlta title="Em Alta" items={EM_ALTA.map((title) => ({ title }))} />
-						<div className="flex justify-center lg:hidden">
+						<div className="flex justify-center">
 							<AdFrame width={300} height={250} />
-						</div>
-						<div className="hidden lg:flex border border-primary-100 bg-neutral-50 items-center justify-center rounded-sm h-[282px] w-full">
-							<span className="font-body font-bold text-label-md text-neutral-700">300 × 250</span>
 						</div>
 					</div>
 				</div>
