@@ -106,6 +106,7 @@ export default function SobreScreen() {
 					{VEJA_TAMBEM.map((card) => (
 						<NewsCard
 							key={card.id}
+							contentId={card.id}
 							size="small"
 							title={card.title}
 							image={picsumSrc(card.seed, 600, 338)}

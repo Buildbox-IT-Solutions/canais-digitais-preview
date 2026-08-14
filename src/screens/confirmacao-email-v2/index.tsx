@@ -6,7 +6,7 @@ import { Modal } from '~/components/modal'
 import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
-import { sanitizeReturnTo } from '~/lib/sanitize-return-to'
+import { buildReturnToHref, sanitizeReturnTo, serializeReturnTo, type SanitizedReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthInput } from '../_auth/input'
@@ -62,9 +62,42 @@ interface ConfirmacaoConfig {
 	proof: ProofPanelMinimalVariant
 }
 
-function buildConfig(state: ConfirmacaoState, intent: string, returnTo: string): ConfirmacaoConfig {
+function buildConfig(
+	state: ConfirmacaoState,
+	intent: string,
+	// `null` quando a URL não tinha `?returnTo=` (distinto de "tinha, mas
+	// inválido" — sanitizeReturnTo já resolve esse caso caindo pra /home).
+	returnTo: SanitizedReturnTo | null,
+	favoritar: string,
+): ConfirmacaoConfig {
+	// Base pros 3 intents "sempre volta com querystring extra" — mesmo quando não
+	// havia returnTo, o destino cai em /home mas SEMPRE ganha `logado=true` (e o
+	// favoritar/toast do intent), diferente do intent genérico logo abaixo.
+	const returnToOrHome: SanitizedReturnTo = returnTo ?? { path: '/home', query: '' }
+
 	switch (state) {
 		case 'success': {
+			if (intent === 'favoritar' && favoritar) {
+				// Mesmo texto de sucesso do fluxo padrão — só o destino muda, carregando
+				// `favoritar` pro toggle aplicar o favorito assim que a página montar (ver
+				// src/lib/use-favorito-toggle.ts). NÃO usa `toast=` aqui: o toast de sucesso
+				// quem dispara é o próprio hook ao detectar o parâmetro, não uma string
+				// estática — evitando duplicar a regra "favoritar não é alternar".
+				return {
+					accent: 'mint',
+					icon: 'check',
+					title: 'Tudo pronto!',
+					body: 'Acesse conteúdo exclusivo, análises e dados do seu setor sem restrições.',
+					buttons: [
+						{
+							label: 'Explorar o portal',
+							href: buildReturnToHref(returnToOrHome, { logado: 'true', favoritar }),
+							variant: 'filled',
+						},
+					],
+					proof: 'confirm-welcome',
+				}
+			}
 			if (intent === 'download') {
 				return {
 					accent: 'mint',
@@ -74,7 +107,7 @@ function buildConfig(state: ConfirmacaoState, intent: string, returnTo: string):
 					buttons: [
 						{
 							label: 'Baixar agora',
-							href: `${returnTo || '/home'}?logado=true&toast=download-started`,
+							href: buildReturnToHref(returnToOrHome, { logado: 'true', toast: 'download-started' }),
 							variant: 'filled',
 						},
 					],
@@ -90,7 +123,7 @@ function buildConfig(state: ConfirmacaoState, intent: string, returnTo: string):
 					buttons: [
 						{
 							label: 'Ir para o portal',
-							href: `${returnTo || '/home'}?logado=true&toast=newsletter-subscribed`,
+							href: buildReturnToHref(returnToOrHome, { logado: 'true', toast: 'newsletter-subscribed' }),
 							variant: 'filled',
 						},
 					],
@@ -105,7 +138,7 @@ function buildConfig(state: ConfirmacaoState, intent: string, returnTo: string):
 				buttons: [
 					{
 						label: 'Explorar o portal',
-						href: returnTo ? `${returnTo}?logado=true` : '/home',
+						href: returnTo ? buildReturnToHref(returnTo, { logado: 'true' }) : '/home',
 						variant: 'filled',
 					},
 					{ label: 'Ir para minha conta', href: '/', variant: 'ghost' },
@@ -182,7 +215,17 @@ function ConfirmButton({ label, href, variant, isResend }: ConfirmacaoButton) {
  * é só reenviar o link para o endereço certo — sem refazer o cadastro. Submete de volta
  * para o estado "waiting" com o novo e-mail.
  */
-function CorrigirForm({ email, intent, returnTo }: { email: string; intent: string; returnTo: string }) {
+function CorrigirForm({
+	email,
+	intent,
+	returnTo,
+	favoritar,
+}: {
+	email: string
+	intent: string
+	returnTo: string
+	favoritar: string
+}) {
 	return (
 		<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
 			<StatusRing accent="primary" icon="mail" size="sm" />
@@ -208,6 +251,7 @@ function CorrigirForm({ email, intent, returnTo }: { email: string; intent: stri
 				<input type="hidden" name="state" value="waiting" />
 				{intent ? <input type="hidden" name="intent" value={intent} /> : null}
 				{returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
+				{favoritar ? <input type="hidden" name="favoritar" value={favoritar} /> : null}
 
 				<AuthInput
 					label="Novo e-mail"
@@ -238,8 +282,10 @@ function CorrigirForm({ email, intent, returnTo }: { email: string; intent: stri
  * estados de fim de linha (link-expired/link-used) usam o AuthTerminalModal compacto, sem proof.
  * O link do e-mail abre este modal sobre a home; a full page /confirmacao-email-full foi arquivada.
  * Extras exclusivos do modal: estado "corrigir" (EML-02, troca de e-mail sem refazer cadastro)
- * e roteamento intent=download|newsletter.
- * Estados: ?state=waiting|corrigir|success|link-expired|link-used · ?email=... · ?intent=download|newsletter
+ * e roteamento intent=download|newsletter|favoritar.
+ * Estados: ?state=waiting|corrigir|success|link-expired|link-used · ?email=...
+ * · ?intent=download|newsletter|favoritar · ?favoritar=<contentId> (viaja junto com
+ * intent=favoritar; ver comentário em buildConfig e em use-favorito-toggle.ts)
  */
 export default function ConfirmacaoEmailV2Screen() {
 	const [params] = useSearchParams()
@@ -250,20 +296,24 @@ export default function ConfirmacaoEmailV2Screen() {
 
 	const email = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
 	const intent = params.get('intent') ?? ''
+	// Ver comentário em cadastro-v2/login-v2 — mesmo parâmetro, mesma convenção,
+	// atravessando o último salto do fluxo (link de e-mail pode abrir em outra aba
+	// ou dispositivo, por isso não dá pra confiar em nada que não seja a URL).
+	const favoritar = params.get('favoritar') ?? ''
 	const hasReturnTo = params.get('returnTo') !== null
 	const returnTo = sanitizeReturnTo(params.get('returnTo'))
 
 	const isErrorTerminal = state === 'link-expired' || state === 'link-used'
 	const errorTerminal = isErrorTerminal ? ERROR_TERMINAL[state as 'link-expired' | 'link-used'] : null
 
-	const cfg = buildConfig(state, intent, hasReturnTo ? returnTo : '')
+	const cfg = buildConfig(state, intent, hasReturnTo ? returnTo : null, favoritar)
 	const isWaiting = state === 'waiting'
 	const isCorrigir = state === 'corrigir'
 	const showBack = isWaiting || isCorrigir
 
 	const extraQuery = `${intent ? `&intent=${encodeURIComponent(intent)}` : ''}${
-		hasReturnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''
-	}`
+		hasReturnTo ? `&returnTo=${encodeURIComponent(serializeReturnTo(returnTo))}` : ''
+	}${favoritar ? `&favoritar=${encodeURIComponent(favoritar)}` : ''}`
 
 	const backHref = isCorrigir ? `?state=waiting&email=${encodeURIComponent(email)}${extraQuery}` : '/login'
 
@@ -330,7 +380,12 @@ export default function ConfirmacaoEmailV2Screen() {
 					{/* body centralizado */}
 					<div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center justify-center px-6 py-8">
 						{isCorrigir ? (
-							<CorrigirForm email={email} intent={intent} returnTo={hasReturnTo ? returnTo : ''} />
+							<CorrigirForm
+							email={email}
+							intent={intent}
+							returnTo={hasReturnTo ? serializeReturnTo(returnTo) : ''}
+							favoritar={favoritar}
+						/>
 						) : (
 							<div className="w-full max-w-[392px] flex flex-col items-center gap-8 text-center">
 								<StatusRing accent={cfg.accent} icon={cfg.icon} size="sm" />

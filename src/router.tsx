@@ -1,6 +1,8 @@
 import { Outlet, RouterProvider, createBrowserRouter, Navigate } from 'react-router'
 import { Toaster } from './components/toaster'
 import { ScenarioBar } from './dev/ScenarioBar'
+// Import de efeito colateral — expõe window.__favoritosDev em modo DEV (ver arquivo).
+import './dev/favoritos-dev-handle'
 import AnuncieScreen from './screens/anuncie'
 import ArchiveScreen from './screens/archive'
 import BuscarScreen from './screens/buscar'

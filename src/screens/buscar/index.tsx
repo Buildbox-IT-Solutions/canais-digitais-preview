@@ -99,6 +99,7 @@ export default function BuscarScreen() {
 							{SEARCH_RESULTS.map((r) => (
 								<NewsCard
 									key={r.id}
+									contentId={r.id}
 									size="large"
 									orientation="horizontal"
 									title={r.title}

@@ -33,11 +33,13 @@ export function IconButton({
 	type = 'ghost',
 	size = 'medium',
 	href,
+	target,
 	disabled,
 	onClick,
 	ariaHasPopup,
 	ariaExpanded,
 	ariaControls,
+	ariaPressed,
 	className,
 }: IIconButtonProps) {
 	const classes = twMerge(
@@ -51,7 +53,13 @@ export function IconButton({
 
 	if (href) {
 		return (
-			<a href={href} aria-label={label} className={classes}>
+			<a
+				href={href}
+				target={target}
+				rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+				aria-label={label}
+				className={classes}
+			>
 				{iconNode}
 			</a>
 		)
@@ -63,6 +71,7 @@ export function IconButton({
 			aria-haspopup={ariaHasPopup}
 			aria-expanded={ariaExpanded}
 			aria-controls={ariaControls}
+			aria-pressed={ariaPressed}
 			onClick={onClick}
 			disabled={disabled}
 			className={classes}

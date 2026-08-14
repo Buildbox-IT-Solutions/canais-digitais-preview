@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
 import { toast } from '~/lib/toast-store'
+import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
+import { desfavoritar, existeHistoricoDeFavoritos, useFavoritos } from '~/lib/favoritos-store'
+import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
 import { useScenarios } from '~/dev/use-scenarios'
 import type { ScenarioDef } from '~/dev/scenario-store'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
@@ -16,6 +19,7 @@ import { NewsletterItem } from '~/components/newsletter-item'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
 import { ReadListItem } from '~/components/read-list-item'
+import type { ReadListItemMenuAction } from '~/components/read-list-item/read-list-item-menu'
 import { ReadListItemSkeleton } from '~/components/read-list-item/read-list-item-skeleton'
 import { StatusRing } from '~/components/status-ring'
 import { Toast } from '~/components/toast'
@@ -30,12 +34,13 @@ import {
 	PERFIL_CAMPOS_COMPLETO,
 	type PerfilCampos,
 } from '~/mocks/dashboard-perfil'
-import { READ_HISTORY, resolveReadHistory } from '~/mocks/leituras'
+import type { FavoritoItem } from '~/mocks/favoritos'
+import { READ_HISTORY, resolveReadHistory, type ReadHistoryItem } from '~/mocks/leituras'
 
-type Tab = 'perfil' | 'ultimas' | 'newsletter' | 'downloads'
+type Tab = 'perfil' | 'ultimas' | 'newsletter' | 'downloads' | 'favoritos'
 type Drawer = 'dados-pessoais' | 'dados-profissionais' | 'dados-fiscais'
 
-const TABS: Tab[] = ['perfil', 'downloads', 'newsletter', 'ultimas']
+const TABS: Tab[] = ['perfil', 'downloads', 'newsletter', 'ultimas', 'favoritos']
 const DRAWERS: Drawer[] = ['dados-pessoais', 'dados-profissionais', 'dados-fiscais']
 
 const BASE_HREF = '/dashboard-perfil-v4'
@@ -173,6 +178,7 @@ export default function DashboardPerfilV4Screen() {
 				) : null}
 				{tab === 'newsletter' ? <NewsletterPane /> : null}
 				{tab === 'downloads' ? <DownloadsPane isEmpty={isEmpty} /> : null}
+				{tab === 'favoritos' ? <FavoritosPane /> : null}
 			</div>
 
 			<FooterDesktop />
@@ -349,16 +355,11 @@ function UltimasPane({
 				<div ref={listRef} className="flex flex-col gap-6">
 					<ul className="flex flex-col">
 						{visibleSlice.map((item, i) => (
-							<ReadListItem
+							<UltimasListRow
 								key={item.id}
-								category={item.category}
-								categoryColor={item.categoryColor}
-								title={item.title}
-								href={item.href ?? '/conteudo'}
-								readAt={item.readAt}
-								image={item.image}
+								item={item}
 								isLast={i === visibleSlice.length - 1}
-								onRemove={() => handleRemove(item.id)}
+								onRemove={handleRemove}
 							/>
 						))}
 					</ul>
@@ -369,6 +370,45 @@ function UltimasPane({
 				</div>
 			)}
 		</section>
+	)
+}
+
+// Uma linha de Últimas leituras — componente próprio (não inline no .map) porque
+// "Salvar como favorito" precisa de useFavoritoToggle, e hooks não podem ser
+// chamados dentro de um callback de array.
+function UltimasListRow({
+	item,
+	isLast,
+	onRemove,
+}: {
+	item: ReadHistoryItem
+	isLast: boolean
+	onRemove: (id: string) => void
+}) {
+	const href = item.href ?? '/conteudo'
+	const { pressed, onPressedChange } = useFavoritoToggle(item.id)
+
+	const actions: ReadListItemMenuAction[] = [
+		{ label: 'Compartilhar', icon: 'share', onClick: () => compartilharConteudo(item.title, href) },
+		{
+			label: pressed ? 'Remover dos favoritos' : 'Salvar como favorito',
+			icon: pressed ? 'bookmark' : 'bookmark-border',
+			onClick: () => onPressedChange(!pressed),
+		},
+		{ label: 'Remover de últimas leituras', icon: 'delete-outline', onClick: () => onRemove(item.id) },
+	]
+
+	return (
+		<ReadListItem
+			category={item.category}
+			categoryColor={item.categoryColor}
+			title={item.title}
+			href={href}
+			readAt={item.readAt}
+			image={item.image}
+			isLast={isLast}
+			menuActions={actions}
+		/>
 	)
 }
 
@@ -603,6 +643,145 @@ function DownloadsPane({ isEmpty }: { isEmpty: boolean }) {
 				</>
 			)}
 		</div>
+	)
+}
+
+function FavoritosPane() {
+	const [params] = useSearchParams()
+	const pageRaw = Number(params.get('page') ?? 1)
+
+	// useFavoritos() já devolve os itens do portal atual, resolvidos e ordenados por
+	// data de salvamento (mais recente primeiro), indisponíveis inclusos nas
+	// posições reais — a store é quem decide isso, não esta tela.
+	const allItems = useFavoritos()
+	const totalPages = Math.max(1, Math.ceil(allItems.length / PER_PAGE))
+	const page = Math.min(Math.max(1, pageRaw), totalPages)
+	const offset = (page - 1) * PER_PAGE
+	const slice = allItems.slice(offset, offset + PER_PAGE)
+
+	// Remoção otimista: mesmo padrão de UltimasPane.handleRemove (esconde na hora,
+	// toast com "Desfazer" por 5s). Diferença: aqui existe uma store real por trás,
+	// então só comitamos a remoção de verdade (desfavoritar) se a janela expirar sem
+	// clique — desfazer só cancela o hide local, sem precisar recriar a entrada (o
+	// que perderia o savedAt/disponivel originais, já que favoritar() sempre grava
+	// a data de hoje).
+	const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set())
+	const visibleSlice = slice.filter((item) => !hiddenIds.has(item.id))
+
+	function handleRemove(id: string) {
+		setHiddenIds((prev) => new Set(prev).add(id))
+		toast.info('Removido dos favoritos.', {
+			durationMs: 5000,
+			action: {
+				label: 'Desfazer',
+				onClick: () => {
+					setHiddenIds((prev) => {
+						const next = new Set(prev)
+						next.delete(id)
+						return next
+					})
+				},
+			},
+		})
+		setTimeout(() => {
+			setHiddenIds((current) => {
+				if (current.has(id)) desfavoritar(id)
+				return current
+			})
+		}, 5000)
+	}
+
+	const isEmpty = allItems.length === 0
+	// Distingue "nunca favoritou nada neste portal" de "favoritou antes e removeu
+	// tudo" — sem isso, lista vazia é lida como perda de dados (escopo é por portal,
+	// a conta é única).
+	const isPrimeiraVisita = isEmpty && !existeHistoricoDeFavoritos()
+
+	return (
+		<section className="flex flex-col gap-6">
+			<header className="flex flex-col gap-1">
+				<h2 className="font-display font-bold text-title-xl text-primary-600">Favoritos</h2>
+				<p className="font-body text-body-md text-neutral-600">
+					Os conteúdos que você salvar aparecem aqui.
+				</p>
+			</header>
+
+			{isEmpty ? (
+				<div className="flex flex-col items-center text-center gap-4 py-12">
+					<StatusRing accent="primary" icon="bookmark-border" size="sm" />
+					<h3 className="font-display font-bold text-title-xl text-primary-600">
+						{isPrimeiraVisita
+							? 'Você ainda não salvou nada neste portal'
+							: 'Sua lista deste portal está vazia'}
+					</h3>
+					<p className="font-body text-body-md text-neutral-700 max-w-md">
+						{isPrimeiraVisita
+							? 'Use o marcador nos cards para guardar conteúdos e encontrá-los aqui depois. Seus favoritos são separados por portal.'
+							: 'Os conteúdos que você salvar neste portal aparecem aqui.'}
+					</p>
+					<a
+						href="/home"
+						className="mt-2 inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full border-[1.5px] border-primary-600 text-primary-600 hover:bg-neutral-50 font-body font-bold text-body-md transition-colors"
+					>
+						Explorar conteúdos
+						<Icon name="arrow-forward" className="size-5" />
+					</a>
+				</div>
+			) : (
+				<div className="flex flex-col gap-6">
+					<ul className="flex flex-col">
+						{visibleSlice.map((item, i) => (
+							<FavoritosListRow
+								key={item.id}
+								item={item}
+								isLast={i === visibleSlice.length - 1}
+								onRemove={handleRemove}
+							/>
+						))}
+					</ul>
+
+					{totalPages > 1 ? (
+						<Pagination current={page} total={totalPages} baseHref={`${BASE_HREF}?tab=favoritos`} />
+					) : null}
+				</div>
+			)}
+		</section>
+	)
+}
+
+function FavoritosListRow({
+	item,
+	isLast,
+	onRemove,
+}: {
+	item: FavoritoItem
+	isLast: boolean
+	onRemove: (id: string) => void
+}) {
+	const href = item.href ?? '/conteudo'
+
+	// Item indisponível: só "Remover dos favoritos" — compartilhar link morto é pior
+	// que não oferecer a ação.
+	const actions: ReadListItemMenuAction[] = item.disponivel
+		? [
+				{ label: 'Compartilhar', icon: 'share', onClick: () => compartilharConteudo(item.title, href) },
+				{ label: 'Remover dos favoritos', icon: 'delete-outline', onClick: () => onRemove(item.id) },
+			]
+		: [{ label: 'Remover dos favoritos', icon: 'delete-outline', onClick: () => onRemove(item.id) }]
+
+	return (
+		<ReadListItem
+			category={item.category}
+			categoryColor={item.categoryColor}
+			title={item.title}
+			href={href}
+			readAt={item.savedAt}
+			image={item.image}
+			verbo="Salvo"
+			indisponivel={!item.disponivel}
+			isLast={isLast}
+			menuActions={actions}
+		/>
 	)
 }
 

@@ -1,11 +1,19 @@
 /**
  * Componente: Videos Section
- * Figma Desktop: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=973-6474
+ * Figma Desktop: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2835-49276
  * Figma Mobile:  https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3035-35926
  * Secao de fundo escuro. Suporta 2-4 itens (figma-specs/_regras-de-negocio.md).
  * Mobile: todos os itens empilham como VideoCard size=sm — sem branch por quantidade.
- * Desktop: items[0] vira hero (VideoCard size=lg) + lista compacta (size=xs/horizontal).
+ * Desktop: items[0] vira hero (VideoCard size=lg) + lista compacta (size=sm/horizontal).
  * Tokens: --color-primary-600, --color-white
+ *
+ * Feature Favoritos — dois ajustes:
+ * 1. Tamanho da lista compacta (node 2835-49276, frame "Videos / 4"): era
+ *    `size="xs"` (16px, thumb fixo 160px) — o node real mostra title-lg (18px) e
+ *    imagem flexível até 288px. Virou `size="sm" orientation="horizontal"` (ver
+ *    comentário em video-card/index.tsx).
+ * 2. Todo VideoCard aqui ganhou `contentId` — o toggle vem de graça do próprio
+ *    componente, sem lógica duplicada nesta section.
  */
 import { twMerge } from '~/lib/tw-merge'
 import { VideoCard } from '~/components/video-card'
@@ -33,6 +41,7 @@ export function VideosSection({ title = 'Vídeos', items, categoriaHref = '/cate
 					{items.map((item) => (
 						<VideoCard
 							key={item.id}
+							contentId={item.id}
 							size="sm"
 							title={item.title}
 							image={item.image}
@@ -45,6 +54,7 @@ export function VideosSection({ title = 'Vídeos', items, categoriaHref = '/cate
 
 				<div className="hidden lg:grid grid-cols-2 gap-6">
 					<VideoCard
+						contentId={hero.id}
 						size="lg"
 						title={hero.title}
 						image={hero.image}
@@ -56,7 +66,8 @@ export function VideosSection({ title = 'Vídeos', items, categoriaHref = '/cate
 						{rest.map((item) => (
 							<VideoCard
 								key={item.id}
-								size="xs"
+								contentId={item.id}
+								size="sm"
 								orientation="horizontal"
 								title={item.title}
 								image={item.image}

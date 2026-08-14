@@ -21,3 +21,18 @@ type Story = StoryObj<typeof IncentiveDownloadDialog>
 export const Default: Story = {
 	name: 'Desktop / Mobile (resize)',
 }
+
+/** Reuso pelo gatilho de favoritar deslogado (feature Favoritos) — visualmente
+ * idêntico ao Default (mesmos 2 botões, mesmos rótulos), só ícone/título/corpo mudam.
+ * "Salve" ganha o mesmo destaque (bold + secondary-500) que "baixar" tem no Default. */
+export const Favoritos: Story = {
+	args: {
+		icon: 'bookmark',
+		title: (
+			<>
+				<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca
+			</>
+		),
+		body: 'Crie sua conta para guardar conteúdos e encontrá-los depois, e receber recomendações do seu setor.',
+	},
+}

@@ -13,12 +13,9 @@ import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { Toast } from '~/components/toast'
-import { Byline } from '~/components/byline'
-import { Categoria } from '~/components/categoria'
 import { NewsCard } from '~/components/news-card'
 import { ProteinaAnimalSection } from '~/components/proteina-animal-section'
 import { SectionTitle } from '~/components/section-title'
-import { Thumbnail } from '~/components/thumbnail'
 import { UltimaSecao } from '~/components/ultima-secao'
 import { VideosSection } from '~/components/videos-section'
 import { WebstoriesSection } from '~/components/webstories-section'
@@ -139,16 +136,17 @@ export default function HomeScreen() {
 
 			{/* §3 — 3 colunas: Ingredientes · Food Service · Em Alta */}
 			<section className="w-full">
-				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 					<CategoryColumn
 						color="mint"
 						label="Ingredientes"
 						boxedTitle="Suplemento em gomas: a doce revolução que está transformando o mercado de nutrição"
 						boxedSeed="ing-boxed"
+						boxedSponsorName="Bridge & Co."
 						list={INGREDIENTES_LIST}
 					/>
 					<CategoryColumn
-						color="primary-600"
+						color="saffron"
 						label="Food Service"
 						boxedTitle="Análise essencial: saiba como as crises internacionais impactam a indústria de alimentos"
 						boxedSeed="fs-boxed"
@@ -156,11 +154,8 @@ export default function HomeScreen() {
 					/>
 					<div className="flex flex-col gap-6 pt-6 lg:pt-10">
 						<WidgetEmAlta title="Em Alta" items={EM_ALTA.map((title) => ({ title }))} />
-						<div className="flex justify-center lg:hidden">
+						<div className="flex justify-center">
 							<AdFrame width={300} height={250} />
-						</div>
-						<div className="hidden lg:flex border border-primary-100 bg-neutral-50 items-center justify-center rounded-sm h-[282px] w-full">
-							<span className="font-body font-bold text-label-md text-neutral-700">300 × 250</span>
 						</div>
 					</div>
 				</div>
@@ -196,6 +191,7 @@ export default function HomeScreen() {
 					{FISPAL_LIST.map((card) => (
 						<NewsCard
 							key={card.id}
+							contentId={card.id}
 							size="medium"
 							orientation="vertical"
 							image={picsumSrc(card.seed, 800, 450)}
@@ -229,25 +225,20 @@ export default function HomeScreen() {
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 py-10 flex flex-col lg:flex-row gap-8 lg:gap-6">
 					<div className="flex flex-col gap-8 flex-1">
 						{NEWS_PODCAST.map((card) => (
-							<article key={card.id} className="group flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6 w-full">
-								<div className="w-full lg:w-[288px] lg:shrink-0">
-									<Thumbnail src={picsumSrc(card.seed, 600, 338)} alt="Capa" href="/conteudo" ratio="video" />
-								</div>
-								<div className="flex flex-col gap-2 flex-1 min-w-0">
-									<Categoria color={card.categoryColor} label={card.category} href="/categoria" />
-									<h3 className="text-title-xl font-display font-bold text-primary-600">
-										<a href="/conteudo" className="group-hover:text-secondary-950 transition-colors">
-											{card.title}
-										</a>
-									</h3>
-									{card.lead ? (
-										<p className="text-body-md font-body text-neutral-900 group-hover:text-neutral-950 transition-colors">
-											{card.lead}
-										</p>
-									) : null}
-									{card.author ? <Byline author={card.author} href="/categoria" /> : null}
-								</div>
-							</article>
+							<NewsCard
+								key={card.id}
+								contentId={card.id}
+								size="large"
+								orientation="horizontal"
+								image={picsumSrc(card.seed, 600, 338)}
+								href="/conteudo"
+								title={card.title}
+								categoria={{ label: card.category, color: card.categoryColor, href: '/categoria' }}
+								lead={card.lead}
+								author={card.author}
+								authorHref="/categoria"
+								mediaClassName="w-full lg:w-[288px] lg:shrink-0"
+							/>
 						))}
 					</div>
 

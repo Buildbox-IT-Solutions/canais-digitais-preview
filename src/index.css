@@ -1,6 +1,18 @@
 @import 'tailwindcss';
 
 /**
+ * Variant custom: dispositivo com hover "de verdade" (mouse), não por largura de
+ * tela — usado pelo toggle de favoritar no NewsCard pra decidir se o ícone
+ * desligado começa oculto (revelado no hover/focus) ou sempre visível (touch/
+ * notebook conversível não tem gesto de hover, então nunca deve escondê-lo).
+ */
+@custom-variant hover-fine {
+  @media (hover: hover) and (pointer: fine) {
+    @slot;
+  }
+}
+
+/**
  * Design Tokens — Canais Digitais 2.0
  * Fonte: Figma file WGDRkmJLtuow7gRmPRAwJk
  * Páginas: 🎨 Foundations > Colors, Elevation, Typography

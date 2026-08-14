@@ -2,6 +2,21 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ReadListItem } from '.'
 import { ReadListItemSkeleton } from './read-list-item-skeleton'
 
+const ACTIONS_ULTIMAS = [
+	{ label: 'Compartilhar', icon: 'share' as const, onClick: () => {} },
+	{ label: 'Salvar como favorito', icon: 'bookmark-border' as const, onClick: () => {} },
+	{ label: 'Remover de últimas leituras', icon: 'delete-outline' as const, onClick: () => {} },
+]
+
+const ACTIONS_FAVORITOS = [
+	{ label: 'Compartilhar', icon: 'share' as const, onClick: () => {} },
+	{ label: 'Remover dos favoritos', icon: 'delete-outline' as const, onClick: () => {} },
+]
+
+const ACTIONS_INDISPONIVEL = [
+	{ label: 'Remover dos favoritos', icon: 'delete-outline' as const, onClick: () => {} },
+]
+
 const meta: Meta<typeof ReadListItem> = {
 	title: 'List Items/ReadListItem',
 	component: ReadListItem,
@@ -22,6 +37,7 @@ const meta: Meta<typeof ReadListItem> = {
 		readAt: new Date().toISOString(),
 		image: 'https://picsum.photos/seed/read-list-item/416/234',
 		isLast: true,
+		menuActions: ACTIONS_ULTIMAS,
 	},
 }
 
@@ -67,6 +83,20 @@ export const OutraCategoria: Story = {
 	args: { category: 'Ingredientes', categoryColor: 'mint', image: undefined },
 }
 
+/** Favoritos: verbo "Salvo" no rótulo de data, menu com Compartilhar + Remover dos favoritos. */
+export const Favoritos: Story = {
+	args: { verbo: 'Salvo', menuActions: ACTIONS_FAVORITOS },
+}
+
+/**
+ * Indisponível: imagem mantida com opacidade reduzida (não some), título perde o link
+ * e vai para tom apagado, data vira Badge "Indisponível", menu só com "Remover dos
+ * favoritos" (sem "Compartilhar" — link morto é pior que não oferecer a ação).
+ */
+export const Indisponivel: Story = {
+	args: { verbo: 'Salvo', indisponivel: true, menuActions: ACTIONS_INDISPONIVEL },
+}
+
 /** Loading — 10 linhas de skeleton com a métrica exata do item real, sem spinner. */
 export const Loading: Story = {
 	render: () => (
@@ -90,6 +120,7 @@ export const Lista: Story = {
 					href="/conteudo"
 					readAt={new Date(Date.now() - 5 * 60 * 1000).toISOString()}
 					image="https://picsum.photos/seed/lista-1/416/234"
+					menuActions={ACTIONS_ULTIMAS}
 				/>
 				<ReadListItem
 					category="Ingredientes"
@@ -97,6 +128,7 @@ export const Lista: Story = {
 					title="Creatina além da musculação: benefícios comprovados para saúde e cognição"
 					href="/conteudo"
 					readAt={new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()}
+					menuActions={ACTIONS_ULTIMAS}
 				/>
 				<Story {...ctx} />
 			</>

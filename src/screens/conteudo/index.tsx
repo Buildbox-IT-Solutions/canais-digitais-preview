@@ -14,7 +14,6 @@ import { Categoria } from '~/components/categoria'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { IconButton } from '~/components/icon-button'
-import type { IconName } from '~/components/icon/paths'
 import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
@@ -27,21 +26,34 @@ import { TableOfContentsMargin } from '~/components/table-of-contents-margin'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
+import { Toggle } from '~/components/toggle'
+import { Tooltip } from '~/components/tooltip'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
 import { getPostByParam } from '~/fixtures/posts'
+import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
+import { useFavoritoAuthModal } from '~/lib/use-favorito-auth-modal'
+import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
 import { useLogado } from '~/lib/use-logado'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
 import type { Author, ContentBlock, Post } from '~/types/post'
 
-const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
-	{ icon: 'print', label: 'Imprimir' },
-	{ icon: 'whatsapp', label: 'WhatsApp' },
-	{ icon: 'linkedin', label: 'LinkedIn' },
-	{ icon: 'facebook', label: 'Facebook' },
-	{ icon: 'twitter', label: 'Twitter' },
-	{ icon: 'share', label: 'Compartilhar' },
-]
+// Desenho final da barra: bookmark, WhatsApp, share — imprimir/LinkedIn/Facebook/
+// Twitter saíram, condensados no share nativo (que já lista os apps instalados do
+// usuário, incluindo essas redes). WhatsApp abre um wa.me com título+link
+// pré-preenchidos (link puro, sem SDK/API — mesma categoria de um mailto:).
+// Compartilhar reusa `compartilharConteudo` (Web Share API, fallback de copiar
+// link) — o mesmo helper já usado em Últimas leituras/Favoritos.
+// Tooltip nos 3: bookmark usa tooltipOn/tooltipOff do Toggle ("Remover"/
+// "Favoritar", igual à home); WhatsApp e share usam o Tooltip genérico direto —
+// "Enviar" (verbo curto, mesma família de Favoritar/Remover/Compartilhar) e
+// "Compartilhar" (esse coincide com o aria-label do IconButton de propósito,
+// já que os dois descrevem a mesma ação de verdade — "Enviar" no WhatsApp
+// evita repetir "Compartilhar" em dois ícones vizinhos com ações diferentes).
+function whatsappShareHref(title: string, path: string): string {
+	const url = new URL(path, window.location.origin).toString()
+	return `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`
+}
 
 // Fase 2 (briefing pagina-conteudo-toc) — decisão pendente de validação com
 // Pedro/Micaelly (ver GATE 2): posição default é o final do corpo; troque
@@ -63,6 +75,16 @@ export default function ConteudoScreen() {
 	const tocVariant = params.get('toc')
 
 	const activePost = getPostByParam(params.get('post'))
+
+	// Feature Favoritos: contentId é o slug do post (== chave de POSTS_BY_ID ==
+	// valor de `?post=`) — cada variação/fixture tem seu próprio estado de favorito.
+	const favoritoAuthModal = useFavoritoAuthModal(activePost.slug)
+	const favoritoToggle = useFavoritoToggle(activePost.slug, favoritoAuthModal.requestAuth)
+
+	// URL canônica do post (não a URL da aba, que pode carregar querystring só de
+	// simulação de protótipo — ?logado=, ?toc=, ?preview=) — usada pelo WhatsApp e
+	// pelo share nativo.
+	const shareUrl = `/conteudo?post=${activePost.slug}`
 
 	const [leituraOpen, setLeituraOpen] = useState(previewIncentive === 'leitura')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
@@ -196,17 +218,47 @@ export default function ConteudoScreen() {
 									updatedAt={activePost.updatedAt}
 								/>
 
-								<div className="flex gap-1 items-center shrink-0 max-w-full overflow-x-auto">
-									{SHARE_ICONS.map((s) => (
+								{/* `max-w-full overflow-x-auto` (scroll horizontal) saiu daqui: era pros 6
+								    ícones antigos (print/whatsapp/linkedin/facebook/twitter/share), que já
+								    nem existem mais — com só 3 nunca precisou de scroll. Mantinha, o overflow-x
+								    força overflow-y:auto também (regra do CSS quando só um eixo é != visible),
+								    cortando o Tooltip (absolute, mt-2 abaixo do ícone) que passa da altura da
+								    própria linha. */}
+								<div className="flex gap-1 items-center shrink-0">
+									{/* Bookmark: primeiro da fila, sempre visível (sem regra de hover —
+									    isso é do card, aqui a página é única). surface="default" pra
+									    ter o mesmo peso visual dos vizinhos (nenhum destaque de cor). */}
+									<Toggle
+										pressed={favoritoToggle.pressed}
+										onPressedChange={favoritoToggle.onPressedChange}
+										iconOn="bookmark"
+										iconOff="bookmark-border"
+										labelOn="Remover dos favoritos"
+										labelOff="Favoritar"
+										tooltipOn="Remover"
+										tooltipOff="Favoritar"
+										size="medium"
+										surface="default"
+									/>
+									<Tooltip label="Enviar">
 										<IconButton
-											key={s.icon}
-											icon={s.icon}
+											icon="whatsapp"
+											label="WhatsApp"
 											type="ghost"
-											size="large"
-											label={s.label}
-											href="/categoria"
+											size="medium"
+											href={whatsappShareHref(activePost.title, shareUrl)}
+											target="_blank"
 										/>
-									))}
+									</Tooltip>
+									<Tooltip label="Compartilhar">
+										<IconButton
+											icon="share"
+											label="Compartilhar"
+											type="ghost"
+											size="medium"
+											onClick={() => compartilharConteudo(activePost.title, shareUrl)}
+										/>
+									</Tooltip>
 								</div>
 							</div>
 						</div>
@@ -340,6 +392,7 @@ export default function ConteudoScreen() {
 					{VEJA_TAMBEM.map((card) => (
 						<NewsCard
 							key={card.id}
+							contentId={card.id}
 							size="small"
 							orientation="vertical"
 							title={card.title}
@@ -387,6 +440,24 @@ export default function ConteudoScreen() {
 				/>
 			</>
 		) : null}
+
+		{/* Modal de auth do bookmark — mesmo IncentiveDownloadDialog do gatilho de
+		    download (ver NewsCard/CategoryColumn), `open` já é interno a
+		    favoritoAuthModal e só liga quando deslogado clica; não depende do
+		    bloco `!logado` acima. */}
+		<IncentiveDownloadDialog
+			open={favoritoAuthModal.open}
+			onDismiss={favoritoAuthModal.onDismiss}
+			onCreateAccount={favoritoAuthModal.onCreateAccount}
+			onLogin={favoritoAuthModal.onLogin}
+			icon="bookmark"
+			title={
+				<>
+					<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca
+				</>
+			}
+			body="Crie sua conta para guardar conteúdos e encontrá-los depois, e receber recomendações do seu setor."
+		/>
 
 		{showDownloadToast ? (
 			<div className="fixed bottom-6 right-6 z-50">
