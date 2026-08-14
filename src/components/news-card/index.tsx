@@ -140,6 +140,8 @@ export function NewsCard({
 				iconOff="bookmark-border"
 				labelOn="Remover dos favoritos"
 				labelOff="Favoritar"
+				tooltipOn="Remover"
+				tooltipOff="Favoritar"
 				size="medium"
 				surface="onMedia"
 				className={twMerge('absolute top-2 right-2', toggleVisibilityClass)}
@@ -156,6 +158,8 @@ export function NewsCard({
 				iconOff="bookmark-border"
 				labelOn="Remover dos favoritos"
 				labelOff="Favoritar"
+				tooltipOn="Remover"
+				tooltipOff="Favoritar"
 				size="medium"
 				surface="default"
 				className={twMerge('shrink-0 -my-2.5', toggleVisibilityClass)}

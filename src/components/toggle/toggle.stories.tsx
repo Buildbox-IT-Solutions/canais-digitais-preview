@@ -18,6 +18,10 @@ import type { ToggleSurface } from './types'
  * 1. Surface=OnMedia + disabled tem contraste baixo (ícone cinza sobre branco 80%).
  * 2. Size=Small é 32px, abaixo do alvo de toque recomendado (44px) — não usar em card.
  * 3. O anel de foco não tem folga do ícone (sem `ring-offset`, ver index.tsx).
+ *
+ * Tooltip (feature Favoritos): todo Toggle abaixo já tem `tooltipOn`/`tooltipOff`
+ * ("Remover"/"Favoritar") — passe o mouse e segure um instante em qualquer um pra
+ * ver o balão (delay real de 500ms, não instantâneo — ver componente Tooltip).
  */
 const meta: Meta<typeof Toggle> = {
 	title: 'Componentes/Toggle',
@@ -33,6 +37,8 @@ const bookmarkProps = {
 	iconOff: 'bookmark-border' as const,
 	labelOn: 'Remover dos favoritos',
 	labelOff: 'Favoritar',
+	tooltipOn: 'Remover',
+	tooltipOff: 'Favoritar',
 }
 
 const SIZES: IconButtonSize[] = ['small', 'medium', 'large']

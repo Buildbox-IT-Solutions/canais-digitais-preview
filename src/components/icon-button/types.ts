@@ -9,6 +9,8 @@ export interface IIconButtonProps {
 	type?: IconButtonType
 	size?: IconButtonSize
 	href?: string
+	/** Só faz sentido com `href` externo (ex.: wa.me) — abre em nova aba. */
+	target?: '_blank'
 	disabled?: boolean
 	onClick?: () => void
 	ariaHasPopup?: 'menu' | 'dialog' | 'listbox' | 'true'

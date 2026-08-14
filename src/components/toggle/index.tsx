@@ -1,6 +1,7 @@
 import { twMerge } from '~/lib/tw-merge'
 import { IconButton } from '~/components/icon-button'
 import type { IconButtonSize } from '~/components/icon-button/types'
+import { Tooltip } from '~/components/tooltip'
 import type { IToggleProps, ToggleSurface } from './types'
 
 /**
@@ -45,6 +46,15 @@ import type { IToggleProps, ToggleSurface } from './types'
  * 3. O anel de foco não tem folga do ícone (sem `ring-offset`) — no Figma isso
  *    exigiria uma moldura extra; no CSS teria que ser um `ring-offset` que não foi
  *    aplicado sem alinhamento prévio com o Figma.
+ *
+ * Tooltip (feature Favoritos, referência: padrão "Instagram" — Salvar/Remover
+ * aparecem depois de um breve delay de hover): opcional via `tooltipOn`/
+ * `tooltipOff`, textos CURTOS ("Favoritar"/"Remover") — de propósito DIFERENTES
+ * de `labelOn`/`labelOff` (aria-label, mais descritivo: "Remover dos favoritos").
+ * Sem essas duas props o Toggle continua sem tooltip, igual antes. Quando
+ * existem, o `className` de posicionamento (que hoje sempre vem do chamador —
+ * `absolute top-2 right-2` sobre mídia, ou nada no caso inline da conteudo) migra
+ * do IconButton pro wrapper do Tooltip (ver esse componente).
  */
 const ICON_SIZE_CLASSES: Record<IconButtonSize, string> = {
 	small: '[&_svg]:size-4',
@@ -64,12 +74,19 @@ export function Toggle({
 	iconOff,
 	labelOn,
 	labelOff,
+	tooltipOn,
+	tooltipOff,
 	size = 'medium',
 	surface = 'default',
 	disabled,
 	className,
 }: IToggleProps) {
-	return (
+	// className do chamador (posicionamento — ex. `absolute top-2 right-2` sobre a
+	// mídia) vai pro wrapper do Tooltip quando ele existe; sem tooltip, vai direto
+	// pro botão, como antes — ver comentário do Tooltip sobre containing block.
+	const tooltipLabel = pressed ? tooltipOn : tooltipOff
+
+	const button = (
 		<IconButton
 			icon={pressed ? iconOn : iconOff}
 			label={pressed ? labelOn : labelOff}
@@ -83,8 +100,16 @@ export function Toggle({
 				ICON_SIZE_CLASSES[size],
 				'focus-visible:ring-2',
 				SURFACE_CLASSES[surface],
-				className,
+				tooltipLabel ? undefined : className,
 			)}
 		/>
+	)
+
+	if (!tooltipLabel) return button
+
+	return (
+		<Tooltip label={tooltipLabel} disabled={disabled} className={className}>
+			{button}
+		</Tooltip>
 	)
 }

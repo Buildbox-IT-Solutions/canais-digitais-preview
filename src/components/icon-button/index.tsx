@@ -33,6 +33,7 @@ export function IconButton({
 	type = 'ghost',
 	size = 'medium',
 	href,
+	target,
 	disabled,
 	onClick,
 	ariaHasPopup,
@@ -52,7 +53,13 @@ export function IconButton({
 
 	if (href) {
 		return (
-			<a href={href} aria-label={label} className={classes}>
+			<a
+				href={href}
+				target={target}
+				rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+				aria-label={label}
+				className={classes}
+			>
 				{iconNode}
 			</a>
 		)

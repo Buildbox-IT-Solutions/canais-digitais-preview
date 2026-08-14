@@ -106,6 +106,8 @@ export function DestaqueSection({ hero, top2, top3, heroText, heroBottom, classN
 								iconOff="bookmark-border"
 								labelOn="Remover dos favoritos"
 								labelOff="Favoritar"
+								tooltipOn="Remover"
+								tooltipOff="Favoritar"
 								size="medium"
 								surface="onMedia"
 								className={twMerge(

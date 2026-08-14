@@ -152,6 +152,8 @@ export function CategoryColumn({
 						iconOff="bookmark-border"
 						labelOn="Remover dos favoritos"
 						labelOff="Favoritar"
+						tooltipOn="Remover"
+						tooltipOff="Favoritar"
 						size="medium"
 						surface="onMedia"
 						className={twMerge(

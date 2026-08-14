@@ -23,6 +23,14 @@ export interface IToggleProps {
 	labelOn: string
 	/** Rótulo acessível (aria-label) quando `pressed` é false — normalmente a ação de ligar. */
 	labelOff: string
+	/**
+	 * Texto do Tooltip (feature Favoritos) quando `pressed` é true — curto, ex.
+	 * "Remover", diferente do `labelOn` (aria-label, mais descritivo). Sem
+	 * `tooltipOn`/`tooltipOff`, o Toggle não ganha tooltip nenhum.
+	 */
+	tooltipOn?: string
+	/** Texto do Tooltip quando `pressed` é false — curto, ex. "Favoritar". */
+	tooltipOff?: string
 	/** Escala herdada do Icon Button [1.0]: 32/40/48 com ícone 16/24/32 — NÃO é a escala do Play Button. */
 	size?: IconButtonSize
 	/** Superfície sempre presente (com ou sem foto atrás) — default `'default'`. */
