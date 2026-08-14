@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { MemoryRouter } from 'react-router'
 import { VIDEOS_SECTION } from '~/mocks/articles'
 import { VideosSection } from '.'
 
@@ -7,6 +8,14 @@ const meta: Meta<typeof VideosSection> = {
 	component: VideosSection,
 	tags: ['autodocs'],
 	parameters: { layout: 'centered' },
+	decorators: [
+		// Feature Favoritos: todo VideoCard aqui ganhou contentId — exige Router.
+		(Story) => (
+			<MemoryRouter initialEntries={['/?logado=true']}>
+				<Story />
+			</MemoryRouter>
+		),
+	],
 }
 export default meta
 

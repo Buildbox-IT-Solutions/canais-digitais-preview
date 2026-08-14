@@ -27,13 +27,20 @@ import { TableOfContentsMargin } from '~/components/table-of-contents-margin'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
+import { Toggle } from '~/components/toggle'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
 import { getPostByParam } from '~/fixtures/posts'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
+import { useFavoritoAuthModal } from '~/lib/use-favorito-auth-modal'
+import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
 import { useLogado } from '~/lib/use-logado'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
 import type { Author, ContentBlock, Post } from '~/types/post'
 
+// Desenho final da barra: bookmark, WhatsApp, share (impressão sai; LinkedIn/
+// Facebook/Twitter/link se condensam no share nativo) — consolidação é de outra
+// frente, não feita aqui. Só o tamanho (Large -> medium, feature Favoritos) muda
+// neste passo.
 const SHARE_ICONS: Array<{ icon: IconName; label: string }> = [
 	{ icon: 'print', label: 'Imprimir' },
 	{ icon: 'whatsapp', label: 'WhatsApp' },
@@ -63,6 +70,11 @@ export default function ConteudoScreen() {
 	const tocVariant = params.get('toc')
 
 	const activePost = getPostByParam(params.get('post'))
+
+	// Feature Favoritos: contentId é o slug do post (== chave de POSTS_BY_ID ==
+	// valor de `?post=`) — cada variação/fixture tem seu próprio estado de favorito.
+	const favoritoAuthModal = useFavoritoAuthModal(activePost.slug)
+	const favoritoToggle = useFavoritoToggle(activePost.slug, favoritoAuthModal.requestAuth)
 
 	const [leituraOpen, setLeituraOpen] = useState(previewIncentive === 'leitura')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
@@ -197,12 +209,25 @@ export default function ConteudoScreen() {
 								/>
 
 								<div className="flex gap-1 items-center shrink-0 max-w-full overflow-x-auto">
+									{/* Bookmark: primeiro da fila, sempre visível (sem regra de hover —
+									    isso é do card, aqui a página é única). surface="default" pra
+									    ter o mesmo peso visual dos vizinhos (nenhum destaque de cor). */}
+									<Toggle
+										pressed={favoritoToggle.pressed}
+										onPressedChange={favoritoToggle.onPressedChange}
+										iconOn="bookmark"
+										iconOff="bookmark-border"
+										labelOn="Remover dos favoritos"
+										labelOff="Favoritar"
+										size="medium"
+										surface="default"
+									/>
 									{SHARE_ICONS.map((s) => (
 										<IconButton
 											key={s.icon}
 											icon={s.icon}
 											type="ghost"
-											size="large"
+											size="medium"
 											label={s.label}
 											href="/categoria"
 										/>
@@ -340,6 +365,7 @@ export default function ConteudoScreen() {
 					{VEJA_TAMBEM.map((card) => (
 						<NewsCard
 							key={card.id}
+							contentId={card.id}
 							size="small"
 							orientation="vertical"
 							title={card.title}
@@ -387,6 +413,24 @@ export default function ConteudoScreen() {
 				/>
 			</>
 		) : null}
+
+		{/* Modal de auth do bookmark — mesmo IncentiveDownloadDialog do gatilho de
+		    download (ver NewsCard/CategoryColumn), `open` já é interno a
+		    favoritoAuthModal e só liga quando deslogado clica; não depende do
+		    bloco `!logado` acima. */}
+		<IncentiveDownloadDialog
+			open={favoritoAuthModal.open}
+			onDismiss={favoritoAuthModal.onDismiss}
+			onCreateAccount={favoritoAuthModal.onCreateAccount}
+			onLogin={favoritoAuthModal.onLogin}
+			icon="bookmark"
+			title={
+				<>
+					<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca
+				</>
+			}
+			body="Crie sua conta para guardar conteúdos e encontrá-los depois, e receber recomendações do seu setor."
+		/>
 
 		{showDownloadToast ? (
 			<div className="fixed bottom-6 right-6 z-50">

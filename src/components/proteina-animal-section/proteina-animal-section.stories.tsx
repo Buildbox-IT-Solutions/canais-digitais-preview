@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { MemoryRouter } from 'react-router'
 import { PROTEINA_ANIMAL } from '~/mocks/articles'
 import { ProteinaAnimalSection } from '.'
 
@@ -7,6 +8,14 @@ const meta: Meta<typeof ProteinaAnimalSection> = {
 	component: ProteinaAnimalSection,
 	tags: ['autodocs'],
 	parameters: { layout: 'centered' },
+	decorators: [
+		// Feature Favoritos: cards viraram NewsCard com contentId — exige Router.
+		(Story) => (
+			<MemoryRouter initialEntries={['/?logado=true']}>
+				<Story />
+			</MemoryRouter>
+		),
+	],
 }
 export default meta
 

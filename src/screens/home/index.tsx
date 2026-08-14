@@ -13,12 +13,9 @@ import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { Toast } from '~/components/toast'
-import { Byline } from '~/components/byline'
-import { Categoria } from '~/components/categoria'
 import { NewsCard } from '~/components/news-card'
 import { ProteinaAnimalSection } from '~/components/proteina-animal-section'
 import { SectionTitle } from '~/components/section-title'
-import { Thumbnail } from '~/components/thumbnail'
 import { UltimaSecao } from '~/components/ultima-secao'
 import { VideosSection } from '~/components/videos-section'
 import { WebstoriesSection } from '~/components/webstories-section'
@@ -145,10 +142,11 @@ export default function HomeScreen() {
 						label="Ingredientes"
 						boxedTitle="Suplemento em gomas: a doce revolução que está transformando o mercado de nutrição"
 						boxedSeed="ing-boxed"
+						boxedSponsorName="Bridge & Co."
 						list={INGREDIENTES_LIST}
 					/>
 					<CategoryColumn
-						color="primary-600"
+						color="saffron"
 						label="Food Service"
 						boxedTitle="Análise essencial: saiba como as crises internacionais impactam a indústria de alimentos"
 						boxedSeed="fs-boxed"
@@ -230,25 +228,20 @@ export default function HomeScreen() {
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 py-10 flex flex-col lg:flex-row gap-8 lg:gap-6">
 					<div className="flex flex-col gap-8 flex-1">
 						{NEWS_PODCAST.map((card) => (
-							<article key={card.id} className="group flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6 w-full">
-								<div className="w-full lg:w-[288px] lg:shrink-0">
-									<Thumbnail src={picsumSrc(card.seed, 600, 338)} alt="Capa" href="/conteudo" ratio="video" />
-								</div>
-								<div className="flex flex-col gap-2 flex-1 min-w-0">
-									<Categoria color={card.categoryColor} label={card.category} href="/categoria" />
-									<h3 className="text-title-xl font-display font-bold text-primary-600">
-										<a href="/conteudo" className="group-hover:text-secondary-950 transition-colors">
-											{card.title}
-										</a>
-									</h3>
-									{card.lead ? (
-										<p className="text-body-md font-body text-neutral-900 group-hover:text-neutral-950 transition-colors">
-											{card.lead}
-										</p>
-									) : null}
-									{card.author ? <Byline author={card.author} href="/categoria" /> : null}
-								</div>
-							</article>
+							<NewsCard
+								key={card.id}
+								contentId={card.id}
+								size="large"
+								orientation="horizontal"
+								image={picsumSrc(card.seed, 600, 338)}
+								href="/conteudo"
+								title={card.title}
+								categoria={{ label: card.category, color: card.categoryColor, href: '/categoria' }}
+								lead={card.lead}
+								author={card.author}
+								authorHref="/categoria"
+								mediaClassName="w-full lg:w-[288px] lg:shrink-0"
+							/>
 						))}
 					</div>
 

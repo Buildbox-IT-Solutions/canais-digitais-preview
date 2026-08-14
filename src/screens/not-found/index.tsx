@@ -38,6 +38,7 @@ export default function NotFoundScreen() {
 					{NOT_FOUND_CARDS.map((c) => (
 						<NewsCard
 							key={c.id}
+							contentId={c.id}
 							size="small"
 							orientation="vertical"
 							title={c.title}
