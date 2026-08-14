@@ -2,6 +2,7 @@
  * Componente: NewsCard
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1709-7090
  * Variantes: size (large|medium|small) × orientation (vertical|horizontal) · categoria/lead/author on-off
+ * · mediaRatio (video 16:9 default | photo 3:2 | square) · titleClassName (escape hatch, ex. line-clamp)
  * Tokens: --text-headline-md, --text-title-xl/lg/md, --text-body-lg/md, --color-primary-600, --color-neutral-900
  *
  * Toggle de favoritar (feature Favoritos) — âncora principal é a MÍDIA (canto
@@ -39,6 +40,17 @@
  * `surface`: `onMedia` sobre foto, `default` no card sem imagem — tamanho e cor do
  * ícone já vêm corretos do próprio Toggle (reconciliado com o Figma "Toggle [1.0]",
  * node 7952:127473), não precisa mais de override aqui.
+ *
+ * Auditoria de leading (entrelinhas apertadas em cards "small"): o `size ===
+ * 'small' && 'leading-tight'` do headline foi removido — conferido direto no Figma
+ * (node 1709:7109, "Size=Small, Orientation=Vertical": título 18px tem
+ * `leading-[24px]`; instância 973:6776, small-horizontal, 16px tem `leading-[24px]`
+ * também) e em nenhum dos dois casos o Figma usa leading apertado. `text-title-lg`/
+ * `text-title-md` já carregam esse 24px via `--text-title-*--line-height` (token do
+ * Tailwind v4) — o `leading-tight` (1.25×fonte) sobrescrevia isso pra 22.5px/20px,
+ * mais apertado que o desenho. Não confundir com o `xs` do VideoCard, que É
+ * intencional (documentado em figma-specs/video-card.md — empacota 16px em 96px de
+ * altura total do card XSmall) — esse não foi tocado.
  */
 import { twMerge } from '~/lib/tw-merge'
 import { Thumbnail } from '~/components/thumbnail'
@@ -99,6 +111,8 @@ export function NewsCard({
 	authorHref,
 	mediaOverlay,
 	mediaClassName,
+	mediaRatio = 'video',
+	titleClassName,
 	className,
 }: INewsCardProps) {
 	const key = `${size}-${orientation}`
@@ -150,7 +164,7 @@ export function NewsCard({
 
 	const mediaStack = image ? (
 		<div className="relative">
-			<Thumbnail src={image} alt={title} href={href} ratio="video" overlay={mediaOverlay} />
+			<Thumbnail src={image} alt={title} href={href} ratio={mediaRatio} overlay={mediaOverlay} />
 			{mediaToggle}
 		</div>
 	) : null
@@ -163,7 +177,7 @@ export function NewsCard({
 					className={twMerge(
 						'min-w-0 flex-1 font-display font-bold text-primary-600',
 						headlineClass,
-						size === 'small' && 'leading-tight',
+						titleClassName,
 					)}
 				>
 					<a href={href} className="group-hover:text-secondary-950 transition-colors">

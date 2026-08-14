@@ -29,6 +29,10 @@
  * no NewsCard só pra este caso único. No desktop essa posição (primeiro item de
  * `heroBottom`) NUNCA teve tratamento especial — já era um card comum ali, então
  * vira NewsCard como os demais, sem exceção.
+ *
+ * Título do card patrocinado sem `leading-tight`: mesmo título (`text-title-lg`)
+ * do NewsCard small-vertical — o Figma usa `leading-[24px]`, não apertado (ver
+ * figma-specs/news-card-patrocinado.md e auditoria de leading em news-card/index.tsx).
  */
 import { twMerge } from '~/lib/tw-merge'
 import { NewsCard } from '~/components/news-card'
@@ -112,7 +116,7 @@ export function DestaqueSection({ hero, top2, top3, heroText, heroBottom, classN
 						</div>
 						<div className="flex flex-col gap-2 px-4 py-3">
 							<Categoria color={sponsored.categoryColor} label={sponsored.category} href="/categoria" />
-							<h3 className="text-title-lg font-display font-bold text-primary-600 leading-tight">
+							<h3 className="text-title-lg font-display font-bold text-primary-600">
 								<a href="/conteudo" className="group-hover:text-secondary-950 transition-colors">
 									{sponsored.title}
 								</a>

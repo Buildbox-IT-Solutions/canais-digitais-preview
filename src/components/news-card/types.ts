@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { ICategoriaProps } from '~/components/categoria/types'
+import type { ThumbnailRatio } from '~/components/thumbnail/types'
 
 export type NewsCardSize = 'large' | 'medium' | 'small'
 export type NewsCardOrientation = 'vertical' | 'horizontal'
@@ -24,5 +25,9 @@ export interface INewsCardProps {
 	mediaOverlay?: ReactNode
 	/** Sobrescreve as classes do wrapper de mídia no layout horizontal (escape hatch de largura). */
 	mediaClassName?: string
+	/** Proporção da Thumbnail — default `video` (16:9). Ex.: `photo` (3:2) na lista compacta de CategoryColumn. */
+	mediaRatio?: ThumbnailRatio
+	/** Escape hatch pro título — ex.: `line-clamp-4` onde não há categoria/lead sobrando espaço vertical. */
+	titleClassName?: string
 	className?: string
 }

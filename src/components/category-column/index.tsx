@@ -3,7 +3,7 @@
  * Figma Desktop: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=973-6780
  * Figma Mobile:  https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3035-34982
  * Coluna de categoria: link de título + card "boxed" + lista de Small H cards.
- * Card compacto é fluido no mobile (max-w-40/min-w-52), trava em w-[120px] a partir de lg:.
+ * Card compacto é fluido no mobile, trava em w-[160px] a partir de lg:.
  * Tokens: --text-headline-md, --text-title-md, --text-label-sm, --color-mint,
  *         --color-saffron, --color-primary-600, --color-secondary-950
  *
@@ -21,6 +21,23 @@
  *   viraram `NewsCard size="small" orientation="horizontal"` (sem `categoria`, sem
  *   `lead`), que já cobre exatamente essa combinação e já traz Favoritos —
  *   substituindo os `<article>` bespoke sem toggle de antes.
+ * - Imagem do Small H em proporção 3:2 (`mediaRatio="photo"`, node 973:6776 —
+ *   aspect-[300/200]), não 16:9 (default do NewsCard) — acomoda melhor o título.
+ * - Título do Small H em até 4 linhas (`titleClassName="line-clamp-4"`, escape
+ *   hatch do NewsCard): sem categoria nesta variante, sobra altura vertical pro
+ *   título ocupar mais uma linha do que o clamp padrão de outros usos do NewsCard.
+ * - Largura da imagem do Small H: era `w-[120px]` a partir de lg: (medida copiada
+ *   do `H_THUMB_WIDTH.small` do NewsCard), mas o node 973:6776 trava em 160px, não
+ *   120px. Como a linha usa `items-center`, é a imagem (mais alta que 2-3 linhas de
+ *   título) quem dita a altura de cada item — 120px deixava a coluna inteira mais
+ *   baixa que a coluna "Em Alta" ao lado, sobrando espaço em branco embaixo. Com
+ *   160px a altura de cada linha bate com o Figma (106.667px) e o espaço some.
+ * - Título do boxed sem `leading-snug`: node 973:6775 mostra `leading-[24px]` pro
+ *   título 16px (igual ao token `--text-title-md--line-height`), não uma entrelinha
+ *   apertada — auditoria de leading (ver comentário em news-card/index.tsx).
+ * - Gap entre boxed/itens da lista: era `gap-4` (16px), mas o frame "list" do Figma
+ *   usa `gap-[24px]` — `gap-6`. Junto com a largura de imagem acima, fecha a maior
+ *   parte da diferença de altura pro lado da coluna "Em Alta".
  *
  * Card "boxed" (patrocinado, selo no canto) — feature Favoritos: toggle no canto
  * superior direito da mídia, selo "Conteúdo Patrocinado" movido pro canto superior
@@ -67,9 +84,11 @@ const BOXED_BORDER_CLASS: Record<CategoryColumnColor, string> = {
 	'primary-600': 'border-primary-600',
 }
 
-// Fluido no mobile (max-w-40/min-w-52), trava em w-[120px] a partir de lg: — mesma
-// medida já usada nos outros cards desta coluna, preservada ao migrar pra NewsCard.
-const LIST_THUMB_CLASSNAME = 'flex-1 max-w-40 shrink-0 lg:flex-none lg:w-[120px] lg:max-w-none'
+// Fluido no mobile, trava em w-[160px] a partir de lg: (node 973:6776 — Image tem
+// max-w-[160px]/max-h-[106.667px], não 120px: a imagem MAIOR é o que dita a altura
+// da linha via `items-center`; com 120px sobrava altura vazia na coluna inteira
+// comparado à coluna "Em Alta" ao lado — ver comentário do componente).
+const LIST_THUMB_CLASSNAME = 'flex-1 max-w-40 shrink-0 lg:flex-none lg:w-[160px] lg:max-w-none'
 
 export function CategoryColumn({
 	color,
@@ -100,7 +119,7 @@ export function CategoryColumn({
 				</div>
 				<h2 className="text-headline-md font-display font-bold">{label}</h2>
 			</a>
-			<div className="flex flex-col gap-4 mt-4">
+			<div className="flex flex-col gap-6 mt-4">
 				<div className="group relative">
 					<a
 						href="/conteudo"
@@ -121,7 +140,7 @@ export function CategoryColumn({
 							</div>
 						) : null}
 						<div className="relative bg-black/60 px-4 py-3 w-full z-10">
-							<h3 className="font-display font-bold text-title-md text-white leading-snug line-clamp-3">
+							<h3 className="font-display font-bold text-title-md text-white line-clamp-3">
 								{boxedTitle}
 							</h3>
 						</div>
@@ -148,10 +167,12 @@ export function CategoryColumn({
 						contentId={card.id}
 						size="small"
 						orientation="horizontal"
-						image={picsumSrc(card.seed, 240, 135)}
+						image={picsumSrc(card.seed, 320, 213)}
 						href="/conteudo"
 						title={card.title}
 						mediaClassName={LIST_THUMB_CLASSNAME}
+						mediaRatio="photo"
+						titleClassName="line-clamp-4"
 					/>
 				))}
 			</div>
