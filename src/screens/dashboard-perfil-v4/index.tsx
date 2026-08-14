@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
 import { toast } from '~/lib/toast-store'
 import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
-import { desfavoritar, favoritar, existeHistoricoDeFavoritos, useFavorito, useFavoritos } from '~/lib/favoritos-store'
+import { desfavoritar, favoritar, useFavorito, useFavoritos } from '~/lib/favoritos-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import type { ScenarioDef } from '~/dev/scenario-store'
 import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
@@ -61,6 +61,8 @@ const SCENARIOS: ScenarioDef[] = [
 	{ id: 'leituras-vazio', label: 'Vazio', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'leituras-carregando', label: 'Carregando', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'leituras-com-erro', label: 'Com erro', group: 'Leituras', tab: 'ultimas' },
+	{ id: 'favoritos-padrao', label: 'Preenchido', group: 'Favoritos', tab: 'favoritos', isDefault: true },
+	{ id: 'favoritos-vazio', label: 'Vazio', group: 'Favoritos', tab: 'favoritos' },
 ]
 
 // TODO remover na próxima iteração — alias temporário pra links antigos com ?state=.
@@ -85,7 +87,8 @@ function resolveLegacyState(state: string, tab: string | null): { cenario: strin
  * "Minha Conta" removida: Baixar dados + Excluir conta vivem na aba Perfil (seção LGPD);
  * Alterar senha no DashboardWelcome. Sessões e login social saíram (fora de escopo do MVP).
  * Drawer overlay em perfil: ?drawer=dados-pessoais|dados-profissionais|dados-fiscais
- * Cenários (ver ScenarioBar): ?cenario=perfil-completo|downloads-vazio|leituras-vazio etc.
+ * Cenários (ver ScenarioBar): ?cenario=perfil-completo|downloads-vazio|leituras-vazio|
+ * favoritos-vazio etc.
  */
 export default function DashboardPerfilV4Screen() {
 	const [params, setSearchParams] = useSearchParams()
@@ -120,6 +123,7 @@ export default function DashboardPerfilV4Screen() {
 	const isCompleto = cenario === 'perfil-completo'
 	const isLoading = cenario === 'leituras-carregando'
 	const isErro = cenario === 'leituras-com-erro'
+	const favoritosForcedEmpty = cenario === 'favoritos-vazio'
 
 	// Migra o link antigo assim que a tela monta: reescreve a URL pra ?cenario= (sem
 	// empilhar no histórico) e avisa uma vez no console. Não bloqueia o primeiro
@@ -177,7 +181,7 @@ export default function DashboardPerfilV4Screen() {
 				) : null}
 				{tab === 'newsletter' ? <NewsletterPane /> : null}
 				{tab === 'downloads' ? <DownloadsPane isEmpty={isEmpty} /> : null}
-				{tab === 'favoritos' ? <FavoritosPane /> : null}
+				{tab === 'favoritos' ? <FavoritosPane forcedEmpty={favoritosForcedEmpty} /> : null}
 			</div>
 
 			<FooterDesktop />
@@ -667,7 +671,7 @@ function DownloadsPane({ isEmpty }: { isEmpty: boolean }) {
 	)
 }
 
-function FavoritosPane() {
+function FavoritosPane({ forcedEmpty }: { forcedEmpty: boolean }) {
 	const [params] = useSearchParams()
 	const pageRaw = Number(params.get('page') ?? 1)
 
@@ -712,11 +716,12 @@ function FavoritosPane() {
 		}, 5000)
 	}
 
-	const isEmpty = allItems.length === 0
-	// Distingue "nunca favoritou nada neste portal" de "favoritou antes e removeu
-	// tudo" — sem isso, lista vazia é lida como perda de dados (escopo é por portal,
-	// a conta é única).
-	const isPrimeiraVisita = isEmpty && !existeHistoricoDeFavoritos()
+	// forcedEmpty (cenário favoritos-vazio no ScenarioBar) simula o vazio sem
+	// precisar zerar a store de verdade — vence a contagem real de allItems.
+	// Um único vazio pra tudo (nunca favoritou ou favoritou e removeu tudo,
+	// mesma tela) — nada de "deste portal" na copy: é jargão interno (o usuário
+	// não faz ideia de que existem outros portais), só confundiria.
+	const isEmpty = forcedEmpty || allItems.length === 0
 
 	return (
 		<section className="flex flex-col gap-6">
@@ -731,14 +736,10 @@ function FavoritosPane() {
 				<div className="flex flex-col items-center text-center gap-4 py-12">
 					<StatusRing accent="primary" icon="bookmark-border" size="sm" />
 					<h3 className="font-display font-bold text-title-xl text-primary-600">
-						{isPrimeiraVisita
-							? 'Você ainda não salvou nada neste portal'
-							: 'Sua lista deste portal está vazia'}
+						Você ainda não tem favoritos
 					</h3>
 					<p className="font-body text-body-md text-neutral-700 max-w-md">
-						{isPrimeiraVisita
-							? 'Use o marcador nos cards para guardar conteúdos e encontrá-los aqui depois. Seus favoritos são separados por portal.'
-							: 'Os conteúdos que você salvar neste portal aparecem aqui.'}
+						Use o marcador nos cards para guardar conteúdos e encontrá-los aqui depois.
 					</p>
 					<a
 						href="/home"
