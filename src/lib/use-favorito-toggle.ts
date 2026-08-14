@@ -24,6 +24,14 @@
  * 6. Guard: contentId vazio nunca consulta a store — nem leitura (`pressed` sempre
  *    false), nem escrita (clique é no-op). Cobre o caso de NewsCard chamar este hook
  *    sem `contentId` (regra dos hooks exige chamada incondicional).
+ * 7. Deslogado nunca exibe estado "favoritado": a store (localStorage) é a simulação
+ *    do back-end, não uma sessão — ela persiste entre navegações mesmo sem login
+ *    (inclusive a seed de 25 itens do portal padrão). Sem esta regra, um visitante
+ *    deslogado veria cards já marcados como favoritados (o histórico de outra
+ *    "conta"), o que não existe no produto real: favoritos pertencem à conta
+ *    logada. Por isso `pressed` é sempre `false` quando `!logado`, mesmo que
+ *    `contentId` já esteja salvo na store — só a ESCRITA é bloqueada por
+ *    `onRequestAuth` (regra 5); a LEITURA visual também precisa ser.
  *
  * Retomada da intenção pós-login (feature Favoritos, passo "auth"):
  * - A intenção (qual contentId favoritar) viaja no parâmetro `?favoritar=<id>` da
@@ -73,7 +81,10 @@ export function useFavoritoToggle(
 	onRequestAuth?: () => void,
 ): UseFavoritoToggleResult {
 	const logado = useLogado()
-	const pressed = useFavorito(contentId)
+	const storedFavorito = useFavorito(contentId)
+	// Regra 7 acima: deslogado nunca vê "favoritado", mesmo que a store já tenha
+	// o id salvo (seed ou favorito de uma sessão logada anterior no mesmo navegador).
+	const pressed = logado && storedFavorito
 	const navigate = useNavigate()
 
 	// Simulação de rede via querystring — mesma convenção de ?logado=true e ?cenario=.
