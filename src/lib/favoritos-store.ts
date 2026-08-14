@@ -112,18 +112,6 @@ export function desfavoritar(id: string): void {
 }
 
 /**
- * true se já existe QUALQUER registro persistido pra este portal, mesmo que a lista
- * esteja vazia agora (usuário removeu tudo). false = nunca favoritou nada neste portal
- * — distinção usada pra escolher a copy certa do estado vazio (primeira visita vs.
- * lista esvaziada). Não conta como "existir" a seed do portal padrão nunca lida:
- * a seed já persiste no primeiro `load()`, então a partir daí este portal sempre
- * retorna true — é o comportamento esperado (ele teve favoritos desde o início).
- */
-export function existeHistoricoDeFavoritos(): boolean {
-	return localStorage.getItem(storageKey(getPortalAtual())) !== null
-}
-
-/**
  * Itens do portal atual, resolvidos contra o ARTICLE_POOL, mais recente primeiro —
  * inclui os indisponíveis (`disponivel: false`) nas suas posições reais de data,
  * nunca agrupados à parte nem removidos da lista.

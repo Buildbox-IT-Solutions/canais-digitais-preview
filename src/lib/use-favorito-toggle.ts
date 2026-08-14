@@ -124,7 +124,7 @@ export function useFavoritoToggle(
 		setSearchParams(next, { replace: true })
 
 		toast.success('Conteúdo salvo com sucesso!', {
-			action: { label: 'Ver favoritos', onClick: () => navigate(FAVORITOS_TAB_HREF) },
+			action: { label: 'Ver', onClick: () => navigate(FAVORITOS_TAB_HREF) },
 		})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [contentId, logado, params])
@@ -159,7 +159,7 @@ export function useFavoritoToggle(
 
 			if (next) {
 				toast.success('Conteúdo salvo com sucesso!', {
-					action: { label: 'Ver favoritos', onClick: () => navigate(FAVORITOS_TAB_HREF) },
+					action: { label: 'Ver', onClick: () => navigate(FAVORITOS_TAB_HREF) },
 				})
 			} else {
 				toast.success('Removido dos favoritos.')
