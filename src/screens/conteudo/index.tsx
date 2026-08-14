@@ -27,6 +27,7 @@ import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
 import { Toggle } from '~/components/toggle'
+import { Tooltip } from '~/components/tooltip'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
 import { getPostByParam } from '~/fixtures/posts'
 import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
@@ -43,6 +44,12 @@ import type { Author, ContentBlock, Post } from '~/types/post'
 // pré-preenchidos (link puro, sem SDK/API — mesma categoria de um mailto:).
 // Compartilhar reusa `compartilharConteudo` (Web Share API, fallback de copiar
 // link) — o mesmo helper já usado em Últimas leituras/Favoritos.
+// Tooltip nos 3: bookmark usa tooltipOn/tooltipOff do Toggle ("Remover"/
+// "Favoritar", igual à home); WhatsApp e share usam o Tooltip genérico direto —
+// "Enviar" (verbo curto, mesma família de Favoritar/Remover/Compartilhar) e
+// "Compartilhar" (esse coincide com o aria-label do IconButton de propósito,
+// já que os dois descrevem a mesma ação de verdade — "Enviar" no WhatsApp
+// evita repetir "Compartilhar" em dois ícones vizinhos com ações diferentes).
 function whatsappShareHref(title: string, path: string): string {
 	const url = new URL(path, window.location.origin).toString()
 	return `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`
@@ -211,7 +218,13 @@ export default function ConteudoScreen() {
 									updatedAt={activePost.updatedAt}
 								/>
 
-								<div className="flex gap-1 items-center shrink-0 max-w-full overflow-x-auto">
+								{/* `max-w-full overflow-x-auto` (scroll horizontal) saiu daqui: era pros 6
+								    ícones antigos (print/whatsapp/linkedin/facebook/twitter/share), que já
+								    nem existem mais — com só 3 nunca precisou de scroll. Mantinha, o overflow-x
+								    força overflow-y:auto também (regra do CSS quando só um eixo é != visible),
+								    cortando o Tooltip (absolute, mt-2 abaixo do ícone) que passa da altura da
+								    própria linha. */}
+								<div className="flex gap-1 items-center shrink-0">
 									{/* Bookmark: primeiro da fila, sempre visível (sem regra de hover —
 									    isso é do card, aqui a página é única). surface="default" pra
 									    ter o mesmo peso visual dos vizinhos (nenhum destaque de cor). */}
@@ -227,21 +240,25 @@ export default function ConteudoScreen() {
 										size="medium"
 										surface="default"
 									/>
-									<IconButton
-										icon="whatsapp"
-										label="WhatsApp"
-										type="ghost"
-										size="medium"
-										href={whatsappShareHref(activePost.title, shareUrl)}
-										target="_blank"
-									/>
-									<IconButton
-										icon="share"
-										label="Compartilhar"
-										type="ghost"
-										size="medium"
-										onClick={() => compartilharConteudo(activePost.title, shareUrl)}
-									/>
+									<Tooltip label="Enviar">
+										<IconButton
+											icon="whatsapp"
+											label="WhatsApp"
+											type="ghost"
+											size="medium"
+											href={whatsappShareHref(activePost.title, shareUrl)}
+											target="_blank"
+										/>
+									</Tooltip>
+									<Tooltip label="Compartilhar">
+										<IconButton
+											icon="share"
+											label="Compartilhar"
+											type="ghost"
+											size="medium"
+											onClick={() => compartilharConteudo(activePost.title, shareUrl)}
+										/>
+									</Tooltip>
 								</div>
 							</div>
 						</div>
