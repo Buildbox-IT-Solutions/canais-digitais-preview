@@ -29,7 +29,7 @@ export function DashboardTabs({
 }: IDashboardTabsProps) {
 	return (
 		<div className={twMerge('w-full border-b border-neutral-100', className)}>
-			<div className="flex items-center overflow-x-auto" role="tablist">
+			<nav aria-label="Seções da conta" className="flex items-center overflow-x-auto">
 				{tabs.map((t) => {
 					const isActive = t.id === active
 					const isDisabled = Boolean(t.disabled)
@@ -52,8 +52,6 @@ export function DashboardTabs({
 							<button
 								key={t.id}
 								type="button"
-								role="tab"
-								aria-selected="false"
 								aria-disabled="true"
 								disabled
 								className={twMerge(commonClasses, 'gap-2 cursor-not-allowed')}
@@ -68,15 +66,14 @@ export function DashboardTabs({
 						<a
 							key={t.id}
 							href={href}
-							role="tab"
-							aria-selected={isActive}
+							aria-current={isActive ? 'page' : undefined}
 							className={commonClasses}
 						>
 							{t.label}
 						</a>
 					)
 				})}
-			</div>
+			</nav>
 		</div>
 	)
 }
