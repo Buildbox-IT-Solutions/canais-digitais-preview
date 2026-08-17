@@ -14,7 +14,7 @@ export interface DashboardTab {
 	href?: string
 }
 
-export interface IDashboardTabsV4Props {
+export interface IDashboardTabsProps {
 	active?: DashboardTabId
 	tabs?: DashboardTab[]
 	baseHref?: string

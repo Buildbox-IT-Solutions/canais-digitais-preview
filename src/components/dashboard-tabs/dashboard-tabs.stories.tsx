@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { DashboardTabsV4 } from '.'
+import { DashboardTabs } from '.'
 
-const meta: Meta<typeof DashboardTabsV4> = {
-	title: 'Dashboard/DashboardTabsV4',
-	component: DashboardTabsV4,
+const meta: Meta<typeof DashboardTabs> = {
+	title: 'Dashboard/DashboardTabs',
+	component: DashboardTabs,
 	parameters: { layout: 'padded' },
 	tags: ['autodocs'],
 }
 
 export default meta
-type Story = StoryObj<typeof DashboardTabsV4>
+type Story = StoryObj<typeof DashboardTabs>
 
 export const Perfil: Story = { args: { active: 'perfil' } }
 export const Conta: Story = { args: { active: 'conta' } }

@@ -3,9 +3,14 @@ import { Badge } from '~/components/badge'
 import type { DashboardTab, IDashboardTabsV3Props } from './types'
 
 /**
+ * ARQUIVADO — não usar em novas telas.
+ * Canônico: src/components/dashboard-tabs/
+ * Motivo: versão anterior das tabs da área logada.
+ *
  * Componente: Dashboard Tabs v3
  * Figma: 6045:6002
  * 6 tabs com border-bottom indicator. "Favoritos" desabilitada com chip "Em breve".
+ * Único consumidor é a tela já arquivada /dashboard-perfil-v3 (ver src/screens/archive).
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-100, --color-neutral-400,
  *         --color-neutral-900
  */
