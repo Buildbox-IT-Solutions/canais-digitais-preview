@@ -10,7 +10,8 @@ import type { DialogAction, DialogIconTone, IDialogProps } from './types'
  * título + descrição) → corpo (children) → rodapé de ações responsivo. Desktop: botões pareados à
  * direita (secundária ghost + primária). Mobile: empilhados full-width, primária em cima.
  * Fonte da verdade dos dialogs (excluir-conta, meus-dados, gate-download). Auth 50/50 fica fora.
- * Tokens: --color-primary-600, --color-secondary-950, --color-red-600, --color-neutral-*
+ * Tokens: --color-primary-600, --color-secondary-950, --color-danger-600, --color-danger-700,
+ *         --color-neutral-*
  */
 
 // Espelha o palette dos anéis dos modais de auth: informativos em navy,
@@ -29,7 +30,7 @@ const ACTION_BASE =
 const ACTION_VARIANT = {
 	filled: 'bg-primary-600 hover:bg-secondary-950 text-white',
 	ghost: 'bg-transparent hover:bg-neutral-50 text-primary-600',
-	danger: 'bg-red-600 hover:bg-red-700 text-white',
+	danger: 'bg-danger-600 hover:bg-danger-700 text-white',
 }
 
 function ActionButton({

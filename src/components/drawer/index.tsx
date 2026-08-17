@@ -42,7 +42,7 @@ export function Drawer({
 		>
 			<Scrim
 				{...(closeHref ? { href: closeHref } : { type: 'button' as const, onClick: onClose })}
-				className="absolute inset-0 bg-[#050708]/30 cursor-pointer animate-fade-in w-full h-full"
+				className="absolute inset-0 bg-primary-950/30 cursor-pointer animate-fade-in w-full h-full"
 				aria-label="Fechar"
 			/>
 

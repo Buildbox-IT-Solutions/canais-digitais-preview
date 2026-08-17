@@ -6,8 +6,8 @@ import type { IPasswordStrengthProps, PasswordStrengthLevel } from './types'
 /**
  * Componente: Password Strength
  * Barra de 3 segmentos + label de força + checklist com 4 critérios (PasswordChecklist).
- * Tokens: --color-neutral-100, --color-neutral-500, --color-neutral-700, --color-neutral-950
- * Cores de status via hex (red-600/amber-500/green-600 — fora do DS pois são sinais universais).
+ * Tokens: --color-neutral-100, --color-neutral-500, --color-neutral-700, --color-neutral-950,
+ *         --color-danger-600, --color-warning, --color-success
  */
 
 function deriveLevel(metCount: number): PasswordStrengthLevel {
@@ -22,9 +22,9 @@ const LEVEL_META: Record<
 	{ value: number; label: string; barClass: string; textClass: string; fills: number }
 > = {
 	empty: { value: 0, label: '', barClass: 'bg-neutral-100', textClass: 'text-neutral-500', fills: 0 },
-	weak: { value: 1, label: 'Fraca', barClass: 'bg-[#DC2626]', textClass: 'text-[#DC2626]', fills: 1 },
-	medium: { value: 2, label: 'Média', barClass: 'bg-[#F59E0B]', textClass: 'text-[#F59E0B]', fills: 2 },
-	strong: { value: 3, label: 'Forte', barClass: 'bg-[#16A34A]', textClass: 'text-[#16A34A]', fills: 3 },
+	weak: { value: 1, label: 'Fraca', barClass: 'bg-danger-600', textClass: 'text-danger-600', fills: 1 },
+	medium: { value: 2, label: 'Média', barClass: 'bg-warning', textClass: 'text-warning', fills: 2 },
+	strong: { value: 3, label: 'Forte', barClass: 'bg-success', textClass: 'text-success', fills: 3 },
 }
 
 export function PasswordStrength({

@@ -5,12 +5,13 @@ import type { IconTileTone, IIconTileProps } from './types'
 /**
  * Componente: Icon Tile — quadrado 48×48 com ícone 24px
  * Usado em session-row, general-item, stat-card, download-item.
- * Tokens: --color-neutral-50, --color-primary-600, --color-neutral-200, red-100/700 (Tailwind default)
+ * Tokens: --color-neutral-50, --color-primary-600, --color-neutral-200, --color-danger-100,
+ *         --color-danger-700
  */
 
 const TONE_CLASSES: Record<IconTileTone, string> = {
 	neutral: 'bg-neutral-50 text-primary-600',
-	danger: 'bg-red-100 text-red-700',
+	danger: 'bg-danger-100 text-danger-700',
 	disabled: 'bg-neutral-50 text-neutral-200',
 }
 

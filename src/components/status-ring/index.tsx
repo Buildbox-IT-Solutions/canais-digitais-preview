@@ -9,13 +9,13 @@ import type { IStatusRingProps, StatusRingAccent, StatusRingSize } from './types
  * no cabeçalho do Dialog.
  * - `md` (padrão): 120px / borda 2.5px / ícone 40px — telas full page.
  * - `sm`: 80px / borda 2px / ícone 28px — modais e dialogs.
- * Tokens: --color-primary-600, --color-mint, --color-neutral-900, red-600
+ * Tokens: --color-primary-600, --color-mint, --color-neutral-900, --color-danger-600
  */
 const ACCENT_CLASSES: Record<StatusRingAccent, string> = {
 	primary: 'border-primary-600 text-primary-600',
 	mint: 'border-mint text-mint',
 	neutral: 'border-neutral-900 text-neutral-900',
-	danger: 'border-red-600 text-red-600',
+	danger: 'border-danger-600 text-danger-600',
 }
 
 const SIZE_CLASSES: Record<StatusRingSize, { ring: string; icon: string }> = {
