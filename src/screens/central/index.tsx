@@ -117,6 +117,19 @@ const GROUPS: RouteGroup[] = [
 			},
 		],
 	},
+	{
+		title: 'Design System',
+		description: 'Índice de fundamentos e componentes documentados — status derivado automaticamente.',
+		color: 'primary',
+		items: [
+			{
+				path: '/ds',
+				label: 'Design System (/ds)',
+				description: 'Documentado · Em breve · Bloqueado, com o motivo de cada bloqueio',
+				status: 'pronto-para-dev',
+			},
+		],
+	},
 ]
 
 const STATUS_META: Record<RouteStatus, { label: string; tone: BadgeTone }> = {
