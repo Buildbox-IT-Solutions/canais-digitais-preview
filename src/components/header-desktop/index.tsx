@@ -113,7 +113,7 @@ export function HeaderDesktop({
 					compact ? 'pb-0' : 'pb-4',
 				)}
 			>
-				<div className="max-w-screen-xl w-full flex items-center">
+				<div className="max-w-screen-xl w-full flex items-center px-4 lg:px-6">
 					{/* Hamburger — sempre no mobile; no desktop só no Compact (animado) */}
 					<div
 						aria-hidden={!showHamburger}
@@ -205,7 +205,7 @@ export function HeaderDesktop({
 				<div
 					aria-hidden={compact}
 					className={twMerge(
-						'hidden lg:block w-full max-w-screen-xl overflow-hidden transition-[max-height,margin] duration-300',
+						'hidden lg:block w-full max-w-screen-xl overflow-hidden px-4 lg:px-6 transition-[max-height,margin] duration-300',
 						compact ? 'max-h-0 mt-0' : 'max-h-20 mt-4',
 					)}
 				>
