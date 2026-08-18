@@ -181,6 +181,28 @@
   --color-saffron:     #B05223; /* laranja queimado */
   --color-lavander:    #9423FC; /* roxo vívido */
 
+  /* Status — sinais universais (erro/alerta/sucesso).
+     Danger é escala completa: usos reais precisam de fundo claro + texto escuro
+     (icon-tile) e de dois tons para hover (dialog, general-item), então um token
+     único não bastava. Warning/success só aparecem com um tom cada até hoje. */
+  --color-danger-50:  var(--color-red-50);
+  --color-danger-100: var(--color-red-100);
+  --color-danger-200: var(--color-red-200);
+  --color-danger-300: var(--color-red-300);
+  --color-danger-400: var(--color-red-400);
+  --color-danger-500: var(--color-red-500);
+  --color-danger-600: var(--color-red-600);
+  --color-danger-700: var(--color-red-700);
+  --color-danger-800: var(--color-red-800);
+  --color-danger-900: var(--color-red-900);
+  --color-danger-950: var(--color-red-950);
+  --color-warning: var(--color-amber-500);
+  --color-success: var(--color-green-600);
+
+  /* Cores de marca de terceiros (Google, LinkedIn) permanecem
+     hardcoded por decisão intencional: não são tokens de produto e
+     não devem variar entre portais. Ver google-logo, social-button. */
+
   /* ========================================================================
      SPACING — base 4px (padrão Tailwind v4)
      O Figma não tokeniza spacing — todos os auto-layouts usam múltiplos de 4.
@@ -247,5 +269,16 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Esconde a scrollbar nativa em faixas de scroll horizontal (carrosséis com swipe/botões) */
+@layer utilities {
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

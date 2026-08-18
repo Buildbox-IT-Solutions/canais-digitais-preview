@@ -10,9 +10,10 @@ import type { IconButtonSize, IconButtonType, IIconButtonProps } from './types'
  */
 
 const TYPE_CLASSES: Record<IconButtonType, string> = {
-	filled: 'bg-primary-600 text-white hover:bg-secondary-950',
-	outlined: 'border border-primary-600 text-primary-600 hover:bg-neutral-50',
-	ghost: 'text-primary-600 hover:bg-neutral-50',
+	filled: 'bg-primary-600 text-white hover:bg-secondary-950 disabled:bg-neutral-200',
+	outlined:
+		'border border-primary-600 text-primary-600 hover:bg-neutral-50 disabled:border-neutral-200 disabled:text-neutral-200',
+	ghost: 'text-primary-600 hover:bg-neutral-50 disabled:text-neutral-200',
 }
 
 const SIZE_CLASSES: Record<IconButtonSize, string> = {
@@ -43,7 +44,7 @@ export function IconButton({
 	className,
 }: IIconButtonProps) {
 	const classes = twMerge(
-		'inline-flex items-center justify-center rounded-full transition-colors',
+		'inline-flex items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed',
 		TYPE_CLASSES[type],
 		SIZE_CLASSES[size],
 		className,

@@ -7,7 +7,7 @@ import type { ISessionRowProps } from './types'
 /**
  * Componente: Session Row
  * Linha de sessão ativa para "Conta & segurança".
- * Tokens: --color-primary-600, --color-neutral-100, --color-neutral-600
+ * Tokens: --color-primary-600, --color-neutral-100, --color-neutral-600, --color-danger-700
  */
 
 function pickIcon(device: string): IconName {
@@ -49,7 +49,7 @@ export function SessionRow({
 				<button
 					type="button"
 					onClick={onTerminate}
-					className="font-body font-bold text-label-lg text-red-700 hover:underline shrink-0"
+					className="font-body font-bold text-label-lg text-danger-700 hover:underline shrink-0"
 				>
 					Encerrar
 				</button>

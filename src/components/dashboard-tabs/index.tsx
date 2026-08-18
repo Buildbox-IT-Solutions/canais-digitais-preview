@@ -1,12 +1,13 @@
 import { twMerge } from '~/lib/tw-merge'
 import { Badge } from '~/components/badge'
-import type { DashboardTab, IDashboardTabsV4Props } from './types'
+import type { DashboardTab, IDashboardTabsProps } from './types'
 
 /**
- * Componente: Dashboard Tabs v4
- * Figma: 6045:6002 (deriva de dashboard-tabs-v3)
- * Ordem: Perfil (ativa por padrão), Downloads, Newsletter, Últimas leituras, Favoritos
- * — todas ativas. "Visão geral" foi removida.
+ * Componente: Dashboard Tabs
+ * Figma: 6045:6002
+ * Canônico da navegação por seções da área logada. Ordem: Perfil (ativa por
+ * padrão), Downloads, Newsletter, Últimas leituras, Favoritos — todas ativas.
+ * Versão anterior arquivada em src/components/dashboard-tabs-v3/.
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-100, --color-neutral-400,
  *         --color-neutral-900
  */
@@ -19,16 +20,16 @@ const DEFAULT_TABS: DashboardTab[] = [
 	{ id: 'favoritos', label: 'Favoritos' },
 ]
 
-export function DashboardTabsV4({
+export function DashboardTabs({
 	active = 'perfil',
 	tabs = DEFAULT_TABS,
 	baseHref = '',
 	queryExtra = '',
 	className,
-}: IDashboardTabsV4Props) {
+}: IDashboardTabsProps) {
 	return (
 		<div className={twMerge('w-full border-b border-neutral-100', className)}>
-			<div className="flex items-center overflow-x-auto" role="tablist">
+			<nav aria-label="Seções da conta" className="flex items-center overflow-x-auto">
 				{tabs.map((t) => {
 					const isActive = t.id === active
 					const isDisabled = Boolean(t.disabled)
@@ -51,8 +52,6 @@ export function DashboardTabsV4({
 							<button
 								key={t.id}
 								type="button"
-								role="tab"
-								aria-selected="false"
 								aria-disabled="true"
 								disabled
 								className={twMerge(commonClasses, 'gap-2 cursor-not-allowed')}
@@ -67,15 +66,14 @@ export function DashboardTabsV4({
 						<a
 							key={t.id}
 							href={href}
-							role="tab"
-							aria-selected={isActive}
+							aria-current={isActive ? 'page' : undefined}
 							className={commonClasses}
 						>
 							{t.label}
 						</a>
 					)
 				})}
-			</div>
+			</nav>
 		</div>
 	)
 }

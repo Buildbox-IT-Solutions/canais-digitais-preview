@@ -18,6 +18,9 @@ import ConteudoScreen from './screens/conteudo'
 import DashboardScreen from './screens/dashboard'
 import DashboardPerfilV3Screen from './screens/dashboard-perfil-v3'
 import DashboardPerfilV4Screen from './screens/dashboard-perfil-v4'
+import DsLayoutScreen from './screens/ds'
+import DsIntroScreen from './screens/ds-intro'
+import DsDetalheScreen from './screens/ds-detalhe'
 import EmailBoasVindasScreen from './screens/email-boas-vindas'
 import EmailConfirmacaoScreen from './screens/email-confirmacao'
 import EmailExclusaoContaScreen from './screens/email-exclusao-conta'
@@ -99,6 +102,14 @@ const router = createBrowserRouter([
 			{ path: '/email-senha-alterada', element: <EmailSenhaAlteradaScreen /> },
 			{ path: '/email-exclusao-conta', element: <EmailExclusaoContaScreen /> },
 			{ path: '/archive', element: <ArchiveScreen /> },
+			{
+				path: '/ds',
+				element: <DsLayoutScreen />,
+				children: [
+					{ index: true, element: <DsIntroScreen /> },
+					{ path: ':slug', element: <DsDetalheScreen /> },
+				],
+			},
 			{ path: '*', element: <NotFoundScreen /> },
 		],
 	},

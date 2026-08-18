@@ -9,7 +9,7 @@ import type { IGeneralItemProps } from './types'
  * Linha LGPD/Privacidade — icon-tile + título + descrição + chevron.
  * Variante "danger" → vermelha (Excluir conta).
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-100, --color-neutral-600,
- *         red-600/red-700 (Tailwind default)
+ *         --color-danger-600, --color-danger-700
  */
 export function GeneralItem({
 	icon,
@@ -21,7 +21,7 @@ export function GeneralItem({
 	className,
 }: IGeneralItemProps) {
 	const titleClasses = danger
-		? 'text-red-700 group-hover:text-red-600'
+		? 'text-danger-700 group-hover:text-danger-600'
 		: 'text-primary-600 group-hover:text-secondary-950'
 
 	return (

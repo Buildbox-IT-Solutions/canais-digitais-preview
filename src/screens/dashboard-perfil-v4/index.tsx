@@ -6,7 +6,7 @@ import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
 import { desfavoritar, favoritar, useFavorito, useFavoritos } from '~/lib/favoritos-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import type { ScenarioDef } from '~/dev/scenario-store'
-import { DashboardTabsV4 } from '~/components/dashboard-tabs-v4'
+import { DashboardTabs } from '~/components/dashboard-tabs'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
 import { Drawer } from '~/components/drawer'
@@ -169,7 +169,7 @@ export default function DashboardPerfilV4Screen() {
 			</div>
 
 			<div className="max-w-screen-xl mx-auto w-full px-4 lg:px-6 pt-4">
-				<DashboardTabsV4 active={tab} baseHref={BASE_HREF} />
+				<DashboardTabs active={tab} baseHref={BASE_HREF} />
 			</div>
 
 			<div className="flex-1 max-w-screen-xl mx-auto w-full px-4 lg:px-6 py-10">
