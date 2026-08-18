@@ -126,7 +126,7 @@ const GROUPS: RouteGroup[] = [
 				path: '/ds',
 				label: 'Design System (/ds)',
 				description: 'Documentado · Em breve · Bloqueado, com o motivo de cada bloqueio',
-				status: 'pronto-para-dev',
+				status: 'prototipando',
 			},
 		],
 	},
