@@ -4,24 +4,30 @@
  * outras duas (table-of-contents/ e table-of-contents-margin/) foram
  * arquivadas em 2026-07-31 e ficam congeladas, acessíveis só via
  * `?toc=pill`/`?toc=margem` a partir de `/archive`.
- * Em telas largas (2xl/>=1536px), se comporta como a régua na margem
- * (<TocMarginRail> compartilhada com a Opção 2 arquivada) — abre no hover.
- * A régua só aparece depois que a página rola além de um marcador logo
- * abaixo da imagem destaque (`useScrolledPast`) — no carregamento da
- * página ela ficaria na mesma faixa vertical do título/cabeçalho, o que
- * ficava visualmente ruim (feedback do PO em 2026-07-31).
+ * Em telas largas (>=1400px), se comporta como a régua na margem
+ * (<TocMarginRail> compartilhada com a Opção 2 arquivada) — abre no hover,
+ * visível desde o carregamento da página. Decisão de 2026-08-18 (Pedro):
+ * régua saiu de centralizada em relação ao container (`2xl`/1536px, com
+ * gate de scroll pra não invadir a faixa vertical do título/cabeçalho no
+ * carregamento) pra colada na borda real da viewport (`left-6`, sem gate —
+ * nessa posição ela não compete mais com o título/cabeçalho, então o
+ * motivo original do gate deixou de existir). 1400px é o menor ponto em
+ * que ela cabe sem sobrepor o início do texto do artigo; o painel do hover
+ * pode invadir o conteúdo, só a régua em si não pode — trade-off aceito
+ * deliberadamente pra viabilizar um breakpoint menor (cobre notebooks como
+ * MacBook Pro 14", que não chegavam a 1536px).
  * Abaixo desse limiar, cai para um botão flutuante com texto "Neste
  * artigo" (reaproveitado da Opção 1 arquivada), fixo top-right, clique
- * abre/fecha — esse continua sempre visível desde o carregamento, sem
- * gate de scroll (só a régua precisa do gate). A distância até o header
- * é a mesma da margem direita (`right-4`/`lg:right-6`), mas medida a
- * partir da altura REAL do header (`useHeaderHeight`) em vez de um valor
+ * abre/fecha, sempre visível desde o carregamento. A distância até o
+ * header é a mesma da margem direita (`right-4`/`lg:right-6`), mas medida
+ * a partir da altura REAL do header (`useHeaderHeight`) em vez de um valor
  * fixo — o header alterna Expanded/Compact e muda de altura por
  * breakpoint, então um `top-N` fixo grudava ou afastava demais dependendo
  * do estado (feedback do PO em 2026-07-31, terceira rodada de ajuste).
  * Os dois blocos (régua e botão) ficam montados ao mesmo tempo; a
- * visibilidade por breakpoint é só CSS (`hidden 2xl:block` / `2xl:hidden`)
- * — elementos com `display:none` saem da árvore de foco/tab.
+ * visibilidade por breakpoint é só CSS (`hidden min-[1400px]:block` /
+ * `min-[1400px]:hidden`) — elementos com `display:none` saem da árvore de
+ * foco/tab.
  * Botão sem seta indicadora — só ícone `toc` + texto (pedido do PO em 2026-08-03).
  * O popover (tanto da régua quanto do botão) ganha o título muted "Neste
  * artigo" e itens mais compactos (`dense`) — só nesta versão; a régua da
@@ -38,7 +44,6 @@ import { scrollToHeading } from '~/lib/scroll-to-heading'
 import { useClickAwayAndEscape } from '~/lib/use-click-away-and-escape'
 import { useHeaderHeight } from '~/lib/use-header-height'
 import { useMediaQuery } from '~/lib/use-media-query'
-import { useScrolledPast } from '~/lib/use-scrolled-past'
 import { useTocScrollspy } from '~/lib/use-toc-scrollspy'
 import type { ITableOfContentsIconProps } from './types'
 
@@ -47,11 +52,9 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 
 	const triggerRef = useRef<HTMLButtonElement>(null)
 	const panelRef = useRef<HTMLDivElement>(null)
-	const railAnchorRef = useRef<HTMLDivElement>(null)
 
 	const hasEnoughHeadings = headings.length >= 3
 	const activeId = useTocScrollspy(headings, hasEnoughHeadings)
-	const pastHero = useScrolledPast(railAnchorRef, hasEnoughHeadings)
 	const headerHeight = useHeaderHeight()
 	const isLgUp = useMediaQuery('(min-width: 1024px)')
 	// Mesma distância que o botão já tem da margem direita (right-4/lg:right-6).
@@ -68,20 +71,15 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 
 	return (
 		<div className={className}>
-			{/* Marcador logo abaixo da imagem destaque — só define quando a régua pode aparecer. h-px (não h-0) porque um sentinel de altura zero é observado de forma inconsistente pelo IntersectionObserver entre browsers. */}
-			<div ref={railAnchorRef} aria-hidden="true" className="h-px" />
+			<TocMarginRail
+				headings={headings}
+				activeId={activeId}
+				onSelect={scrollToHeading}
+				title="Neste artigo"
+				dense
+			/>
 
-			{pastHero ? (
-				<TocMarginRail
-					headings={headings}
-					activeId={activeId}
-					onSelect={scrollToHeading}
-					title="Neste artigo"
-					dense
-				/>
-			) : null}
-
-			<div className="2xl:hidden fixed right-4 lg:right-6 z-30" style={{ top: buttonTop }}>
+			<div className="min-[1400px]:hidden fixed right-4 lg:right-6 z-30" style={{ top: buttonTop }}>
 				<button
 					ref={triggerRef}
 					type="button"

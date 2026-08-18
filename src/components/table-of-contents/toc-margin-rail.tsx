@@ -20,10 +20,16 @@ interface ITocMarginRailProps {
  * interação do Medium. Reaproveitada pela Opção 2 arquivada
  * (table-of-contents-margin, congelada, nunca passa `title`/`dense`) e pela
  * versão final (table-of-contents-icon, onde é a metade "tela larga" do
- * híbrido — a outra metade é o botão flutuante, visível só abaixo de 2xl).
- * Só existe em 2xl: (>=1536px, onde existe espaço vazio de verdade fora do
- * container de max-w-screen-xl — 1280px / 2 = 640px + 40px de respiro =
- * 680px do centro da viewport). Abaixo de 2xl não renderiza nada (visível).
+ * híbrido — a outra metade é o botão flutuante, visível só abaixo do
+ * breakpoint abaixo).
+ * Colada na borda real da viewport (`left-6`), não mais centralizada em
+ * relação ao container de max-w-screen-xl — decisão de 2026-08-18 pra
+ * baixar o breakpoint sem depender da folga fora do container (que só
+ * existe de verdade a partir de xl/1280px). `min-[1400px]` é o menor ponto
+ * em que a régua (traço + respiro) cabe antes do início do texto do artigo
+ * sem sobrepor — o painel do hover pode invadir o conteúdo (aceito por
+ * decisão do usuário em 2026-08-18); só a régua em si não pode.
+ * Abaixo do breakpoint não renderiza nada (visível).
  * Abre no hover (mouseenter) e no foco por teclado — nunca no clique.
  * Fecha no mouseleave, blur pra fora do wrapper, ou Escape.
  */
@@ -56,7 +62,7 @@ export function TocMarginRail({ headings, activeId, onSelect, title, dense }: IT
 			onMouseEnter={() => setPanelOpen(true)}
 			onMouseLeave={() => setPanelOpen(false)}
 			className={twMerge(
-				'hidden 2xl:block fixed left-[calc(50%_-_680px)] top-1/2 -translate-y-1/2 z-30',
+				'hidden min-[1400px]:block fixed left-6 top-1/2 -translate-y-1/2 z-30',
 				panelOpen && 'w-96',
 			)}
 		>
