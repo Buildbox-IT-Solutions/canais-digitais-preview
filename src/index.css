@@ -271,3 +271,14 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Esconde a scrollbar nativa em faixas de scroll horizontal (carrosséis com swipe/botões) */
+@layer utilities {
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

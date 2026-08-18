@@ -1,4 +1,4 @@
-export interface IEspecialista {
+export interface IEspecialistasSectionItem {
 	img: string
 	name: string
 	role: string
@@ -6,6 +6,6 @@ export interface IEspecialista {
 }
 
 export interface IEspecialistasSectionProps {
-	items: IEspecialista[]
+	items: IEspecialistasSectionItem[]
 	className?: string
 }

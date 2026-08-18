@@ -17,3 +17,4 @@ export const Outlined: Story = { args: { type: 'outlined' } }
 export const Ghost: Story = { args: { type: 'ghost' } }
 export const Large: Story = { args: { size: 'large' } }
 export const Small: Story = { args: { size: 'small' } }
+export const Disabled: Story = { args: { type: 'outlined', disabled: true } }
