@@ -27,7 +27,7 @@ export const Default: Story = {
  * "Salve" ganha o mesmo destaque (bold + secondary-500) que "baixar" tem no Default. */
 export const Favoritos: Story = {
 	args: {
-		icon: 'bookmark',
+		icon: 'favorite',
 		title: (
 			<>
 				<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca

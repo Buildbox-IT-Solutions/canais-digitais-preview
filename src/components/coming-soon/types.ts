@@ -1,4 +1,4 @@
-export type ComingSoonIcon = 'book' | 'bookmark'
+export type ComingSoonIcon = 'book' | 'favorite'
 
 export interface IComingSoonProps {
 	chip?: string

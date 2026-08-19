@@ -407,7 +407,7 @@ function UltimasListRow({
 			toast.success('Removido dos favoritos.')
 		} else {
 			favoritar(item.id)
-			toast.success('Conteúdo salvo com sucesso!', {
+			toast.success('Adicionado aos seus Favoritos!', {
 				action: { label: 'Ver', onClick: () => navigate(`${BASE_HREF}?tab=favoritos`) },
 			})
 		}
@@ -417,7 +417,7 @@ function UltimasListRow({
 		{ label: 'Compartilhar', icon: 'share', onClick: () => compartilharConteudo(item.title, href) },
 		{
 			label: pressed ? 'Remover dos favoritos' : 'Salvar como favorito',
-			icon: pressed ? 'bookmark' : 'bookmark-border',
+			icon: pressed ? 'favorite' : 'favorite-border',
 			onClick: handleToggleFavorito,
 		},
 		{ label: 'Remover de últimas leituras', icon: 'delete-outline', onClick: () => onRemove(item.id) },
@@ -734,7 +734,7 @@ function FavoritosPane({ forcedEmpty }: { forcedEmpty: boolean }) {
 
 			{isEmpty ? (
 				<div className="flex flex-col items-center text-center gap-4 py-12">
-					<StatusRing accent="primary" icon="bookmark-border" size="sm" />
+					<StatusRing accent="primary" icon="favorite-border" size="sm" />
 					<h3 className="font-display font-bold text-title-xl text-primary-600">
 						Você ainda não tem favoritos
 					</h3>

@@ -22,7 +22,8 @@
  *   mantida como estava).
  * - Toggle: mesmo mecanismo do NewsCard — irmão do <a> da Thumbnail (nunca dentro
  *   do overlay do play button), dentro de wrapper `relative`, surface="onMedia",
- *   sempre visível se marcado, oculto até hover fino quando desmarcado. Card sem
+ *   `size="small"` (área de toque reduzida, ver comentário em NewsCard/index.tsx),
+ *   oculto até hover fino em qualquer estado (favoritado ou não). Card sem
  *   `contentId` renderiza exatamente como antes (sem toggle).
  */
 import { twMerge } from '~/lib/tw-merge'
@@ -54,8 +55,8 @@ const PLAY_SIZE: Record<VideoCardSize, PlayButtonSize> = {
 	xs: 'xsmall',
 }
 
-// Mesma regra de visibilidade do toggle no NewsCard/CategoryColumn — ligado fica
-// sempre visível, desligado só aparece no hover fino ou focus-within.
+// Mesma regra de visibilidade do toggle no NewsCard/CategoryColumn — favoritado ou
+// não, só aparece no hover fino ou focus-within.
 const TOGGLE_HIDDEN_UNTIL_HOVER = twMerge(
 	'transition-opacity duration-150',
 	'hover-fine:opacity-0',
@@ -85,7 +86,6 @@ export function VideoCard({
 	const authModal = useFavoritoAuthModal(contentId ?? '')
 	const { pressed, onPressedChange } = useFavoritoToggle(contentId ?? '', authModal.requestAuth)
 	const showToggle = Boolean(contentId)
-	const toggleVisibilityClass = pressed ? undefined : TOGGLE_HIDDEN_UNTIL_HOVER
 
 	const thumb = (
 		<div className="relative">
@@ -101,15 +101,15 @@ export function VideoCard({
 				<Toggle
 					pressed={pressed}
 					onPressedChange={onPressedChange}
-					iconOn="bookmark"
-					iconOff="bookmark-border"
+					iconOn="favorite"
+					iconOff="favorite-border"
 					labelOn="Remover dos favoritos"
 					labelOff="Favoritar"
 					tooltipOn="Remover"
 					tooltipOff="Favoritar"
-					size="medium"
+					size="small"
 					surface="onMedia"
-					className={twMerge('absolute top-2 right-2', toggleVisibilityClass)}
+					className={twMerge('absolute top-2 right-2', TOGGLE_HIDDEN_UNTIL_HOVER)}
 				/>
 			) : null}
 		</div>
@@ -148,7 +148,7 @@ export function VideoCard({
 				onDismiss={authModal.onDismiss}
 				onCreateAccount={authModal.onCreateAccount}
 				onLogin={authModal.onLogin}
-				icon="bookmark"
+				icon="favorite"
 				title={
 					<>
 						<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca
