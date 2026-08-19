@@ -84,7 +84,7 @@ export default function GateDownloadScreen() {
 						label: 'Continuar',
 						type: 'submit',
 						form: 'gate-email-form',
-						icon: 'arrow-right',
+						icon: 'arrow-forward',
 						iconPosition: 'trailing',
 					}}
 					bottomLink={<AuthBottomLink label="Já tem conta?" linkLabel="Entrar" linkHref="/login" />}

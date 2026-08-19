@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '~/components/button'
 import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import type { IIncentiveBannerProps } from './types'
 
 /**
@@ -71,14 +72,14 @@ export function IncentiveBanner({
 						<p className="font-body text-body-md text-white">{description}</p>
 					</div>
 
-					<button
-						type="button"
+					<IconButton
+						icon="close"
+						label="Fechar"
+						size="medium"
+						type="ghost"
 						onClick={onDismiss}
-						aria-label="Fechar"
-						className="md:hidden inline-flex items-center justify-center size-8 rounded-full text-white shrink-0"
-					>
-						<Icon name="close" className="size-6" />
-					</button>
+						className="text-white hover:bg-white/10 md:hidden shrink-0"
+					/>
 				</div>
 
 				<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center md:shrink-0">
@@ -98,14 +99,14 @@ export function IncentiveBanner({
 					/>
 				</div>
 
-				<button
-					type="button"
+				<IconButton
+					icon="close"
+					label="Fechar"
+					size="medium"
+					type="ghost"
 					onClick={onDismiss}
-					aria-label="Fechar"
-					className="hidden md:inline-flex items-center justify-center size-10 rounded-full text-white shrink-0"
-				>
-					<Icon name="close" className="size-6" />
-				</button>
+					className="text-white hover:bg-white/10 hidden md:inline-flex shrink-0"
+				/>
 			</div>
 		</div>
 		<div aria-hidden="true" style={{ height: barHeight }} />

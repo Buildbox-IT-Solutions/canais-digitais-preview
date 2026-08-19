@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import { Modal } from '~/components/modal'
 import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
@@ -361,20 +362,14 @@ export default function ConfirmacaoEmailV2Screen() {
 								href={backHref}
 								className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
 							>
-								<Icon name="arrow-left" className="size-5" />
+								<Icon name="arrow-back" className="size-5" />
 								Voltar
 							</a>
 						) : (
 							<span aria-hidden="true" />
 						)}
 
-						<a
-							href="/home"
-							aria-label="Fechar"
-							className="inline-flex items-center justify-center size-9 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
-						>
-							<Icon name="close" className="size-[18px]" />
-						</a>
+						<IconButton icon="close" label="Fechar" size="medium" type="ghost" href="/home" />
 					</div>
 
 					{/* body centralizado */}

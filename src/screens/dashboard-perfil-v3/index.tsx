@@ -297,7 +297,7 @@ function PerfilPane({ pct, missing }: { pct: number; missing: number }) {
 					incomplete
 				/>
 				<ProfileBox
-					icon="business-center"
+					icon="work"
 					title="Dados profissionais"
 					description="Define suas recomendações de conteúdo e newsletter"
 					fields={[PERFIL_CAMPOS.empresa, PERFIL_CAMPOS.cargo, PERFIL_CAMPOS.setor]}
@@ -305,7 +305,7 @@ function PerfilPane({ pct, missing }: { pct: number; missing: number }) {
 					cta="Atualizar"
 				/>
 				<ProfileBox
-					icon="location"
+					icon="location-on"
 					title="Dados Demográficos"
 					description="Solicitado apenas quando você baixa materiais"
 					fields={['CPF / CNPJ', 'Cidade, UF', 'Endereço']}

@@ -1,5 +1,5 @@
 import { twMerge } from '~/lib/tw-merge'
-import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import type { IModalProps, ModalSize } from './types'
 
 /**
@@ -43,11 +43,6 @@ export function Modal({
 
 	const Scrim = closeHref ? 'a' : 'button'
 
-	const closeClasses = twMerge(
-		'inline-flex items-center justify-center h-10 w-10 rounded-full text-primary-600 transition-colors',
-		padded ? 'hover:bg-neutral-50' : 'bg-white shadow-md hover:bg-neutral-50',
-	)
-
 	return (
 		<div
 			className={twMerge(
@@ -83,13 +78,23 @@ export function Modal({
 				{showClose ? (
 					<div className="absolute right-3 top-3 z-10">
 						{closeHref ? (
-							<a href={closeHref} aria-label="Fechar" className={closeClasses}>
-								<Icon name="close" className="size-[18px]" />
-							</a>
+							<IconButton
+								icon="close"
+								label="Fechar"
+								size="medium"
+								type="ghost"
+								href={closeHref}
+								className={!padded ? 'bg-white shadow-md' : undefined}
+							/>
 						) : (
-							<button type="button" onClick={onClose} aria-label="Fechar" className={closeClasses}>
-								<Icon name="close" className="size-[18px]" />
-							</button>
+							<IconButton
+								icon="close"
+								label="Fechar"
+								size="medium"
+								type="ghost"
+								onClick={onClose}
+								className={!padded ? 'bg-white shadow-md' : undefined}
+							/>
 						)}
 					</div>
 				) : null}

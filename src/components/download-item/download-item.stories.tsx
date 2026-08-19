@@ -8,7 +8,7 @@ const meta: Meta<typeof DownloadItem> = {
 	tags: ['autodocs'],
 	decorators: [(Story) => <div className="w-[720px]"><Story /></div>],
 	args: {
-		icon: 'pdf',
+		icon: 'picture-as-pdf',
 		title: 'Estado do varejo 2026 — relatório completo',
 		date: '12 Mar 2026',
 		size: '4.8 MB',
@@ -21,5 +21,5 @@ type Story = StoryObj<typeof DownloadItem>
 /** Reduza a viewport do navegador para abaixo de 1024px para ver o layout empilhado mobile (botão full-width com borda). */
 export const Enabled: Story = {}
 export const Disabled: Story = { args: { disabled: true } }
-export const Doc: Story = { args: { icon: 'doc', title: 'Política de privacidade — versão revisada' } }
+export const Doc: Story = { args: { icon: 'docs', title: 'Política de privacidade — versão revisada' } }
 export const ImageType: Story = { args: { icon: 'image', title: 'Infográfico — Cadeia de proteína animal' } }

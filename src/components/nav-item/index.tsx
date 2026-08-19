@@ -35,7 +35,7 @@ export function NavItem({
 		active ? 'text-secondary-950' : 'text-primary-600 group-hover:text-secondary-950',
 	)
 	const chevronClasses = twMerge(
-		'size-5 transition-all',
+		'size-4 transition-all',
 		active
 			? 'text-secondary-950 rotate-180'
 			: 'text-primary-600 group-hover:text-secondary-950 group-hover:rotate-180',

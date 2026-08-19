@@ -5,6 +5,7 @@ import { Divider } from '~/components/divider'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
 import { PodcastCard } from '~/components/podcast-card'
@@ -511,7 +512,7 @@ export function HomeV2Screen() {
 								className="inline-flex gap-2 items-center justify-center px-5 pr-4 py-2 rounded-full text-primary-600 hover:bg-neutral-100 font-body font-bold text-body-lg"
 							>
 								Todos os episódios
-								<Icon name="arrow-right" className="size-6" />
+								<Icon name="arrow-forward" className="size-6" />
 							</a>
 						</div>
 					</aside>
@@ -535,20 +536,8 @@ export function HomeV2Screen() {
 								Especialistas
 							</h2>
 							<div className="flex gap-2 items-center shrink-0">
-								<button
-									type="button"
-									aria-label="Anterior"
-									className="border border-neutral-100 inline-flex items-center justify-center p-2 rounded-full text-primary-600 hover:border-primary-600 transition-colors"
-								>
-									<Icon name="chevron-left" className="size-8" />
-								</button>
-								<button
-									type="button"
-									aria-label="Próximo"
-									className="border border-primary-600 inline-flex items-center justify-center p-2 rounded-full text-primary-600 hover:bg-primary-600 hover:text-white transition-colors"
-								>
-									<Icon name="chevron-right" className="size-8" />
-								</button>
+								<IconButton icon="chevron-left" label="Anterior" size="large" type="outlined" />
+								<IconButton icon="chevron-right" label="Próximo" size="large" type="outlined" />
 							</div>
 						</div>
 					</div>

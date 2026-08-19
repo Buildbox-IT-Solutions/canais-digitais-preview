@@ -65,7 +65,7 @@ export default function RecuperaSenhaScreen() {
 							href="/login"
 							className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 -ml-1 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
 						>
-							<Icon name="arrow-left" className="size-5" />
+							<Icon name="arrow-back" className="size-5" />
 							Voltar para o login
 						</a>
 					</header>

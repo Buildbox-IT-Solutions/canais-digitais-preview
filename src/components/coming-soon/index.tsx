@@ -41,7 +41,7 @@ export function ComingSoon({
 			<p className="font-body text-body-lg text-neutral-700 max-w-md">{description}</p>
 
 			<div className="pt-2">
-				<Button label={ctaLabel} href={ctaHref} type="outlined" size="medium" icon="arrow-right" />
+				<Button label={ctaLabel} href={ctaHref} type="outlined" size="medium" icon="arrow-forward" />
 			</div>
 		</div>
 	)

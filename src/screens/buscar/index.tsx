@@ -3,6 +3,7 @@ import { Divider } from '~/components/divider'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import { NewsCard } from '~/components/news-card'
 import { picsumSrc, SEARCH_RESULTS } from '~/mocks/articles'
 
@@ -44,13 +45,13 @@ export default function BuscarScreen() {
 									defaultValue="sorvete"
 									className="w-full h-10 pl-10 pr-10 rounded-full border border-neutral-100 bg-white text-body-lg font-body text-primary-600 placeholder:text-neutral-900 focus:outline-none focus:border-secondary-950 transition-colors"
 								/>
-								<button
-									type="button"
-									aria-label="Limpar busca"
-									className="absolute inset-y-0 right-2 flex items-center justify-center p-2 text-neutral-900 hover:text-primary-600"
-								>
-									<Icon name="close" className="size-4" />
-								</button>
+								<IconButton
+									icon="close"
+									label="Limpar busca"
+									size="small"
+									type="ghost"
+									className="absolute inset-y-0 right-2 text-neutral-900 hover:text-primary-600"
+								/>
 							</div>
 
 							{/* Filter chips */}
@@ -66,7 +67,7 @@ export default function BuscarScreen() {
 											className="inline-flex h-8 items-center gap-2 pl-4 pr-2 rounded-full border border-neutral-100 font-body font-semibold text-label-lg text-neutral-950 hover:bg-neutral-50 transition-colors"
 										>
 											{f}
-											<Icon name="chevron-down" className="size-4 text-neutral-950" />
+											<Icon name="expand-more" className="size-4 text-neutral-950" />
 										</button>
 									))}
 								</div>
@@ -117,13 +118,7 @@ export default function BuscarScreen() {
 							className="flex items-center justify-center p-4 w-full"
 							aria-label="Paginação"
 						>
-							<button
-								type="button"
-								aria-label="Página anterior"
-								className="inline-flex items-center justify-center p-2 rounded-full text-neutral-300 cursor-not-allowed"
-							>
-								<Icon name="chevron-left" className="size-6" />
-							</button>
+							<IconButton icon="chevron-left" label="Página anterior" size="medium" type="ghost" disabled />
 							<span className="inline-flex items-center justify-center size-10 rounded-full border border-primary-600 font-body font-bold text-label-lg text-primary-600">
 								1
 							</span>
@@ -145,13 +140,7 @@ export default function BuscarScreen() {
 							>
 								16
 							</a>
-							<a
-								href="/buscar"
-								aria-label="Próxima página"
-								className="inline-flex items-center justify-center p-2 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
-							>
-								<Icon name="chevron-right" className="size-6" />
-							</a>
+							<IconButton icon="chevron-right" label="Próxima página" size="medium" type="ghost" href="/buscar" />
 						</nav>
 					</div>
 

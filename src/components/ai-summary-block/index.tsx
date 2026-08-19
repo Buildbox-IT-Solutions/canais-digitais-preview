@@ -29,7 +29,7 @@ export function AiSummaryBlock({ bullets, disclaimer, className }: IAiSummaryBlo
 			>
 				<span className="font-display font-bold text-title-lg text-primary-600">Ver resumo</span>
 				<Icon
-					name="chevron-down"
+					name="expand-more"
 					className={twMerge(
 						'size-6 text-primary-600 transition-transform shrink-0',
 						open && 'rotate-180',

@@ -504,7 +504,7 @@ function PerfilPane({
 						incomplete={!complete}
 					/>
 					<ProfileBox
-						icon="business-center"
+						icon="work"
 						title="Dados profissionais"
 						description="Define suas recomendações de conteúdo e newsletter"
 						fields={[campos.empresa, campos.cargo, campos.setor]}
@@ -512,7 +512,7 @@ function PerfilPane({
 						cta="Atualizar"
 					/>
 					<ProfileBox
-						icon="location"
+						icon="location-on"
 						title="Dados Demográficos"
 						description="Solicitado apenas quando você baixa materiais"
 						fields={demograficoFields}

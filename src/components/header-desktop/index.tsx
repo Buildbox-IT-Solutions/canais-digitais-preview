@@ -326,7 +326,7 @@ function AccessMenu() {
 			>
 				<Icon name="account-circle" className="size-6 shrink-0" />
 				Acessar
-				<Icon name="arrow-drop-down" className="size-5 shrink-0" />
+				<Icon name="arrow-drop-down" className="size-4 shrink-0" />
 			</button>
 
 			{isDesktop ? (

@@ -40,7 +40,7 @@ export function TocInlineBlock({
 				>
 					<span className="font-display font-bold text-title-lg text-primary-600">Neste artigo</span>
 					<Icon
-						name="chevron-down"
+						name="expand-more"
 						className={twMerge(
 							'size-6 text-primary-600 shrink-0 motion-safe:transition-transform motion-reduce:transition-none',
 							expanded && 'rotate-180',
