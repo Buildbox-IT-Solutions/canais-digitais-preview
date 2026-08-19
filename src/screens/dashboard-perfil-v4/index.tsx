@@ -64,6 +64,9 @@ const SCENARIOS: ScenarioDef[] = [
 	{ id: 'leituras-com-erro', label: 'Com erro', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'favoritos-padrao', label: 'Preenchido', group: 'Favoritos', tab: 'favoritos', isDefault: true },
 	{ id: 'favoritos-vazio', label: 'Vazio', group: 'Favoritos', tab: 'favoritos' },
+	{ id: 'newsletter-padrao', label: 'Preenchido', group: 'Newsletter', tab: 'newsletter', isDefault: true },
+	{ id: 'newsletter-carregando', label: 'Carregando', group: 'Newsletter', tab: 'newsletter' },
+	{ id: 'newsletter-com-erro', label: 'Com erro', group: 'Newsletter', tab: 'newsletter' },
 ]
 
 // TODO remover na próxima iteração — alias temporário pra links antigos com ?state=.
@@ -125,6 +128,8 @@ export default function DashboardPerfilV4Screen() {
 	const isLoading = cenario === 'leituras-carregando'
 	const isErro = cenario === 'leituras-com-erro'
 	const favoritosForcedEmpty = cenario === 'favoritos-vazio'
+	const isNewsletterLoading = cenario === 'newsletter-carregando'
+	const isNewsletterErro = cenario === 'newsletter-com-erro'
 
 	// Migra o link antigo assim que a tela monta: reescreve a URL pra ?cenario= (sem
 	// empilhar no histórico) e avisa uma vez no console. Não bloqueia o primeiro
@@ -180,7 +185,9 @@ export default function DashboardPerfilV4Screen() {
 				{tab === 'ultimas' ? (
 					<UltimasPane isEmpty={isEmpty} isLoading={isLoading} isErro={isErro} />
 				) : null}
-				{tab === 'newsletter' ? <NewsletterPane /> : null}
+				{tab === 'newsletter' ? (
+					<NewsletterPane isLoading={isNewsletterLoading} isErro={isNewsletterErro} />
+				) : null}
 				{tab === 'downloads' ? <DownloadsPane isEmpty={isEmpty} /> : null}
 				{tab === 'favoritos' ? <FavoritosPane forcedEmpty={favoritosForcedEmpty} /> : null}
 			</div>
@@ -574,26 +581,27 @@ const NEWSLETTER_CARDS = [
 	NEWSLETTERS.find((n) => n.title === 'Novidades e ofertas da Informa Markets')!,
 ]
 
-function NewsletterPane() {
-	const [params] = useSearchParams()
-	// Simulação de falha via querystring — mesma convenção de ?favoritos-falha=true em
-	// use-favorito-toggle.ts. Sem o parâmetro, assinar sempre resolve com sucesso.
-	const forceFailure = params.get('newsletter-falha') === 'true'
-
+function NewsletterPane({ isLoading, isErro }: { isLoading: boolean; isErro: boolean }) {
+	// ?cenario=newsletter-carregando: congela os cards ainda não assinados em "pending"
+	// (spinner + "Assinando...") pra revisão, sem depender do timer de
+	// NEWSLETTER_SUBSCRIBE_DELAY_MS — mesmo racional do ?cenario=leituras-carregando.
 	const [states, setStates] = useState<NewsletterState[]>(() =>
-		NEWSLETTER_CARDS.map((n) => (n.checked ? 'subscribed' : 'idle')),
+		NEWSLETTER_CARDS.map((n) => (n.checked ? 'subscribed' : isLoading ? 'pending' : 'idle')),
 	)
 
 	// "Assinado" é terminal — o NewsletterCard não expõe caminho de volta a idle nem
 	// controle de cancelamento, então só newsletters em idle/error respondem ao clique.
+	// Em ?cenario=newsletter-carregando o clique é no-op: o "pending" ali é a própria
+	// vitrine do estado, não uma ação em andamento.
 	function handleSubscribe(index: number) {
+		if (isLoading) return
 		if (states[index] !== 'idle' && states[index] !== 'error') return
 
 		setStates((prev) => prev.map((s, i) => (i === index ? 'pending' : s)))
 
 		setTimeout(() => {
-			setStates((prev) => prev.map((s, i) => (i === index ? (forceFailure ? 'error' : 'subscribed') : s)))
-			if (!forceFailure) toast.success('Newsletter assinada.')
+			setStates((prev) => prev.map((s, i) => (i === index ? (isErro ? 'error' : 'subscribed') : s)))
+			if (!isErro) toast.success('Newsletter assinada.')
 		}, NEWSLETTER_SUBSCRIBE_DELAY_MS)
 	}
 
