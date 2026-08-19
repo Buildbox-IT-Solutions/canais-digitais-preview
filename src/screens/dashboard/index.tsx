@@ -441,7 +441,7 @@ function PerfilSection() {
 
 					<div className="flex items-center justify-end gap-2.5 mt-7 pt-5 border-t border-neutral-100">
 						<Button label="Cancelar" href="?section=visao" type="ghost" size="medium" />
-						<Button label="Salvar alterações" href="#" type="filled" size="medium" icon="arrow-right" />
+						<Button label="Salvar alterações" href="#" type="filled" size="medium" icon="arrow-forward" />
 					</div>
 				</div>
 			</div>

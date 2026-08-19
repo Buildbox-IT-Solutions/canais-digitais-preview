@@ -48,7 +48,7 @@ const PADDING_WITH_ICON: Record<ButtonSize, string> = {
 }
 
 function BuiltInIcon({ icon, size }: { icon: ButtonIcon; size: ButtonSize }) {
-	if (icon !== 'arrow-right' && icon !== 'plus') return null
+	if (icon !== 'arrow-forward' && icon !== 'add') return null
 	const iconSize = size === 'small' ? 'size-5' : 'size-6'
 	return <Icon name={icon} className={iconSize} />
 }

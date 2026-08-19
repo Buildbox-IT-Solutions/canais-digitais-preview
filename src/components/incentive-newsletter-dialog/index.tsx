@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { BottomSheet } from '~/components/bottom-sheet'
-import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import { Modal } from '~/components/modal'
 import { StatusRing } from '~/components/status-ring'
 import { useMediaQuery } from '~/lib/use-media-query'
@@ -33,14 +33,14 @@ export function IncentiveNewsletterDialog({
 
 	return (
 		<BottomSheet open={open} onClose={onDismiss} labelledById={titleId}>
-			<button
-				type="button"
+			<IconButton
+				icon="close"
+				label="Fechar"
+				size="small"
+				type="ghost"
 				onClick={onDismiss}
-				aria-label="Fechar"
-				className="absolute right-4 top-4 inline-flex items-center justify-center size-8 rounded-full text-primary-600"
-			>
-				<Icon name="close" className="size-4" />
-			</button>
+				className="absolute right-4 top-4"
+			/>
 			<NewsletterDialogContent titleId={titleId} onCreateAccount={onCreateAccount} onLogin={onLogin} />
 		</BottomSheet>
 	)

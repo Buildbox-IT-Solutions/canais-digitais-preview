@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router'
-import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import { sanitizeReturnTo, serializeReturnTo } from '~/lib/sanitize-return-to'
@@ -101,13 +101,14 @@ export default function LoginV2Screen() {
 
 				{/* Coluna do formulário */}
 				<div className="relative flex grow basis-1/2 min-w-0 min-h-0 flex-col bg-white">
-					<a
+					<IconButton
+						icon="close"
+						label="Fechar"
+						size="medium"
+						type="ghost"
 						href="/home"
-						aria-label="Fechar"
-						className="absolute right-4 top-4 z-10 inline-flex items-center justify-center size-9 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
-					>
-						<Icon name="close" className="size-[18px]" />
-					</a>
+						className="absolute right-4 top-4 z-10"
+					/>
 
 					{/* bloco título + form, centralizado verticalmente no espaço acima do footer */}
 					<div className="flex-1 min-h-0 overflow-y-auto flex flex-col px-8 py-6">

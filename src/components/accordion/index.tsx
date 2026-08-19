@@ -95,7 +95,7 @@ export function AccordionTrigger({ children, className, disabled }: IAccordionTr
 			>
 				{children}
 				<Icon
-					name="chevron-down"
+					name="expand-more"
 					className={twMerge(
 						'size-4 shrink-0 translate-y-0.5 text-neutral-500 transition-transform duration-200',
 						itemCtx.isOpen && 'rotate-180',

@@ -1,5 +1,5 @@
 import { twMerge } from '~/lib/tw-merge'
-import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import type { IDrawerProps } from './types'
 
 /**
@@ -55,22 +55,9 @@ export function Drawer({
 						{title}
 					</h2>
 					{closeHref ? (
-						<a
-							href={closeHref}
-							aria-label="Fechar painel"
-							className="inline-flex items-center justify-center size-10 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
-						>
-							<Icon name="close" className="size-6" />
-						</a>
+						<IconButton icon="close" label="Fechar painel" size="medium" type="ghost" href={closeHref} />
 					) : (
-						<button
-							type="button"
-							onClick={onClose}
-							aria-label="Fechar painel"
-							className="inline-flex items-center justify-center size-10 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
-						>
-							<Icon name="close" className="size-6" />
-						</button>
+						<IconButton icon="close" label="Fechar painel" size="medium" type="ghost" onClick={onClose} />
 					)}
 				</div>
 

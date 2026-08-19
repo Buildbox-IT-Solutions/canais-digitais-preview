@@ -14,7 +14,7 @@ function pickIcon(device: string): IconName {
 	const lower = device.toLowerCase()
 	if (lower.includes('iphone') || lower.includes('android')) return 'smartphone'
 	if (lower.includes('mac') || lower.includes('book')) return 'laptop'
-	return 'desktop'
+	return 'desktop-windows'
 }
 
 export function SessionRow({

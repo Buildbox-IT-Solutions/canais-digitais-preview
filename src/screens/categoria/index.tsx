@@ -1,7 +1,7 @@
 import { AdFrame } from '~/components/ad-frame'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
-import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import { NewsCard } from '~/components/news-card'
 import { Thumbnail } from '~/components/thumbnail'
 import { CATEGORIA_FEATURED, CATEGORIA_LIST, picsumSrc } from '~/mocks/articles'
@@ -129,13 +129,7 @@ export default function CategoriaScreen() {
 							className="flex items-center justify-center p-4 w-full"
 							aria-label="Paginação"
 						>
-							<button
-								type="button"
-								aria-label="Página anterior"
-								className="inline-flex items-center justify-center p-2 rounded-full text-neutral-300 cursor-not-allowed"
-							>
-								<Icon name="chevron-left" className="size-6" />
-							</button>
+							<IconButton icon="chevron-left" label="Página anterior" size="medium" type="ghost" disabled />
 							<span className="inline-flex items-center justify-center size-10 rounded-full border border-primary-600 font-body font-bold text-label-lg text-primary-600">
 								1
 							</span>
@@ -157,13 +151,7 @@ export default function CategoriaScreen() {
 							>
 								99
 							</a>
-							<a
-								href="/categoria"
-								aria-label="Próxima página"
-								className="inline-flex items-center justify-center p-2 rounded-full text-primary-600 hover:bg-neutral-50 transition-colors"
-							>
-								<Icon name="chevron-right" className="size-6" />
-							</a>
+							<IconButton icon="chevron-right" label="Próxima página" size="medium" type="ghost" href="/categoria" />
 						</nav>
 					</div>
 

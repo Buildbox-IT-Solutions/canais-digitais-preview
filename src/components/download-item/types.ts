@@ -1,4 +1,4 @@
-export type DownloadItemIcon = 'pdf' | 'doc' | 'image'
+export type DownloadItemIcon = 'picture-as-pdf' | 'docs' | 'image'
 
 export interface IDownloadItemProps {
 	icon: DownloadItemIcon

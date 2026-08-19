@@ -1,5 +1,6 @@
 import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import type { IconName } from '~/components/icon/paths'
 import type { IToastProps, ToastType } from './types'
 
@@ -49,14 +50,14 @@ export function Toast({ type = 'info', title, message, action, id, onDismiss, cl
 					{action.label}
 				</button>
 			) : null}
-			<button
-				type="button"
-				aria-label="Fechar notificação"
+			<IconButton
+				icon="close"
+				label="Fechar notificação"
+				size="small"
+				type="ghost"
 				onClick={onDismiss}
-				className="shrink-0 text-neutral-500 hover:text-neutral-950 transition-colors"
-			>
-				<Icon name="close" className="size-4" />
-			</button>
+				className="shrink-0 text-neutral-500 hover:text-neutral-950 hover:bg-transparent"
+			/>
 		</div>
 	)
 }

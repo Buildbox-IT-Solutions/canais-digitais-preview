@@ -30,7 +30,7 @@ export function FormSelect({
 				) : (
 					<span className="font-body text-body-lg text-neutral-500">{placeholder}</span>
 				)}
-				<Icon name="chevron-down" className="size-4 text-neutral-900" />
+				<Icon name="expand-more" className="size-4 text-neutral-900" />
 			</div>
 		</label>
 	)

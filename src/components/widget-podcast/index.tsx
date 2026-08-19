@@ -37,7 +37,7 @@ export function WidgetPodcast({ items, allEpisodesHref = '/categoria', className
 					className="inline-flex gap-2 items-center justify-center px-5 pr-4 py-2 rounded-full text-primary-600 hover:bg-neutral-100 font-body font-bold text-body-lg"
 				>
 					Todos os episódios
-					<Icon name="arrow-right" className="size-6" />
+					<Icon name="arrow-forward" className="size-6" />
 				</a>
 			</div>
 		</aside>
