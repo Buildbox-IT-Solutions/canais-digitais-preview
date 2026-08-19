@@ -602,7 +602,7 @@ function NewsletterPane() {
 			<header className="flex flex-col gap-1">
 				<h2 className="font-display font-bold text-title-xl text-primary-600">Newsletter</h2>
 				<p className="font-body text-body-md text-neutral-600">
-					O melhor conteúdo do setor alimentício, direto na sua caixa de entrada.
+					O melhor conteúdo, direto na sua caixa de entrada.
 				</p>
 			</header>
 
