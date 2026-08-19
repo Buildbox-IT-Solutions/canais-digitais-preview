@@ -2,14 +2,12 @@ import Search from '@material-icons/svg/svg/search/baseline.svg'
 import Menu from '@material-icons/svg/svg/menu/baseline.svg'
 import Close from '@material-icons/svg/svg/close/baseline.svg'
 import ShareOutline from '@material-icons/svg/svg/share/outline.svg'
-import BookmarkBorder from '@material-icons/svg/svg/bookmark_border/outline.svg'
 import DeleteOutline from '@material-icons/svg/svg/delete_outline/outline.svg'
 import Add from '@material-icons/svg/svg/add/baseline.svg'
 import ArrowBack from '@material-icons/svg/svg/arrow_back/baseline.svg'
 import ArrowForward from '@material-icons/svg/svg/arrow_forward/baseline.svg'
 import ExpandMore from '@material-icons/svg/svg/expand_more/baseline.svg'
 import KeyboardArrowUp from '@material-icons/svg/svg/keyboard_arrow_up/baseline.svg'
-import Bookmark from '@material-icons/svg/svg/bookmark/baseline.svg'
 import Print from '@material-icons/svg/svg/print/baseline.svg'
 import Check from '@material-icons/svg/svg/check/baseline.svg'
 import ArrowDropDown from '@material-icons/svg/svg/arrow_drop_down/baseline.svg'
@@ -49,6 +47,7 @@ import Smartphone from '@material-icons/svg/svg/smartphone/baseline.svg'
 import Laptop from '@material-icons/svg/svg/laptop/baseline.svg'
 import MoreVert from '@material-icons/svg/svg/more_vert/baseline.svg'
 import Favorite from '@material-icons/svg/svg/favorite/baseline.svg'
+import FavoriteBorder from '@material-icons/svg/svg/favorite_border/outline.svg'
 import Home from '@material-icons/svg/svg/home/baseline.svg'
 import Notifications from '@material-icons/svg/svg/notifications/baseline.svg'
 import Shield from '@material-icons/svg/svg/shield/baseline.svg'
@@ -65,7 +64,6 @@ export const MATERIAL_ICONS = {
 	menu: Menu,
 	close: Close,
 	share: ShareOutline,
-	'bookmark-border': BookmarkBorder,
 	'delete-outline': DeleteOutline,
 	plus: Add,
 	'arrow-left': ArrowBack,
@@ -73,7 +71,6 @@ export const MATERIAL_ICONS = {
 	'arrow-forward': ArrowForward,
 	'chevron-down': ExpandMore,
 	'chevron-up': KeyboardArrowUp,
-	bookmark: Bookmark,
 	print: Print,
 	check: Check,
 	'arrow-drop-down': ArrowDropDown,
@@ -112,7 +109,8 @@ export const MATERIAL_ICONS = {
 	smartphone: Smartphone,
 	laptop: Laptop,
 	'more-vert': MoreVert,
-	heart: Favorite,
+	favorite: Favorite,
+	'favorite-border': FavoriteBorder,
 	home: Home,
 	notifications: Notifications,
 	shield: Shield,

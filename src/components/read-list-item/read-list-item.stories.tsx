@@ -4,7 +4,7 @@ import { ReadListItemSkeleton } from './read-list-item-skeleton'
 
 const ACTIONS_ULTIMAS = [
 	{ label: 'Compartilhar', icon: 'share' as const, onClick: () => {} },
-	{ label: 'Salvar como favorito', icon: 'bookmark-border' as const, onClick: () => {} },
+	{ label: 'Salvar como favorito', icon: 'favorite-border' as const, onClick: () => {} },
 	{ label: 'Remover de últimas leituras', icon: 'delete-outline' as const, onClick: () => {} },
 ]
 

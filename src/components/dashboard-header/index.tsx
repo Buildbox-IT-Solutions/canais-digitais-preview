@@ -16,7 +16,7 @@ import type {
 const DEFAULT_SECTIONS: DashboardSection[] = [
 	{ id: 'visao', label: 'Visão geral', icon: 'dashboard', href: '?section=visao' },
 	{ id: 'biblio', label: 'Biblioteca', icon: 'book', href: '?section=biblio' },
-	{ id: 'favoritos', label: 'Favoritos', icon: 'bookmark', href: '?section=favoritos' },
+	{ id: 'favoritos', label: 'Favoritos', icon: 'favorite', href: '?section=favoritos' },
 	{ id: 'arquivos', label: 'Arquivos', icon: 'folder', href: '?section=arquivos' },
 	{ id: 'newsletters', label: 'Newsletters', icon: 'mail', href: '?section=newsletters' },
 	{ id: 'perfil', label: 'Perfil', icon: 'account-circle', href: '?section=perfil' },

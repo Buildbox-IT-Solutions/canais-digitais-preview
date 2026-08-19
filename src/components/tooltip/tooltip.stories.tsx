@@ -26,7 +26,7 @@ export const Top: Story = {
 	args: { side: 'top' },
 	render: (args) => (
 		<Tooltip {...(args as Parameters<typeof Tooltip>[0])}>
-			<IconButton icon="bookmark-border" label="Favoritar" />
+			<IconButton icon="favorite-border" label="Favoritar" />
 		</Tooltip>
 	),
 }
@@ -35,7 +35,7 @@ export const Right: Story = {
 	args: { side: 'right' },
 	render: (args) => (
 		<Tooltip {...(args as Parameters<typeof Tooltip>[0])}>
-			<IconButton icon="bookmark-border" label="Favoritar" />
+			<IconButton icon="favorite-border" label="Favoritar" />
 		</Tooltip>
 	),
 }
@@ -44,7 +44,7 @@ export const Bottom: Story = {
 	args: { side: 'bottom' },
 	render: (args) => (
 		<Tooltip {...(args as Parameters<typeof Tooltip>[0])}>
-			<IconButton icon="bookmark-border" label="Favoritar" />
+			<IconButton icon="favorite-border" label="Favoritar" />
 		</Tooltip>
 	),
 }
@@ -53,7 +53,7 @@ export const Left: Story = {
 	args: { side: 'left' },
 	render: (args) => (
 		<Tooltip {...(args as Parameters<typeof Tooltip>[0])}>
-			<IconButton icon="bookmark-border" label="Favoritar" />
+			<IconButton icon="favorite-border" label="Favoritar" />
 		</Tooltip>
 	),
 }

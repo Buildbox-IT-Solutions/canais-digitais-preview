@@ -123,7 +123,7 @@ export function useFavoritoToggle(
 		next.delete('favoritar')
 		setSearchParams(next, { replace: true })
 
-		toast.success('Conteúdo salvo com sucesso!', {
+		toast.success('Adicionado aos seus Favoritos!', {
 			action: { label: 'Ver', onClick: () => navigate(FAVORITOS_TAB_HREF) },
 		})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -158,7 +158,7 @@ export function useFavoritoToggle(
 			}
 
 			if (next) {
-				toast.success('Conteúdo salvo com sucesso!', {
+				toast.success('Adicionado aos seus Favoritos!', {
 					action: { label: 'Ver', onClick: () => navigate(FAVORITOS_TAB_HREF) },
 				})
 			} else {

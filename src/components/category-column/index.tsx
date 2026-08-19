@@ -49,6 +49,8 @@
  * card. `boxedSeed` (já único por card) faz de contentId — não existe id de artigo
  * pra esse item hoje (só título/seed literais).
  * `useFavoritoToggle` importado direto (não é o ReadListItem/aba de Favoritos).
+ * `size="small"` no Toggle (área de toque reduzida, ver comentário em
+ * NewsCard/index.tsx) — favoritado ou não, some sem hover, igual aos outros cards.
  */
 import { twMerge } from '~/lib/tw-merge'
 import { NewsCard } from '~/components/news-card'
@@ -59,7 +61,8 @@ import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
 import { picsumSrc } from '~/mocks/articles'
 import type { ICategoryColumnProps, CategoryColumnColor } from './types'
 
-// Mesma regra de visibilidade do toggle em NewsCard — ver comentário lá.
+// Mesma regra de visibilidade do toggle em NewsCard (favoritado ou não, só aparece
+// no hover) — ver comentário lá.
 const TOGGLE_HIDDEN_UNTIL_HOVER = twMerge(
 	'transition-opacity duration-150',
 	'hover-fine:opacity-0',
@@ -148,18 +151,15 @@ export function CategoryColumn({
 					<Toggle
 						pressed={pressed}
 						onPressedChange={onPressedChange}
-						iconOn="bookmark"
-						iconOff="bookmark-border"
+						iconOn="favorite"
+						iconOff="favorite-border"
 						labelOn="Remover dos favoritos"
 						labelOff="Favoritar"
 						tooltipOn="Remover"
 						tooltipOff="Favoritar"
-						size="medium"
+						size="small"
 						surface="onMedia"
-						className={twMerge(
-							'absolute top-2 right-2 z-10',
-							pressed ? undefined : TOGGLE_HIDDEN_UNTIL_HOVER,
-						)}
+						className={twMerge('absolute top-2 right-2 z-10', TOGGLE_HIDDEN_UNTIL_HOVER)}
 					/>
 				</div>
 
@@ -186,7 +186,7 @@ export function CategoryColumn({
 				onDismiss={authModal.onDismiss}
 				onCreateAccount={authModal.onCreateAccount}
 				onLogin={authModal.onLogin}
-				icon="bookmark"
+				icon="favorite"
 				title={
 					<>
 						<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca
