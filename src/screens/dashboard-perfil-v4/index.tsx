@@ -14,7 +14,8 @@ import { FooterDesktop } from '~/components/footer-desktop'
 import { GeneralItem } from '~/components/general-item'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
-import { NewsletterItem } from '~/components/newsletter-item'
+import { NewsletterCard } from '~/components/newsletter-card'
+import type { NewsletterState } from '~/components/newsletter-card/types'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
 import { ReadListItem } from '~/components/read-list-item'
@@ -556,17 +557,44 @@ function PerfilPane({
 	)
 }
 
-function NewsletterPane() {
-	const [items, setItems] = useState(NEWSLETTERS)
-	const totalNl = items.length
-	const activeNl = items.filter((n) => n.checked).length
+// Delay fixo da simulação de rede do botão Assinar — mesmo valor e mesmo racional do
+// SIMULATED_LATENCY_MS em lib/use-favorito-toggle.ts (artifício de protótipo, não existe
+// no produto real). Diferente do toggle de favoritos, aqui o "pending" é estado visível
+// do próprio componente (spinner + "Assinando..."), não algo a evitar — por isso sempre
+// simulado, sem precisar de flag de latência na querystring.
+const NEWSLETTER_SUBSCRIBE_DELAY_MS = 900
 
-	// Auto-save otimista: o switch muda de imediato e o toast confirma o "salvamento"
-	// (mock, sem API real) — mesmo padrão descrito para as futuras preferências de
-	// comunicação em figma-specs/_regras-de-negocio.md.
-	function handleToggle(index: number, checked: boolean) {
-		setItems((prev) => prev.map((item, i) => (i === index ? { ...item, checked } : item)))
-		toast.success(checked ? 'Newsletter assinada.' : 'Newsletter cancelada.')
+// Aba Newsletter (v4): recorte de 2 newsletters em destaque, nesta ordem — não é o catálogo
+// completo de NEWSLETTERS (mocks/dashboard-perfil.ts), que dashboard-perfil-v3 ainda usa
+// inteiro na lista de switches. `checked` aqui decide o estado inicial do card (idle vs.
+// subscribed) e pode divergir do catálogo — Food Connection é `checked: true` lá, mas
+// entra sem assinatura nesta vitrine.
+const NEWSLETTER_CARDS = [
+	{ ...NEWSLETTERS.find((n) => n.title === 'Food Connection')!, checked: false },
+	NEWSLETTERS.find((n) => n.title === 'Novidades e ofertas da Informa Markets')!,
+]
+
+function NewsletterPane() {
+	const [params] = useSearchParams()
+	// Simulação de falha via querystring — mesma convenção de ?favoritos-falha=true em
+	// use-favorito-toggle.ts. Sem o parâmetro, assinar sempre resolve com sucesso.
+	const forceFailure = params.get('newsletter-falha') === 'true'
+
+	const [states, setStates] = useState<NewsletterState[]>(() =>
+		NEWSLETTER_CARDS.map((n) => (n.checked ? 'subscribed' : 'idle')),
+	)
+
+	// "Assinado" é terminal — o NewsletterCard não expõe caminho de volta a idle nem
+	// controle de cancelamento, então só newsletters em idle/error respondem ao clique.
+	function handleSubscribe(index: number) {
+		if (states[index] !== 'idle' && states[index] !== 'error') return
+
+		setStates((prev) => prev.map((s, i) => (i === index ? 'pending' : s)))
+
+		setTimeout(() => {
+			setStates((prev) => prev.map((s, i) => (i === index ? (forceFailure ? 'error' : 'subscribed') : s)))
+			if (!forceFailure) toast.success('Newsletter assinada.')
+		}, NEWSLETTER_SUBSCRIBE_DELAY_MS)
 	}
 
 	return (
@@ -574,26 +602,19 @@ function NewsletterPane() {
 			<header className="flex flex-col gap-1">
 				<h2 className="font-display font-bold text-title-xl text-primary-600">Newsletter</h2>
 				<p className="font-body text-body-md text-neutral-600">
-					Escolha o que deseja receber. Suas alterações são salvas automaticamente.
+					O melhor conteúdo do setor alimentício, direto na sua caixa de entrada.
 				</p>
 			</header>
 
-			<div className="bg-neutral-50 rounded-lg px-6 py-4">
-				<p className="font-body font-semibold text-body-md text-primary-600">
-					{activeNl} newsletters ativas de {totalNl} opções disponíveis
-				</p>
-			</div>
-
-			<div className="flex flex-col">
-				{items.map((nl, i) => (
-					<NewsletterItem
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+				{NEWSLETTER_CARDS.map((nl, i) => (
+					<NewsletterCard
 						key={i}
 						id={`nl-v4-${i}`}
 						title={nl.title}
-						desc={nl.desc}
-						checked={nl.checked}
-						isLast={i === items.length - 1}
-						onChange={(checked) => handleToggle(i, checked)}
+						description={nl.desc}
+						state={states[i]}
+						onSubscribe={() => handleSubscribe(i)}
 					/>
 				))}
 			</div>
