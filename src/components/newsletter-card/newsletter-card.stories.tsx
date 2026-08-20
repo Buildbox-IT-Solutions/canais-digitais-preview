@@ -21,4 +21,3 @@ type Story = StoryObj<typeof NewsletterCard>
 export const Idle: Story = { args: { state: 'idle' } }
 export const Pending: Story = { args: { state: 'pending' } }
 export const Subscribed: Story = { args: { state: 'subscribed' } }
-export const Error: Story = { args: { state: 'error' } }

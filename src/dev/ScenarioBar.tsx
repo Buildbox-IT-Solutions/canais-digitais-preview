@@ -28,16 +28,22 @@ export function ScenarioBar() {
 	const [manuallyHidden, setManuallyHidden] = useState(() => params.get('ui') === '0')
 
 	const eligible = import.meta.env.DEV || params.get('dev') === '1'
-	const visible = eligible && !manuallyHidden && scenarios.length > 0
+
+	// Só mostra os cenários da aba atual — telas com várias abas (ex.: dashboard-perfil-v4)
+	// registram todos os cenários de uma vez, e sem esse filtro o dropdown acumula grupos
+	// de abas que nem estão visíveis. Cenário sem `tab` (global) aparece em qualquer aba.
+	const effectiveTab = params.get('tab') ?? 'perfil'
+	const visibleScenarios = scenarios.filter((s) => !s.tab || s.tab === effectiveTab)
+
+	const visible = eligible && !manuallyHidden && visibleScenarios.length > 0
 
 	const activeId = (() => {
 		const current = params.get('cenario')
-		if (current && scenarios.some((s) => s.id === current)) return current
+		if (current && visibleScenarios.some((s) => s.id === current)) return current
 		// Sem ?cenario=: se a aba atual tem um estado "Preenchido"/default registrado,
 		// reflete ele no select em vez de cair sempre no primeiro item da lista.
-		const effectiveTab = params.get('tab') ?? 'perfil'
-		const defaultForTab = scenarios.find((s) => s.isDefault && s.tab === effectiveTab)
-		return defaultForTab?.id ?? scenarios[0]?.id ?? ''
+		const defaultForTab = visibleScenarios.find((s) => s.isDefault)
+		return defaultForTab?.id ?? visibleScenarios[0]?.id ?? ''
 	})()
 
 	// Client-side (mesma navegação que o resto da tela usa pra ?state=/?cenario=):
@@ -71,9 +77,9 @@ export function ScenarioBar() {
 				return
 			}
 
-			if ((e.key === '.' || e.key === ',') && scenarios.length > 0) {
+			if ((e.key === '.' || e.key === ',') && visibleScenarios.length > 0) {
 				e.preventDefault()
-				const ids = scenarios.map((s) => s.id)
+				const ids = visibleScenarios.map((s) => s.id)
 				const currentIndex = Math.max(0, ids.indexOf(activeId))
 				const delta = e.key === '.' ? 1 : -1
 				const nextIndex = (currentIndex + delta + ids.length) % ids.length
@@ -83,12 +89,12 @@ export function ScenarioBar() {
 
 		window.addEventListener('keydown', onKeyDown)
 		return () => window.removeEventListener('keydown', onKeyDown)
-	}, [eligible, scenarios, activeId, params])
+	}, [eligible, visibleScenarios, activeId, params])
 
 	if (!visible) return null
 
 	const groups = new Map<string, typeof scenarios>()
-	for (const scenario of scenarios) {
+	for (const scenario of visibleScenarios) {
 		const list = groups.get(scenario.group) ?? []
 		list.push(scenario)
 		groups.set(scenario.group, list)
