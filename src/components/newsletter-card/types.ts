@@ -1,4 +1,4 @@
-export type NewsletterState = 'idle' | 'pending' | 'subscribed' | 'error'
+export type NewsletterState = 'idle' | 'pending' | 'subscribed'
 
 export interface INewsletterCardProps {
 	id: string

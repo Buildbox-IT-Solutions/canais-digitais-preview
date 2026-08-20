@@ -590,18 +590,28 @@ function NewsletterPane({ isLoading, isErro }: { isLoading: boolean; isErro: boo
 	)
 
 	// "Assinado" é terminal — o NewsletterCard não expõe caminho de volta a idle nem
-	// controle de cancelamento, então só newsletters em idle/error respondem ao clique.
+	// controle de cancelamento, então só newsletters em idle respondem ao clique.
 	// Em ?cenario=newsletter-carregando o clique é no-op: o "pending" ali é a própria
 	// vitrine do estado, não uma ação em andamento.
+	// Falha: sem estado visual persistente no card — volta pra idle (rollback) e avisa
+	// por toast com ação "Tentar novamente", mesmo padrão do toggle de favoritos em
+	// lib/use-favorito-toggle.ts.
 	function handleSubscribe(index: number) {
 		if (isLoading) return
-		if (states[index] !== 'idle' && states[index] !== 'error') return
+		if (states[index] !== 'idle') return
 
 		setStates((prev) => prev.map((s, i) => (i === index ? 'pending' : s)))
 
 		setTimeout(() => {
-			setStates((prev) => prev.map((s, i) => (i === index ? (isErro ? 'error' : 'subscribed') : s)))
-			if (!isErro) toast.success('Newsletter assinada.')
+			if (isErro) {
+				setStates((prev) => prev.map((s, i) => (i === index ? 'idle' : s)))
+				toast.error('Não foi possível confirmar a assinatura.', {
+					action: { label: 'Tentar novamente', onClick: () => handleSubscribe(index) },
+				})
+				return
+			}
+			setStates((prev) => prev.map((s, i) => (i === index ? 'subscribed' : s)))
+			toast.success('Newsletter assinada.')
 		}, NEWSLETTER_SUBSCRIBE_DELAY_MS)
 	}
 

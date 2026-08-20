@@ -8,19 +8,20 @@ import type { INewsletterCardProps } from './types'
 /**
  * Componente: Newsletter Card
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=8060-4432
- * Variantes: idle | pending | subscribed | error
+ * Variantes: idle | pending | subscribed
  * Estrutura shadcn Card (CardHeader/CardContent/CardFooter) — mesmo componente já usado no
  * projeto, com paddings próprios pra bater com o Figma. Divergência deliberada do Figma:
  * lá o card tem altura fixa (284px) com o rodapé colado na base (flex-1 + justify-end);
  * aqui o rodapé segue o fluxo normal, direto após a descrição (truncada em 4 linhas) — com
  * altura fixa, descrições mais curtas que o placeholder do Figma abriam um vão grande entre
  * texto e botão, já que o rodapé sempre empurrava para a base do card.
- * "error" não existe no componente Figma (só Unsubscribed/Subscribing/Subscribed) — extensão
- * dev-side: mesmo botão outlined do estado idle, com mensagem inline em --color-danger-600.
+ * Falha ao assinar não é um estado visual do card — quem usa o componente faz rollback pra
+ * "idle" e avisa por toast com ação "Tentar novamente" (ver NewsletterPane em
+ * dashboard-perfil-v4), mesmo padrão do toggle de favoritos.
  * "subscribed" é terminal — o componente não expõe caminho de volta a idle nem controle de
  * cancelamento.
  * Tokens: --color-primary-600, --color-neutral-100, --color-neutral-600, --color-secondary-50,
- *         --color-secondary-950, --color-danger-600, --text-title-lg, --text-body-md, --text-body-lg
+ *         --color-secondary-950, --text-title-lg, --text-body-md, --text-body-lg
  */
 export function NewsletterCard({ id, title, description, state = 'idle', onSubscribe, className }: INewsletterCardProps) {
 	const isSubscribed = state === 'subscribed'
@@ -54,15 +55,6 @@ export function NewsletterCard({ id, title, description, state = 'idle', onSubsc
 						<Icon name="check" className="size-6" />
 						Assinado
 					</span>
-				) : null}
-
-				{state === 'error' ? (
-					<div className="flex flex-col items-start gap-2 w-full">
-						<Button type="outlined" size="medium" label="Tentar novamente" onClick={onSubscribe} />
-						<p className="font-body text-body-sm text-danger-600">
-							Não foi possível confirmar a assinatura. Tente novamente.
-						</p>
-					</div>
 				) : null}
 			</CardFooter>
 		</Card>
