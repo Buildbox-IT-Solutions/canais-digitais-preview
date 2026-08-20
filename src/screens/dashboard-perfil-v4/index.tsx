@@ -23,7 +23,6 @@ import { ReadListItem } from '~/components/read-list-item'
 import type { ReadListItemMenuAction } from '~/components/read-list-item/read-list-item-menu'
 import { ReadListItemSkeleton } from '~/components/read-list-item/read-list-item-skeleton'
 import { StatusRing } from '~/components/status-ring'
-import { Toast } from '~/components/toast'
 import {
 	DOWNLOADS,
 	NEWSLETTERS,
@@ -141,6 +140,18 @@ export default function DashboardPerfilV4Screen() {
 	const isNewsletterLoading = cenario === 'newsletter-carregando'
 	const isNewsletterErro = cenario === 'newsletter-com-erro'
 
+	// Toast real (lib/toast-store + <Toaster/> global), não um <Toast> avulso plantado na
+	// tela — reaproveita a pilha/animação/auto-dismiss que o resto do app já usa. Disparo
+	// na borda false->true (não a cada render com isSaved true), senão empilharia um toast
+	// novo em qualquer re-render enquanto ?cenario=perfil-salvo estiver na URL. O ref
+	// sobrevive ao duplo-disparo do StrictMode (mesma instância), mesmo padrão do
+	// `resumedRef` em lib/use-favorito-toggle.ts.
+	const wasSavedRef = useRef(false)
+	useEffect(() => {
+		if (isSaved && !wasSavedRef.current) toast.success('Alterações salvas.')
+		wasSavedRef.current = isSaved
+	}, [isSaved])
+
 	// Migra o link antigo assim que a tela monta: reescreve a URL pra ?cenario= (sem
 	// empilhar no histórico) e avisa uma vez no console. Não bloqueia o primeiro
 	// render — os booleans acima já usam `legacyResolved` de forma síncrona.
@@ -213,12 +224,6 @@ export default function DashboardPerfilV4Screen() {
 			<FooterDesktop />
 
 			{drawer ? <PerfilDrawer drawer={drawer} /> : null}
-
-			{isSaved ? (
-				<div className="fixed bottom-24 right-6 z-50">
-					<Toast type="success" message="Alterações salvas." />
-				</div>
-			) : null}
 		</main>
 	)
 }
