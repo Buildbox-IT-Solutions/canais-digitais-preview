@@ -8,13 +8,21 @@
  * Toggle de favoritar (feature Favoritos) — âncora principal é a MÍDIA (canto
  * superior direito, `top-2 right-2`, mesmo inset do selo "Conteúdo Patrocinado" em
  * CategoryColumn); sem imagem, cai para a linha do título (única âncora presente em
- * toda variante). Ligado fica sempre visível; desligado só aparece no hover do card
- * ou no focus-within, e só em dispositivos com hover fino (mouse) — `@media (hover:
- * hover) and (pointer: fine)`, nunca por breakpoint de largura. Onde não há hover
- * fino, fica sempre visível. Espaço reservado por opacidade (nunca por
- * display/mount). Renderiza sempre que `contentId` existir, logado ou não —
- * autenticação vive só dentro de useFavoritoToggle (clique deslogado é no-op até o
- * modal entrar, próximo passo).
+ * toda variante). Ligado e desligado seguem a MESMA regra: só aparece no hover do
+ * card ou no focus-within, e só em dispositivos com hover fino (mouse) — `@media
+ * (hover: hover) and (pointer: fine)`, nunca por breakpoint de largura. Onde não há
+ * hover fino, fica sempre visível (os dois estados, incluindo mobile/touch — lá
+ * não existe hover, então o botão sempre aparece fixo, favoritado ou não).
+ * Renderiza sempre que `contentId` existir, logado ou não — autenticação vive só
+ * dentro de useFavoritoToggle (clique deslogado é no-op até o modal entrar,
+ * próximo passo).
+ *
+ * `size="small"` no Toggle (não `medium`) — pedido de produto pra reduzir a área
+ * de toque do favoritar nos cards (32px de caixa, ícone 16px, ambos um step
+ * abaixo do Toggle [1.0] no Figma). Vale nos 5 lugares que usam este Toggle
+ * (NewsCard/CategoryColumn/VideoCard/DestaqueSection); a barra de ações da
+ * página de conteúdo é a única exceção e continua `medium`, por convívio com os
+ * ícones de WhatsApp/compartilhar ali.
  *
  * Problema técnico resolvido: `Thumbnail` renderiza `overlay` (usado pelo
  * PlayButton) DENTRO do próprio `<a>` da imagem — um `<button>` (o Toggle) não pode
@@ -30,11 +38,11 @@
  * gap-2 (8px) garante a folga mínima entre a caixa do título e a área de toque —
  * como são irmãos de flex (não overlay), a não-sobreposição é garantida pelo
  * próprio layout, em qualquer breakpoint e em título de 1 a 4 linhas. O botão em si
- * continua 40px (md do IconButton) — a área de toque real não muda. O que muda é o
- * quanto ele CONTA pra altura da linha: `-my-2.5` (margin vertical negativa de
- * 10px) reduz a caixa-de-margem do toggle pra 40-10-10=20px, menor que a altura de
- * qualquer título (mesmo o menor, 24px) — quem manda na altura da linha é sempre o
- * título. Esse -10px também desloca o botão pra cima o suficiente pra que o TOPO do
+ * é 32px (`size="small"` do Toggle) — a área de toque real não muda com o texto. O
+ * que muda é o quanto ele CONTA pra altura da linha: `-my-2.5` (margin vertical
+ * negativa de 10px) reduz a caixa-de-margem do toggle pra 32-10=22px, menor que a
+ * altura de qualquer título (mesmo o menor, 24px) — quem manda na altura da linha é
+ * sempre o título. Esse -10px também desloca o botão pra cima o suficiente pra que o TOPO do
  * ícone (não do botão) coincida com o topo da primeira linha do título.
  *
  * `surface`: `onMedia` sobre foto, `default` no card sem imagem — tamanho e cor do
@@ -62,8 +70,8 @@ import { useFavoritoAuthModal } from '~/lib/use-favorito-auth-modal'
 import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
 import type { INewsCardProps, NewsCardSize } from './types'
 
-// Só se aplica quando NÃO está pressed — ligado ignora hover e fica sempre visível
-// (ver JSX). `transition-opacity` deixa a entrada/saída suave em vez de instantânea.
+// Aplica-se sempre, favoritado ou não (ver JSX) — nenhum dos dois estados fica fixo
+// sem hover. `transition-opacity` deixa a entrada/saída suave em vez de instantânea.
 const TOGGLE_HIDDEN_UNTIL_HOVER = twMerge(
 	'transition-opacity duration-150',
 	'hover-fine:opacity-0',
@@ -127,8 +135,6 @@ export function NewsCard({
 	const { pressed, onPressedChange } = useFavoritoToggle(contentId ?? '', authModal.requestAuth)
 	const showToggle = Boolean(contentId)
 
-	const toggleVisibilityClass = pressed ? undefined : TOGGLE_HIDDEN_UNTIL_HOVER
-
 	// Sobre a mídia: canto superior direito, irmão do <a> da Thumbnail (nunca dentro
 	// de mediaOverlay — ver comentário do arquivo). Só existe quando há imagem.
 	const mediaToggle =
@@ -136,15 +142,15 @@ export function NewsCard({
 			<Toggle
 				pressed={pressed}
 				onPressedChange={onPressedChange}
-				iconOn="bookmark"
-				iconOff="bookmark-border"
+				iconOn="favorite"
+				iconOff="favorite-border"
 				labelOn="Remover dos favoritos"
 				labelOff="Favoritar"
 				tooltipOn="Remover"
 				tooltipOff="Favoritar"
-				size="medium"
+				size="small"
 				surface="onMedia"
-				className={twMerge('absolute top-2 right-2', toggleVisibilityClass)}
+				className={twMerge('absolute top-2 right-2', TOGGLE_HIDDEN_UNTIL_HOVER)}
 			/>
 		) : null
 
@@ -154,15 +160,15 @@ export function NewsCard({
 			<Toggle
 				pressed={pressed}
 				onPressedChange={onPressedChange}
-				iconOn="bookmark"
-				iconOff="bookmark-border"
+				iconOn="favorite"
+				iconOff="favorite-border"
 				labelOn="Remover dos favoritos"
 				labelOff="Favoritar"
 				tooltipOn="Remover"
 				tooltipOff="Favoritar"
-				size="medium"
+				size="small"
 				surface="default"
-				className={twMerge('shrink-0 -my-2.5', toggleVisibilityClass)}
+				className={twMerge('shrink-0 -my-2.5', TOGGLE_HIDDEN_UNTIL_HOVER)}
 			/>
 		) : null
 
@@ -215,7 +221,7 @@ export function NewsCard({
 			onDismiss={authModal.onDismiss}
 			onCreateAccount={authModal.onCreateAccount}
 			onLogin={authModal.onLogin}
-			icon="bookmark"
+			icon="favorite"
 			title={
 				<>
 					<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca

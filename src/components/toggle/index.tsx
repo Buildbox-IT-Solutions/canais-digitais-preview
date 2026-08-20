@@ -42,7 +42,10 @@ import type { IToggleProps, ToggleSurface } from './types'
  *    branco 80%) — controle desabilitado é isento de contraste pela norma, mas a
  *    combinação é visualmente ruim. Comportamento do próprio Figma, não bug do código.
  * 2. Size=Small é 32px, abaixo dos 44px de alvo recomendado — é o tamanho herdado
- *    do Icon Button do arquivo. Não usar em card (NewsCard só usa `medium`).
+ *    do Icon Button do arquivo. Usado propositalmente nos cards (área de toque
+ *    reduzida, pedido de produto — ver comentário em NewsCard/index.tsx); a
+ *    página de conteúdo continua `medium`, por convívio com os outros ícones da
+ *    barra de ações (WhatsApp/compartilhar).
  * 3. O anel de foco não tem folga do ícone (sem `ring-offset`) — no Figma isso
  *    exigiria uma moldura extra; no CSS teria que ser um `ring-offset` que não foi
  *    aplicado sem alinhamento prévio com o Figma.

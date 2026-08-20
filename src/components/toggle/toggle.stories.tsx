@@ -32,9 +32,9 @@ const meta: Meta<typeof Toggle> = {
 export default meta
 type Story = StoryObj<typeof Toggle>
 
-const bookmarkProps = {
-	iconOn: 'bookmark' as const,
-	iconOff: 'bookmark-border' as const,
+const favoriteProps = {
+	iconOn: 'favorite' as const,
+	iconOff: 'favorite-border' as const,
 	labelOn: 'Remover dos favoritos',
 	labelOff: 'Favoritar',
 	tooltipOn: 'Remover',
@@ -46,14 +46,14 @@ const SIZES: IconButtonSize[] = ['small', 'medium', 'large']
 export const Desligado: Story = {
 	render: () => {
 		const [pressed, setPressed] = useState(false)
-		return <Toggle {...bookmarkProps} pressed={pressed} onPressedChange={setPressed} />
+		return <Toggle {...favoriteProps} pressed={pressed} onPressedChange={setPressed} />
 	},
 }
 
 export const Ligado: Story = {
 	render: () => {
 		const [pressed, setPressed] = useState(true)
-		return <Toggle {...bookmarkProps} pressed={pressed} onPressedChange={setPressed} />
+		return <Toggle {...favoriteProps} pressed={pressed} onPressedChange={setPressed} />
 	},
 }
 
@@ -92,14 +92,14 @@ export const Grade: Story = {
 							{surface} / {size}
 						</span>
 						<Toggle
-							{...bookmarkProps}
+							{...favoriteProps}
 							surface={surface}
 							size={size}
 							pressed={pressed[`off-${surface}-${size}`]}
 							onPressedChange={() => toggle(`off-${surface}-${size}`)}
 						/>
 						<Toggle
-							{...bookmarkProps}
+							{...favoriteProps}
 							surface={surface}
 							size={size}
 							pressed={pressed[`on-${surface}-${size}`]}
@@ -118,12 +118,12 @@ export const Desabilitado: Story = {
 	render: () => (
 		<div className="flex items-center gap-8">
 			<div className="flex items-center gap-4 rounded-sm bg-white p-4">
-				<Toggle {...bookmarkProps} surface="default" pressed={false} onPressedChange={() => {}} disabled />
-				<Toggle {...bookmarkProps} surface="default" pressed={true} onPressedChange={() => {}} disabled />
+				<Toggle {...favoriteProps} surface="default" pressed={false} onPressedChange={() => {}} disabled />
+				<Toggle {...favoriteProps} surface="default" pressed={true} onPressedChange={() => {}} disabled />
 			</div>
 			<div className="flex items-center gap-4 rounded-sm bg-neutral-950 p-4">
-				<Toggle {...bookmarkProps} surface="onMedia" pressed={false} onPressedChange={() => {}} disabled />
-				<Toggle {...bookmarkProps} surface="onMedia" pressed={true} onPressedChange={() => {}} disabled />
+				<Toggle {...favoriteProps} surface="onMedia" pressed={false} onPressedChange={() => {}} disabled />
+				<Toggle {...favoriteProps} surface="onMedia" pressed={true} onPressedChange={() => {}} disabled />
 			</div>
 		</div>
 	),
@@ -139,7 +139,7 @@ export const OnMediaFundoClaro: Story = {
 				className="relative flex h-40 w-64 items-start justify-end rounded-sm bg-cover bg-center p-3"
 				style={{ backgroundImage: 'url(https://picsum.photos/seed/bright-sky-white/400/260)' }}
 			>
-				<Toggle {...bookmarkProps} surface="onMedia" pressed={pressed} onPressedChange={setPressed} />
+				<Toggle {...favoriteProps} surface="onMedia" pressed={pressed} onPressedChange={setPressed} />
 			</div>
 		)
 	},
@@ -154,7 +154,7 @@ export const OnMediaFundoEscuro: Story = {
 				className="relative flex h-40 w-64 items-start justify-end rounded-sm bg-cover bg-center p-3"
 				style={{ backgroundImage: 'url(https://picsum.photos/seed/black-storm-night2/400/260)' }}
 			>
-				<Toggle {...bookmarkProps} surface="onMedia" pressed={pressed} onPressedChange={setPressed} />
+				<Toggle {...favoriteProps} surface="onMedia" pressed={pressed} onPressedChange={setPressed} />
 			</div>
 		)
 	},

@@ -1,4 +1,4 @@
-export type ProfileBoxIcon = 'account-circle' | 'business-center' | 'location'
+export type ProfileBoxIcon = 'account-circle' | 'work' | 'location-on'
 
 export interface IProfileBoxProps {
 	icon: ProfileBoxIcon

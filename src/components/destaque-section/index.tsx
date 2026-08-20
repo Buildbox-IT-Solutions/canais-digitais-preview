@@ -26,7 +26,8 @@
  * o MESMO precedente já usado lá, o toggle foi adicionado direto nesse card
  * (Toggle irmão do <a> da Thumbnail, dentro de wrapper `relative`), com seu
  * próprio par useFavoritoAuthModal/useFavoritoToggle — sem inventar um slot novo
- * no NewsCard só pra este caso único. No desktop essa posição (primeiro item de
+ * no NewsCard só pra este caso único. `size="small"` (área de toque reduzida, ver
+ * comentário em NewsCard/index.tsx). No desktop essa posição (primeiro item de
  * `heroBottom`) NUNCA teve tratamento especial — já era um card comum ali, então
  * vira NewsCard como os demais, sem exceção.
  *
@@ -48,7 +49,7 @@ import { picsumSrc } from '~/mocks/articles'
 import type { IDestaqueSectionProps } from './types'
 
 // Mesma regra de visibilidade do toggle nos outros cards (NewsCard/CategoryColumn) —
-// ligado fica sempre visível, desligado só aparece no hover fino ou focus-within.
+// favoritado ou não, só aparece no hover fino ou focus-within.
 const TOGGLE_HIDDEN_UNTIL_HOVER = twMerge(
 	'transition-opacity duration-150',
 	'hover-fine:opacity-0',
@@ -102,18 +103,15 @@ export function DestaqueSection({ hero, top2, top3, heroText, heroBottom, classN
 							<Toggle
 								pressed={sponsoredToggle.pressed}
 								onPressedChange={sponsoredToggle.onPressedChange}
-								iconOn="bookmark"
-								iconOff="bookmark-border"
+								iconOn="favorite"
+								iconOff="favorite-border"
 								labelOn="Remover dos favoritos"
 								labelOff="Favoritar"
 								tooltipOn="Remover"
 								tooltipOff="Favoritar"
-								size="medium"
+								size="small"
 								surface="onMedia"
-								className={twMerge(
-									'absolute top-2 right-2',
-									sponsoredToggle.pressed ? undefined : TOGGLE_HIDDEN_UNTIL_HOVER,
-								)}
+								className={twMerge('absolute top-2 right-2', TOGGLE_HIDDEN_UNTIL_HOVER)}
 							/>
 						</div>
 						<div className="flex flex-col gap-2 px-4 py-3">
@@ -231,7 +229,7 @@ export function DestaqueSection({ hero, top2, top3, heroText, heroBottom, classN
 				onDismiss={sponsoredAuthModal.onDismiss}
 				onCreateAccount={sponsoredAuthModal.onCreateAccount}
 				onLogin={sponsoredAuthModal.onLogin}
-				icon="bookmark"
+				icon="favorite"
 				title={
 					<>
 						<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca

@@ -22,7 +22,7 @@ type Story = StoryObj<typeof ProfileBox>
 export const Complete: Story = {}
 export const Incomplete: Story = {
 	args: {
-		icon: 'business-center',
+		icon: 'work',
 		title: 'Dados profissionais',
 		description: 'Empresa, cargo e setor',
 		fields: ['Empresa', 'Cargo', 'Setor'],

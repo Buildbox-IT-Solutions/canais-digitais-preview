@@ -1,5 +1,6 @@
 import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
+import { IconButton } from '~/components/icon-button'
 import type { ISearchBarProps, SearchBarState } from './types'
 
 /**
@@ -58,14 +59,14 @@ export function SearchBar({
 				)}
 			/>
 			{hasValue ? (
-				<button
-					type="button"
-					aria-label="Limpar busca"
+				<IconButton
+					icon="close"
+					label="Limpar busca"
+					size="small"
+					type="ghost"
 					onClick={onClear}
-					className="absolute inset-y-0 right-1 flex items-center justify-center p-2 text-neutral-900 hover:text-primary-600"
-				>
-					<Icon name="close" className="size-4" />
-				</button>
+					className="absolute inset-y-0 right-1 text-neutral-900 hover:text-primary-600"
+				/>
 			) : null}
 		</div>
 	)

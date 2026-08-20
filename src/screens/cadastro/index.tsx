@@ -152,7 +152,7 @@ export default function CadastroScreen() {
 							href={backHref}
 							className="inline-flex items-center gap-2 pl-3 pr-4 py-1.5 -ml-1 rounded-full font-body font-bold text-body-md text-primary-600 hover:bg-neutral-50 transition-colors"
 						>
-							<Icon name="arrow-left" className="size-5" />
+							<Icon name="arrow-back" className="size-5" />
 							Voltar
 						</a>
 					</header>
@@ -328,7 +328,7 @@ export default function CadastroScreen() {
 									className="inline-flex items-center justify-center gap-2 w-full h-12 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
 								>
 									{PRIMARY_CTA[step]}
-									{step !== 3 ? <Icon name="arrow-right" className="size-6" /> : null}
+									{step !== 3 ? <Icon name="arrow-forward" className="size-6" /> : null}
 								</button>
 							</form>
 						</div>

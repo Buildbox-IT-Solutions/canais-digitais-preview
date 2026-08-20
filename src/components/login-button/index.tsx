@@ -53,7 +53,7 @@ export function LoginButton({
 			>
 				{avatarNode}
 				<span>{firstName}</span>
-				<Icon name="arrow-drop-down" className="size-5 shrink-0" />
+				<Icon name="arrow-drop-down" className="size-4 shrink-0" />
 			</button>
 		)
 	}
@@ -62,7 +62,7 @@ export function LoginButton({
 		<a href={href} className={triggerClasses}>
 			{avatarNode}
 			<span>{firstName}</span>
-			<Icon name="arrow-drop-down" className="size-5 shrink-0" />
+			<Icon name="arrow-drop-down" className="size-4 shrink-0" />
 		</a>
 	)
 }

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 export type ButtonType = 'filled' | 'outlined' | 'ghost'
 export type ButtonTone = 'default' | 'inverse'
 export type ButtonSize = 'large' | 'medium' | 'small'
-export type ButtonIcon = 'none' | 'arrow-right' | 'plus'
+export type ButtonIcon = 'none' | 'arrow-forward' | 'add'
 
 export interface IButtonProps {
 	label: string

@@ -74,7 +74,7 @@ export function TableOfContents({ headings, className }: ITableOfContentsProps) 
 						<Icon name="toc" className="size-5" />
 						Neste artigo
 						<Icon
-							name="chevron-down"
+							name="expand-more"
 							className={twMerge(
 								'size-4 motion-safe:transition-transform motion-reduce:transition-none',
 								panelOpen && 'rotate-180',

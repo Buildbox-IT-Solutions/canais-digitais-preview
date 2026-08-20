@@ -14,7 +14,8 @@ import { FooterDesktop } from '~/components/footer-desktop'
 import { GeneralItem } from '~/components/general-item'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
-import { NewsletterItem } from '~/components/newsletter-item'
+import { NewsletterCard } from '~/components/newsletter-card'
+import type { NewsletterState } from '~/components/newsletter-card/types'
 import { Pagination } from '~/components/pagination'
 import { ProfileBox } from '~/components/profile-box'
 import { ReadListItem } from '~/components/read-list-item'
@@ -63,6 +64,9 @@ const SCENARIOS: ScenarioDef[] = [
 	{ id: 'leituras-com-erro', label: 'Com erro', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'favoritos-padrao', label: 'Preenchido', group: 'Favoritos', tab: 'favoritos', isDefault: true },
 	{ id: 'favoritos-vazio', label: 'Vazio', group: 'Favoritos', tab: 'favoritos' },
+	{ id: 'newsletter-padrao', label: 'Preenchido', group: 'Newsletter', tab: 'newsletter', isDefault: true },
+	{ id: 'newsletter-carregando', label: 'Carregando', group: 'Newsletter', tab: 'newsletter' },
+	{ id: 'newsletter-com-erro', label: 'Com erro', group: 'Newsletter', tab: 'newsletter' },
 ]
 
 // TODO remover na próxima iteração — alias temporário pra links antigos com ?state=.
@@ -124,6 +128,8 @@ export default function DashboardPerfilV4Screen() {
 	const isLoading = cenario === 'leituras-carregando'
 	const isErro = cenario === 'leituras-com-erro'
 	const favoritosForcedEmpty = cenario === 'favoritos-vazio'
+	const isNewsletterLoading = cenario === 'newsletter-carregando'
+	const isNewsletterErro = cenario === 'newsletter-com-erro'
 
 	// Migra o link antigo assim que a tela monta: reescreve a URL pra ?cenario= (sem
 	// empilhar no histórico) e avisa uma vez no console. Não bloqueia o primeiro
@@ -179,7 +185,9 @@ export default function DashboardPerfilV4Screen() {
 				{tab === 'ultimas' ? (
 					<UltimasPane isEmpty={isEmpty} isLoading={isLoading} isErro={isErro} />
 				) : null}
-				{tab === 'newsletter' ? <NewsletterPane /> : null}
+				{tab === 'newsletter' ? (
+					<NewsletterPane isLoading={isNewsletterLoading} isErro={isNewsletterErro} />
+				) : null}
 				{tab === 'downloads' ? <DownloadsPane isEmpty={isEmpty} /> : null}
 				{tab === 'favoritos' ? <FavoritosPane forcedEmpty={favoritosForcedEmpty} /> : null}
 			</div>
@@ -407,7 +415,7 @@ function UltimasListRow({
 			toast.success('Removido dos favoritos.')
 		} else {
 			favoritar(item.id)
-			toast.success('Conteúdo salvo com sucesso!', {
+			toast.success('Adicionado aos seus Favoritos!', {
 				action: { label: 'Ver', onClick: () => navigate(`${BASE_HREF}?tab=favoritos`) },
 			})
 		}
@@ -417,7 +425,7 @@ function UltimasListRow({
 		{ label: 'Compartilhar', icon: 'share', onClick: () => compartilharConteudo(item.title, href) },
 		{
 			label: pressed ? 'Remover dos favoritos' : 'Salvar como favorito',
-			icon: pressed ? 'bookmark' : 'bookmark-border',
+			icon: pressed ? 'favorite' : 'favorite-border',
 			onClick: handleToggleFavorito,
 		},
 		{ label: 'Remover de últimas leituras', icon: 'delete-outline', onClick: () => onRemove(item.id) },
@@ -504,7 +512,7 @@ function PerfilPane({
 						incomplete={!complete}
 					/>
 					<ProfileBox
-						icon="business-center"
+						icon="work"
 						title="Dados profissionais"
 						description="Define suas recomendações de conteúdo e newsletter"
 						fields={[campos.empresa, campos.cargo, campos.setor]}
@@ -512,7 +520,7 @@ function PerfilPane({
 						cta="Atualizar"
 					/>
 					<ProfileBox
-						icon="location"
+						icon="location-on"
 						title="Dados Demográficos"
 						description="Solicitado apenas quando você baixa materiais"
 						fields={demograficoFields}
@@ -556,17 +564,45 @@ function PerfilPane({
 	)
 }
 
-function NewsletterPane() {
-	const [items, setItems] = useState(NEWSLETTERS)
-	const totalNl = items.length
-	const activeNl = items.filter((n) => n.checked).length
+// Delay fixo da simulação de rede do botão Assinar — mesmo valor e mesmo racional do
+// SIMULATED_LATENCY_MS em lib/use-favorito-toggle.ts (artifício de protótipo, não existe
+// no produto real). Diferente do toggle de favoritos, aqui o "pending" é estado visível
+// do próprio componente (spinner + "Assinando..."), não algo a evitar — por isso sempre
+// simulado, sem precisar de flag de latência na querystring.
+const NEWSLETTER_SUBSCRIBE_DELAY_MS = 900
 
-	// Auto-save otimista: o switch muda de imediato e o toast confirma o "salvamento"
-	// (mock, sem API real) — mesmo padrão descrito para as futuras preferências de
-	// comunicação em figma-specs/_regras-de-negocio.md.
-	function handleToggle(index: number, checked: boolean) {
-		setItems((prev) => prev.map((item, i) => (i === index ? { ...item, checked } : item)))
-		toast.success(checked ? 'Newsletter assinada.' : 'Newsletter cancelada.')
+// Aba Newsletter (v4): recorte de 2 newsletters em destaque, nesta ordem — não é o catálogo
+// completo de NEWSLETTERS (mocks/dashboard-perfil.ts), que dashboard-perfil-v3 ainda usa
+// inteiro na lista de switches. `checked` aqui decide o estado inicial do card (idle vs.
+// subscribed) e pode divergir do catálogo — Food Connection é `checked: true` lá, mas
+// entra sem assinatura nesta vitrine.
+const NEWSLETTER_CARDS = [
+	{ ...NEWSLETTERS.find((n) => n.title === 'Food Connection')!, checked: false },
+	NEWSLETTERS.find((n) => n.title === 'Novidades e ofertas da Informa Markets')!,
+]
+
+function NewsletterPane({ isLoading, isErro }: { isLoading: boolean; isErro: boolean }) {
+	// ?cenario=newsletter-carregando: congela os cards ainda não assinados em "pending"
+	// (spinner + "Assinando...") pra revisão, sem depender do timer de
+	// NEWSLETTER_SUBSCRIBE_DELAY_MS — mesmo racional do ?cenario=leituras-carregando.
+	const [states, setStates] = useState<NewsletterState[]>(() =>
+		NEWSLETTER_CARDS.map((n) => (n.checked ? 'subscribed' : isLoading ? 'pending' : 'idle')),
+	)
+
+	// "Assinado" é terminal — o NewsletterCard não expõe caminho de volta a idle nem
+	// controle de cancelamento, então só newsletters em idle/error respondem ao clique.
+	// Em ?cenario=newsletter-carregando o clique é no-op: o "pending" ali é a própria
+	// vitrine do estado, não uma ação em andamento.
+	function handleSubscribe(index: number) {
+		if (isLoading) return
+		if (states[index] !== 'idle' && states[index] !== 'error') return
+
+		setStates((prev) => prev.map((s, i) => (i === index ? 'pending' : s)))
+
+		setTimeout(() => {
+			setStates((prev) => prev.map((s, i) => (i === index ? (isErro ? 'error' : 'subscribed') : s)))
+			if (!isErro) toast.success('Newsletter assinada.')
+		}, NEWSLETTER_SUBSCRIBE_DELAY_MS)
 	}
 
 	return (
@@ -574,26 +610,19 @@ function NewsletterPane() {
 			<header className="flex flex-col gap-1">
 				<h2 className="font-display font-bold text-title-xl text-primary-600">Newsletter</h2>
 				<p className="font-body text-body-md text-neutral-600">
-					Escolha o que deseja receber. Suas alterações são salvas automaticamente.
+					O melhor conteúdo, direto na sua caixa de entrada.
 				</p>
 			</header>
 
-			<div className="bg-neutral-50 rounded-lg px-6 py-4">
-				<p className="font-body font-semibold text-body-md text-primary-600">
-					{activeNl} newsletters ativas de {totalNl} opções disponíveis
-				</p>
-			</div>
-
-			<div className="flex flex-col">
-				{items.map((nl, i) => (
-					<NewsletterItem
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+				{NEWSLETTER_CARDS.map((nl, i) => (
+					<NewsletterCard
 						key={i}
 						id={`nl-v4-${i}`}
 						title={nl.title}
-						desc={nl.desc}
-						checked={nl.checked}
-						isLast={i === items.length - 1}
-						onChange={(checked) => handleToggle(i, checked)}
+						description={nl.desc}
+						state={states[i]}
+						onSubscribe={() => handleSubscribe(i)}
 					/>
 				))}
 			</div>
@@ -734,7 +763,7 @@ function FavoritosPane({ forcedEmpty }: { forcedEmpty: boolean }) {
 
 			{isEmpty ? (
 				<div className="flex flex-col items-center text-center gap-4 py-12">
-					<StatusRing accent="primary" icon="bookmark-border" size="sm" />
+					<StatusRing accent="primary" icon="favorite-border" size="sm" />
 					<h3 className="font-display font-bold text-title-xl text-primary-600">
 						Você ainda não tem favoritos
 					</h3>

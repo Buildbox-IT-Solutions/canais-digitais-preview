@@ -38,13 +38,13 @@ import { useLogado } from '~/lib/use-logado'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
 import type { Author, ContentBlock, Post } from '~/types/post'
 
-// Desenho final da barra: bookmark, WhatsApp, share — imprimir/LinkedIn/Facebook/
+// Desenho final da barra: favoritar, WhatsApp, share — imprimir/LinkedIn/Facebook/
 // Twitter saíram, condensados no share nativo (que já lista os apps instalados do
 // usuário, incluindo essas redes). WhatsApp abre um wa.me com título+link
 // pré-preenchidos (link puro, sem SDK/API — mesma categoria de um mailto:).
 // Compartilhar reusa `compartilharConteudo` (Web Share API, fallback de copiar
 // link) — o mesmo helper já usado em Últimas leituras/Favoritos.
-// Tooltip nos 3: bookmark usa tooltipOn/tooltipOff do Toggle ("Remover"/
+// Tooltip nos 3: favoritar usa tooltipOn/tooltipOff do Toggle ("Remover"/
 // "Favoritar", igual à home); WhatsApp e share usam o Tooltip genérico direto —
 // "Enviar" (verbo curto, mesma família de Favoritar/Remover/Compartilhar) e
 // "Compartilhar" (esse coincide com o aria-label do IconButton de propósito,
@@ -231,8 +231,8 @@ export default function ConteudoScreen() {
 									<Toggle
 										pressed={favoritoToggle.pressed}
 										onPressedChange={favoritoToggle.onPressedChange}
-										iconOn="bookmark"
-										iconOff="bookmark-border"
+										iconOn="favorite"
+										iconOff="favorite-border"
 										labelOn="Remover dos favoritos"
 										labelOff="Favoritar"
 										tooltipOn="Remover"
@@ -441,7 +441,7 @@ export default function ConteudoScreen() {
 			</>
 		) : null}
 
-		{/* Modal de auth do bookmark — mesmo IncentiveDownloadDialog do gatilho de
+		{/* Modal de auth do favoritar — mesmo IncentiveDownloadDialog do gatilho de
 		    download (ver NewsCard/CategoryColumn), `open` já é interno a
 		    favoritoAuthModal e só liga quando deslogado clica; não depende do
 		    bloco `!logado` acima. */}
@@ -450,7 +450,7 @@ export default function ConteudoScreen() {
 			onDismiss={favoritoAuthModal.onDismiss}
 			onCreateAccount={favoritoAuthModal.onCreateAccount}
 			onLogin={favoritoAuthModal.onLogin}
-			icon="bookmark"
+			icon="favorite"
 			title={
 				<>
 					<span className="font-bold text-secondary-500">Salve</span> este conteúdo na sua biblioteca
