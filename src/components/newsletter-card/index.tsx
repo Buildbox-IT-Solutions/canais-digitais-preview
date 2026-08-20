@@ -16,7 +16,7 @@ import type { INewsletterCardProps } from './types'
  * altura fixa, descrições mais curtas que o placeholder do Figma abriam um vão grande entre
  * texto e botão, já que o rodapé sempre empurrava para a base do card.
  * Falha ao assinar não é um estado visual do card — quem usa o componente faz rollback pra
- * "idle" e avisa por toast com ação "Tentar novamente" (ver NewsletterPane em
+ * "idle" e avisa por toast com ação "Repetir" (ver NewsletterPane em
  * dashboard-perfil-v4), mesmo padrão do toggle de favoritos.
  * "subscribed" é terminal — o componente não expõe caminho de volta a idle nem controle de
  * cancelamento.

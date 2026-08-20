@@ -594,7 +594,7 @@ function NewsletterPane({ isLoading, isErro }: { isLoading: boolean; isErro: boo
 	// Em ?cenario=newsletter-carregando o clique é no-op: o "pending" ali é a própria
 	// vitrine do estado, não uma ação em andamento.
 	// Falha: sem estado visual persistente no card — volta pra idle (rollback) e avisa
-	// por toast com ação "Tentar novamente", mesmo padrão do toggle de favoritos em
+	// por toast com ação "Repetir", mesmo padrão do toggle de favoritos em
 	// lib/use-favorito-toggle.ts.
 	function handleSubscribe(index: number) {
 		if (isLoading) return
@@ -606,7 +606,7 @@ function NewsletterPane({ isLoading, isErro }: { isLoading: boolean; isErro: boo
 			if (isErro) {
 				setStates((prev) => prev.map((s, i) => (i === index ? 'idle' : s)))
 				toast.error('Não foi possível confirmar a assinatura.', {
-					action: { label: 'Tentar novamente', onClick: () => handleSubscribe(index) },
+					action: { label: 'Repetir', onClick: () => handleSubscribe(index) },
 				})
 				return
 			}
