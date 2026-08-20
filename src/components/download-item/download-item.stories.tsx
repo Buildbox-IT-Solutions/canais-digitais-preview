@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DownloadItem } from '.'
+import { DownloadItemSkeleton } from './download-item-skeleton'
 
 const meta: Meta<typeof DownloadItem> = {
 	title: 'List Items/DownloadItem',
@@ -23,3 +24,14 @@ export const Enabled: Story = {}
 export const Disabled: Story = { args: { disabled: true } }
 export const Doc: Story = { args: { icon: 'docs', title: 'Política de privacidade — versão revisada' } }
 export const ImageType: Story = { args: { icon: 'image', title: 'Infográfico — Cadeia de proteína animal' } }
+
+/** Loading — skeleton com a métrica exata do item real, sem spinner. */
+export const Loading: Story = {
+	render: () => (
+		<>
+			{Array.from({ length: 5 }, (_, i) => (
+				<DownloadItemSkeleton key={i} isLast={i === 4} />
+			))}
+		</>
+	),
+}

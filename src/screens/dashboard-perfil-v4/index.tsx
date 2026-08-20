@@ -9,6 +9,7 @@ import type { ScenarioDef } from '~/dev/scenario-store'
 import { DashboardTabs } from '~/components/dashboard-tabs'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
+import { DownloadItemSkeleton } from '~/components/download-item/download-item-skeleton'
 import { Drawer } from '~/components/drawer'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { GeneralItem } from '~/components/general-item'
@@ -56,14 +57,19 @@ const PER_PAGE = 10
 const SCENARIOS: ScenarioDef[] = [
 	{ id: 'perfil-incompleto', label: 'Incompleto', group: 'Perfil', tab: 'perfil', isDefault: true },
 	{ id: 'perfil-completo', label: 'Completo', group: 'Perfil', tab: 'perfil' },
+	{ id: 'perfil-salvo', label: 'Salvo', group: 'Perfil', tab: 'perfil' },
 	{ id: 'downloads-padrao', label: 'Preenchido', group: 'Downloads', tab: 'downloads', isDefault: true },
 	{ id: 'downloads-vazio', label: 'Vazio', group: 'Downloads', tab: 'downloads' },
+	{ id: 'downloads-carregando', label: 'Carregando', group: 'Downloads', tab: 'downloads' },
+	{ id: 'downloads-com-erro', label: 'Com erro', group: 'Downloads', tab: 'downloads' },
 	{ id: 'leituras-padrao', label: 'Preenchido', group: 'Leituras', tab: 'ultimas', isDefault: true },
 	{ id: 'leituras-vazio', label: 'Vazio', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'leituras-carregando', label: 'Carregando', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'leituras-com-erro', label: 'Com erro', group: 'Leituras', tab: 'ultimas' },
 	{ id: 'favoritos-padrao', label: 'Preenchido', group: 'Favoritos', tab: 'favoritos', isDefault: true },
 	{ id: 'favoritos-vazio', label: 'Vazio', group: 'Favoritos', tab: 'favoritos' },
+	{ id: 'favoritos-carregando', label: 'Carregando', group: 'Favoritos', tab: 'favoritos' },
+	{ id: 'favoritos-com-erro', label: 'Com erro', group: 'Favoritos', tab: 'favoritos' },
 	{ id: 'newsletter-padrao', label: 'Preenchido', group: 'Newsletter', tab: 'newsletter', isDefault: true },
 	{ id: 'newsletter-carregando', label: 'Carregando', group: 'Newsletter', tab: 'newsletter' },
 	{ id: 'newsletter-com-erro', label: 'Com erro', group: 'Newsletter', tab: 'newsletter' },
@@ -128,6 +134,10 @@ export default function DashboardPerfilV4Screen() {
 	const isLoading = cenario === 'leituras-carregando'
 	const isErro = cenario === 'leituras-com-erro'
 	const favoritosForcedEmpty = cenario === 'favoritos-vazio'
+	const isDownloadsLoading = cenario === 'downloads-carregando'
+	const isDownloadsErro = cenario === 'downloads-com-erro'
+	const isFavoritosLoading = cenario === 'favoritos-carregando'
+	const isFavoritosErro = cenario === 'favoritos-com-erro'
 	const isNewsletterLoading = cenario === 'newsletter-carregando'
 	const isNewsletterErro = cenario === 'newsletter-com-erro'
 
@@ -188,8 +198,16 @@ export default function DashboardPerfilV4Screen() {
 				{tab === 'newsletter' ? (
 					<NewsletterPane isLoading={isNewsletterLoading} isErro={isNewsletterErro} />
 				) : null}
-				{tab === 'downloads' ? <DownloadsPane isEmpty={isEmpty} /> : null}
-				{tab === 'favoritos' ? <FavoritosPane forcedEmpty={favoritosForcedEmpty} /> : null}
+				{tab === 'downloads' ? (
+					<DownloadsPane isEmpty={isEmpty} isLoading={isDownloadsLoading} isErro={isDownloadsErro} />
+				) : null}
+				{tab === 'favoritos' ? (
+					<FavoritosPane
+						forcedEmpty={favoritosForcedEmpty}
+						forcedLoading={isFavoritosLoading}
+						forcedErro={isFavoritosErro}
+					/>
+				) : null}
 			</div>
 
 			<FooterDesktop />
@@ -640,7 +658,15 @@ function NewsletterPane({ isLoading, isErro }: { isLoading: boolean; isErro: boo
 	)
 }
 
-function DownloadsPane({ isEmpty }: { isEmpty: boolean }) {
+function DownloadsPane({
+	isEmpty,
+	isLoading,
+	isErro,
+}: {
+	isEmpty: boolean
+	isLoading: boolean
+	isErro: boolean
+}) {
 	const [params] = useSearchParams()
 	const pageRaw = Number(params.get('page') ?? 1)
 	const totalPages = Math.max(1, Math.ceil(DOWNLOADS.length / PER_PAGE))
@@ -652,14 +678,32 @@ function DownloadsPane({ isEmpty }: { isEmpty: boolean }) {
 		<div className="flex flex-col gap-6">
 			<header className="flex flex-col gap-1">
 				<h2 className="font-display font-bold text-title-xl text-primary-600">Meus downloads</h2>
-				{!isEmpty ? (
+				{!isEmpty && !isLoading && !isErro ? (
 					<p className="font-body text-body-md text-neutral-600">
 						Baixe novamente qualquer material a qualquer momento.
 					</p>
 				) : null}
 			</header>
 
-			{isEmpty ? (
+			{isLoading ? (
+				<div className="flex flex-col">
+					{Array.from({ length: 5 }, (_, i) => (
+						<DownloadItemSkeleton key={i} isLast={i === 4} />
+					))}
+				</div>
+			) : isErro ? (
+				<div className="flex flex-col items-center text-center gap-4 py-12">
+					<p className="font-body text-body-md text-neutral-700 max-w-md">
+						Não foi possível carregar seus downloads.
+					</p>
+					<a
+						href={`${BASE_HREF}?tab=downloads`}
+						className="inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full border-[1.5px] border-primary-600 text-primary-600 hover:bg-neutral-50 font-body font-bold text-body-md transition-colors"
+					>
+						Tentar de novo
+					</a>
+				</div>
+			) : isEmpty ? (
 				<div className="flex flex-col items-center text-center gap-4 py-12">
 					<StatusRing accent="primary" icon="folder" size="sm" />
 					<h3 className="font-display font-bold text-title-xl text-primary-600">
@@ -710,7 +754,15 @@ function DownloadsPane({ isEmpty }: { isEmpty: boolean }) {
 	)
 }
 
-function FavoritosPane({ forcedEmpty }: { forcedEmpty: boolean }) {
+function FavoritosPane({
+	forcedEmpty,
+	forcedLoading,
+	forcedErro,
+}: {
+	forcedEmpty: boolean
+	forcedLoading: boolean
+	forcedErro: boolean
+}) {
 	const [params] = useSearchParams()
 	const pageRaw = Number(params.get('page') ?? 1)
 
@@ -771,7 +823,25 @@ function FavoritosPane({ forcedEmpty }: { forcedEmpty: boolean }) {
 				</p>
 			</header>
 
-			{isEmpty ? (
+			{forcedLoading ? (
+				<ul className="flex flex-col">
+					{Array.from({ length: 5 }, (_, i) => (
+						<ReadListItemSkeleton key={i} isLast={i === 4} />
+					))}
+				</ul>
+			) : forcedErro ? (
+				<div className="flex flex-col items-center text-center gap-4 py-12">
+					<p className="font-body text-body-md text-neutral-700 max-w-md">
+						Não foi possível carregar seus favoritos.
+					</p>
+					<a
+						href={`${BASE_HREF}?tab=favoritos`}
+						className="inline-flex items-center gap-2 h-10 pl-5 pr-4 rounded-full border-[1.5px] border-primary-600 text-primary-600 hover:bg-neutral-50 font-body font-bold text-body-md transition-colors"
+					>
+						Tentar de novo
+					</a>
+				</div>
+			) : isEmpty ? (
 				<div className="flex flex-col items-center text-center gap-4 py-12">
 					<StatusRing accent="primary" icon="favorite-border" size="sm" />
 					<h3 className="font-display font-bold text-title-xl text-primary-600">
