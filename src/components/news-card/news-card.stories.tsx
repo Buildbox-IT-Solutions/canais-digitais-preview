@@ -10,6 +10,7 @@ import { NewsCard } from './index'
  *  col-span do grid da TELA, não do componente. Os px abaixo são só
  *  aproximação relativa (lg > md > sm), não spec de produção. */
 const WIDTHS: Record<string, string> = {
+	'xlarge-horizontal': 'w-[1224px]',
 	'large-vertical': 'w-[600px]',
 	'medium-vertical': 'w-[392px]',
 	'small-vertical': 'w-[288px]',
@@ -195,4 +196,40 @@ export const ComFavoritarFotoClara: Story = {
 }
 export const ComFavoritarFotoEscura: Story = {
 	args: { ...base, image: 'https://picsum.photos/seed/black-storm-night2/600/338', contentId: 'story-foto-escura' },
+}
+
+// "News Card 2.0 / Boxed" + Inverse + Patrocinado — o destaque único da home
+// (node 6775:18688). Moldura própria, split 50/50 com a imagem à direita (3:2)
+// sangrando até a borda, SponsorLine no rodapé. Empilha (imagem em cima) abaixo de lg:.
+const destaque = {
+	title: 'Fispal Food Service terá ativações com chefs e executivos do setor',
+	image: 'https://picsum.photos/seed/home-destaque-unico/1224/816',
+	href: '#',
+	categoria: { label: 'Food Service', color: 'mint' as const, href: '#' },
+	lead: 'Maior evento da América do Sul voltado ao setor de alimentação fora do lar, a Fispal Food Service 2026 reunirá, entre os dias 26 e 29 de maio no Distrito Anhembi, não apenas lançamentos e soluções, mas também uma agenda de conteúdo com nomes de peso da gastronomia.',
+	size: 'xlarge' as const,
+	orientation: 'horizontal' as const,
+	boxed: true,
+	inverse: true,
+	mediaRatio: 'photo' as const,
+	titleClassName: 'line-clamp-2',
+	leadClassName: 'line-clamp-3',
+}
+
+export const XLargeBoxedInverse: Story = {
+	args: { ...destaque, contentId: 'story-destaque-unico' },
+}
+
+/** Com patrocinador (RN05) — SponsorLine ancorada no rodapé da coluna de texto. */
+export const XLargeBoxedInversePatrocinado: Story = {
+	args: {
+		...destaque,
+		contentId: 'story-destaque-unico-sponsor',
+		sponsor: { company: 'Company Name', href: '#' },
+	},
+}
+
+/** Mídia no lado padrão (esquerda) — mesmo card sem `inverse`. */
+export const XLargeBoxed: Story = {
+	args: { ...destaque, inverse: false, contentId: 'story-destaque-unico-normal' },
 }

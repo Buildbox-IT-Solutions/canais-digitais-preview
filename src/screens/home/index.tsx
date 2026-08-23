@@ -5,6 +5,7 @@ import { AdFrame } from '~/components/ad-frame'
 import { BannerNewsletter } from '~/components/banner-newsletter'
 import { CategoryColumn } from '~/components/category-column'
 import { DestaqueSection } from '~/components/destaque-section'
+import { DestaqueUnico } from '~/components/destaque-unico'
 import { DownloadSection } from '~/components/download-section'
 import { EspecialistasSection } from '~/components/especialistas-section'
 import { FooterDesktop } from '~/components/footer-desktop'
@@ -21,6 +22,8 @@ import { VideosSection } from '~/components/videos-section'
 import { WebstoriesSection } from '~/components/webstories-section'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
 import { WidgetPodcast } from '~/components/widget-podcast'
+import type { ScenarioDef } from '~/dev/scenario-store'
+import { useScenarios } from '~/dev/use-scenarios'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
 import {
@@ -28,6 +31,8 @@ import {
 	ESPECIALISTAS,
 	FISPAL_LIST,
 	FOOD_SERVICE_LIST,
+	HOME_DESTAQUE_UNICO,
+	HOME_DESTAQUE_UNICO_SPONSOR,
 	HOME_HERO,
 	HOME_HERO_BOTTOM,
 	HOME_HERO_TEXT,
@@ -41,9 +46,20 @@ import {
 	WEBSTORIES,
 } from '~/mocks/articles'
 
+// Cenários da ScenarioBar (dev) — o toggle on/off do destaque único, que na
+// aplicação real vive no admin do WP (RN02). "Desligado" é o default: sem
+// ?cenario=, a home renderiza exatamente como antes desta feature.
+const SCENARIOS: ScenarioDef[] = [
+	{ id: 'destaque-unico-off', label: 'Desligado', group: 'Destaque único', isDefault: true },
+	{ id: 'destaque-unico-on', label: 'Ligado', group: 'Destaque único' },
+	{ id: 'destaque-unico-patrocinado', label: 'Ligado + patrocinado', group: 'Destaque único' },
+]
+
 /**
  * Tela: Home — Página inicial
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=973-6474
+ * Destaque único (opcional, RN02 — ScenarioBar: ?cenario=destaque-unico-on|
+ * destaque-unico-patrocinado) entra ACIMA do hero, sem alterar o resto.
  * 15 seções: hero · 3 colunas (Ingredientes/Food Service/Em Alta) · Proteína Animal ·
  * Download · Webstories · Vídeos · Fispal · Banner Newsletter · News+Podcasts ·
  * Especialistas · Última. Miolo responsivo desde 07/2026 (ver docs/superpowers/specs/
@@ -58,6 +74,11 @@ export default function HomeScreen() {
 	const showDownloadToast = params.get('toast') === 'download-started'
 	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
 	const previewIncentive = params.get('preview')
+
+	useScenarios(SCENARIOS)
+	// RN02/RN03 — desligado, a seção não renderiza e o restante da home segue intacto.
+	const cenario = params.get('cenario')
+	const destaqueUnicoOn = cenario === 'destaque-unico-on' || cenario === 'destaque-unico-patrocinado'
 
 	const [portalOpen, setPortalOpen] = useState(previewIncentive === 'portal')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
@@ -131,6 +152,16 @@ export default function HomeScreen() {
 					</div>
 				</div>
 			</section>
+
+			{/* §1.5 — Destaque único (RN01: exatamente 1 conteúdo). Fica entre o ad de
+			    topo e a seção de 3 destaques, que continua intacta abaixo (RN03). */}
+			{destaqueUnicoOn ? (
+				<DestaqueUnico
+					article={HOME_DESTAQUE_UNICO}
+					sponsor={cenario === 'destaque-unico-patrocinado' ? HOME_DESTAQUE_UNICO_SPONSOR : undefined}
+					sponsorHref={cenario === 'destaque-unico-patrocinado' ? '/patrocinador' : undefined}
+				/>
+			) : null}
 
 			<DestaqueSection hero={hero} top2={top2} top3={top3} heroText={HOME_HERO_TEXT} heroBottom={HOME_HERO_BOTTOM} />
 
