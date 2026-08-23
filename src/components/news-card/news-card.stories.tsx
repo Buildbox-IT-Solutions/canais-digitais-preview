@@ -45,6 +45,12 @@ const meta: Meta<typeof NewsCard> = {
 export default meta
 type Story = StoryObj<typeof NewsCard>
 
+// Favoritar NÃO é uma variante do card: é feature assumida (decisão do Pedro em
+// 2026-08-23). Todo story passa `contentId` — não existe mais o par
+// "com favoritar"/"sem favoritar" pra cada combinação. O id é próprio de cada story
+// porque o autodocs renderiza todas na MESMA página: com id compartilhado,
+// favoritar um card acenderia o toggle de todos os outros. Os ids são fictícios
+// (não existem no ARTICLE_POOL), só pra exercitar a store isoladamente.
 const base = {
 	title: 'Meu colega robô: WEG e Mitsubishi apostam em robôs que ajudam humanos',
 	image: 'https://picsum.photos/seed/news/600/338',
@@ -55,32 +61,21 @@ const base = {
 	authorHref: '#',
 }
 
-export const LargeVertical: Story = { args: { ...base, size: 'large', orientation: 'vertical' } }
-export const MediumVertical: Story = { args: { ...base, size: 'medium', orientation: 'vertical' } }
-export const SmallVertical: Story = { args: { ...base, size: 'small', orientation: 'vertical' } }
-export const LargeHorizontal: Story = { args: { ...base, size: 'large', orientation: 'horizontal' } }
-export const MediumHorizontal: Story = { args: { ...base, size: 'medium', orientation: 'horizontal', lead: undefined } }
-export const SmallHorizontal: Story = { args: { ...base, size: 'small', orientation: 'horizontal', lead: undefined, author: undefined } }
-export const SemCategoria: Story = { args: { ...base, categoria: undefined } }
-export const SoHeadline: Story = { args: { ...base, categoria: undefined, lead: undefined, author: undefined } }
-
-// Com toggle de favoritar (contentId) — as 6 combinações de size × orientation.
-// `contentId` usa ids fictícios (não existem no ARTICLE_POOL) só pra exercitar a
-// store isoladamente, sempre partindo de "não favoritado" nesta story.
-export const ComFavoritarLargeVertical: Story = {
+// Matriz size × orientation — as variantes de fato do componente.
+export const LargeVertical: Story = {
 	args: { ...base, size: 'large', orientation: 'vertical', contentId: 'story-large-vertical' },
 }
-export const ComFavoritarMediumVertical: Story = {
+export const MediumVertical: Story = {
 	args: { ...base, size: 'medium', orientation: 'vertical', contentId: 'story-medium-vertical' },
 }
-export const ComFavoritarSmallVertical: Story = {
+export const SmallVertical: Story = {
 	args: { ...base, size: 'small', orientation: 'vertical', contentId: 'story-small-vertical' },
 }
-export const ComFavoritarLargeHorizontal: Story = {
+export const LargeHorizontal: Story = {
 	args: { ...base, size: 'large', orientation: 'horizontal', contentId: 'story-large-horizontal' },
 }
-/** Sem lead — linha da categoria/toggle mais apertada, sem parágrafo de apoio embaixo. */
-export const ComFavoritarMediumHorizontal: Story = {
+/** Sem lead — a linha do título/toggle mais apertada, sem parágrafo de apoio embaixo. */
+export const MediumHorizontal: Story = {
 	args: {
 		...base,
 		size: 'medium',
@@ -90,7 +85,7 @@ export const ComFavoritarMediumHorizontal: Story = {
 	},
 }
 /** Sem lead nem autor — a linha mais apertada de todas pro toggle conviver com a categoria. */
-export const ComFavoritarSmallHorizontal: Story = {
+export const SmallHorizontal: Story = {
 	args: {
 		...base,
 		size: 'small',
@@ -101,16 +96,25 @@ export const ComFavoritarSmallHorizontal: Story = {
 	},
 }
 
-// Casos extras de ancoragem no título (correção de posição pós-Favoritos) — a nova
-// âncora é o título, então precisa funcionar mesmo sem categoria e sem imagem.
-export const ComFavoritarSemCategoria: Story = {
+// Slots de conteúdo desligados.
+export const SemCategoria: Story = {
 	args: { ...base, categoria: undefined, contentId: 'story-sem-categoria' },
 }
-export const ComFavoritarSemImagem: Story = {
+export const SoHeadline: Story = {
+	args: {
+		...base,
+		categoria: undefined,
+		lead: undefined,
+		author: undefined,
+		contentId: 'story-so-headline',
+	},
+}
+/** Sem imagem: o toggle troca de âncora — sai da mídia e vai pra linha do título. */
+export const SemImagem: Story = {
 	args: { ...base, image: undefined, contentId: 'story-sem-imagem' },
 }
 /** Sem imagem + título de 1 linha — o caso mais apertado pra âncora na linha do título. */
-export const ComFavoritarSemImagemTituloCurto: Story = {
+export const SemImagemTituloCurto: Story = {
 	args: {
 		...base,
 		title: 'Robôs no chão de fábrica',
@@ -121,7 +125,7 @@ export const ComFavoritarSemImagemTituloCurto: Story = {
 	},
 }
 /** Sem imagem + título de 4 linhas — confirma que o toggle não some nem sobrepõe em nenhuma linha do wrap. */
-export const ComFavoritarSemImagemTituloLongo: Story = {
+export const SemImagemTituloLongo: Story = {
 	args: {
 		...base,
 		title:
@@ -130,7 +134,7 @@ export const ComFavoritarSemImagemTituloLongo: Story = {
 		contentId: 'story-sem-imagem-titulo-longo',
 	},
 }
-export const ComFavoritarTituloUmaLinha: Story = {
+export const TituloUmaLinha: Story = {
 	args: {
 		...base,
 		title: 'Robôs no chão de fábrica',
@@ -141,7 +145,7 @@ export const ComFavoritarTituloUmaLinha: Story = {
 		contentId: 'story-titulo-1-linha',
 	},
 }
-export const ComFavoritarTituloQuatroLinhas: Story = {
+export const TituloQuatroLinhas: Story = {
 	args: {
 		...base,
 		title:
@@ -154,14 +158,14 @@ export const ComFavoritarTituloQuatroLinhas: Story = {
 
 /** Estado ligado (pressed) — favorita o contentId fictício antes de montar, pra
  * mostrar o card já salvo sem depender de clique manual no canvas. */
-function ComFavoritarPressedRender() {
+function FavoritadoRender() {
 	useEffect(() => {
 		favoritar('story-pressed-demo')
 	}, [])
 	return <NewsCard {...base} contentId="story-pressed-demo" />
 }
-export const ComFavoritarPressed: Story = {
-	render: () => <ComFavoritarPressedRender />,
+export const Favoritado: Story = {
+	render: () => <FavoritadoRender />,
 }
 
 // Card de vídeo (mediaOverlay=PlayButton) — confirma que o PlayButton central e o
@@ -169,7 +173,7 @@ export const ComFavoritarPressed: Story = {
 // grande e os pequenos da lista lateral (o repo não tem VideoCard usando o
 // NewsCard — VideoCard é outro componente — então cobrimos a própria capacidade
 // mediaOverlay do NewsCard, que é o mecanismo compartilhado).
-export const ComFavoritarVideoGrande: Story = {
+export const VideoGrande: Story = {
 	args: {
 		...base,
 		size: 'large',
@@ -178,7 +182,7 @@ export const ComFavoritarVideoGrande: Story = {
 		mediaOverlay: <PlayButton size="large" as="div" />,
 	},
 }
-export const ComFavoritarVideoPequeno: Story = {
+export const VideoPequeno: Story = {
 	args: {
 		...base,
 		size: 'small',
@@ -191,16 +195,28 @@ export const ComFavoritarVideoPequeno: Story = {
 }
 
 // Contraste da superfície onMedia nos dois extremos de foto.
-export const ComFavoritarFotoClara: Story = {
-	args: { ...base, image: 'https://picsum.photos/seed/bright-sky-white/600/338', contentId: 'story-foto-clara' },
+export const FotoClara: Story = {
+	args: {
+		...base,
+		image: 'https://picsum.photos/seed/bright-sky-white/600/338',
+		contentId: 'story-foto-clara',
+	},
 }
-export const ComFavoritarFotoEscura: Story = {
-	args: { ...base, image: 'https://picsum.photos/seed/black-storm-night2/600/338', contentId: 'story-foto-escura' },
+export const FotoEscura: Story = {
+	args: {
+		...base,
+		image: 'https://picsum.photos/seed/black-storm-night2/600/338',
+		contentId: 'story-foto-escura',
+	},
 }
 
 // "News Card 2.0 / Boxed" + Inverse + Patrocinado — o destaque único da home
 // (node 6775:18688). Moldura própria, split 50/50 com a imagem à direita (3:2)
 // sangrando até a borda, SponsorLine no rodapé. Empilha (imagem em cima) abaixo de lg:.
+// `inverse` é fixo nesta variante: a foto é sempre à direita, não existe versão com
+// a foto à esquerda (decisão do Pedro em 2026-08-23) — por isso não há story dela.
+// Clamps 3 (título) e 4 (lead) espelham o DestaqueUnico, onde a conta que justifica
+// esse par está documentada.
 const destaque = {
 	title: 'Fispal Food Service terá ativações com chefs e executivos do setor',
 	image: 'https://picsum.photos/seed/home-destaque-unico/1224/816',
@@ -212,24 +228,19 @@ const destaque = {
 	boxed: true,
 	inverse: true,
 	mediaRatio: 'photo' as const,
-	titleClassName: 'line-clamp-2',
-	leadClassName: 'line-clamp-3',
+	titleClassName: 'line-clamp-3',
+	leadClassName: 'line-clamp-4',
 }
 
-export const XLargeBoxedInverse: Story = {
+export const XLargeBoxed: Story = {
 	args: { ...destaque, contentId: 'story-destaque-unico' },
 }
 
 /** Com patrocinador (RN05) — SponsorLine ancorada no rodapé da coluna de texto. */
-export const XLargeBoxedInversePatrocinado: Story = {
+export const XLargeBoxedPatrocinado: Story = {
 	args: {
 		...destaque,
 		contentId: 'story-destaque-unico-sponsor',
 		sponsor: { company: 'Company Name', href: '#' },
 	},
-}
-
-/** Mídia no lado padrão (esquerda) — mesmo card sem `inverse`. */
-export const XLargeBoxed: Story = {
-	args: { ...destaque, inverse: false, contentId: 'story-destaque-unico-normal' },
 }

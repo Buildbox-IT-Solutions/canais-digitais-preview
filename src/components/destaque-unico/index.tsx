@@ -9,7 +9,10 @@
  * tela: este componente só monta a seção.
  *
  * O CARD é uma instância do `NewsCard` — variante `size="xlarge"` +
- * `orientation="horizontal"` + `boxed` + `inverse` (+ `sponsor` opcional). Nada de
+ * `orientation="horizontal"` + `boxed` + `inverse` (+ `sponsor` opcional). O
+ * `inverse` é FIXO, não uma opção: a foto fica sempre à direita e não existe versão
+ * com a foto à esquerda (decisão do Pedro em 2026-08-23) — por isso não há prop
+ * pra isso aqui nem story do lado invertido. Nada de
  * markup próprio aqui: moldura, split 50/50, empilhamento no mobile, SponsorLine,
  * favoritar e modal de auth vêm todos do NewsCard. Este arquivo é só o invólucro de
  * seção (container `max-w-screen-xl`, padding de página) mais a documentação das
@@ -27,10 +30,20 @@
  * 1224×408 com a imagem em 612×408, e o handoff registra "aspect-ratio 300/200 na
  * foto". Combinada com `w-1/2`, é ela que dita a altura do card, sem altura fixa.
  *
- * Clamps: título e lead em 4 linhas cada (decisão do Pedro em 2026-08-23). O Figma
+ * Clamps: título em 3 linhas, lead em 4 (decisão do Pedro em 2026-08-23). O Figma
  * desenha 2 e 3 (80px = 2×40, 72px = 3×24), mas essas são as alturas do conteúdo de
- * exemplo, não um limite editorial — 4/4 dá folga pra manchete real sem deixar o
- * texto crescer indefinidamente. Ver docs/_achados.md.
+ * exemplo, não um limite editorial. 3/4 é o par MÁXIMO que ainda deixa a proporção
+ * 3:2 ditar a altura do card em toda a faixa desktop — a conta, medida em 2026-08-23:
+ *
+ *   altura da foto = (min(largura, 1280) − 48 de página − 2 de borda) / 2 / 1,5
+ *   custo do texto = 64 (p-8) + 16 (categoria) + 16 (2× gap-2) + 40×linhas do título
+ *                    + 24×linhas do lead  [+ 24 (gap-6) + 56 (SponsorLine)]
+ *
+ * O pior caso é 1024px (entrada do `lg:`), onde a foto tem 325px e o orçamento de
+ * texto cai pra 229px: 3+4 = 216px cabe, 4+3 = 232px já não. Em 1280px sobra folga
+ * (orçamento 314px), mas fixar pelo pior caso evita a foto esticar no meio da faixa.
+ * Com patrocinador a SponsorLine come 80px e nem o 2+3 do Figma cabe em 1024 — ali a
+ * foto estica (recorta via object-cover, não distorce). Ver docs/_achados.md.
  */
 import { twMerge } from '~/lib/tw-merge'
 import { NewsCard } from '~/components/news-card'
@@ -53,7 +66,7 @@ export function DestaqueUnico({ article, sponsor, sponsorHref, className }: IDes
 					title={article.title}
 					categoria={{ label: article.category, color: article.categoryColor, href: '/categoria' }}
 					lead={article.lead}
-					titleClassName="line-clamp-4"
+					titleClassName="line-clamp-3"
 					leadClassName="line-clamp-4"
 					sponsor={sponsor ? { company: sponsor, href: sponsorHref } : undefined}
 				/>

@@ -38,8 +38,9 @@ export const SemLead: Story = {
 }
 
 /**
- * Pior caso: título e lead estourando os 4 clamps ao mesmo tempo, COM patrocinador.
- * É aqui que se vê se o texto ainda cabe na altura ditada pela imagem (3:2 em 50%).
+ * Pior caso: título e lead estourando os clamps (3 e 4) ao mesmo tempo, COM
+ * patrocinador. É aqui que se vê se o texto ainda cabe na altura ditada pela imagem
+ * (3:2 em 50%) — testar em 1024px, não só em 1280: é lá que o orçamento aperta.
  */
 export const TextoLongo: Story = {
 	args: {
