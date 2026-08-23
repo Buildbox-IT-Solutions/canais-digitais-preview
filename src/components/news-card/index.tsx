@@ -313,8 +313,35 @@ export function NewsCard({
 			</div>
 		)
 
-		const mediaPane = mediaStack ? (
-			<div className={twMerge('order-1', split && 'lg:w-1/2', mediaOrder, mediaClassName)}>{mediaStack}</div>
+		// Painel de mídia próprio (não reusa `mediaStack`): aqui a foto precisa
+		// ACOMPANHAR a altura do card quando o texto é mais alto que ela — com
+		// título e lead nos 4 clamps isso acontece, e sem esticar sobraria uma faixa
+		// branca embaixo da foto, quebrando o "mídia sangra até a borda".
+		// `lg:grow` (flex-grow com basis auto, NÃO `flex-1`, que zeraria a base e
+		// colapsaria o painel) deixa a Thumbnail crescer sem perder a altura
+		// intrínseca do aspect-ratio — então no caso normal a proporção 3:2 segue
+		// sendo quem dita a altura do card. O `relative` do painel é o mesmo que o
+		// `mediaStack` daria, e continua ancorando o toggle.
+		const mediaPane = image ? (
+			<div
+				className={twMerge(
+					'order-1 relative flex flex-col',
+					split && 'lg:w-1/2',
+					mediaOrder,
+					mediaClassName,
+				)}
+			>
+				<Thumbnail
+					src={image}
+					alt={title}
+					href={href}
+					ratio={mediaRatio}
+					overlay={mediaOverlay}
+					radius={false}
+					className={twMerge(boxedMediaRadius, split && 'lg:grow')}
+				/>
+				{mediaToggle}
+			</div>
 		) : null
 
 		return (

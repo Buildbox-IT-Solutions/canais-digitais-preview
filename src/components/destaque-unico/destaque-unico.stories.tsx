@@ -37,7 +37,10 @@ export const SemLead: Story = {
 	args: { article: { ...HOME_DESTAQUE_UNICO, lead: undefined } },
 }
 
-/** Clamp do título (2 linhas) e do lead (3) — alturas literais do Figma. */
+/**
+ * Pior caso: título e lead estourando os 4 clamps ao mesmo tempo, COM patrocinador.
+ * É aqui que se vê se o texto ainda cabe na altura ditada pela imagem (3:2 em 50%).
+ */
 export const TextoLongo: Story = {
 	args: {
 		sponsor: HOME_DESTAQUE_UNICO_SPONSOR,
@@ -46,6 +49,7 @@ export const TextoLongo: Story = {
 			...HOME_DESTAQUE_UNICO,
 			title:
 				'Fispal Food Service 2026 terá ativações inéditas com chefs, executivos e lideranças de toda a cadeia de alimentação fora do lar do país',
+			lead: 'Maior evento da América do Sul voltado ao setor de alimentação fora do lar, a Fispal Food Service 2026 reunirá, entre os dias 26 e 29 de maio no Distrito Anhembi, não apenas lançamentos e soluções em equipamentos, ingredientes e serviços, mas também uma agenda de conteúdo com nomes de peso da gastronomia nacional e internacional debatendo os rumos do setor.',
 		},
 	},
 }

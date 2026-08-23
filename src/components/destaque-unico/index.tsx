@@ -27,9 +27,10 @@
  * 1224×408 com a imagem em 612×408, e o handoff registra "aspect-ratio 300/200 na
  * foto". Combinada com `w-1/2`, é ela que dita a altura do card, sem altura fixa.
  *
- * Clamps (título 2 linhas, lead 3) são as alturas literais do Figma — 80px = 2×40,
- * 72px = 3×24 — e garantem que o texto nunca ultrapasse a altura ditada pela imagem,
- * com qualquer manchete que o editor cadastre. 🔴 A CONFIRMAR (ver docs/_achados.md).
+ * Clamps: título e lead em 4 linhas cada (decisão do Pedro em 2026-08-23). O Figma
+ * desenha 2 e 3 (80px = 2×40, 72px = 3×24), mas essas são as alturas do conteúdo de
+ * exemplo, não um limite editorial — 4/4 dá folga pra manchete real sem deixar o
+ * texto crescer indefinidamente. Ver docs/_achados.md.
  */
 import { twMerge } from '~/lib/tw-merge'
 import { NewsCard } from '~/components/news-card'
@@ -52,8 +53,8 @@ export function DestaqueUnico({ article, sponsor, sponsorHref, className }: IDes
 					title={article.title}
 					categoria={{ label: article.category, color: article.categoryColor, href: '/categoria' }}
 					lead={article.lead}
-					titleClassName="line-clamp-2"
-					leadClassName="line-clamp-3"
+					titleClassName="line-clamp-4"
+					leadClassName="line-clamp-4"
 					sponsor={sponsor ? { company: sponsor, href: sponsorHref } : undefined}
 				/>
 			</div>
