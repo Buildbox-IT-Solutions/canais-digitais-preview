@@ -26,8 +26,6 @@ import type { ScenarioDef } from '~/dev/scenario-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
-import { baixarMaterial } from '~/lib/baixar-material'
-import { useMaterialLiberado } from '~/lib/use-material-liberado'
 import { ARQUIVO_EXEMPLO_URL, MATERIAL_DESTAQUE_TITULO, nomeArquivoDownload } from '~/mocks/downloads'
 import {
 	EM_ALTA,
@@ -71,7 +69,6 @@ const SCENARIOS: ScenarioDef[] = [
 export default function HomeScreen() {
 	const [hero, top2, top3] = HOME_HERO
 	const logado = useLogado()
-	useMaterialLiberado('download')
 	const isHomeRoute = useLocation().pathname === '/home'
 	const navigate = useNavigate()
 	const [params] = useSearchParams()
@@ -197,12 +194,11 @@ export default function HomeScreen() {
 
 			<ProteinaAnimalSection articles={PROTEINA_ANIMAL} />
 
-			{/* Logado, o clique baixa buscando os bytes e só confirma no fim (ver
-			    lib/baixar-material) — `ctaHref`/`ctaDownload` ficam como caminho sem-JS.
-			    Deslogado, abre o modal de incentivo e o href vira o destino sem-JS, o mesmo
-			    do "Criar conta" do modal. O título é link para a matéria nos dois casos. */}
+			{/* Logado, sem handler: a âncora com `download` baixa nativamente, e quem confirma
+			    é o próprio navegador (barra de downloads) — não duplicamos isso em toast.
+			    Deslogado, `onCtaClick` intercepta e abre o modal de incentivo; o href vira o
+			    destino sem-JS. O título é link para a matéria nos dois casos. */}
 			<DownloadSection
-				id="download"
 				eyebrow="E-book gratuito"
 				title={MATERIAL_DESTAQUE_TITULO}
 				titleHref="/conteudo"
@@ -210,11 +206,7 @@ export default function HomeScreen() {
 				ctaLabel="Baixar agora"
 				ctaHref={logado ? ARQUIVO_EXEMPLO_URL : '/cadastro?step=1&intent=download&returnTo=%2Fhome'}
 				ctaDownload={logado ? nomeArquivoDownload(MATERIAL_DESTAQUE_TITULO) : undefined}
-				onCtaClick={
-					logado
-						? () => void baixarMaterial(ARQUIVO_EXEMPLO_URL, nomeArquivoDownload(MATERIAL_DESTAQUE_TITULO))
-						: () => setDownloadOpen(true)
-				}
+				onCtaClick={!logado ? () => setDownloadOpen(true) : undefined}
 				image={picsumSrc('download-bg', 1920, 460)}
 				className="mt-10"
 			/>

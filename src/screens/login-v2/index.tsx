@@ -1,8 +1,13 @@
 import { useSearchParams } from 'react-router'
 import { IconButton } from '~/components/icon-button'
 import { Modal } from '~/components/modal'
+import { twMerge } from '~/lib/tw-merge'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
-import { sanitizeReturnTo, serializeReturnTo } from '~/lib/sanitize-return-to'
+import { StatusRing } from '~/components/status-ring'
+import { tituloDoMaterialDoRetorno } from '~/lib/material-do-retorno'
+import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
+import { AUTH_PANEL_BTN_BASE, AUTH_PANEL_BTN_VARIANT } from '../_auth/panel-button'
+import { buildReturnToHref, sanitizeReturnTo, serializeReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
 import { AuthDevNav } from '../_auth/dev-nav'
@@ -14,12 +19,10 @@ type LoginError = 'none' | 'empty' | 'invalid' | 'locked'
 
 const ALLOWED_ERRORS: LoginError[] = ['none', 'empty', 'invalid', 'locked']
 
-// `download` NÃO anuncia download — anuncia liberação. Entrar não baixa nada: o retorno
-// leva o CTA à vista e o clique continua sendo do usuário (ver lib/use-material-liberado).
-// Até 24/08/2026 isto mapeava para 'download-started', que prometia um download que nunca
-// acontecia.
+// `download` NÃO está aqui: esse fluxo não volta para a página avisando nada — termina no
+// próprio modal, com o painel "Tudo pronto!" e o botão que baixa (ver ETAPA abaixo). Até
+// 24/08/2026 mapeava para 'download-started', que prometia um download que nunca acontecia.
 const TOAST_BY_INTENT: Record<string, string> = {
-	download: 'material-liberado',
 	newsletter: 'newsletter-subscribed',
 }
 
@@ -43,6 +46,13 @@ export default function LoginV2Screen() {
 	// destino já que login não tem passos intermediários.
 	const favoritar = params.get('favoritar') ?? ''
 	const returnTo = sanitizeReturnTo(params.get('returnTo'))
+
+	// ETAPA — o login tem dois desfechos. Com `intent=download` ele NÃO devolve o usuário
+	// para a página: termina aqui mesmo, no painel "Tudo pronto!", com o botão que baixa.
+	// Isso existe porque devolver e avisar obrigava a procurar e clicar no MESMO botão que
+	// trouxe o usuário até o login. Qualquer outra intenção segue indo direto pro destino.
+	const fechaNoModal = intent === 'download'
+	const etapa = fechaNoModal && params.get('state') === 'success' ? 'sucesso' : 'formulario'
 	// Campos ocultos com os nomes ORIGINAIS dos parâmetros preservados (ex.: `post`)
 	// — não um `returnTo` único: o form abaixo submete com GET direto pro destino
 	// (`action={returnTo.path}`), e um form GET descarta qualquer querystring já
@@ -116,6 +126,40 @@ export default function LoginV2Screen() {
 
 					{/* bloco título + form, centralizado verticalmente no espaço acima do footer */}
 					<div className="flex-1 min-h-0 overflow-y-auto flex flex-col px-8 py-6">
+						{etapa === 'sucesso' ? (
+							<div className="w-full max-w-[392px] mx-auto my-auto flex flex-col items-center gap-8 text-center">
+								<StatusRing accent="mint" icon="check" size="sm" />
+
+								<div className="flex flex-col gap-2 w-full">
+									<h2
+										id="login-v2-title"
+										className="font-display font-bold text-headline-sm text-primary-600"
+									>
+										Tudo pronto!
+									</h2>
+									<p className="font-body text-body-md text-neutral-900">
+										Seu material está pronto para baixar.
+									</p>
+								</div>
+
+								<div className="flex flex-col gap-3 w-full">
+									{/* Âncora nativa: quem confirma a conclusão é o navegador. */}
+									<a
+										href={ARQUIVO_EXEMPLO_URL}
+										download={nomeArquivoDownload(tituloDoMaterialDoRetorno(returnTo))}
+										className={twMerge(AUTH_PANEL_BTN_BASE, AUTH_PANEL_BTN_VARIANT.filled)}
+									>
+										Baixar agora
+									</a>
+									<a
+										href={buildReturnToHref(returnTo, { logado: 'true' })}
+										className={twMerge(AUTH_PANEL_BTN_BASE, AUTH_PANEL_BTN_VARIANT.ghost)}
+									>
+										Explorar o portal
+									</a>
+								</div>
+							</div>
+						) : (
 						<div className="flex flex-col gap-6 my-auto">
 							<h2
 								id="login-v2-title"
@@ -126,15 +170,31 @@ export default function LoginV2Screen() {
 
 							{globalError ? <AuthErrorAlert message={globalError} /> : null}
 
-							<form action={returnTo.path} method="get" className="flex flex-col gap-6" noValidate>
-								<input type="hidden" name="logado" value="true" />
+							<form
+								action={fechaNoModal ? '/login' : returnTo.path}
+								method="get"
+								className="flex flex-col gap-6"
+								noValidate
+							>
+								{/* Fechando no modal, o submit volta pra /login em `state=success` e precisa
+								    recompor `intent`/`returnTo`, que o GET descarta do próprio action. */}
+								{fechaNoModal ? (
+									<>
+										<input type="hidden" name="state" value="success" />
+										<input type="hidden" name="intent" value={intent} />
+										<input type="hidden" name="returnTo" value={serializeReturnTo(returnTo)} />
+									</>
+								) : (
+									<input type="hidden" name="logado" value="true" />
+								)}
 								{TOAST_BY_INTENT[intent] ? (
 									<input type="hidden" name="toast" value={TOAST_BY_INTENT[intent]} />
 								) : null}
 								{favoritar ? <input type="hidden" name="favoritar" value={favoritar} /> : null}
-								{returnToQueryFields.map(([key, val]) => (
-									<input key={key} type="hidden" name={key} value={val} />
-								))}
+								{!fechaNoModal &&
+									returnToQueryFields.map(([key, val]) => (
+										<input key={key} type="hidden" name={key} value={val} />
+									))}
 								<AuthInput
 									label="E-mail"
 									name="email"
@@ -171,16 +231,19 @@ export default function LoginV2Screen() {
 								</button>
 							</form>
 						</div>
+						)}
 					</div>
 
-					{/* footer */}
-					<div className="shrink-0 px-8 pt-4 pb-8">
-						<AuthBottomLink
-							label="Não tem conta?"
-							linkLabel="Criar conta"
-							linkHref={`/cadastro?step=1${crossLinkQuery}`}
-						/>
-					</div>
+					{/* footer — só na etapa de formulário: no desfecho não há "criar conta" a oferecer */}
+					{etapa === 'formulario' ? (
+						<div className="shrink-0 px-8 pt-4 pb-8">
+							<AuthBottomLink
+								label="Não tem conta?"
+								linkLabel="Criar conta"
+								linkHref={`/cadastro?step=1${crossLinkQuery}`}
+							/>
+						</div>
+					) : null}
 				</div>
 			</Modal>
 

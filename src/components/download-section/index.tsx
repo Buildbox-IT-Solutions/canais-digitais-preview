@@ -21,11 +21,10 @@ export function DownloadSection({
 	onCtaClick,
 	titleHref,
 	image,
-	id,
 	className,
 }: IDownloadSectionProps) {
 	return (
-		<section id={id} className={twMerge('relative w-full h-[642px] lg:h-[460px] overflow-hidden', className)}>
+		<section className={twMerge('relative w-full h-[642px] lg:h-[460px] overflow-hidden', className)}>
 			<img src={image} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
 			<div className="absolute inset-0 bg-black/20" />
 			<div className="relative h-full flex items-center justify-center lg:justify-start max-w-screen-xl mx-auto px-4 lg:px-6 py-8">
