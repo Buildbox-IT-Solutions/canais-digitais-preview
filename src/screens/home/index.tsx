@@ -26,7 +26,7 @@ import type { ScenarioDef } from '~/dev/scenario-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
-import { toast } from '~/lib/toast-store'
+import { baixarMaterial } from '~/lib/baixar-material'
 import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
 import {
 	EM_ALTA,
@@ -200,10 +200,10 @@ export default function HomeScreen() {
 
 			<ProteinaAnimalSection articles={PROTEINA_ANIMAL} />
 
-			{/* Logado, o CTA baixa o arquivo direto (âncora com `download`, sem navegação).
-			    Deslogado, `onCtaClick` dá preventDefault e abre o modal de incentivo — o
-			    href só existe como destino sem-JS, o mesmo do "Criar conta" do modal.
-			    O título é link para a matéria, independente do estado de login. */}
+			{/* Logado, o clique baixa buscando os bytes e só confirma no fim (ver
+			    lib/baixar-material) — `ctaHref`/`ctaDownload` ficam como caminho sem-JS.
+			    Deslogado, abre o modal de incentivo e o href vira o destino sem-JS, o mesmo
+			    do "Criar conta" do modal. O título é link para a matéria nos dois casos. */}
 			<DownloadSection
 				eyebrow="E-book gratuito"
 				title={DOWNLOAD_TITULO}
@@ -212,8 +212,11 @@ export default function HomeScreen() {
 				ctaLabel="Baixar agora"
 				ctaHref={logado ? ARQUIVO_EXEMPLO_URL : '/cadastro?step=1&intent=download&returnTo=%2Fhome'}
 				ctaDownload={logado ? nomeArquivoDownload(DOWNLOAD_TITULO) : undefined}
-				onCtaClick={!logado ? () => setDownloadOpen(true) : undefined}
-				onCtaDownload={logado ? () => toast.success('Material baixado.') : undefined}
+				onCtaClick={
+					logado
+						? () => void baixarMaterial(ARQUIVO_EXEMPLO_URL, nomeArquivoDownload(DOWNLOAD_TITULO))
+						: () => setDownloadOpen(true)
+				}
 				image={picsumSrc('download-bg', 1920, 460)}
 				className="mt-10"
 			/>

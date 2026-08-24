@@ -19,7 +19,6 @@ export function DownloadSection({
 	ctaHref,
 	ctaDownload,
 	onCtaClick,
-	onCtaDownload,
 	titleHref,
 	image,
 	className,
@@ -48,18 +47,17 @@ export function DownloadSection({
 					<a
 						href={ctaHref}
 						download={ctaDownload}
-						onClick={(e) => {
-							// `onCtaClick` INTERCEPTA: cancela o clique e assume o fluxo (ex.: abrir o
-							// modal de incentivo pra quem está deslogado). O href vira só fallback sem-JS.
-							if (onCtaClick) {
-								e.preventDefault()
-								onCtaClick()
-								return
-							}
-							// `onCtaDownload` ACOMPANHA: o download segue normalmente e o aviso vai
-							// junto. Nunca dá preventDefault — isso mataria o download.
-							onCtaDownload?.()
-						}}
+						onClick={
+							// Sempre INTERCEPTA: o href/`download` da âncora é o caminho sem-JS, e com JS
+							// quem assume é o handler — seja pra abrir o modal (deslogado) ou pra baixar
+							// buscando os bytes e confirmar no fim (ver lib/baixar-material).
+							onCtaClick
+								? (e) => {
+										e.preventDefault()
+										onCtaClick()
+									}
+								: undefined
+						}
 						className="bg-primary-600 inline-flex items-center justify-center gap-3 pl-5 pr-6 py-3 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg w-full lg:w-auto"
 					>
 						<Icon name="download" className="size-6" />
