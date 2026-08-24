@@ -70,12 +70,18 @@
 ## Consistência estrutural
 
 - ✅ resolvido em 2026-08-24 — **`?toast=download-started` prometia download que não
-  acontecia**. Dois consertos, porque eram dois momentos diferentes. (1) No painel de
-  sucesso da confirmação de e-mail, "Baixar agora" agora BAIXA ali mesmo em vez de navegar
-  para a página e exigir o mesmo clique de novo; ganhou um "Explorar o portal" secundário.
-  (2) No retorno pós-login o parâmetro virou `?toast=material-liberado`: não baixa sozinho,
-  traz o CTA à vista e avisa que o material está liberado — o clique continua sendo do
-  usuário (decisão do Pedro: evitar download automático). Ver `lib/use-material-liberado`.
+  acontecia**. A correção não foi trocar a copy: os dois caminhos de autenticação passaram a
+  TERMINAR no material, em vez de devolver o usuário à página para procurar o mesmo botão
+  que o trouxe até ali. Confirmação de e-mail e login agora fecham no mesmo painel "Tudo
+  pronto! / Seu material está pronto para baixar", com "Baixar agora" (âncora com `download`)
+  e "Explorar o portal". O parâmetro de toast saiu do fluxo de download; `intent=newsletter`
+  segue inalterado. Decisão do Pedro: sem download automático no retorno.
+- ✅ resolvido em 2026-08-24 — **confirmação de download por toast removida**. O navegador já
+  confirma download sozinho (barra e badge próprios); duplicar isso em toast obrigava o código
+  a detectar a conclusão, o que no navegador só a File System Access API entrega — Chrome/Edge
+  apenas, e forçando o diálogo "onde salvar?" para todo mundo, inclusive quem tinha download
+  silencioso. O custo não se pagava. O download voltou a ser âncora nativa (`href` +
+  `download`, sem handler) e `lib/baixar-material` foi removido.
 - **Título do `newsletter-card` não é heading** — 2026-08-24: o título do card renderiza
   `<div>`, não `<h2>`/`<h3>`. Herdado do `CardTitle` do shadcn, que também era `<div>`, e
   preservado no inline para manter a saída idêntica. Um leitor de tela não encontra os cards

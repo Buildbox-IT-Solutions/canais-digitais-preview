@@ -17,8 +17,6 @@ import { IconButton } from '~/components/icon-button'
 import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
-import { baixarMaterial } from '~/lib/baixar-material'
-import { useMaterialLiberado } from '~/lib/use-material-liberado'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
@@ -70,7 +68,6 @@ const DOWNLOAD_BLOCK_POSITION: 'fim-do-corpo' | 'apos-introducao' = 'fim-do-corp
 export default function ConteudoScreen() {
 	const [params] = useSearchParams()
 	const logado = useLogado()
-	useMaterialLiberado('download')
 	const isConteudoRoute = useLocation().pathname === '/conteudo'
 	const navigate = useNavigate()
 	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
@@ -537,23 +534,17 @@ function PostDownloadBanner({
 }) {
 	const gated = !logado && download.requiresAuth
 
-	// Com acesso, o clique baixa buscando os bytes e só confirma no fim (ver
-	// lib/baixar-material) — `ctaHref`/`ctaDownload` ficam como caminho sem-JS.
-	// Gateado, abre o modal de incentivo e o href fica inerte de propósito, porque o
-	// material não pode ser servido sem conta.
+	// Com acesso, sem handler: a âncora com `download` baixa nativamente e quem confirma é
+	// o navegador. Gateado, `onCtaClick` intercepta e abre o modal de incentivo — o href
+	// fica inerte de propósito, porque o material não pode ser servido sem conta.
 	return (
 		<BannerDownload
 			title={download.title}
 			description={download.description}
-			id="download"
 			ctaLabel={download.ctaLabel}
 			ctaHref={gated ? '#' : ARQUIVO_EXEMPLO_URL}
 			ctaDownload={gated ? undefined : nomeArquivoDownload(download.title)}
-			onCtaClick={
-				gated
-					? onRequestAccess
-					: () => void baixarMaterial(ARQUIVO_EXEMPLO_URL, nomeArquivoDownload(download.title))
-			}
+			onCtaClick={gated ? onRequestAccess : undefined}
 		/>
 	)
 }
