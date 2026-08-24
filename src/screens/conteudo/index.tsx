@@ -553,7 +553,7 @@ function PostDownloadBanner({
 			ctaHref={gated ? '#' : ARQUIVO_EXEMPLO_URL}
 			ctaDownload={gated ? undefined : nomeArquivoDownload(download.title)}
 			onCtaClick={gated ? onRequestAccess : undefined}
-			onCtaDownload={gated ? undefined : () => toast.success('Seu download começou.')}
+			onCtaDownload={gated ? undefined : () => toast.success('Material baixado.')}
 		/>
 	)
 }

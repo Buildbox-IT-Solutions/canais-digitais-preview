@@ -213,7 +213,7 @@ export default function HomeScreen() {
 				ctaHref={logado ? ARQUIVO_EXEMPLO_URL : '/cadastro?step=1&intent=download&returnTo=%2Fhome'}
 				ctaDownload={logado ? nomeArquivoDownload(DOWNLOAD_TITULO) : undefined}
 				onCtaClick={!logado ? () => setDownloadOpen(true) : undefined}
-				onCtaDownload={logado ? () => toast.success('Seu download começou.') : undefined}
+				onCtaDownload={logado ? () => toast.success('Material baixado.') : undefined}
 				image={picsumSrc('download-bg', 1920, 460)}
 				className="mt-10"
 			/>
