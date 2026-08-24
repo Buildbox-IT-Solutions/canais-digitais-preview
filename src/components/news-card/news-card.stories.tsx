@@ -305,8 +305,13 @@ export const Favoritado: Story = {
 // sangrando até a borda, SponsorLine no rodapé. Empilha (imagem em cima) abaixo de
 // lg:. A foto à direita é FIXA no split do NewsCard — não existe versão com a foto
 // à esquerda (decisão do Pedro em 2026-08-23) e desde 2026-08-24 isso não é nem
-// prop: por isso não há story do lado invertido. Clamps 3 (título) e 4 (lead)
-// espelham o DestaqueUnico, onde a conta que justifica esse par está documentada.
+// prop: por isso não há story do lado invertido.
+//
+// Os clamps espelham o DestaqueUnico, que tem DOIS pares: 3+4 sem patrocinador e 2+3
+// com. No split a foto e o texto dividem a mesma altura, e a SponsorLine come 80px do
+// orçamento — o 3+4 só cabe a partir de 1226px quando há sponsor. A conta completa está
+// no cabeçalho do DestaqueUnico. Por isso as duas stories abaixo NÃO compartilham
+// clamp: é a diferença que elas provam.
 const destaque = {
 	title: 'Fispal Food Service terá ativações com chefs e executivos do setor',
 	image: 'https://picsum.photos/seed/home-destaque-unico/1224/816',
@@ -317,19 +322,28 @@ const destaque = {
 	orientation: 'horizontal' as const,
 	boxed: true,
 	mediaRatio: 'photo' as const,
-	titleClassName: 'line-clamp-3',
-	leadClassName: 'line-clamp-4',
 }
 
+/** Sem patrocinador — clamps 3 (título) + 4 (lead), o par máximo que cabe em toda a
+ *  faixa desktop sem a foto esticar. */
 export const XLargeBoxed: Story = {
-	args: { ...destaque, contentId: 'story-destaque-unico' },
+	args: {
+		...destaque,
+		contentId: 'story-destaque-unico',
+		titleClassName: 'line-clamp-3',
+		leadClassName: 'line-clamp-4',
+	},
 }
 
-/** Com patrocinador (RN05) — SponsorLine ancorada no rodapé da coluna de texto. */
+/** Com patrocinador (RN05) — SponsorLine ancorada no rodapé da coluna de texto, e
+ *  clamps 2 + 3: os 80px da linha de patrocínio saem do orçamento de altura do texto,
+ *  então o par cai um degrau em cada campo. É o par que o Figma desenha. */
 export const XLargeBoxedPatrocinado: Story = {
 	args: {
 		...destaque,
 		contentId: 'story-destaque-unico-sponsor',
 		sponsor: { company: 'Company Name', href: '#' },
+		titleClassName: 'line-clamp-2',
+		leadClassName: 'line-clamp-3',
 	},
 }
