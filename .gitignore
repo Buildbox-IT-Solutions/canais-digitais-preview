@@ -27,8 +27,6 @@ storybook-static
 
 tmp
 
-# Docs (internos, não versionados)
-/docs
 
 # Worktrees isolados (superpowers:using-git-worktrees)
 /.worktrees
