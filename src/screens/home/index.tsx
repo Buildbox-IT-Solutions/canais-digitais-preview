@@ -144,13 +144,10 @@ export default function HomeScreen() {
 		<main className="bg-white">
 			<HeaderDesktop />
 
-			{/* §1 — Ad Frame 1224×245 (já fluido, inalterado) */}
+			{/* §1 — Ad 970×90 (desktop) / 360×142 (mobile) — Super Leaderboard */}
 			<section className="flex flex-col items-center py-6 w-full">
-				<div className="flex items-center max-w-screen-xl mx-auto w-full px-4 lg:px-6">
-					<div className="aspect-[1248/250] border border-primary-100 bg-neutral-50 flex flex-1 items-center justify-center">
-						<span className="font-body font-bold text-label-md text-neutral-700">1224 × 245</span>
-					</div>
-				</div>
+				<div className="hidden lg:flex"><AdFrame width={970} height={90} /></div>
+				<div className="flex lg:hidden"><AdFrame width={360} height={142} /></div>
 			</section>
 
 			{/* §1.5 — Destaque único (RN01: exatamente 1 conteúdo). Fica entre o ad de

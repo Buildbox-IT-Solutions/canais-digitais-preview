@@ -184,9 +184,9 @@ export default function ConteudoScreen() {
 		<main className="bg-white">
 			<HeaderDesktop activeCategory="food-service" />
 
-			{/* §2 — Ad 970×250 */}
+			{/* §2 — Ad 970×90 (Super Leaderboard) */}
 			<section className="flex flex-col items-center py-6 w-full overflow-hidden">
-				<AdFrame width={970} height={250} />
+				<AdFrame width={970} height={90} />
 			</section>
 
 			{/* §3 — Article + sidebar. Empilha abaixo de lg (1024px); vira grid 11 col a partir daí. */}
