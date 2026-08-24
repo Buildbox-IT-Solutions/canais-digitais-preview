@@ -11,8 +11,8 @@ import type { DsStatus } from '~/lib/ds/status'
 
 /**
  * Tela: /ds/:slug — página de foundation ou de componente do catálogo curado.
- * Markdown é a fonte da verdade; esta tela só lê docs/foundations/*.md ou
- * docs/componentes/*.md (via os registries) e renderiza. Não duplica conteúdo.
+ * Markdown é a fonte da verdade; esta tela só lê ds/foundations/*.md ou
+ * ds/componentes/*.md (via os registries) e renderiza. Não duplica conteúdo.
  * O chrome de navegação (sidebar) vive em src/screens/ds/index.tsx, layout pai.
  */
 

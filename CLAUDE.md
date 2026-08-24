@@ -67,9 +67,13 @@ src/
     images/
   router.tsx      # Definição de todas as rotas
   index.css       # Tema global (@theme) e import do Tailwind
-docs/             # Documentação de handoff (código → back-end)
+norma/            # NORMA — o que o Claude obedece
+ds/               # ENTREGÁVEL — o que o back-end lê e a rota /ds renderiza
   componentes/    # Uma página .md por componente documentado
-figma-specs/      # Specs e inventário por componente (Figma → código)
+  foundations/    # Uma página .md por fundamento (cor, tipografia, radius…)
+figma-specs/      # ENTRADA — specs e inventário por componente (Figma → código)
+notas/            # NOTA — levantamento datado, descartável
+scripts/          # check-docs.mjs, roda no pnpm build
 ```
 
 ### Roteamento
@@ -187,31 +191,53 @@ O objetivo é que `legacy/` desapareça completamente ao final da migração.
 
 ## Documentação de componentes
 
-Duas estruturas de documentação coexistem e têm direções opostas. Não confundir:
+Quatro pastas, uma por **tempo de vida**. O eixo não é assunto nem audiência — é
+quanto tempo o arquivo vale. Reorganizado em 24/08/2026; antes tudo isso morava numa
+pasta única de docs, e a mistura fez a norma e o entregável ficarem fora do Git por
+três meses.
 
-| Pasta | Direção | Consumidor |
-|---|---|---|
-| `figma-specs/` | Figma → código (**entrada**) | quem implementa neste repo |
-| `docs/` | código → handoff (**saída**) | time de back-end WordPress |
+| Pasta | Tempo | Direção | Consumidor |
+|---|---|---|---|
+| `norma/` | permanente | — | **o Claude obedece** |
+| `ds/` | permanente | código → handoff (**saída**) | back-end WordPress, via rota `/ds` |
+| `figma-specs/` | permanente até o componente existir | Figma → código (**entrada**) | quem implementa neste repo |
+| `notas/` | **datado**, vale até a fase fechar | — | histórico; nunca norma |
+
+Se um arquivo novo não tem lugar óbvio, o tempo de vida dele não foi decidido — decida
+antes de escrever, não depois.
 
 ### Arquivos de referência
 
 | Arquivo | Conteúdo |
 |---|---|
-| `docs/_contexto-docs.md` | Decisões tomadas, escopo aprovado e passos até a entrega |
-| `docs/_briefing-docs.md` | Regras invariantes e fases de execução |
-| `docs/_template-componente.md` | Template de 8 seções das páginas de componente |
-| `docs/_achados.md` | Pendências e divergências encontradas ao documentar |
-| `docs/componentes/<nome>.md` | Página de cada componente documentado |
+| `norma/docs.md` | Regras invariantes, formato, escopo aprovado e estado dos passos |
+| `norma/template-componente.md` | Template de 8 seções — peça de UI com props e estados |
+| `norma/template-foundation.md` | Template de 5 seções — fundamento visual/token |
+| `ds/achados.md` | Pendências e divergências encontradas ao documentar |
+| `ds/componentes/<nome>.md` | Página de cada componente documentado |
+| `ds/foundations/<nome>.md` | Página de cada fundamento documentado |
 
-Ler `_contexto-docs.md` e `_briefing-docs.md` antes de qualquer tarefa de documentação.
+**Ler `norma/docs.md` por inteiro antes de qualquer tarefa de documentação**, mais o
+template certo: componente e foundation usam templates diferentes e não intercambiáveis.
+
+### O check que sustenta isso
+
+`pnpm check:docs` (roda também no `pnpm build`) verifica quatro coisas: todo caminho
+citado na norma existe, todo link relativo em `.md` resolve, toda doc de entregável é
+alcançável pelo catálogo da `/ds`, e toda pasta lida por `import.meta.glob` está
+versionada.
+
+Existe porque as seis quebras encontradas em 24/08/2026 aconteceram **dentro** de uma
+estrutura organizada e corretamente descrita aqui. Estrutura documentada não impede
+divergência; estrutura verificada impede. Se o check falhar, conserte o disco ou a
+norma — não desligue o check.
 
 ### Regras que não podem ser quebradas
 
 1. **Não documentar PHP.** A seção "HTML alvo" documenta a saída renderizada esperada — tags, hierarquia, classes. Como o WordPress produz isso é decisão do back-end.
 2. **Não inventar conhecimento de design.** O código dá props, variantes, estados, classes e tokens. Não dá: quando *não* usar o componente, regras de conteúdo, intenção por trás de um breakpoint. O que não for derivável do código vira `🔴 A CONFIRMAR — [pergunta específica]`, nunca uma versão plausível.
-3. **Não modificar código de componente** em tarefa de documentação. Achados vão para `docs/_achados.md`.
-4. **Quando o código divergir do comportamento correto** (acessibilidade, semântica, foco), documentar o **correto** e registrar a divergência em `_achados.md`. Nunca documentar comportamento sabidamente incorreto só porque está implementado.
+3. **Não modificar código de componente** em tarefa de documentação. Achados vão para `ds/achados.md`.
+4. **Quando o código divergir do comportamento correto** (acessibilidade, semântica, foco), documentar o **correto** e registrar a divergência em `ds/achados.md`. Nunca documentar comportamento sabidamente incorreto só porque está implementado.
 5. **Seção vazia é seção apagada.** Cabeçalho órfão ensina o time a ignorar a doc.
 
 ### Regras de componente já estabelecidas
@@ -229,7 +255,7 @@ Os dois permanecem, com papéis distintos. Não duplicar conteúdo entre eles.
 |---|---|---|
 | **Consumidor** | design (uso interno) | back-end e revisão de doc |
 | **Mostra** | variantes visuais isoladas | doc renderizada + preview ao vivo |
-| **Fonte** | `<nome>.stories.tsx` | `docs/componentes/<nome>.md` |
+| **Fonte** | `<nome>.stories.tsx` | `ds/componentes/<nome>.md` |
 | **Responde** | "como fica esta variante?" | "o que preciso saber para reimplementar?" |
 
 Stories continuam obrigatórias para todo componente (uma por variante visual). A `/ds` **não** substitui isso — ela lê o markdown e monta o componente real, sem reimplementar catálogo de variantes.

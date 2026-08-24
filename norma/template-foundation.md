@@ -1,6 +1,6 @@
 # Template de Página de Foundation — Canais Digitais
 
-> Foundation não usa o template de 8 seções de componente (`_template-componente-cd.md`).
+> Foundation não usa o template de 8 seções de componente (`template-componente.md`).
 > É outro tipo de página: fundamento visual/tokens, não peça de UI com props e estados.
 > Regra de ouro continua a mesma: seção vazia é seção apagada.
 

@@ -78,7 +78,7 @@ export default function DsIntroScreen() {
 							<tr>
 								<td className="px-3 py-2 text-neutral-700">
 									<code className="bg-neutral-50 border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">
-										docs/
+										ds/
 									</code>
 								</td>
 								<td className="px-3 py-2 text-neutral-700">Código → handoff (saída)</td>
@@ -90,7 +90,7 @@ export default function DsIntroScreen() {
 				<p className="font-body text-body-md text-neutral-700">
 					Quando código e Figma divergirem, o código ganha — o repositório define comportamento, o
 					Figma define aparência. Esta página (<code className="bg-white border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">/ds</code>) lê e
-					renderiza o markdown de <code className="bg-white border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">docs/</code> — nunca duplica o conteúdo.
+					renderiza o markdown de <code className="bg-white border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">ds/</code> — nunca duplica o conteúdo.
 				</p>
 			</section>
 
@@ -126,7 +126,7 @@ export default function DsIntroScreen() {
 								</td>
 								<td className="border-b border-neutral-100 px-3 py-2 text-neutral-700">
 									<code className="bg-neutral-50 border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">
-										docs/*.md
+										ds/*.md
 									</code>
 								</td>
 							</tr>
@@ -146,13 +146,13 @@ export default function DsIntroScreen() {
 					<div className="flex items-start gap-3">
 						<Badge label="Documentado" tone="mint" className="shrink-0 mt-0.5" />
 						<p className="font-body text-body-md text-neutral-700">
-							Tem página com conteúdo em <code className="bg-white border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">docs/</code>. Aparece na sidebar como link.
+							Tem página com conteúdo em <code className="bg-white border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">ds/</code>. Aparece na sidebar como link.
 						</p>
 					</div>
 					<div className="flex items-start gap-3">
 						<span className="shrink-0 mt-0.5 font-body text-label-sm text-neutral-400">· em breve</span>
 						<p className="font-body text-body-md text-neutral-700">
-							Faz parte do catálogo, mas ainda não tem doc — sem arquivo em <code className="bg-white border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">docs/</code>. Visível na sidebar, desabilitado.
+							Faz parte do catálogo, mas ainda não tem doc — sem arquivo em <code className="bg-white border border-neutral-100 rounded-xs px-1.5 py-0.5 font-body text-label-md text-primary-600">ds/</code>. Visível na sidebar, desabilitado.
 						</p>
 					</div>
 					<div className="flex items-start gap-3">

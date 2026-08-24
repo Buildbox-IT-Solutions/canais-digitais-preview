@@ -34,8 +34,8 @@ const NORMA = ['CLAUDE.md', 'norma']
 /** Pastas de entregável do /ds, e o catálogo que decide o que é alcançável. */
 const DS = {
 	catalogo: 'src/lib/ds/catalog.ts',
-	componentes: ['ds/componentes', 'docs/componentes'],
-	foundations: ['ds/foundations', 'docs/foundations'],
+	componentes: ['ds/componentes'],
+	foundations: ['ds/foundations'],
 }
 
 /** Fora do escopo: legacy/ é read-only até ser apagado, node_modules não é nosso. */
