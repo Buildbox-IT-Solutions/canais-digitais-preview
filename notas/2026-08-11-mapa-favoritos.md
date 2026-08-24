@@ -1,3 +1,11 @@
+---
+tipo: nota
+data: 2026-08-11
+validade: vencida
+motivo: >-
+  Descreve o repositório ANTES da feature Favoritos, que entrou em 14/08. É o registro de por que a feature ficou como ficou — não é descrição do estado atual.
+---
+
 # Mapa do repositório — pré-requisito para a feature Favoritos
 
 > Levantamento somente-leitura. Nenhum arquivo de código foi alterado, criado ou refatorado para produzir este documento. Todas as afirmações abaixo foram verificadas por leitura direta dos arquivos citados (caminho + linha).

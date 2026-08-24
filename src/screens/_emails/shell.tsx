@@ -4,7 +4,7 @@ import foodConnectionLogoWhite from '~/assets/images/FC-Grad-White_rgb@2x.png'
 
 /**
  * Primitivas de PREVIEW de e-mail transacional.
- * Reproduzem fielmente os templates HTML de docs/legacy-reference/emails/ — por isso usam
+ * Reproduzem fielmente os templates HTML de notas/referencia/emails/ — por isso usam
  * inline styles + cores hex (e-mails não suportam Tailwind/tokens; os devs enviam o HTML).
  * Exceção consciente à regra "só Tailwind" da codebase, restrita a e-mails.
  */

@@ -13,7 +13,7 @@ import {
 
 /**
  * E-mail transacional: Recuperação de senha (link válido 60 min).
- * Referência: docs/legacy-reference/emails/email-recuperacao-senha.html
+ * Referência: notas/referencia/emails/email-recuperacao-senha.html
  */
 export default function EmailRecuperacaoSenhaScreen() {
 	// URL absoluta (real e-mail não resolve caminho relativo). O endpoint /redefinir

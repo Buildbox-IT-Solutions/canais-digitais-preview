@@ -1,3 +1,11 @@
+---
+tipo: nota
+data: 2026-07-02
+validade: vencida
+motivo: >-
+  Promete resgate pela tag snapshot/pre-area-logada-2026-07-02, que não existe mais nem local nem no remote (verificado em 24/08/2026). A navegação descrita foi substituída pela CentralScreen.
+---
+
 # Handoff — Área Logada Nativa (Canais Digitais)
 
 > Visão final da rodada de consolidação do protótipo React (branch `feature/layouts-e-index`).

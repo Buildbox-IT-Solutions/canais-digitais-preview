@@ -1,3 +1,11 @@
+---
+tipo: nota
+data: 2026-08-14
+validade: vencida
+motivo: >-
+  Contagens mecânicas de usos e stories congeladas em 14/08. src/components/ tinha então menos pastas do que as 95 de hoje; os números não servem para decidir nada.
+---
+
 # Fase 0 — Reconhecimento de componentes
 
 > Gerado em 2026-08-14. Levantamento mecânico (grep de imports + contagem de stories) sobre `src/components/`. Nenhum código foi modificado nesta fase.

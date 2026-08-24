@@ -18,6 +18,7 @@
  *   B. todo link relativo em .md resolve
  *   C. todo .md de entregável é alcançável pelo catálogo da /ds (sem doc órfã)
  *   D. toda pasta lida por import.meta.glob está versionada
+ *   E. toda nota declara data e validade no front-matter
  *
  * Roda no `pnpm build`. Falha com código 1 e lista o que consertar.
  */
@@ -211,20 +212,58 @@ for (const abs of listarSrc(join(ROOT, 'src'))) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// E. Toda nota declara data e validade no front-matter.
+//
+// Sem isto o campo `validade` seria adorno: um front-matter que nada lê apodrece
+// igual a um comentário desatualizado. Nota é o único tempo de vida DATADO, e a
+// data é o que impede uma nota vencida de ser lida como norma — é ela que faz o
+// leitor desconfiar antes de acreditar.
+// ─────────────────────────────────────────────────────────────────────────────
+const VALIDADES = new Set(['vigente', 'vencida'])
+
+for (const arq of todosMd.filter((a) => a.startsWith('notas/'))) {
+	const texto = readFileSync(join(ROOT, arq), 'utf8')
+	const fm = texto.startsWith('---') ? texto.slice(3, texto.indexOf('\n---', 3)) : ''
+	if (!fm) {
+		falhar('E', arq, 'nota sem front-matter', 'precisa de tipo, data e validade')
+		continue
+	}
+	const campo = (nome) => fm.match(new RegExp(`^${nome}:\\s*(.+)$`, 'm'))?.[1].trim()
+	const data = campo('data')
+	const validade = campo('validade')
+	if (!/^\d{4}-\d{2}-\d{2}$/.test(data ?? '')) {
+		falhar('E', arq, `data ausente ou fora do formato AAAA-MM-DD: ${data ?? '(nenhuma)'}`)
+	}
+	if (!VALIDADES.has(validade ?? '')) {
+		falhar('E', arq, `validade precisa ser vigente ou vencida, veio: ${validade ?? '(nenhuma)'}`)
+	}
+	if (validade === 'vencida' && !campo('motivo')) {
+		falhar('E', arq, 'nota vencida sem motivo', 'quem for ler precisa saber o que nela caducou')
+	}
+	// A data no nome do arquivo é o que se vê antes de abrir — se ela discordar
+	// do front-matter, a mais visível é a que engana.
+	const noNome = arq.match(/(\d{4}-\d{2}-\d{2})/)?.[1]
+	if (noNome && data && noNome !== data) {
+		falhar('E', arq, `data do nome (${noNome}) diverge do front-matter (${data})`)
+	}
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 const NOMES = {
 	A: 'caminho citado na norma existe',
 	B: 'link relativo em .md resolve',
 	C: 'doc de entregável é alcançável pelo catálogo',
 	D: 'glob lê pasta versionada',
+	E: 'nota declara data e validade',
 }
 
 if (problemas.length === 0) {
-	console.log(`check-docs: ok — ${todosMd.length} arquivos .md, 4 asserções.`)
+	console.log(`check-docs: ok — ${todosMd.length} arquivos .md, 5 asserções.`)
 	process.exit(0)
 }
 
 console.error(`\ncheck-docs: ${problemas.length} problema(s).\n`)
-for (const letra of ['A', 'B', 'C', 'D']) {
+for (const letra of ['A', 'B', 'C', 'D', 'E']) {
 	const doGrupo = problemas.filter((p) => p.asser === letra)
 	if (!doGrupo.length) continue
 	console.error(`  ${letra}. ${NOMES[letra]} — ${doGrupo.length}`)
