@@ -11,5 +11,7 @@ export interface IDownloadSectionProps {
 	/** Destino do título. Presente ⇒ o título vira link para a matéria. */
 	titleHref?: string
 	image: string
+	/** Âncora de rolagem — usada no retorno pós-login para trazer o CTA à vista. */
+	id?: string
 	className?: string
 }

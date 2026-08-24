@@ -18,6 +18,7 @@ import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
 import { baixarMaterial } from '~/lib/baixar-material'
+import { useMaterialLiberado } from '~/lib/use-material-liberado'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
@@ -69,9 +70,9 @@ const DOWNLOAD_BLOCK_POSITION: 'fim-do-corpo' | 'apos-introducao' = 'fim-do-corp
 export default function ConteudoScreen() {
 	const [params] = useSearchParams()
 	const logado = useLogado()
+	useMaterialLiberado('download')
 	const isConteudoRoute = useLocation().pathname === '/conteudo'
 	const navigate = useNavigate()
-	const showDownloadToast = params.get('toast') === 'download-started'
 	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
 	const previewIncentive = params.get('preview')
 	const tocVariant = params.get('toc')
@@ -461,12 +462,6 @@ export default function ConteudoScreen() {
 			body="Crie sua conta para guardar conteúdos e encontrá-los depois, e receber recomendações do seu setor."
 		/>
 
-		{showDownloadToast ? (
-			<div className="fixed bottom-6 right-6 z-50">
-				<Toast type="success" message="Seu download começou." />
-			</div>
-		) : null}
-
 		{showNewsletterToast ? (
 			<div className="fixed bottom-6 right-6 z-50">
 				<Toast type="success" message="Inscrição confirmada." />
@@ -550,6 +545,7 @@ function PostDownloadBanner({
 		<BannerDownload
 			title={download.title}
 			description={download.description}
+			id="download"
 			ctaLabel={download.ctaLabel}
 			ctaHref={gated ? '#' : ARQUIVO_EXEMPLO_URL}
 			ctaDownload={gated ? undefined : nomeArquivoDownload(download.title)}

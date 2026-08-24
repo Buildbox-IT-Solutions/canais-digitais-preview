@@ -10,6 +10,9 @@ import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/
 import { buildReturnToHref, sanitizeReturnTo, serializeReturnTo, type SanitizedReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthDevNav } from '../_auth/dev-nav'
+import { baixarMaterial } from '~/lib/baixar-material'
+import { ARQUIVO_EXEMPLO_URL, MATERIAL_DESTAQUE_TITULO, nomeArquivoDownload } from '~/mocks/downloads'
+import { getPostByParam } from '~/fixtures/posts'
 import { AuthInput } from '../_auth/input'
 import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import { maskEmail } from '../_auth/mask-email'
@@ -50,6 +53,8 @@ type ButtonVariant = 'filled' | 'outlined' | 'ghost'
 interface ConfirmacaoButton {
 	label: string
 	href?: string
+	/** Ação no lugar de navegação — usada pelo "Baixar agora", que baixa ali mesmo. */
+	onClick?: () => void
 	variant: ButtonVariant
 	isResend?: boolean
 }
@@ -61,6 +66,17 @@ interface ConfirmacaoConfig {
 	body: string | null
 	buttons: ConfirmacaoButton[]
 	proof: ProofPanelMinimalVariant
+}
+
+/**
+ * Qual material o painel de sucesso baixa. O `returnTo` preserva `?post=` (ver
+ * sanitize-return-to), então quando o usuário veio de uma matéria o nome do arquivo é o
+ * daquele material; vindo da home, é o material em destaque.
+ */
+function tituloDoMaterial(returnTo: SanitizedReturnTo): string {
+	if (returnTo.path !== '/conteudo') return MATERIAL_DESTAQUE_TITULO
+	const post = getPostByParam(new URLSearchParams(returnTo.query).get('post'))
+	return post.download?.title ?? MATERIAL_DESTAQUE_TITULO
 }
 
 function buildConfig(
@@ -100,6 +116,10 @@ function buildConfig(
 				}
 			}
 			if (intent === 'download') {
+				// O botão diz "Baixar agora" — então baixa aqui mesmo, em vez de mandar para a
+				// página e obrigar a achar e clicar no mesmo botão de novo. O toast de conclusão
+				// quem dispara é o próprio baixarMaterial, depois de o arquivo estar gravado.
+				const titulo = tituloDoMaterial(returnToOrHome)
 				return {
 					accent: 'mint',
 					icon: 'check',
@@ -108,8 +128,13 @@ function buildConfig(
 					buttons: [
 						{
 							label: 'Baixar agora',
-							href: buildReturnToHref(returnToOrHome, { logado: 'true', toast: 'download-started' }),
+							onClick: () => void baixarMaterial(ARQUIVO_EXEMPLO_URL, nomeArquivoDownload(titulo)),
 							variant: 'filled',
+						},
+						{
+							label: 'Explorar o portal',
+							href: buildReturnToHref(returnToOrHome, { logado: 'true' }),
+							variant: 'ghost',
 						},
 					],
 					proof: 'confirm-welcome',
@@ -194,7 +219,7 @@ function ReenviarEmailButton({ className }: { className: string }) {
 	)
 }
 
-function ConfirmButton({ label, href, variant, isResend }: ConfirmacaoButton) {
+function ConfirmButton({ label, href, onClick, variant, isResend }: ConfirmacaoButton) {
 	const className = twMerge(BTN_BASE, BTN_VARIANT[variant])
 	if (isResend) return <ReenviarEmailButton className={className} />
 	if (href) {
@@ -205,7 +230,7 @@ function ConfirmButton({ label, href, variant, isResend }: ConfirmacaoButton) {
 		)
 	}
 	return (
-		<button type="button" className={className}>
+		<button type="button" onClick={onClick} className={className}>
 			{label}
 		</button>
 	)

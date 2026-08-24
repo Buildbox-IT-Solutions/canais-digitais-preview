@@ -14,8 +14,12 @@ type LoginError = 'none' | 'empty' | 'invalid' | 'locked'
 
 const ALLOWED_ERRORS: LoginError[] = ['none', 'empty', 'invalid', 'locked']
 
+// `download` NÃO anuncia download — anuncia liberação. Entrar não baixa nada: o retorno
+// leva o CTA à vista e o clique continua sendo do usuário (ver lib/use-material-liberado).
+// Até 24/08/2026 isto mapeava para 'download-started', que prometia um download que nunca
+// acontecia.
 const TOAST_BY_INTENT: Record<string, string> = {
-	download: 'download-started',
+	download: 'material-liberado',
 	newsletter: 'newsletter-subscribed',
 }
 

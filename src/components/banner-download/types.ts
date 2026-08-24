@@ -9,5 +9,7 @@ export interface IBannerDownloadProps {
 	onCtaClick?: () => void
 	orientation?: 'horizontal' | 'vertical'
 	photoSrc?: string
+	/** Âncora de rolagem — usada no retorno pós-login para trazer o CTA à vista. */
+	id?: string
 	className?: string
 }

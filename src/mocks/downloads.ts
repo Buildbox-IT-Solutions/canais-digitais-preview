@@ -9,6 +9,11 @@
  * sugerido do arquivo varia por material, via `nomeArquivoDownload`.
  */
 
+/** Título do material em destaque da home. Mora aqui porque duas telas precisam dele:
+ *  a home (texto + nome do arquivo) e a confirmação de e-mail, cujo painel de sucesso
+ *  baixa o mesmo material quando o retorno não aponta para um post específico. */
+export const MATERIAL_DESTAQUE_TITULO = 'Como a rastreabilidade reduz custos e aumenta a margem de lucro'
+
 /** URL do PDF de exemplo. Vive em `public/`, então é servida na raiz sem hash. */
 export const ARQUIVO_EXEMPLO_URL = '/downloads/exemplo-food-connection.pdf'
 
