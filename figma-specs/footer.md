@@ -1,7 +1,7 @@
 # Footer
 
 **Figma:** [`335:9364`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=335-9364)
-**Arquivo:** [`src/components/footer.php`](../src/components/footer.php)
+**Arquivo:** `footer.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Footer do **Food Connection** (by Informa Markets). Bg `primary-600`, texto branco, com 2 variantes: Desktop e Mobile.
 

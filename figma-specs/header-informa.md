@@ -1,7 +1,7 @@
 # Header Informa
 
 **Figma:** [`110:3575`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=110-3575)
-**Arquivo:** [`src/components/header-informa.php`](../src/components/header-informa.php)
+**Arquivo:** [`src/components/header-informa/`](../src/components/header-informa/)
 
 Faixa institucional Material com 4 variantes: `device (Desktop|Mobile) × opened (false|true)`.
 

@@ -1,7 +1,7 @@
 # Author Summary
 
 **Figma:** [`791:8418`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=791-8418)
-**Arquivo:** [`src/components/author-summary.php`](../src/components/author-summary.php)
+**Arquivo:** [`legacy/src/components/author-summary.php`](../legacy/src/components/author-summary.php)
 
 Card resumido do autor (usado em listas e carrosséis). 4 variantes: `device (Desktop|Mobile) × opened (false|true) × about × social`.
 

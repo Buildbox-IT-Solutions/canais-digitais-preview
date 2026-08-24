@@ -1,7 +1,7 @@
 # Section Title / Style 2
 
 **Figma:** [`552:5123`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=552-5123)
-**Arquivo:** [`src/components/section-title-style-2.php`](../src/components/section-title-style-2.php)
+**Arquivo:** [`legacy/src/components/section-title-style-2.php`](../legacy/src/components/section-title-style-2.php)
 
 Variante alternativa do Section Title. **9 cores × 2 estados (Enabled|Hovered) = 18 variants**.
 

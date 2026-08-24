@@ -1,8 +1,8 @@
 # Profile Progress
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §4.4 e §6.7](../FEATURE-cadastro.md))
-**Arquivo:** [`src/components/profile-progress.php`](../src/components/profile-progress.php)
-**Partial:** [`src/components/_partials/profile-progress.php`](../src/components/_partials/profile-progress.php)
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
+**Arquivo:** `profile-progress.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
+**Partial:** `profile-progress.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Barra de progresso gamificada exibida no cabeçalho do `dashboard-perfil.php`. Mostra percentual preenchido + contador `X de Y` + frase motivacional que muda por faixa.
 

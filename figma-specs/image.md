@@ -1,7 +1,7 @@
 # Image
 
 **Figma:** [Image — `30:3878`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=30-3878)
-**Arquivo:** [`src/components/image.php`](../src/components/image.php)
+**Arquivo:** [`src/components/image/`](../src/components/image/)
 
 Wrapper que impõe `aspect-ratio` na imagem contida, com `rounded-sm` (4px) e placeholder `bg-neutral-100`. 9 razões: 5 landscape + 4 portrait.
 

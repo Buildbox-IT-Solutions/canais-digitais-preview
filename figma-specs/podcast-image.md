@@ -1,7 +1,7 @@
 # Podcast Image
 
 **Figma:** [`2279:20059`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2279-20059)
-**Arquivo:** [`src/components/podcast-image.php`](../src/components/podcast-image.php)
+**Arquivo:** [`legacy/src/components/podcast-image.php`](../legacy/src/components/podcast-image.php)
 
 Capa de podcast standalone (fora de card). 10 variantes: `size × ratio × state`.
 

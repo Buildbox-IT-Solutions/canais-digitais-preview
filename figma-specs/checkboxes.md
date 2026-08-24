@@ -1,7 +1,7 @@
 # Checkboxes
 
 **Figma:** [Checkboxes `1944:7508`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1944-7508)
-**Arquivo:** [`src/components/checkboxes.php`](../src/components/checkboxes.php)
+**Arquivo:** [`src/components/form-checkbox/`](../src/components/form-checkbox/)
 
 Checkbox Material 3 (M3 spec). 15 variantes: `type (Unselected|Selected|Indeterminate) × state (Enabled|Hovered|Focused|Pressed|Disabled)`.
 

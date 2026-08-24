@@ -1,7 +1,7 @@
 # Header
 
 **Figma:** [Header — `181:4186`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=181-4186)
-**Arquivo:** [`src/components/header.php`](../src/components/header.php)
+**Arquivo:** [`src/components/header-desktop/`](../src/components/header-desktop/)
 
 Header do **Food Connection** (by Informa Markets). Props do Figma: `device (Desktop|Mobile) × size (Compact|Expanded) × searchOpened` = 6 variantes.
 

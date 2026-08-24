@@ -1,7 +1,7 @@
 # Loading Button [1.0]
 
 **Figma:** [Loading Button [1.0] — `71:6026`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=71-6026)
-**Arquivo:** [`src/components/loading-button.php`](../src/components/loading-button.php)
+**Arquivo:** [`legacy/src/components/loading-button.php`](../legacy/src/components/loading-button.php)
 
 Pill `h-12 px-6` com spinner SVG branco animado, sem texto. Substitui o conteúdo de um botão Filled enquanto a ação está em progresso. Mesma paleta do Filled do Button [1.1] (primary-600 / secondary-950 / neutral-200).
 

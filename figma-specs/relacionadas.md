@@ -1,7 +1,7 @@
 # Relacionadas
 
 **Figma:** [`3104:53873`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3104-53873)
-**Arquivo:** [`src/components/relacionadas.php`](../src/components/relacionadas.php)
+**Arquivo:** [`legacy/src/components/relacionadas.php`](../legacy/src/components/relacionadas.php)
 
 Bloco "Relacionado" — lista de Link Buttons textuais com ícone "+" antes de cada item. **NÃO é uma lista de news cards thumbnails.**
 

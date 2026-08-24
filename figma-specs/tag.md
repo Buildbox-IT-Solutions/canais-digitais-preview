@@ -1,7 +1,7 @@
 # Tag
 
 **Figma:** [Tag — `567:9604`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=567-9604)
-**Arquivo:** [`src/components/tag.php`](../src/components/tag.php)
+**Arquivo:** [`src/components/tag/`](../src/components/tag/)
 
 Chip pequeno usado para marcar palavras-chave/temas em cards e cabeçalhos. Padding 8×4, radius 4px (`rounded-sm`), tipo Open Sans SemiBold 14px (`text-title-sm font-body font-semibold`). Estado padrão: bg `primary-100`, texto `primary-800`. Hover: bg `neutral-50`, texto `secondary-950`.
 

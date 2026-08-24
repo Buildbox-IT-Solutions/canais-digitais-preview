@@ -1,7 +1,7 @@
 # Highlight Post
 
 **Figma:** [`3104:56651`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3104-56651)
-**Arquivo:** [`src/components/highlight-post.php`](../src/components/highlight-post.php)
+**Arquivo:** [`legacy/src/components/highlight-post.php`](../legacy/src/components/highlight-post.php)
 
 Pull-quote tipográfica pra uso dentro do corpo editorial. NÃO é um hero — é apenas uma citação destacada com barra lateral cinza.
 

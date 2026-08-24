@@ -2,7 +2,7 @@
 
 **Figma Pagination:** [`4541:15460`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=4541-15460)
 **Figma page-item:**  [`1510:22852`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1510-22852)
-**Arquivo:** [`src/components/pagination.php`](../src/components/pagination.php)
+**Arquivo:** [`src/components/pagination/`](../src/components/pagination/)
 
 Paginação com 2 layouts radicalmente diferentes via prop `device`:
 

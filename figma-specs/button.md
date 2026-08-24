@@ -1,7 +1,7 @@
 # Button [1.1]
 
 **Figma:** [Button [1.1] — `3185:47973`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3185-47973)
-**Arquivo:** [`src/components/button.php`](../src/components/button.php)
+**Arquivo:** [`src/components/button/`](../src/components/button/)
 
 Botão pill (`rounded-full`), Open Sans Bold. 81 variants do Figma colapsadas em **3 tipos × 3 tamanhos**, com `state` (hover/disabled) implementado por pseudo-classes CSS — não por variant separada.
 

@@ -2,7 +2,7 @@
 
 **Figma Widget:** [`3074:48896`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3074-48896)
 **Figma Item:**   [`2769:24490`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2769-24490)
-**Arquivo:** [`src/components/widget-podcast.php`](../src/components/widget-podcast.php)
+**Arquivo:** [`src/components/widget-podcast/`](../src/components/widget-podcast/)
 
 Widget de podcasts. **2 variantes** Widget + 8 variantes Widget Item Podcast (device × patrocinado × state).
 

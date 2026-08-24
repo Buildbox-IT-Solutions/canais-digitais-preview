@@ -1,7 +1,7 @@
 # Dropdown Menu
 
 **Figma:** [`1859:23264`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1859-23264)
-**Arquivo:** [`src/components/dropdown-menu.php`](../src/components/dropdown-menu.php)
+**Arquivo:** [`src/components/dropdown-menu/`](../src/components/dropdown-menu/)
 
 Menu suspenso Material 3. **3 variantes**: `density (0|-2|-4)`.
 

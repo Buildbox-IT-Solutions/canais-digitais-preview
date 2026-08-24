@@ -3,7 +3,7 @@
 **Figma Patrocinado:**   [`2358:14810`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2358-14810)
 **Figma Patrocinado 2:** [`2370:30429`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2370-30429)
 **Figma Boxed:**         [`3862:28403`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3862-28403)
-**Arquivo:** [`src/components/news-card-patrocinado.php`](../src/components/news-card-patrocinado.php)
+**Arquivo:** [`legacy/src/components/news-card-patrocinado.php`](../legacy/src/components/news-card-patrocinado.php)
 
 News Card patrocinado: BOX com border + Sponsor Line. 12 variantes (size × orientation × state × image/lead/categoria bools).
 

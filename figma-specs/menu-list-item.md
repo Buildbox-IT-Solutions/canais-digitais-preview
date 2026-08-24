@@ -6,7 +6,7 @@
 - [`1859:23396`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1859-23396) — density -4 (h-40)
 - [`973:10741`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=973-10741) — 973 default (h-56, w-244)
 
-**Arquivo:** [`src/components/menu-list-item.php`](../src/components/menu-list-item.php)
+**Arquivo:** [`src/components/menu-list-item/`](../src/components/menu-list-item/)
 
 Menu list item Material 3. **Variantes**: `state (Enabled|Hovered|Selected|Disabled|Menu Title) × density × leading/trailing/supporting bools`.
 

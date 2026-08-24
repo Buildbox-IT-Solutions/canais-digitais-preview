@@ -2,7 +2,7 @@
 
 **Figma Search view:** [`3148:50619`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3148-50619)
 **Figma Search Item:** [`3148:51092`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3148-51092)
-**Arquivo:** [`src/components/search-view.php`](../src/components/search-view.php)
+**Arquivo:** [`legacy/src/components/search-view.php`](../legacy/src/components/search-view.php)
 
 Overlay full-screen mobile de busca. **4 variantes**: `labelText (Input text|Supporting text) × listItems (false|true)`.
 

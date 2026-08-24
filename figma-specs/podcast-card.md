@@ -1,7 +1,7 @@
 # Podcast Card 2.0
 
 **Figma:** [Podcast Card 2.0 — `2283:2779`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2283-2779)
-**Arquivo:** [`src/components/podcast-card.php`](../src/components/podcast-card.php)
+**Arquivo:** [`src/components/podcast-card/`](../src/components/podcast-card/)
 
 Variante do card composto pra conteúdo de áudio. Mesma anatomia do News/Video Card mas com 3 diferenças:
 

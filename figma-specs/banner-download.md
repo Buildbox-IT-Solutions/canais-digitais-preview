@@ -1,7 +1,7 @@
 # Banner Download
 
 **Figma:** [`925:11171`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=925-11171)
-**Arquivo:** [`src/components/banner-download.php`](../src/components/banner-download.php)
+**Arquivo:** [`src/components/banner-download/`](../src/components/banner-download/)
 
 Banner CTA pra download de material. **4 variantes**: `orientation (Horizontal|Vertical) × photo (false|true)`.
 

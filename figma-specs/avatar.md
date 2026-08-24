@@ -1,7 +1,7 @@
 # Avatar
 
 **Figma:** [Avatar — `751:3445`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=751-3445)
-**Arquivo:** [`src/components/avatar.php`](../src/components/avatar.php)
+**Arquivo:** [`src/components/avatar/`](../src/components/avatar/)
 
 Imagem de perfil em duas formas: `Squared` (`rounded-sm` = 4px) e `Rounded` (`rounded-full`), cada uma com estado `Hovered` que sobrepõe um state-layer branco semitransparente (#FFFFFF24 ≈ `bg-white/25`). Tamanho default 80×80 (`size-20`); o Dev pode trocar livremente.
 

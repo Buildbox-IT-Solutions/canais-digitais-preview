@@ -1,7 +1,7 @@
 # Login Modal
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §6.1](../FEATURE-cadastro.md))
-**Arquivo:** [`src/layouts/login-modal.php`](../src/layouts/login-modal.php)
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
+**Arquivo:** `login-modal.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Modal de autenticação que abre sobre qualquer página (trigger: "Entrar" no header ou redirect do `form-download.php` para usuário anônimo). Tem **7 estados obrigatórios**.
 

@@ -1,7 +1,7 @@
 # Text field
 
 **Figma:** [`1757:14338`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1757-14338)
-**Arquivo:** [`src/components/text-field.php`](../src/components/text-field.php)
+**Arquivo:** [`src/components/form-field/`](../src/components/form-field/)
 
 Input Material 3 customizado. Props do Figma: `state × leadingIcon × trailingIcon × required × supportingText`.
 

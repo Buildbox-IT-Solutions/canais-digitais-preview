@@ -2,7 +2,7 @@
 
 **Figma 2.0:**    [`2790:25832`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2790-25832)
 **Figma legacy:** [`1678:21003`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1678-21003)
-**Arquivo:** [`src/components/video-image.php`](../src/components/video-image.php)
+**Arquivo:** [`legacy/src/components/video-image.php`](../legacy/src/components/video-image.php)
 
 Capa 16:9 de vídeo standalone. 8 variantes: `size (Large|Medium|Small|XSmall) × state (Enabled|Hovered)`.
 

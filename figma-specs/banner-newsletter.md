@@ -1,7 +1,7 @@
 # Banner Newsletter
 
 **Figma:** [`1188:11621`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1188-11621)
-**Arquivo:** [`src/components/banner-newsletter.php`](../src/components/banner-newsletter.php)
+**Arquivo:** [`src/components/banner-newsletter/`](../src/components/banner-newsletter/)
 
 Banner de inscrição em newsletter. **4 variantes**: `device (Desktop|Mobile) × photo (false|true)`.
 

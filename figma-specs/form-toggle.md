@@ -1,8 +1,8 @@
 # Form Toggle
 
 **Figma:** Canais Digitais 2.0 (spec derivada de `FEATURE-cadastro-etapa2.md §2.1`)
-**Arquivo (showcase):** [`src/components/form-toggle.php`](../src/components/form-toggle.php)
-**Arquivo (partial):** [`src/components/_partials/form-toggle.php`](../src/components/_partials/form-toggle.php)
+**Arquivo (showcase):** `form-toggle.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
+**Arquivo (partial):** `form-toggle.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Switch on/off estilo iOS/Material, usado em preferências com auto-save. Variantes: `state (Off|On) × availability (Default|Disabled) = 4`.
 

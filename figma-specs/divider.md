@@ -1,7 +1,7 @@
 # Divider
 
 **Figma:** [Divider — `56:6360`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=56-6360)
-**Arquivo:** [`src/components/divider.php`](../src/components/divider.php)
+**Arquivo:** [`src/components/divider/`](../src/components/divider/)
 
 Linha separadora 1px. Duas orientações: `horizontal` (padrão, `h-px w-full`) e `vertical` (`w-px h-full`). Cor única: `bg-neutral-100` (#D6D8DD), que bate exato com o fill do Figma.
 

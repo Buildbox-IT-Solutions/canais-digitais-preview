@@ -1,7 +1,7 @@
 # Link Button
 
 **Figma:** [Link Button — `662:11195`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=662-11195)
-**Arquivo:** [`src/components/link-button.php`](../src/components/link-button.php)
+**Arquivo:** [`src/components/link-button/`](../src/components/link-button/)
 
 CTA tipo link — só texto, sem fundo nem borda. 4 tamanhos × 3 estados. Hover acrescenta `underline` + cor mais clara; disabled remove o sublinhado.
 

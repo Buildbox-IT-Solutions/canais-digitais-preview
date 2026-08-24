@@ -2,7 +2,7 @@
 
 **Figma Sheet:**   [`3190:48964`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3190-48964)
 **Figma Content:** [`3190:49404`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3190-49404)
-**Arquivo:** [`src/components/bottom-sheet.php`](../src/components/bottom-sheet.php)
+**Arquivo:** [`src/components/bottom-sheet/`](../src/components/bottom-sheet/)
 
 Bottom sheet Material 3. Do [M3 spec](https://m3.material.io/components/bottom-sheets/overview):
 

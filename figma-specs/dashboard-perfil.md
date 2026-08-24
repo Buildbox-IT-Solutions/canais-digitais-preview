@@ -1,7 +1,7 @@
 # Dashboard de Perfil
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §6.7](../FEATURE-cadastro.md))
-**Arquivo:** [`src/layouts/dashboard-perfil.php`](../src/layouts/dashboard-perfil.php)
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
+**Arquivo:** `dashboard-perfil.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Área logada onde o usuário gerencia seus dados. Primeira página do portal que usa o header-desktop completo (é parte do portal, não do fluxo minimal de cadastro).
 

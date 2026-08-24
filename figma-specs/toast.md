@@ -1,6 +1,6 @@
 # Toast
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §4.2](../FEATURE-cadastro.md))
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
 **Status:** implementação divergiu deliberadamente do Figma original para seguir a estrutura do shadcn/ui — ver `docs/superpowers/specs/2026-08-06-toast-shadcn-refactor-design.md`. Este documento reflete o estado atual (pós-divergência), não mais o Figma original.
 
 Notificação flutuante usada para feedback assíncrono (salvar perfil, senha redefinida, erros de submissão). Auto-dismiss de 4s (sobrescrevível via `durationMs`), empilhamento estilo sonner (ver `src/lib/toast-store.ts` / `src/components/toaster/`).

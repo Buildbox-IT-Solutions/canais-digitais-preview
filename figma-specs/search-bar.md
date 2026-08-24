@@ -1,7 +1,7 @@
 # Search bar
 
 **Figma:** [`1776:19053`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1776-19053)
-**Arquivo:** [`src/components/search-bar.php`](../src/components/search-bar.php)
+**Arquivo:** [`src/components/search-bar/`](../src/components/search-bar/)
 
 Campo de busca pill. Props do Figma: `state (Enabled|Hovered|Empty|Typing|Filled|Disabled) × extended (off|on) × trailingIcon` = 8 variantes.
 

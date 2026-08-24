@@ -2,7 +2,7 @@
 
 **Figma Section Title:** [`552:9108`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=552-9108)
 **Figma Building Block:** [`550:9155`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=550-9155)
-**Arquivo:** [`src/components/section-title-style-1.php`](../src/components/section-title-style-1.php)
+**Arquivo:** `section-title-style-1.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Título de seção com grafism decorativo: 3 bullets circulares + linha horizontal. Aleo Bold 28px (`text-headline-md`), max-w-screen-xl (1280px), padding-top 40 (`pt-10`).
 

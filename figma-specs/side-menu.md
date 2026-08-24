@@ -1,7 +1,7 @@
 # Side Menu
 
 **Figma:** [`986:9198`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=986-9198)
-**Arquivo:** [`src/components/side-menu.php`](../src/components/side-menu.php)
+**Arquivo:** [`src/components/side-menu/`](../src/components/side-menu/)
 
 Drawer lateral. **4 variantes**: `device (Desktop|Mobile) × level (Level 1|Level 2)`.
 

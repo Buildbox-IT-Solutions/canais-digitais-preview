@@ -1,7 +1,7 @@
 # Categoria
 
 **Figma:** [Categoria — `71:6699`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=71-6699)
-**Arquivo:** [`src/components/categoria.php`](../src/components/categoria.php)
+**Arquivo:** [`src/components/categoria/`](../src/components/categoria/)
 
 Etiqueta de editoria. 7 cores categoricais × 2 modos visuais (`Chip=On` pill, `Chip=Off` texto inline) × hover. Tipografia: `text-body-sm font-body font-semibold` (12px Open Sans SemiBold).
 

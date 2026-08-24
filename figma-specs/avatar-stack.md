@@ -1,7 +1,7 @@
 # Avatar Stack
 
 **Figma:** [`3422:29955`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3422-29955)
-**Arquivo:** [`src/components/avatar-stack.php`](../src/components/avatar-stack.php)
+**Arquivo:** [`src/components/avatar-stack/`](../src/components/avatar-stack/)
 
 Coleção de avatares circulares sobrepostos. 5 variantes: `qty (2|3|4|5|6)`.
 
