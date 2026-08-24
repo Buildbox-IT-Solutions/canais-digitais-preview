@@ -7,9 +7,6 @@ export interface IBannerDownloadProps {
 	 *  em vez de navegar. Ausente ⇒ link normal. */
 	ctaDownload?: string
 	onCtaClick?: () => void
-	/** Chamado DEPOIS de o download começar, sem cancelar o clique. Para o aviso que
-	 *  acompanha a ação (toast), não para interceptá-la — quem intercepta é `onCtaClick`. */
-	onCtaDownload?: () => void
 	orientation?: 'horizontal' | 'vertical'
 	photoSrc?: string
 	className?: string

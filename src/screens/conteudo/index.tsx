@@ -17,7 +17,7 @@ import { IconButton } from '~/components/icon-button'
 import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
-import { toast } from '~/lib/toast-store'
+import { baixarMaterial } from '~/lib/baixar-material'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
@@ -542,9 +542,10 @@ function PostDownloadBanner({
 }) {
 	const gated = !logado && download.requiresAuth
 
-	// Com acesso, o CTA baixa o arquivo direto (âncora com `download`, sem navegação).
-	// Gateado, `onCtaClick` dá preventDefault e abre o modal de incentivo — o href fica
-	// inerte de propósito, porque o material não pode ser servido sem conta.
+	// Com acesso, o clique baixa buscando os bytes e só confirma no fim (ver
+	// lib/baixar-material) — `ctaHref`/`ctaDownload` ficam como caminho sem-JS.
+	// Gateado, abre o modal de incentivo e o href fica inerte de propósito, porque o
+	// material não pode ser servido sem conta.
 	return (
 		<BannerDownload
 			title={download.title}
@@ -552,8 +553,11 @@ function PostDownloadBanner({
 			ctaLabel={download.ctaLabel}
 			ctaHref={gated ? '#' : ARQUIVO_EXEMPLO_URL}
 			ctaDownload={gated ? undefined : nomeArquivoDownload(download.title)}
-			onCtaClick={gated ? onRequestAccess : undefined}
-			onCtaDownload={gated ? undefined : () => toast.success('Material baixado.')}
+			onCtaClick={
+				gated
+					? onRequestAccess
+					: () => void baixarMaterial(ARQUIVO_EXEMPLO_URL, nomeArquivoDownload(download.title))
+			}
 		/>
 	)
 }
