@@ -1,9 +1,29 @@
 /**
  * Componente: NewsCard
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1709-7090
- * Variantes: size (large|medium|small) × orientation (vertical|horizontal) · categoria/lead/author on-off
- * · mediaRatio (video 16:9 default | photo 3:2 | square) · titleClassName (escape hatch, ex. line-clamp)
- * Tokens: --text-headline-md, --text-title-xl/lg/md, --text-body-lg/md, --color-primary-600, --color-neutral-900
+ * Variantes: size (xlarge|large|medium|small) × orientation (vertical|horizontal) ·
+ * boxed · sponsor · categoria/lead/author on-off · mediaRatio (video 16:9 default |
+ * photo 3:2 | square) · titleClassName/leadClassName (escape hatches, ex. line-clamp)
+ * Tokens: --text-headline-lg/sm/md, --text-title-xl/lg/md, --text-body-lg/md, --color-primary-600,
+ *         --color-neutral-100, --color-neutral-900, --color-secondary-950
+ *
+ * `boxed` — "News Card 2.0 / Boxed" do Figma: moldura própria (borda + rounded-lg),
+ * conteúdo com padding e mídia sangrando até a borda do card. Combinado com
+ * `orientation="horizontal"` vira o split 50/50 do destaque único da home
+ * (`size="xlarge"`, node 6775:18688), que empilha abaixo de `lg:` com a imagem em cima.
+ * No split a mídia fica SEMPRE à direita (texto à esquerda) — não é opção: o
+ * destaque único é o único consumidor de `boxed` e não existe versão com a foto à
+ * esquerda (decisão do Pedro em 2026-08-23), então a prop `inverse` que ligava isso
+ * saiu do contrato em 2026-08-24. `sponsor` é o "News Card 2.0 / Patrocinado":
+ * SponsorLine ancorada no rodapé da coluna de texto.
+ *
+ * Por que `boxed` NÃO usa `overflow-hidden` no <article> pra recortar a imagem nos
+ * cantos arredondados (o caminho óbvio, e o que os cards boxed de CategoryColumn e
+ * DestaqueSection fazem hoje): esse clip pega TAMBÉM o tooltip do toggle de
+ * favoritar, que é posicionado fora dos limites da mídia e aparece cortado. Aqui o
+ * raio vai canto a canto na própria Thumbnail — que já tem `overflow-hidden` dela
+ * pro zoom da imagem — e o <article> fica sem clip nenhum. Ver docs/_achados.md: os
+ * outros dois cards boxed do repo têm o mesmo bug, ainda não corrigido.
  *
  * Toggle de favoritar (feature Favoritos) — âncora principal é a MÍDIA (canto
  * superior direito, `top-2 right-2`, mesmo inset do selo "Conteúdo Patrocinado" em
@@ -64,6 +84,7 @@ import { twMerge } from '~/lib/tw-merge'
 import { Thumbnail } from '~/components/thumbnail'
 import { Categoria } from '~/components/categoria'
 import { Byline } from '~/components/byline'
+import { SponsorLine } from '~/components/sponsor-line'
 import { Toggle } from '~/components/toggle'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { useFavoritoAuthModal } from '~/lib/use-favorito-auth-modal'
@@ -83,6 +104,10 @@ const TOGGLE_HIDDEN_UNTIL_HOVER = twMerge(
 )
 
 const HEADLINE: Record<string, string> = {
+	// xlarge só existe em horizontal (destaque único da home) — "Headline/Large/
+	// Emphasized" (Aleo Bold 32/40) no Figma. No mobile desce um degrau: 32px em
+	// 360px de largura quebra a manchete em 5-6 linhas (ver docs/_achados.md).
+	'xlarge-horizontal': 'text-headline-sm lg:text-headline-lg',
 	'large-vertical': 'text-headline-md',
 	'medium-vertical': 'text-title-xl',
 	'small-vertical': 'text-title-lg',
@@ -92,6 +117,7 @@ const HEADLINE: Record<string, string> = {
 }
 
 const LEAD: Record<string, string | null> = {
+	'xlarge-horizontal': 'text-body-lg',
 	'large-vertical': 'text-body-lg',
 	'medium-vertical': 'text-body-md',
 	'small-vertical': 'text-body-md',
@@ -101,6 +127,9 @@ const LEAD: Record<string, string | null> = {
 }
 
 const H_THUMB_WIDTH: Record<NewsCardSize, string> = {
+	// xlarge é sempre `boxed` (split 50/50) — nunca cai nesta tabela, mas o Record
+	// exige a chave. Mesma medida do large pra não mentir se alguém usar solto.
+	xlarge: 'w-[240px]',
 	large: 'w-[240px]',
 	medium: 'w-[180px]',
 	small: 'w-[120px]',
@@ -121,6 +150,9 @@ export function NewsCard({
 	mediaClassName,
 	mediaRatio = 'video',
 	titleClassName,
+	leadClassName,
+	boxed,
+	sponsor,
 	className,
 }: INewsCardProps) {
 	const key = `${size}-${orientation}`
@@ -174,13 +206,22 @@ export function NewsCard({
 
 	const mediaStack = image ? (
 		<div className="relative">
-			<Thumbnail src={image} alt={title} href={href} ratio={mediaRatio} overlay={mediaOverlay} />
+			<Thumbnail
+				src={image}
+				alt={title}
+				href={href}
+				ratio={mediaRatio}
+				overlay={mediaOverlay}
+				radius={!boxed}
+			/>
 			{mediaToggle}
 		</div>
 	) : null
 
 	const content = (
-		<div className="flex flex-col gap-2 min-w-0 flex-1">
+		// `flex-1` só fora do boxed: lá quem distribui a altura da coluna é o painel
+		// de texto (justify-between/center), e um filho que cresce anularia isso.
+		<div className={twMerge('flex flex-col gap-2 min-w-0', !boxed && 'flex-1')}>
 			{categoria ? <Categoria {...categoria} /> : null}
 			<div className="flex items-start gap-2">
 				<h3
@@ -201,6 +242,7 @@ export function NewsCard({
 					className={twMerge(
 						'font-body text-neutral-900 group-hover:text-neutral-950 transition-colors',
 						leadClass,
+						leadClassName,
 					)}
 				>
 					{lead}
@@ -230,6 +272,93 @@ export function NewsCard({
 			body="Crie sua conta para guardar conteúdos e encontrá-los depois, e receber recomendações do seu setor."
 		/>
 	) : null
+
+	const sponsorLine = sponsor ? <SponsorLine company={sponsor.company} href={sponsor.href} /> : null
+
+	// "News Card 2.0 / Boxed": moldura própria, mídia sangrando, conteúdo com padding.
+	// Em horizontal vira o split 50/50 do destaque único da home, que empilha abaixo
+	// de `lg:` (imagem em cima). A ordem no DOM é sempre texto → mídia, pra manchete
+	// vir antes da imagem na leitura assistiva; quem inverte visualmente é `order-*`.
+	if (boxed) {
+		const split = orientation === 'horizontal'
+
+		// Empilhado (< lg) a mídia vem sempre em cima; a partir de lg: texto à
+		// esquerda, mídia à direita. Ordem FIXA, não configurável — ver cabeçalho.
+		const textOrder = split ? 'lg:order-1' : ''
+		const mediaOrder = split ? 'lg:order-2' : ''
+
+		// A mídia sangra até a borda do card: em vez de `overflow-hidden` no
+		// <article> (que recortaria o TOOLTIP do toggle — ver comentário do arquivo), o
+		// raio vai canto a canto na própria Thumbnail, que já tem o `overflow-hidden`
+		// dela pro zoom da imagem. Classes por canto (não `rounded-t`/`rounded-r`) pra
+		// não colidirem entre si no twMerge. Cantos combinam com a mídia à direita:
+		// topo arredondado no empilhado, e a partir de lg: só o lado de fora.
+		const boxedMediaRadius = 'rounded-tl-lg rounded-tr-lg lg:rounded-tl-none lg:rounded-br-lg'
+
+		const textPane = (
+			<div
+				className={twMerge(
+					'order-2 flex flex-col gap-6 p-4 lg:p-8',
+					split && 'lg:w-1/2',
+					textOrder,
+					// Com patrocinador a SponsorLine ancora no rodapé (único estado que o
+					// Figma desenha). Sem ela, `justify-between` deixaria o vazio da altura
+					// ditada pela imagem embaixo do texto — lê como bug, não como respiro.
+					sponsorLine ? 'justify-between' : 'justify-center',
+				)}
+			>
+				{content}
+				{sponsorLine}
+			</div>
+		)
+
+		// Painel de mídia próprio (não reusa `mediaStack`): aqui a foto precisa
+		// ACOMPANHAR a altura do card quando o texto é mais alto que ela — com
+		// título e lead nos 4 clamps isso acontece, e sem esticar sobraria uma faixa
+		// branca embaixo da foto, quebrando o "mídia sangra até a borda".
+		// `lg:grow` (flex-grow com basis auto, NÃO `flex-1`, que zeraria a base e
+		// colapsaria o painel) deixa a Thumbnail crescer sem perder a altura
+		// intrínseca do aspect-ratio — então no caso normal a proporção 3:2 segue
+		// sendo quem dita a altura do card. O `relative` do painel é o mesmo que o
+		// `mediaStack` daria, e continua ancorando o toggle.
+		const mediaPane = image ? (
+			<div
+				className={twMerge(
+					'order-1 relative flex flex-col',
+					split && 'lg:w-1/2',
+					mediaOrder,
+					mediaClassName,
+				)}
+			>
+				<Thumbnail
+					src={image}
+					alt={title}
+					href={href}
+					ratio={mediaRatio}
+					overlay={mediaOverlay}
+					radius={false}
+					className={twMerge(boxedMediaRadius, split && 'lg:grow')}
+				/>
+				{mediaToggle}
+			</div>
+		) : null
+
+		return (
+			<>
+				<article
+					className={twMerge(
+						'group flex flex-col w-full bg-white rounded-lg border border-neutral-100 hover:border-secondary-950 transition-colors',
+						split && 'lg:flex-row',
+						className,
+					)}
+				>
+					{textPane}
+					{mediaPane}
+				</article>
+				{authDialog}
+			</>
+		)
+	}
 
 	if (orientation === 'horizontal') {
 		return (

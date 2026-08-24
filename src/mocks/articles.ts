@@ -11,6 +11,23 @@ export interface Article {
 	href?: string
 }
 
+/**
+ * Destaque único (super-highlight) — seção opcional no topo da home, ligada/desligada
+ * no admin do WP. Conteúdo escolhido manualmente pelo editor (RN04); a categoria vem
+ * do próprio artigo (RN06). Ver src/components/destaque-unico.
+ */
+export const HOME_DESTAQUE_UNICO: Article = {
+	id: 'home-destaque-unico',
+	seed: 'home-destaque-unico',
+	category: 'Food Service',
+	categoryColor: 'mint',
+	title: 'Fispal Food Service terá ativações com chefs e executivos do setor',
+	lead: 'Maior evento da América do Sul voltado ao setor de alimentação fora do lar, a Fispal Food Service 2026 reunirá, entre os dias 26 e 29 de maio no Distrito Anhembi, não apenas lançamentos e soluções, mas também uma agenda de conteúdo com nomes de peso da gastronomia.',
+}
+
+/** Patrocinador do destaque único — opcional no admin (RN05). */
+export const HOME_DESTAQUE_UNICO_SPONSOR = 'Company Name'
+
 export const HOME_HERO: Article[] = [
 	{
 		id: 'home-hero',

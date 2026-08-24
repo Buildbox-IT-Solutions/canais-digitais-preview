@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { ICategoriaProps } from '~/components/categoria/types'
 import type { ThumbnailRatio } from '~/components/thumbnail/types'
 
-export type NewsCardSize = 'large' | 'medium' | 'small'
+export type NewsCardSize = 'xlarge' | 'large' | 'medium' | 'small'
 export type NewsCardOrientation = 'vertical' | 'horizontal'
 
 export interface INewsCardProps {
@@ -29,5 +29,15 @@ export interface INewsCardProps {
 	mediaRatio?: ThumbnailRatio
 	/** Escape hatch pro título — ex.: `line-clamp-4` onde não há categoria/lead sobrando espaço vertical. */
 	titleClassName?: string
+	/** Escape hatch pro lead — simétrico ao `titleClassName` (ex.: `line-clamp-3`). */
+	leadClassName?: string
+	/**
+	 * Moldura própria: borda + `rounded-lg`, conteúdo com padding e mídia sangrando
+	 * até a borda do card ("News Card 2.0 / Boxed" no Figma). Em `orientation="horizontal"`
+	 * o card vira split 50/50 que empilha abaixo de `lg:`.
+	 */
+	boxed?: boolean
+	/** Patrocinador ("News Card 2.0 / Patrocinado"): SponsorLine ancorada no rodapé do card. */
+	sponsor?: { company: string; href?: string }
 	className?: string
 }
