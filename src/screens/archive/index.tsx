@@ -42,15 +42,8 @@ const GROUPS: ArchiveGroup[] = [
 		],
 	},
 	{
-		title: 'Home — proposta anterior',
-		items: [
-			{ path: '/home-v2', label: 'Home v2', reason: 'Descartada; a home vigente é /home' },
-		],
-	},
-	{
 		title: 'Perfil — iterações anteriores',
 		items: [
-			{ path: '/dashboard', label: 'Dashboard (por seções)', reason: 'Consolidado em /dashboard-perfil-v4' },
 			{ path: '/dashboard-perfil-v3', label: 'Perfil — v3', reason: 'Consolidado em /dashboard-perfil-v4' },
 		],
 	},
@@ -61,27 +54,6 @@ const GROUPS: ArchiveGroup[] = [
 				path: '/consentimentos',
 				label: 'Consentimentos (LGPD)',
 				reason: 'Fora do escopo da versão enxuta',
-			},
-		],
-	},
-	{
-		title: 'Institucionais & Forms — descontinuadas',
-		items: [
-			{ path: '/patrocinadores', label: 'Patrocinadores', reason: 'Fora do escopo da versão enxuta' },
-			{
-				path: '/patrocinador?id=tetrapak',
-				label: 'Patrocinador (individual)',
-				reason: 'Fora do escopo da versão enxuta',
-			},
-		],
-	},
-	{
-		title: 'Download — fluxo anterior',
-		items: [
-			{
-				path: '/gate-download',
-				label: 'Gate de download',
-				reason: 'Substituída pelos modais de incentivo de download (Portal/Leitura/Download) direto no 50/50 de cadastro/login',
 			},
 		],
 	},

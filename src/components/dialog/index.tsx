@@ -9,7 +9,7 @@ import type { DialogAction, DialogIconTone, IDialogProps } from './types'
  * Casca padronizada de dialog de coluna única sobre o Modal: cabeçalho (anel de ícone StatusRing ou eyebrow +
  * título + descrição) → corpo (children) → rodapé de ações responsivo. Desktop: botões pareados à
  * direita (secundária ghost + primária). Mobile: empilhados full-width, primária em cima.
- * Fonte da verdade dos dialogs (excluir-conta, meus-dados, gate-download). Auth 50/50 fica fora.
+ * Fonte da verdade dos dialogs (excluir-conta, meus-dados). Auth 50/50 fica fora.
  * Tokens: --color-primary-600, --color-secondary-950, --color-danger-600, --color-danger-700,
  *         --color-neutral-*
  */

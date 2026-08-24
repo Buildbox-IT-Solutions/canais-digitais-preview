@@ -15,7 +15,9 @@ export function BannerDownload({
 	description,
 	ctaLabel,
 	ctaHref,
+	ctaDownload,
 	onCtaClick,
+	onCtaDownload,
 	orientation = 'horizontal',
 	photoSrc,
 	className,
@@ -62,14 +64,19 @@ export function BannerDownload({
 				<div className="flex flex-col items-start pt-4 pb-8 px-6 lg:px-8 w-full">
 					<a
 						href={ctaHref}
-						onClick={
-							onCtaClick
-								? (e) => {
-										e.preventDefault()
-										onCtaClick()
-									}
-								: undefined
-						}
+						download={ctaDownload}
+						onClick={(e) => {
+							// `onCtaClick` INTERCEPTA: cancela o clique e assume o fluxo (ex.: abrir o
+							// modal de incentivo pra quem está deslogado). O href vira só fallback sem-JS.
+							if (onCtaClick) {
+								e.preventDefault()
+								onCtaClick()
+								return
+							}
+							// `onCtaDownload` ACOMPANHA: o download segue normalmente e o aviso vai
+							// junto. Nunca dá preventDefault — isso mataria o download.
+							onCtaDownload?.()
+						}}
 						className={twMerge(
 							'inline-flex gap-3 items-center justify-center pl-5 pr-6 py-3 rounded-full transition-colors font-body font-bold text-body-lg',
 							isVertical ? 'w-full' : 'w-fit',

@@ -11,7 +11,19 @@ import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
 import type { IDownloadSectionProps } from './types'
 
-export function DownloadSection({ eyebrow, title, description, ctaLabel, ctaHref, onCtaClick, image, className }: IDownloadSectionProps) {
+export function DownloadSection({
+	eyebrow,
+	title,
+	description,
+	ctaLabel,
+	ctaHref,
+	ctaDownload,
+	onCtaClick,
+	onCtaDownload,
+	titleHref,
+	image,
+	className,
+}: IDownloadSectionProps) {
 	return (
 		<section className={twMerge('relative w-full h-[642px] lg:h-[460px] overflow-hidden', className)}>
 			<img src={image} alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
@@ -22,19 +34,32 @@ export function DownloadSection({ eyebrow, title, description, ctaLabel, ctaHref
 						<p className="font-body font-semibold text-label-md text-primary-600">{eyebrow}</p>
 					</span>
 					<div className="flex flex-col gap-2 items-start text-primary-600 w-full">
-						<h2 className="font-display font-bold text-headline-sm lg:text-display-sm w-full">{title}</h2>
+						<h2 className="font-display font-bold text-headline-sm lg:text-display-sm w-full">
+							{titleHref ? (
+								<a href={titleHref} className="hover:underline">
+									{title}
+								</a>
+							) : (
+								title
+							)}
+						</h2>
 						<p className="font-body text-body-lg w-full">{description}</p>
 					</div>
 					<a
 						href={ctaHref}
-						onClick={
-							onCtaClick
-								? (e) => {
-										e.preventDefault()
-										onCtaClick()
-									}
-								: undefined
-						}
+						download={ctaDownload}
+						onClick={(e) => {
+							// `onCtaClick` INTERCEPTA: cancela o clique e assume o fluxo (ex.: abrir o
+							// modal de incentivo pra quem está deslogado). O href vira só fallback sem-JS.
+							if (onCtaClick) {
+								e.preventDefault()
+								onCtaClick()
+								return
+							}
+							// `onCtaDownload` ACOMPANHA: o download segue normalmente e o aviso vai
+							// junto. Nunca dá preventDefault — isso mataria o download.
+							onCtaDownload?.()
+						}}
 						className="bg-primary-600 inline-flex items-center justify-center gap-3 pl-5 pr-6 py-3 rounded-full text-white hover:bg-secondary-950 transition-colors font-body font-bold text-body-lg w-full lg:w-auto"
 					>
 						<Icon name="download" className="size-6" />

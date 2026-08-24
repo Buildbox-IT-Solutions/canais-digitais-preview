@@ -1,0 +1,71 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 826 >>
+stream
+BT
+/F2 28 Tf
+1 0 0 1 72 720 Tm
+(Food Connection) Tj
+/F1 13 Tf
+1 0 0 1 72 688 Tm
+(Material de exemplo) Tj
+/F2 17 Tf
+1 0 0 1 72 620 Tm
+(Este PDF é um placeholder do protótipo.) Tj
+/F1 12 Tf
+1 0 0 1 72 588 Tm
+(O repositório é um Design as Code: reprodução fiel do Figma, sem) Tj
+/F1 12 Tf
+1 0 0 1 72 570 Tm
+(integração real. Nenhum material de verdade é servido daqui.) Tj
+/F1 12 Tf
+1 0 0 1 72 530 Tm
+(No produto final \(WordPress/PHP\), o back-end serve o arquivo real) Tj
+/F1 12 Tf
+1 0 0 1 72 512 Tm
+(do material no lugar deste, na mesma URL do atributo download.) Tj
+/F2 12 Tf
+1 0 0 1 72 452 Tm
+(Onde este arquivo é usado:) Tj
+/F1 12 Tf
+1 0 0 1 72 428 Tm
+(• Home, seção de download: botão "Baixar agora" \(usuário logado\)) Tj
+/F1 12 Tf
+1 0 0 1 72 410 Tm
+(• Página de conteúdo: banner de download \(usuário com acesso\)) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Title (Food Connection — material de exemplo) /Producer (canais-digitais-preview) >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000001128 00000 n 
+0000001225 00000 n 
+0000001327 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R /Info 7 0 R >>
+startxref
+1431
+%%EOF
