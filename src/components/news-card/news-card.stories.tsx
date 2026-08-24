@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MemoryRouter } from 'react-router'
 import { favoritar } from '~/lib/favoritos-store'
@@ -31,13 +31,18 @@ const meta: Meta<typeof NewsCard> = {
 			// assim que qualquer story passa `contentId`. `?logado=true` deixa o toggle
 			// clicável de verdade no canvas (mesma convenção usada no app).
 			<MemoryRouter initialEntries={['/?logado=true']}>
-				<div
-					className={
-						WIDTHS[`${ctx.args.size ?? 'large'}-${ctx.args.orientation ?? 'vertical'}`]
-					}
-				>
+				{/* `parameters.fullWidth`: opt-out da moldura de largura, para as stories
+				    compostas — elas renderizam vários tamanhos de card e aplicam a
+				    largura por caso (ver `Caso`), então uma moldura única aqui usaria a
+				    largura errada pra todos. O default lê os args porque as stories de
+				    variante têm size/orientation fixos. */}
+				{ctx.parameters.fullWidth ? (
 					<Story />
-				</div>
+				) : (
+					<div className={WIDTHS[`${ctx.args.size ?? 'large'}-${ctx.args.orientation ?? 'vertical'}`]}>
+						<Story />
+					</div>
+				)}
 			</MemoryRouter>
 		),
 	],
@@ -47,8 +52,8 @@ type Story = StoryObj<typeof NewsCard>
 
 // Favoritar NÃO é uma variante do card: é feature assumida (decisão do Pedro em
 // 2026-08-23). Todo story passa `contentId` — não existe mais o par
-// "com favoritar"/"sem favoritar" pra cada combinação. O id é próprio de cada story
-// porque o autodocs renderiza todas na MESMA página: com id compartilhado,
+// "com favoritar"/"sem favoritar" pra cada combinação. O id é próprio de cada card
+// porque o autodocs renderiza todos na MESMA página: com id compartilhado,
 // favoritar um card acenderia o toggle de todos os outros. Os ids são fictícios
 // (não existem no ARTICLE_POOL), só pra exercitar a store isoladamente.
 const base = {
@@ -61,7 +66,38 @@ const base = {
 	authorHref: '#',
 }
 
-// Matriz size × orientation — as variantes de fato do componente.
+const TITULO_CURTO = 'Robôs no chão de fábrica'
+const TITULO_LONGO =
+	'Meu colega robô: como WEG, Mitsubishi e uma dezena de outras fabricantes do setor de food service e food connection estão apostando pesado em robôs colaborativos para ajudar humanos em linhas de produção cada vez mais automatizadas e complexas'
+
+// ─── Stories compostas ───────────────────────────────────────────────────────
+// Três tipos de story convivem aqui e não pesam igual: VARIANTE (o que o DS
+// oferece: size × orientation, boxed, patrocinado) merece uma story cada, porque é
+// o que o consumidor escolhe. SLOT desligado e FIXTURE DE REGRESSÃO (o que quebrou
+// uma vez e não pode voltar) não — agrupadas por O QUE PROVAM, provam melhor:
+// contraste e caso-limite só se avaliam comparando, e separadas obrigam o revisor
+// a alternar de aba. Cada caso carrega o rótulo do que ele prova, visível no
+// canvas — antes isso existia só no comentário do código, que quem revisa no
+// Storybook não lê. Custo assumido: a story composta não tem controls por caso no
+// autodocs nem URL isolada de um caso só; as 6 da matriz continuam tendo.
+
+function Casos({ children }: { children: ReactNode }) {
+	return <div className="flex flex-col gap-10">{children}</div>
+}
+
+/** Um caso rotulado dentro de uma story composta. `width` recebe a moldura
+ *  ilustrativa do par size×orientation daquele card (as compostas dispensam o
+ *  decorator de largura via `parameters.fullWidth`). */
+function Caso({ label, width, children }: { label: string; width?: string; children: ReactNode }) {
+	return (
+		<div className="flex flex-col gap-2">
+			<p className="font-body text-label-sm text-neutral-500">{label}</p>
+			<div className={width}>{children}</div>
+		</div>
+	)
+}
+
+// ─── Variantes: a matriz size × orientation ──────────────────────────────────
 export const LargeVertical: Story = {
 	args: { ...base, size: 'large', orientation: 'vertical', contentId: 'story-large-vertical' },
 }
@@ -96,64 +132,160 @@ export const SmallHorizontal: Story = {
 	},
 }
 
-// Slots de conteúdo desligados.
-export const SemCategoria: Story = {
-	args: { ...base, categoria: undefined, contentId: 'story-sem-categoria' },
+// ─── Slots que o editor pode não preencher ───────────────────────────────────
+/** Progressão de slots desligados: completo → sem categoria → só headline. Junto,
+ *  mostra o que cada slot ausente tira da altura do card e como o que sobra se
+ *  reacomoda; separado, cada passo parecia uma variante do DS, e não é. */
+export const SlotsDesligados: Story = {
+	parameters: { fullWidth: true },
+	render: () => (
+		<Casos>
+			<Caso label="Completo — categoria, título, lead e autor" width={WIDTHS['large-vertical']}>
+				<NewsCard {...base} contentId="story-slots-completo" />
+			</Caso>
+			<Caso label="Sem categoria" width={WIDTHS['large-vertical']}>
+				<NewsCard {...base} categoria={undefined} contentId="story-sem-categoria" />
+			</Caso>
+			<Caso label="Só headline — sem categoria, sem lead, sem autor" width={WIDTHS['large-vertical']}>
+				<NewsCard
+					{...base}
+					categoria={undefined}
+					lead={undefined}
+					author={undefined}
+					contentId="story-so-headline"
+				/>
+			</Caso>
+		</Casos>
+	),
 }
-export const SoHeadline: Story = {
-	args: {
-		...base,
-		categoria: undefined,
-		lead: undefined,
-		author: undefined,
-		contentId: 'story-so-headline',
-	},
+
+// ─── Fixtures de regressão ───────────────────────────────────────────────────
+/** Âncora do toggle de favoritar. Regra: com foto o toggle fica sobre a mídia
+ *  (canto superior direito); SEM foto ele desce pra linha do título, a única
+ *  âncora presente em toda variante. Os quatro casos-limite provam que ele não
+ *  some nem sobrepõe o texto em nenhuma das duas âncoras, de 1 a 4 linhas de
+ *  título. Passe o mouse em cada card: o toggle só aparece no hover (ou no
+ *  focus-within) onde há hover fino. */
+export const AncoraDoToggle: Story = {
+	parameters: { fullWidth: true },
+	render: () => (
+		<Casos>
+			<Caso label="Referência: com foto — toggle sobre a mídia" width={WIDTHS['large-vertical']}>
+				<NewsCard {...base} contentId="story-ancora-com-foto" />
+			</Caso>
+			<Caso label="Sem foto — toggle desce pra linha do título" width={WIDTHS['large-vertical']}>
+				<NewsCard {...base} image={undefined} contentId="story-sem-imagem" />
+			</Caso>
+			<Caso
+				label="Sem foto + título de 1 linha — o caso mais apertado da âncora no título"
+				width={WIDTHS['large-vertical']}
+			>
+				<NewsCard
+					{...base}
+					title={TITULO_CURTO}
+					image={undefined}
+					lead={undefined}
+					author={undefined}
+					contentId="story-sem-imagem-titulo-curto"
+				/>
+			</Caso>
+			<Caso
+				label="Sem foto + título de 4 linhas — o toggle acompanha a primeira linha, sem sobrepor o wrap"
+				width={WIDTHS['large-vertical']}
+			>
+				<NewsCard
+					{...base}
+					title={TITULO_LONGO}
+					image={undefined}
+					contentId="story-sem-imagem-titulo-longo"
+				/>
+			</Caso>
+			<Caso
+				label="Com foto + título de 1 linha (Small H) — a linha mais curta com a âncora na mídia"
+				width={WIDTHS['small-horizontal']}
+			>
+				<NewsCard
+					{...base}
+					title={TITULO_CURTO}
+					size="small"
+					orientation="horizontal"
+					lead={undefined}
+					author={undefined}
+					contentId="story-titulo-1-linha"
+				/>
+			</Caso>
+			<Caso
+				label="Com foto + título de 4 linhas (Large V) — o texto cresce e a âncora na mídia não se mexe"
+				width={WIDTHS['large-vertical']}
+			>
+				<NewsCard
+					{...base}
+					title={TITULO_LONGO}
+					size="large"
+					orientation="vertical"
+					contentId="story-titulo-4-linhas"
+				/>
+			</Caso>
+		</Casos>
+	),
 }
-/** Sem imagem: o toggle troca de âncora — sai da mídia e vai pra linha do título. */
-export const SemImagem: Story = {
-	args: { ...base, image: undefined, contentId: 'story-sem-imagem' },
+
+/** Contraste da superfície `onMedia` do toggle nos dois extremos de foto — só se
+ *  avalia comparando, por isso as duas no mesmo canvas. Passe o mouse em cada
+ *  card: o toggle tem que continuar legível sobre a foto clara E sobre a escura. */
+export const ContrasteOnMedia: Story = {
+	parameters: { fullWidth: true },
+	render: () => (
+		<Casos>
+			<Caso label="Foto clara" width={WIDTHS['large-vertical']}>
+				<NewsCard
+					{...base}
+					image="https://picsum.photos/seed/bright-sky-white/600/338"
+					contentId="story-foto-clara"
+				/>
+			</Caso>
+			<Caso label="Foto escura" width={WIDTHS['large-vertical']}>
+				<NewsCard
+					{...base}
+					image="https://picsum.photos/seed/black-storm-night2/600/338"
+					contentId="story-foto-escura"
+				/>
+			</Caso>
+		</Casos>
+	),
 }
-/** Sem imagem + título de 1 linha — o caso mais apertado pra âncora na linha do título. */
-export const SemImagemTituloCurto: Story = {
-	args: {
-		...base,
-		title: 'Robôs no chão de fábrica',
-		image: undefined,
-		lead: undefined,
-		author: undefined,
-		contentId: 'story-sem-imagem-titulo-curto',
-	},
-}
-/** Sem imagem + título de 4 linhas — confirma que o toggle não some nem sobrepõe em nenhuma linha do wrap. */
-export const SemImagemTituloLongo: Story = {
-	args: {
-		...base,
-		title:
-			'Meu colega robô: como WEG, Mitsubishi e uma dezena de outras fabricantes do setor de food service e food connection estão apostando pesado em robôs colaborativos para ajudar humanos em linhas de produção cada vez mais automatizadas e complexas',
-		image: undefined,
-		contentId: 'story-sem-imagem-titulo-longo',
-	},
-}
-export const TituloUmaLinha: Story = {
-	args: {
-		...base,
-		title: 'Robôs no chão de fábrica',
-		size: 'small',
-		orientation: 'horizontal',
-		lead: undefined,
-		author: undefined,
-		contentId: 'story-titulo-1-linha',
-	},
-}
-export const TituloQuatroLinhas: Story = {
-	args: {
-		...base,
-		title:
-			'Meu colega robô: como WEG, Mitsubishi e uma dezena de outras fabricantes do setor de food service e food connection estão apostando pesado em robôs colaborativos para ajudar humanos em linhas de produção cada vez mais automatizadas e complexas',
-		size: 'large',
-		orientation: 'vertical',
-		contentId: 'story-titulo-4-linhas',
-	},
+
+/** `mediaOverlay` com PlayButton: confirma que o botão central e o toggle no canto
+ *  coexistem sem colidir, no destaque grande e no card pequeno da lista lateral.
+ *  (O repo não tem VideoCard usando o NewsCard — VideoCard é outro componente —
+ *  então o que se cobre aqui é a capacidade `mediaOverlay` do próprio NewsCard,
+ *  que é o mecanismo compartilhado.) */
+export const ComPlayButton: Story = {
+	parameters: { fullWidth: true },
+	render: () => (
+		<Casos>
+			<Caso label="Destaque grande (Large V) — PlayButton large" width={WIDTHS['large-vertical']}>
+				<NewsCard
+					{...base}
+					size="large"
+					orientation="vertical"
+					contentId="story-video-grande"
+					mediaOverlay={<PlayButton size="large" as="div" />}
+				/>
+			</Caso>
+			<Caso label="Lista lateral (Small H) — PlayButton xsmall" width={WIDTHS['small-horizontal']}>
+				<NewsCard
+					{...base}
+					size="small"
+					orientation="horizontal"
+					lead={undefined}
+					author={undefined}
+					contentId="story-video-pequeno"
+					mediaOverlay={<PlayButton size="xsmall" as="div" />}
+				/>
+			</Caso>
+		</Casos>
+	),
 }
 
 /** Estado ligado (pressed) — favorita o contentId fictício antes de montar, pra
@@ -168,55 +300,13 @@ export const Favoritado: Story = {
 	render: () => <FavoritadoRender />,
 }
 
-// Card de vídeo (mediaOverlay=PlayButton) — confirma que o PlayButton central e o
-// toggle no canto coexistem sem colidir, nos dois tamanhos citados: destaque
-// grande e os pequenos da lista lateral (o repo não tem VideoCard usando o
-// NewsCard — VideoCard é outro componente — então cobrimos a própria capacidade
-// mediaOverlay do NewsCard, que é o mecanismo compartilhado).
-export const VideoGrande: Story = {
-	args: {
-		...base,
-		size: 'large',
-		orientation: 'vertical',
-		contentId: 'story-video-grande',
-		mediaOverlay: <PlayButton size="large" as="div" />,
-	},
-}
-export const VideoPequeno: Story = {
-	args: {
-		...base,
-		size: 'small',
-		orientation: 'horizontal',
-		lead: undefined,
-		author: undefined,
-		contentId: 'story-video-pequeno',
-		mediaOverlay: <PlayButton size="xsmall" as="div" />,
-	},
-}
-
-// Contraste da superfície onMedia nos dois extremos de foto.
-export const FotoClara: Story = {
-	args: {
-		...base,
-		image: 'https://picsum.photos/seed/bright-sky-white/600/338',
-		contentId: 'story-foto-clara',
-	},
-}
-export const FotoEscura: Story = {
-	args: {
-		...base,
-		image: 'https://picsum.photos/seed/black-storm-night2/600/338',
-		contentId: 'story-foto-escura',
-	},
-}
-
-// "News Card 2.0 / Boxed" + Inverse + Patrocinado — o destaque único da home
-// (node 6775:18688). Moldura própria, split 50/50 com a imagem à direita (3:2)
-// sangrando até a borda, SponsorLine no rodapé. Empilha (imagem em cima) abaixo de lg:.
-// `inverse` é fixo nesta variante: a foto é sempre à direita, não existe versão com
-// a foto à esquerda (decisão do Pedro em 2026-08-23) — por isso não há story dela.
-// Clamps 3 (título) e 4 (lead) espelham o DestaqueUnico, onde a conta que justifica
-// esse par está documentada.
+// ─── "News Card 2.0 / Boxed" — o destaque único da home ──────────────────────
+// Node 6775:18688. Moldura própria, split 50/50 com a imagem à direita (3:2)
+// sangrando até a borda, SponsorLine no rodapé. Empilha (imagem em cima) abaixo de
+// lg:. A foto à direita é FIXA no split do NewsCard — não existe versão com a foto
+// à esquerda (decisão do Pedro em 2026-08-23) e desde 2026-08-24 isso não é nem
+// prop: por isso não há story do lado invertido. Clamps 3 (título) e 4 (lead)
+// espelham o DestaqueUnico, onde a conta que justifica esse par está documentada.
 const destaque = {
 	title: 'Fispal Food Service terá ativações com chefs e executivos do setor',
 	image: 'https://picsum.photos/seed/home-destaque-unico/1224/816',
@@ -226,7 +316,6 @@ const destaque = {
 	size: 'xlarge' as const,
 	orientation: 'horizontal' as const,
 	boxed: true,
-	inverse: true,
 	mediaRatio: 'photo' as const,
 	titleClassName: 'line-clamp-3',
 	leadClassName: 'line-clamp-4',
