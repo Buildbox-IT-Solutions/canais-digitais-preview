@@ -9,10 +9,11 @@
  * tela: este componente só monta a seção.
  *
  * O CARD é uma instância do `NewsCard` — variante `size="xlarge"` +
- * `orientation="horizontal"` + `boxed` + `inverse` (+ `sponsor` opcional). O
- * `inverse` é FIXO, não uma opção: a foto fica sempre à direita e não existe versão
- * com a foto à esquerda (decisão do Pedro em 2026-08-23) — por isso não há prop
- * pra isso aqui nem story do lado invertido. Nada de
+ * `orientation="horizontal"` + `boxed` (+ `sponsor` opcional). A foto fica sempre à
+ * direita e não existe versão com a foto à esquerda (decisão do Pedro em 2026-08-23)
+ * — por isso não há prop pra isso aqui nem story do lado invertido. Isso já não é
+ * nem escolha deste arquivo: o split do `boxed` do NewsCard tem a ordem fixa desde
+ * 2026-08-24, quando a prop `inverse` saiu do contrato do card. Nada de
  * markup próprio aqui: moldura, split 50/50, empilhamento no mobile, SponsorLine,
  * favoritar e modal de auth vêm todos do NewsCard. Este arquivo é só o invólucro de
  * seção (container `max-w-screen-xl`, padding de página) mais a documentação das
@@ -59,7 +60,6 @@ export function DestaqueUnico({ article, sponsor, sponsorHref, className }: IDes
 					size="xlarge"
 					orientation="horizontal"
 					boxed
-					inverse
 					image={picsumSrc(article.seed, 1224, 816)}
 					mediaRatio="photo"
 					href={article.href ?? '/conteudo'}

@@ -2,7 +2,7 @@
  * Componente: NewsCard
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1709-7090
  * Variantes: size (xlarge|large|medium|small) × orientation (vertical|horizontal) ·
- * boxed · inverse · sponsor · categoria/lead/author on-off · mediaRatio (video 16:9 default |
+ * boxed · sponsor · categoria/lead/author on-off · mediaRatio (video 16:9 default |
  * photo 3:2 | square) · titleClassName/leadClassName (escape hatches, ex. line-clamp)
  * Tokens: --text-headline-lg/sm/md, --text-title-xl/lg/md, --text-body-lg/md, --color-primary-600,
  *         --color-neutral-100, --color-neutral-900, --color-secondary-950
@@ -11,9 +11,11 @@
  * conteúdo com padding e mídia sangrando até a borda do card. Combinado com
  * `orientation="horizontal"` vira o split 50/50 do destaque único da home
  * (`size="xlarge"`, node 6775:18688), que empilha abaixo de `lg:` com a imagem em cima.
- * `inverse` põe a mídia do lado oposto ao padrão (à direita no horizontal) — mesmo
- * conceito já nomeado no arquivo como "Video Card 2.0 / Inverse". `sponsor` é o
- * "News Card 2.0 / Patrocinado": SponsorLine ancorada no rodapé da coluna de texto.
+ * No split a mídia fica SEMPRE à direita (texto à esquerda) — não é opção: o
+ * destaque único é o único consumidor de `boxed` e não existe versão com a foto à
+ * esquerda (decisão do Pedro em 2026-08-23), então a prop `inverse` que ligava isso
+ * saiu do contrato em 2026-08-24. `sponsor` é o "News Card 2.0 / Patrocinado":
+ * SponsorLine ancorada no rodapé da coluna de texto.
  *
  * Por que `boxed` NÃO usa `overflow-hidden` no <article> pra recortar a imagem nos
  * cantos arredondados (o caminho óbvio, e o que os cards boxed de CategoryColumn e
@@ -150,7 +152,6 @@ export function NewsCard({
 	titleClassName,
 	leadClassName,
 	boxed,
-	inverse,
 	sponsor,
 	className,
 }: INewsCardProps) {
@@ -203,15 +204,6 @@ export function NewsCard({
 			/>
 		) : null
 
-	// No `boxed` a mídia sangra até a borda do card: em vez de `overflow-hidden` no
-	// <article> (que recortaria o TOOLTIP do toggle — ver comentário do arquivo), o
-	// raio vai canto a canto na própria Thumbnail, que já tem o `overflow-hidden`
-	// dela pro zoom da imagem. Classes por canto (não `rounded-t`/`rounded-r`) pra
-	// não colidirem entre si no twMerge.
-	const boxedMediaRadius = inverse
-		? 'rounded-tl-lg rounded-tr-lg lg:rounded-tl-none lg:rounded-br-lg'
-		: 'rounded-tl-lg rounded-tr-lg lg:rounded-tr-none lg:rounded-bl-lg'
-
 	const mediaStack = image ? (
 		<div className="relative">
 			<Thumbnail
@@ -221,7 +213,6 @@ export function NewsCard({
 				ratio={mediaRatio}
 				overlay={mediaOverlay}
 				radius={!boxed}
-				className={boxed ? boxedMediaRadius : undefined}
 			/>
 			{mediaToggle}
 		</div>
@@ -291,10 +282,18 @@ export function NewsCard({
 	if (boxed) {
 		const split = orientation === 'horizontal'
 
-		// Empilhado (< lg) a mídia vem sempre em cima; a partir de lg: `inverse` a
-		// joga pra direita (texto na esquerda) e o padrão a mantém na esquerda.
-		const textOrder = split ? (inverse ? 'lg:order-1' : 'lg:order-2') : ''
-		const mediaOrder = split ? (inverse ? 'lg:order-2' : 'lg:order-1') : ''
+		// Empilhado (< lg) a mídia vem sempre em cima; a partir de lg: texto à
+		// esquerda, mídia à direita. Ordem FIXA, não configurável — ver cabeçalho.
+		const textOrder = split ? 'lg:order-1' : ''
+		const mediaOrder = split ? 'lg:order-2' : ''
+
+		// A mídia sangra até a borda do card: em vez de `overflow-hidden` no
+		// <article> (que recortaria o TOOLTIP do toggle — ver comentário do arquivo), o
+		// raio vai canto a canto na própria Thumbnail, que já tem o `overflow-hidden`
+		// dela pro zoom da imagem. Classes por canto (não `rounded-t`/`rounded-r`) pra
+		// não colidirem entre si no twMerge. Cantos combinam com a mídia à direita:
+		// topo arredondado no empilhado, e a partir de lg: só o lado de fora.
+		const boxedMediaRadius = 'rounded-tl-lg rounded-tr-lg lg:rounded-tl-none lg:rounded-br-lg'
 
 		const textPane = (
 			<div

@@ -37,8 +37,6 @@ export interface INewsCardProps {
 	 * o card vira split 50/50 que empilha abaixo de `lg:`.
 	 */
 	boxed?: boolean
-	/** Mídia no lado OPOSTO ao padrão (à direita no horizontal) — mesmo conceito do "Video Card 2.0 / Inverse". */
-	inverse?: boolean
 	/** Patrocinador ("News Card 2.0 / Patrocinado"): SponsorLine ancorada no rodapé do card. */
 	sponsor?: { company: string; href?: string }
 	className?: string
