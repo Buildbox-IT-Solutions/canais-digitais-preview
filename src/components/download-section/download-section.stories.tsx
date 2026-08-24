@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { picsumSrc } from '~/mocks/articles'
+import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
 import { DownloadSection } from '.'
 
 const meta: Meta<typeof DownloadSection> = {
@@ -19,7 +20,9 @@ export const Default: Story = {
 		description:
 			'Saiba como a cadeia de produção está sendo otimizada até o atacarejo com rastreabilidade e as tecnologias envolvidas nesse processo.',
 		ctaLabel: 'Baixar agora',
-		ctaHref: '/gate-download',
+		ctaHref: ARQUIVO_EXEMPLO_URL,
+		ctaDownload: nomeArquivoDownload('Como a rastreabilidade reduz custos e aumenta a margem de lucro'),
+		titleHref: '/conteudo',
 		image: picsumSrc('download-bg', 1920, 460),
 	},
 	render: (args) => (

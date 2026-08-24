@@ -4,7 +4,22 @@
 
 ## Código morto
 
-- **`card`** (`src/components/card/`) — 2026-08-15: sem nenhuma referência no repo fora da própria pasta. Era um experimento descartado. Aprovado para remoção — tarefa separada, não fazer agora.
+- ✅ resolvido em 2026-08-24 — **`card`** (`src/components/card/`) removido. O achado de
+  2026-08-15 ("sem nenhuma referência no repo") estava errado — `newsletter-card` importava
+  `Card`/`CardHeader`/`CardContent`/`CardTitle`/`CardDescription`/`CardFooter`, e ele é usado
+  pela `dashboard-perfil-v4`, que está viva. Mas o wrapper não sustentava o próprio peso: dos
+  seis subcomponentes, `CardContent` não contribuía nenhuma classe (só `px-6`, que o consumidor
+  já declarava), e `gap`, `padding-y`, sombra e alinhamento do rodapé vinham todos
+  sobrescritos. A casca e a tipografia foram inlinadas no `newsletter-card`. Verificado por
+  render server-side dos 3 estados antes/depois: estrutura de tags e texto idênticos, e as
+  únicas classes que saíram foram `gap-0`/`py-0`/`shadow-none` (existiam só para cancelar o
+  `Card`) e `[.border-b]:pb-6`/`[.border-t]:pt-6` (variantes que nunca casavam neste
+  consumidor). Nenhuma classe adicionada.
+- **Órfãos criados em 2026-08-24** pela remoção de `home-v2`, `patrocinadores`, `patrocinador`,
+  `dashboard` e `gate-download`: `src/components/coming-soon/`, `src/components/dashboard-header/`,
+  `src/components/sponsor-card/` e `src/mocks/sponsors.ts` ficaram sem nenhum consumidor.
+  Não removidos — não estavam no escopo aprovado. `src/components/session-row/` passou a ter um
+  único consumidor (`dashboard-perfil-v3`), que é uma tela arquivada.
 
 ## Origem não confirmada
 
@@ -54,7 +69,12 @@
 
 ## Consistência estrutural
 
-- **Sem cabeçalho Figma no topo do arquivo** — 2026-08-17: `loading`, `access-invite`, `bottom-sheet`, `byline`, `coming-soon`, `dashboard-header`, `dialog`, `footer-desktop`, `icon-tile`, `skeleton`, `thumbnail`, `toast`, `toaster`, `icon` não têm a linha `Figma:` no cabeçalho padrão (alguns não têm cabeçalho nenhum). Sem isso, a doc não tem proveniência rastreável até o node do Figma. (Excluídos desta lista: `card`, `switch`, `table-of-contents*`, `google-logo`, que documentam explicitamente a ausência de spec no Figma como decisão intencional.)
+- **Título do `newsletter-card` não é heading** — 2026-08-24: o título do card renderiza
+  `<div>`, não `<h2>`/`<h3>`. Herdado do `CardTitle` do shadcn, que também era `<div>`, e
+  preservado no inline para manter a saída idêntica. Um leitor de tela não encontra os cards
+  de newsletter pela navegação por headings. 🔴 A CONFIRMAR — qual nível de heading cabe
+  dentro da aba Newsletter da `dashboard-perfil-v4`?
+- **Sem cabeçalho Figma no topo do arquivo** — 2026-08-17: `loading`, `access-invite`, `bottom-sheet`, `byline`, `coming-soon`, `dashboard-header`, `dialog`, `footer-desktop`, `icon-tile`, `skeleton`, `thumbnail`, `toast`, `toaster`, `icon` não têm a linha `Figma:` no cabeçalho padrão (alguns não têm cabeçalho nenhum). Sem isso, a doc não tem proveniência rastreável até o node do Figma. (Excluídos desta lista: `switch`, `table-of-contents*`, `google-logo`, que documentam explicitamente a ausência de spec no Figma como decisão intencional.)
 - **Sem arquivo de stories** — 2026-08-17: `access-method-card`, `coming-soon`, `dashboard-header`, `dashboard-tabs-v3`, `form-disclaimer`, `form-field`, `form-select`, `icon`, `orbit`, `password-strength`, `session-row`, `social-button`, `sponsor-card` não têm `*.stories.tsx`, violando a exigência do CLAUDE.md de uma story por variante visual.
 
 ## Destaque único (super-highlight da home) — decisões derivadas, não desenhadas

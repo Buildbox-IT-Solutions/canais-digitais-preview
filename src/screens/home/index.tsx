@@ -26,6 +26,8 @@ import type { ScenarioDef } from '~/dev/scenario-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
+import { toast } from '~/lib/toast-store'
+import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
 import {
 	EM_ALTA,
 	ESPECIALISTAS,
@@ -54,6 +56,10 @@ const SCENARIOS: ScenarioDef[] = [
 	{ id: 'destaque-unico-on', label: 'Ligado', group: 'Destaque único' },
 	{ id: 'destaque-unico-patrocinado', label: 'Ligado + patrocinado', group: 'Destaque único' },
 ]
+
+/** Material da seção de download. O mesmo título alimenta o texto exibido e o nome
+ *  sugerido do arquivo baixado. */
+const DOWNLOAD_TITULO = 'Como a rastreabilidade reduz custos e aumenta a margem de lucro'
 
 /**
  * Tela: Home — Página inicial
@@ -194,13 +200,20 @@ export default function HomeScreen() {
 
 			<ProteinaAnimalSection articles={PROTEINA_ANIMAL} />
 
+			{/* Logado, o CTA baixa o arquivo direto (âncora com `download`, sem navegação).
+			    Deslogado, `onCtaClick` dá preventDefault e abre o modal de incentivo — o
+			    href só existe como destino sem-JS, o mesmo do "Criar conta" do modal.
+			    O título é link para a matéria, independente do estado de login. */}
 			<DownloadSection
 				eyebrow="E-book gratuito"
-				title="Como a rastreabilidade reduz custos e aumenta a margem de lucro"
+				title={DOWNLOAD_TITULO}
+				titleHref="/conteudo"
 				description="Saiba como a cadeia de produção está sendo otimizada até o atacarejo com rastreabilidade e as tecnologias envolvidas nesse processo."
 				ctaLabel="Baixar agora"
-				ctaHref="/gate-download"
+				ctaHref={logado ? ARQUIVO_EXEMPLO_URL : '/cadastro?step=1&intent=download&returnTo=%2Fhome'}
+				ctaDownload={logado ? nomeArquivoDownload(DOWNLOAD_TITULO) : undefined}
 				onCtaClick={!logado ? () => setDownloadOpen(true) : undefined}
+				onCtaDownload={logado ? () => toast.success('Seu download começou.') : undefined}
 				image={picsumSrc('download-bg', 1920, 460)}
 				className="mt-10"
 			/>

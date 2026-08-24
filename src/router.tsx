@@ -15,7 +15,6 @@ import ConfirmacaoEmailV2Screen from './screens/confirmacao-email-v2'
 import ConsentimentosScreen from './screens/consentimentos'
 import ContatoScreen from './screens/contato'
 import ConteudoScreen from './screens/conteudo'
-import DashboardScreen from './screens/dashboard'
 import DashboardPerfilV3Screen from './screens/dashboard-perfil-v3'
 import DashboardPerfilV4Screen from './screens/dashboard-perfil-v4'
 import DsLayoutScreen from './screens/ds'
@@ -28,9 +27,7 @@ import EmailRecuperacaoSenhaScreen from './screens/email-recuperacao-senha'
 import EmailSenhaAlteradaScreen from './screens/email-senha-alterada'
 import ExcluirContaScreen from './screens/excluir-conta'
 import FormNewsletterScreen from './screens/form-newsletter'
-import GateDownloadScreen from './screens/gate-download'
 import HomeScreen from './screens/home'
-import { HomeV2Screen } from './screens/home-v2'
 import LoginScreen from './screens/login'
 import LoginV2Screen from './screens/login-v2'
 import MenuScreen from './screens/menu'
@@ -41,8 +38,6 @@ import RecuperaSenhaV2Screen from './screens/recupera-senha-v2'
 import RedefineSenhaScreen from './screens/redefine-senha'
 import RedefineSenhaV2Screen from './screens/redefine-senha-v2'
 import SobreScreen from './screens/sobre'
-import { PatrocinadoresScreen } from './screens/patrocinadores'
-import { PatrocinadorScreen } from './screens/patrocinador'
 
 // Raiz só pra dar contexto de Router a <ScenarioBar /> (useSearchParams/useLocation) —
 // sem isso ela ficaria de fora da árvore roteada. Nenhum outro papel (sem errorElement,
@@ -62,7 +57,6 @@ const router = createBrowserRouter([
 		children: [
 			{ path: '/', element: <CentralScreen /> },
 			{ path: '/home', element: <HomeScreen /> },
-			{ path: '/home-v2', element: <HomeV2Screen /> },
 			{ path: '/categoria', element: <CategoriaScreen /> },
 			{ path: '/conteudo', element: <ConteudoScreen /> },
 			{ path: '/menu', element: <MenuScreen /> },
@@ -83,7 +77,6 @@ const router = createBrowserRouter([
 			// Endpoint do link do e-mail de recuperacao de senha. O token gateia o acesso; no prototipo
 			// simulamos o clique valido -> modal de nova senha sobre a home.
 			{ path: '/redefinir', element: <Navigate to="/redefine-senha" replace /> },
-			{ path: '/dashboard', element: <DashboardScreen /> },
 			{ path: '/dashboard-perfil-v3', element: <DashboardPerfilV3Screen /> },
 			{ path: '/dashboard-perfil-v4', element: <DashboardPerfilV4Screen /> },
 			{ path: '/meus-dados', element: <MeusDadosScreen /> },
@@ -92,10 +85,7 @@ const router = createBrowserRouter([
 			{ path: '/contato', element: <ContatoScreen /> },
 			{ path: '/sobre', element: <SobreScreen /> },
 			{ path: '/anuncie', element: <AnuncieScreen /> },
-			{ path: '/patrocinadores', element: <PatrocinadoresScreen /> },
-			{ path: '/patrocinador', element: <PatrocinadorScreen /> },
 			{ path: '/form-newsletter', element: <FormNewsletterScreen /> },
-			{ path: '/gate-download', element: <GateDownloadScreen /> },
 			{ path: '/email-confirmacao', element: <EmailConfirmacaoScreen /> },
 			{ path: '/email-boas-vindas', element: <EmailBoasVindasScreen /> },
 			{ path: '/email-recuperacao-senha', element: <EmailRecuperacaoSenhaScreen /> },

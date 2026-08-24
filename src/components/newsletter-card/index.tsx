@@ -1,6 +1,5 @@
 import { twMerge } from '~/lib/tw-merge'
 import { Button } from '~/components/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/card'
 import { Icon } from '~/components/icon'
 import { Spinner } from '~/components/spinner'
 import type { INewsletterCardProps } from './types'
@@ -9,12 +8,16 @@ import type { INewsletterCardProps } from './types'
  * Componente: Newsletter Card
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=8060-4432
  * Variantes: idle | pending | subscribed
- * Estrutura shadcn Card (CardHeader/CardContent/CardFooter) — mesmo componente já usado no
- * projeto, com paddings próprios pra bater com o Figma. Divergência deliberada do Figma:
- * lá o card tem altura fixa (284px) com o rodapé colado na base (flex-1 + justify-end);
- * aqui o rodapé segue o fluxo normal, direto após a descrição (truncada em 4 linhas) — com
- * altura fixa, descrições mais curtas que o placeholder do Figma abriam um vão grande entre
- * texto e botão, já que o rodapé sempre empurrava para a base do card.
+ * Casca própria. Até 24/08/2026 isto era montado sobre um `Card` genérico (shadcn:
+ * Card/CardHeader/CardContent/CardFooter). O wrapper saiu porque este era seu único
+ * consumidor e porque quase toda decisão dele vinha sobrescrita aqui — gap, padding
+ * vertical, sombra e alinhamento do rodapé. Sobravam a casca (borda + raio + fundo) e a
+ * tipografia de título e descrição, que agora vivem direto neste arquivo.
+ * Divergência deliberada do Figma: lá o card tem altura fixa (284px) com o rodapé colado na
+ * base (flex-1 + justify-end); aqui o rodapé segue o fluxo normal, direto após a descrição
+ * (truncada em 4 linhas) — com altura fixa, descrições mais curtas que o placeholder do
+ * Figma abriam um vão grande entre texto e botão, já que o rodapé sempre empurrava para a
+ * base do card.
  * Falha ao assinar não é um estado visual do card — quem usa o componente faz rollback pra
  * "idle" e avisa por toast com ação "Repetir" (ver NewsletterPane em
  * dashboard-perfil-v4), mesmo padrão do toggle de favoritos.
@@ -27,17 +30,20 @@ export function NewsletterCard({ id, title, description, state = 'idle', onSubsc
 	const isSubscribed = state === 'subscribed'
 
 	return (
-		<Card id={id} className={twMerge('w-full gap-0 py-0 shadow-none', className)}>
-			<CardHeader className="gap-0 pt-6 px-6">
+		<div
+			id={id}
+			className={twMerge('flex flex-col rounded-lg border border-neutral-100 bg-white w-full', className)}
+		>
+			<div className="flex flex-col pt-6 px-6">
 				<Icon name={isSubscribed ? 'mark-email-read' : 'mail'} className="size-6 text-primary-600" />
-			</CardHeader>
+			</div>
 
-			<CardContent className="flex flex-col gap-1 pt-4 pb-3 px-6">
-				<CardTitle className="text-title-lg">{title}</CardTitle>
-				<CardDescription className="line-clamp-4">{description}</CardDescription>
-			</CardContent>
+			<div className="flex flex-col gap-1 pt-4 pb-3 px-6">
+				<div className="font-display font-bold text-primary-600 text-title-lg">{title}</div>
+				<p className="font-body text-body-md text-neutral-600 line-clamp-4">{description}</p>
+			</div>
 
-			<CardFooter className="flex-col items-start pt-3 pb-6 px-6">
+			<div className="flex flex-col items-start pt-3 pb-6 px-6">
 				{state === 'idle' ? <Button type="outlined" size="medium" label="Assinar" onClick={onSubscribe} /> : null}
 
 				{state === 'pending' ? (
@@ -56,7 +62,7 @@ export function NewsletterCard({ id, title, description, state = 'idle', onSubsc
 						Assinado
 					</span>
 				) : null}
-			</CardFooter>
-		</Card>
+			</div>
+		</div>
 	)
 }

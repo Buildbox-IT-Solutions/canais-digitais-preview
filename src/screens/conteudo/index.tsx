@@ -16,6 +16,8 @@ import { HeaderDesktop } from '~/components/header-desktop'
 import { IconButton } from '~/components/icon-button'
 import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
+import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
+import { toast } from '~/lib/toast-store'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
@@ -540,13 +542,18 @@ function PostDownloadBanner({
 }) {
 	const gated = !logado && download.requiresAuth
 
+	// Com acesso, o CTA baixa o arquivo direto (âncora com `download`, sem navegação).
+	// Gateado, `onCtaClick` dá preventDefault e abre o modal de incentivo — o href fica
+	// inerte de propósito, porque o material não pode ser servido sem conta.
 	return (
 		<BannerDownload
 			title={download.title}
 			description={download.description}
 			ctaLabel={download.ctaLabel}
-			ctaHref="#"
+			ctaHref={gated ? '#' : ARQUIVO_EXEMPLO_URL}
+			ctaDownload={gated ? undefined : nomeArquivoDownload(download.title)}
 			onCtaClick={gated ? onRequestAccess : undefined}
+			onCtaDownload={gated ? undefined : () => toast.success('Seu download começou.')}
 		/>
 	)
 }
