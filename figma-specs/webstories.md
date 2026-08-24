@@ -2,7 +2,7 @@
 
 **Figma Webstories:** [`202:2100`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=202-2100)
 **Figma img-frame:**  [`202:4047`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=202-4047)
-**Arquivo:** [`src/components/webstories.php`](../src/components/webstories.php)
+**Arquivo:** [`legacy/src/components/webstories.php`](../legacy/src/components/webstories.php)
 
 Card vertical estilo "stories" para uso em carrosséis. 2 variantes: `Enabled|Hovered`.
 

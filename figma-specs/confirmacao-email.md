@@ -1,7 +1,7 @@
 # Confirmação de E-mail
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §6.4](../FEATURE-cadastro.md))
-**Arquivo:** [`src/layouts/confirmacao-email.php`](../src/layouts/confirmacao-email.php)
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
+**Arquivo:** [`src/screens/confirmacao-email/`](../src/screens/confirmacao-email/)
 
 Fluxo pós-cadastro. Duas telas principais (A: aguardando / B: sucesso) + dois estados de erro de token. Token ausente na URL → redirect server-side para `recupera-senha.php` (sem estado visual).
 

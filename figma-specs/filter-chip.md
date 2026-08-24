@@ -1,7 +1,7 @@
 # Filter chip
 
 **Figma:** [Filter chip — `1859:18460`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1859-18460)
-**Arquivo:** [`src/components/filter-chip.php`](../src/components/filter-chip.php)
+**Arquivo:** [`legacy/src/components/filter-chip.php`](../legacy/src/components/filter-chip.php)
 
 Material 3 Filter Chip. Pill `h-8` rounded-full com 4 props (Configuration × State × Selected × Trailing icon = 48 variants). Implementado como `<button>` com `aria-pressed` controlando o estado selected.
 

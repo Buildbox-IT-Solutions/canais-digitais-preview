@@ -3,8 +3,8 @@
 **Figma Sponsor Line:**   [`2676:8328`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2676-8328)
 **Figma Sponsor Box:**    [`3862:28410`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3862-28410)
 **Figma Widgets:**        [`2769:26021`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2769-26021)
-**Arquivo:** [`src/components/sponsor-line.php`](../src/components/sponsor-line.php)
-**Partial:** [`_partials/sponsor-line.php`](../src/components/_partials/sponsor-line.php)
+**Arquivo:** [`src/components/sponsor-line/`](../src/components/sponsor-line/)
+**Partial:** [`src/components/sponsor-line/`](../src/components/sponsor-line/)
 
 Marcações de patrocínio. 3 versões com mesma anatomia interna:
 

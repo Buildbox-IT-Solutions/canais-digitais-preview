@@ -1,3 +1,11 @@
+---
+tipo: nota
+data: 2026-07-30
+validade: vencida
+motivo: >-
+  Auditoria da /conteudo ANTES da refatoração combinatória (PR #25, commit 8d9de5f). Descreve a árvore de componentes que a refatoração desfez.
+---
+
 # Auditoria — Página de Conteúdo (`/conteudo`)
 
 **Fase:** 0.1 — Auditoria (read-only)

@@ -1,7 +1,7 @@
 # Cadastro — Bloco 1 (E-mail)
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §6.2](../FEATURE-cadastro.md))
-**Arquivo:** [`src/layouts/cadastro-bloco-1.php`](../src/layouts/cadastro-bloco-1.php)
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
+**Arquivo:** `cadastro-bloco-1.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Primeiro dos 3 passos do cadastro. Captura o e-mail e bifurca: novo → Bloco 2; existente → convida a logar. Layout full-page sem nav completo.
 

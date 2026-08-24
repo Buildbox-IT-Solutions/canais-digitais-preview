@@ -13,7 +13,7 @@ import {
 
 /**
  * E-mail transacional: Confirmação de e-mail (pós-cadastro, link válido 24h).
- * Referência: docs/legacy-reference/emails/email-confirmacao.html
+ * Referência: notas/referencia/emails/email-confirmacao.html
  */
 export default function EmailConfirmacaoScreen() {
 	// URL absoluta (real e-mail não resolve caminho relativo). O endpoint /confirmar

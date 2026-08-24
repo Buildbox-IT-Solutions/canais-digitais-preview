@@ -1,7 +1,7 @@
 # Video Container
 
 **Figma:** [`872:7575`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=872-7575)
-**Arquivo:** [`src/components/video-container.php`](../src/components/video-container.php)
+**Arquivo:** [`legacy/src/components/video-container.php`](../legacy/src/components/video-container.php)
 
 Player de vídeo embedado. Componente único, sem variantes.
 

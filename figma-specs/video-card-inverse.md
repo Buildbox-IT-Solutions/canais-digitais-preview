@@ -1,7 +1,7 @@
 # Video Card 2.0 / Inverse
 
 **Figma:** [`2803:26398`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2803-26398)
-**Arquivo:** [`src/components/video-card-inverse.php`](../src/components/video-card-inverse.php)
+**Arquivo:** [`legacy/src/components/video-card-inverse.php`](../legacy/src/components/video-card-inverse.php)
 
 Variante "Inverse" do Video Card 2.0. **NÃO TEM container próprio** — é apenas o conteúdo direto, com texto branco/light, pra ser usado SOBRE uma seção de fundo escuro.
 

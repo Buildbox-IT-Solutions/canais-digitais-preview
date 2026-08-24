@@ -1,7 +1,7 @@
 # Download Section
 
 **Figma:** [`1135:18229`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1135-18229)
-**Arquivo:** [`src/components/download-section.php`](../src/components/download-section.php)
+**Arquivo:** [`src/components/download-section/`](../src/components/download-section/)
 
 Hero CTA full-width pra download de material. **6 variantes**: `device (Desktop|Mobile) × position (Left|Right|Up|Center|Down)`.
 

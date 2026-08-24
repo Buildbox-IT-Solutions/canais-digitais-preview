@@ -1,7 +1,7 @@
 # News Card 2.0
 
 **Figma:** [News Card 2.0 — `1709:7090`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1709-7090)
-**Arquivo:** [`src/components/news-card.php`](../src/components/news-card.php)
+**Arquivo:** [`src/components/news-card/`](../src/components/news-card/)
 
 Card de notícia — **card composto** que reusa Image (16:9), Categoria (style Mint Chip=Off), e Link Button como sub-elementos.
 

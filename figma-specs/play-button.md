@@ -1,7 +1,7 @@
 # Play Button 2.0
 
 **Figma:** [Play Button 2.0 — `2279:19957`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2279-19957)
-**Arquivo:** [`src/components/play-button.php`](../src/components/play-button.php)
+**Arquivo:** [`src/components/play-button/`](../src/components/play-button/)
 
 Pill circular branca com ícone Play ou Pause centralizado. Usado como overlay de reprodução em thumbnails de vídeo e podcast.
 

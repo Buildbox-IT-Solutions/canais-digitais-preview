@@ -1,7 +1,7 @@
 # Tooltip
 
 **Figma:** [`1859:19519`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1859-19519)
-**Arquivo:** [`src/components/tooltip.php`](../src/components/tooltip.php)
+**Arquivo:** [`src/components/tooltip/`](../src/components/tooltip/)
 
 Balão Material 3. 4 variantes: `side (Top|Right|Bottom|Left)`.
 

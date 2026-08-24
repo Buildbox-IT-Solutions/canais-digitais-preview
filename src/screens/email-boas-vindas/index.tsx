@@ -2,7 +2,7 @@ import { EmailShell, EmailBody, EmailH1, EmailP, EmailButton, EmailFallback } fr
 
 /**
  * E-mail transacional: Boas-vindas (pós-confirmação, conta ativada).
- * Referência: docs/legacy-reference/emails/email-boasvindas.html
+ * Referência: notas/referencia/emails/email-boasvindas.html
  * Genericizado: sem a seção "todos os portais Informa" (conta global fora de escopo).
  */
 export default function EmailBoasVindasScreen() {

@@ -1,7 +1,7 @@
 # Resumo Box
 
 **Figma:** [`619:7291`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=619-7291)
-**Arquivo:** [`src/components/resumo-box.php`](../src/components/resumo-box.php)
+**Arquivo:** [`legacy/src/components/resumo-box.php`](../legacy/src/components/resumo-box.php)
 
 Box accordion (collapsible) com resumo gerado por IA. **4 variantes**: `state (Enabled|Hovered) × opened (false|true)`.
 

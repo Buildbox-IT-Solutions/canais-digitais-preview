@@ -1,7 +1,7 @@
 # Onboarding — Bloco 3 (Dados complementares)
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §6.5](../FEATURE-cadastro.md))
-**Arquivo:** [`src/layouts/onboarding.php`](../src/layouts/onboarding.php)
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
+**Arquivo:** `onboarding.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Terceiro e último passo do cadastro. **Todos os campos são opcionais** — o usuário pode pular com "Fazer isso depois". Também é acionado como tela isolada quando Social Login retorna perfil sem dados profissionais.
 

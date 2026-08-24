@@ -1,8 +1,8 @@
 # Password Strength
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §4.3 e §6.3](../FEATURE-cadastro.md))
-**Arquivo:** [`src/components/password-strength.php`](../src/components/password-strength.php)
-**Partial:** [`src/components/_partials/password-strength.php`](../src/components/_partials/password-strength.php)
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
+**Arquivo:** [`src/components/password-strength/`](../src/components/password-strength/)
+**Partial:** [`src/components/password-strength/`](../src/components/password-strength/)
 
 Indicador de força de senha em tempo real. 3 segmentos de barra horizontal + label textual ("Fraca" / "Média" / "Forte"). Usado no Bloco 2 do cadastro e na redefinição de senha.
 

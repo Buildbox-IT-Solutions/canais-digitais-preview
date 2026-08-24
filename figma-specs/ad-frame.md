@@ -1,7 +1,7 @@
 # Ad Frame
 
 **Figma:** [`30:5047`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=30-5047)
-**Arquivo:** [`src/components/ad-frame.php`](../src/components/ad-frame.php)
+**Arquivo:** [`src/components/ad-frame/`](../src/components/ad-frame/)
 
 Slots de publicidade. **7 variantes** (`device × type`):
 

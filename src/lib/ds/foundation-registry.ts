@@ -3,7 +3,7 @@ import { FOUNDATION_CATALOG } from './catalog'
 import type { DsFoundationCatalogItem } from './catalog'
 import type { DsStatus } from './status'
 
-const foundationDocs = import.meta.glob('/docs/foundations/*.md', {
+const foundationDocs = import.meta.glob('/ds/foundations/*.md', {
 	query: '?raw',
 	import: 'default',
 	eager: true,

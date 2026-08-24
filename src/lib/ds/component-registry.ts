@@ -8,7 +8,7 @@ const componentSources = import.meta.glob('/src/components/*/index.tsx', {
 	eager: true,
 }) as Record<string, string>
 
-const componentDocs = import.meta.glob('/docs/componentes/*.md', {
+const componentDocs = import.meta.glob('/ds/componentes/*.md', {
 	query: '?raw',
 	import: 'default',
 	eager: true,

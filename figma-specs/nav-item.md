@@ -1,7 +1,7 @@
 # Nav Item
 
 **Figma:** [`121:2360`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=121-2360)
-**Arquivo:** [`src/components/nav-item.php`](../src/components/nav-item.php)
+**Arquivo:** [`src/components/nav-item/`](../src/components/nav-item/)
 
 Item de navegação horizontal usado dentro do nav-list pill do Header. **4 variantes**: `state (Enabled|Hovered) × dropdown (false|true)`.
 

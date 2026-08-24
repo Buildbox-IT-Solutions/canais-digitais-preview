@@ -2,7 +2,7 @@
  * Todos os ícones Material do projeto — Material Symbols Outlined, config
  * canônica (CLAUDE.md): Weight 400 / Grade 0 / Optical size 24 / Fill 0.
  * `favorite` é a única exceção com Fill 1 (estado "favoritado" — ver
- * docs/_achados.md, "Ícones — divergência de família/estilo", 2026-08-19).
+ * ds/achados.md, "Ícones — divergência de família/estilo", 2026-08-19).
  *
  * Paths baixados de
  * fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/<nome>/<default|fill1>/24px.svg

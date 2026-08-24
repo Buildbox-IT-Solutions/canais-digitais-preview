@@ -1,7 +1,7 @@
 # Video Card 2.0
 
 **Figma:** [Video Card 2.0 — `1678:20955`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1678-20955)
-**Arquivo:** [`src/components/video-card.php`](../src/components/video-card.php)
+**Arquivo:** [`src/components/video-card/`](../src/components/video-card/)
 
 Idêntico ao News Card + overlay de **Play Button** no canto superior esquerdo da imagem.
 

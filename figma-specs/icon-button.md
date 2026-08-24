@@ -1,7 +1,7 @@
 # Icon Button [1.0]
 
 **Figma:** [Icon Button [1.0] — `71:6001`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=71-6001)
-**Arquivo:** [`src/components/icon-button.php`](../src/components/icon-button.php)
+**Arquivo:** [`src/components/icon-button/`](../src/components/icon-button/)
 
 Versão "só ícone" do Button [1.1]. Container quadrado com `rounded-full`. Mesma paleta de cores e mesmas regras de estado (`hover`/`disabled`) do Button [1.1], mas aqui o outlined usa `border` (1px) — não `border-[1.5px]`.
 

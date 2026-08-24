@@ -1,7 +1,7 @@
 # Cadastro — Bloco 2 (Senha + Termos)
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §6.3](../FEATURE-cadastro.md))
-**Arquivo:** [`src/layouts/cadastro-bloco-2.php`](../src/layouts/cadastro-bloco-2.php)
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
+**Arquivo:** `cadastro-bloco-2.php` — 🔴 A CONFIRMAR: equivalente atual não identificado
 
 Segundo passo do cadastro. Mesma shell minimal do Bloco 1. Captura senha + confirmação + consent LGPD; habilita o submit apenas quando **senha válida + confirmação confere + Termos marcado**.
 

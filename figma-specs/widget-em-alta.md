@@ -2,7 +2,7 @@
 
 **Figma Widget:** [`3492:42255`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3492-42255)
 **Figma Item:**   [`2769:26529`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2769-26529)
-**Arquivo:** [`src/components/widget-em-alta.php`](../src/components/widget-em-alta.php)
+**Arquivo:** [`src/components/widget-em-alta/`](../src/components/widget-em-alta/)
 
 Widget de sidebar com top-N artigos numerados. **2 variantes**: `device (Desktop|Mobile)`.
 

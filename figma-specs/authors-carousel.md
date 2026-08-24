@@ -2,7 +2,7 @@
 
 **Figma Desktop:** [`3454:13759`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3454-13759)
 **Figma Mobile:**  [`3467:39282`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3467-39282)
-**Arquivo:** [`src/components/authors-carousel.php`](../src/components/authors-carousel.php)
+**Arquivo:** [`legacy/src/components/authors-carousel.php`](../legacy/src/components/authors-carousel.php)
 
 Carrossel horizontal de **Author Summary cards**. Diferente do que eu tinha antes (grid de avatares simples). Variantes desktop: 6 (state × steps). Mobile: 3.
 

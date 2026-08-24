@@ -1,7 +1,7 @@
 # Podcast Card 2.0 / Patrocinado
 
 **Figma:** [`2359:15151`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=2359-15151)
-**Arquivo:** [`src/components/podcast-card-patrocinado.php`](../src/components/podcast-card-patrocinado.php)
+**Arquivo:** [`legacy/src/components/podcast-card-patrocinado.php`](../legacy/src/components/podcast-card-patrocinado.php)
 
 Podcast Card patrocinado: BOX com border, estrutura idêntica ao News Card Patrocinado mas com PodcastImage (que tem play overlay) e Sponsor Line no lugar do podcast-meta.
 

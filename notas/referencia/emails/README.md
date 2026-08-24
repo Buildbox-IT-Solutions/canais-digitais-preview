@@ -1,3 +1,9 @@
+---
+tipo: referencia
+data: 2026-08-05
+validade: vigente
+---
+
 # Templates de e-mail (referência legada)
 
 Estes 4 arquivos HTML são templates de e-mails transacionais do protótipo PHP legado (`legacy/src/emails/`), copiados aqui verbatim antes da limpeza do diretório `legacy/`. Eles cobrem os fluxos de boas-vindas, confirmação de cadastro, exclusão de conta e recuperação de senha descritos em `legacy/FEATURE-cadastro.md`.

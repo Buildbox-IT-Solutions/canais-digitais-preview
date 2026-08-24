@@ -1,7 +1,7 @@
 # Header Author
 
 **Figma:** [`850:5000`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=850-5000)
-**Arquivo:** [`src/components/header-author.php`](../src/components/header-author.php)
+**Arquivo:** [`legacy/src/components/header-author.php`](../legacy/src/components/header-author.php)
 
 Cabeçalho da página de autor (NÃO um cabeçalho de artigo). 4 variantes: `device (Desktop|Mobile) × verMais (false|true)`.
 

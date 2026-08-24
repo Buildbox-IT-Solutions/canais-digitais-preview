@@ -10,7 +10,8 @@
 	"scripts": {
 		"start": "concurrently -n vite,storybook -c cyan,magenta \"vite\" \"storybook dev -p 6006\"",
 		"dev": "vite",
-		"build": "tsc -b && vite build",
+		"build": "node scripts/check-docs.mjs && tsc -b && vite build",
+    "check:docs": "node scripts/check-docs.mjs",
 		"preview": "vite preview",
 		"storybook:dev": "storybook dev -p 6006",
 		"storybook:build": "storybook build"

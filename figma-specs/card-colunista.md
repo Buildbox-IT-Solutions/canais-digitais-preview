@@ -1,7 +1,7 @@
 # Card Colunista
 
 **Figma:** [`1352:23176`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1352-23176)
-**Arquivo:** [`src/components/card-colunista.php`](../src/components/card-colunista.php)
+**Arquivo:** [`src/components/card-colunista/`](../src/components/card-colunista/)
 
 Card de colunista. **Apenas 2 variantes**: `state (Enabled|Hovered)`. Width 392px (max 496, min 392).
 

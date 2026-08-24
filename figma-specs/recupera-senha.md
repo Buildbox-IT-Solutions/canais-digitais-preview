@@ -1,9 +1,9 @@
 # Recupera Senha + Redefine Senha
 
-**Figma:** — (sem nodeId; derivado de [FEATURE-cadastro.md §6.6](../FEATURE-cadastro.md))
+**Figma:** — (sem nodeId; derivado de `FEATURE-cadastro.md` — 🔴 A CONFIRMAR: equivalente atual não identificado)
 **Arquivos:**
-- [`src/layouts/recupera-senha.php`](../src/layouts/recupera-senha.php) — Tela A (solicitar link)
-- [`src/layouts/redefine-senha.php`](../src/layouts/redefine-senha.php) — Tela B (redefinir via link)
+- [`src/screens/recupera-senha/`](../src/screens/recupera-senha/) — Tela A (solicitar link)
+- [`src/screens/redefine-senha/`](../src/screens/redefine-senha/) — Tela B (redefinir via link)
 
 Fluxo de esqueci minha senha. Duas telas separadas porque vivem em URLs distintas e têm contextos de segurança diferentes.
 
