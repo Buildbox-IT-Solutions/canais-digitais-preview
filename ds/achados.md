@@ -69,15 +69,13 @@
 
 ## Consistência estrutural
 
-- **`?toast=download-started` promete download que não acontece** — 2026-08-24: depois do
-  cadastro/login com `intent=download` (ver `TOAST_BY_INTENT` em `login-v2`) e do botão
-  "Baixar agora" do e-mail de confirmação, o usuário volta para `/home?logado=true&
-  toast=download-started` e vê "Seu download começou." — mas nada baixa: a página só carrega
-  logada e ele precisa clicar no CTA de novo. O toast do clique real virou "Material baixado."
-  em 2026-08-24 e passou a disparar só após a conclusão real; este continua com a copy antiga
-  porque é outro momento e mudar só o texto não resolve. O material É identificável no retorno
-  (`sanitize-return-to` preserva `?post=`), então disparar o download automático é viável. 🔴 A CONFIRMAR — o retorno pós-auth deve disparar o download automaticamente (e aí
-  o toast fica correto), ou deve só avisar que o material está liberado?
+- ✅ resolvido em 2026-08-24 — **`?toast=download-started` prometia download que não
+  acontecia**. Dois consertos, porque eram dois momentos diferentes. (1) No painel de
+  sucesso da confirmação de e-mail, "Baixar agora" agora BAIXA ali mesmo em vez de navegar
+  para a página e exigir o mesmo clique de novo; ganhou um "Explorar o portal" secundário.
+  (2) No retorno pós-login o parâmetro virou `?toast=material-liberado`: não baixa sozinho,
+  traz o CTA à vista e avisa que o material está liberado — o clique continua sendo do
+  usuário (decisão do Pedro: evitar download automático). Ver `lib/use-material-liberado`.
 - **Título do `newsletter-card` não é heading** — 2026-08-24: o título do card renderiza
   `<div>`, não `<h2>`/`<h3>`. Herdado do `CardTitle` do shadcn, que também era `<div>`, e
   preservado no inline para manter a saída idêntica. Um leitor de tela não encontra os cards

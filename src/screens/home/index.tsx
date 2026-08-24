@@ -27,7 +27,8 @@ import { useScenarios } from '~/dev/use-scenarios'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
 import { baixarMaterial } from '~/lib/baixar-material'
-import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
+import { useMaterialLiberado } from '~/lib/use-material-liberado'
+import { ARQUIVO_EXEMPLO_URL, MATERIAL_DESTAQUE_TITULO, nomeArquivoDownload } from '~/mocks/downloads'
 import {
 	EM_ALTA,
 	ESPECIALISTAS,
@@ -57,10 +58,6 @@ const SCENARIOS: ScenarioDef[] = [
 	{ id: 'destaque-unico-patrocinado', label: 'Ligado + patrocinado', group: 'Destaque único' },
 ]
 
-/** Material da seção de download. O mesmo título alimenta o texto exibido e o nome
- *  sugerido do arquivo baixado. */
-const DOWNLOAD_TITULO = 'Como a rastreabilidade reduz custos e aumenta a margem de lucro'
-
 /**
  * Tela: Home — Página inicial
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=973-6474
@@ -74,10 +71,10 @@ const DOWNLOAD_TITULO = 'Como a rastreabilidade reduz custos e aumenta a margem 
 export default function HomeScreen() {
 	const [hero, top2, top3] = HOME_HERO
 	const logado = useLogado()
+	useMaterialLiberado('download')
 	const isHomeRoute = useLocation().pathname === '/home'
 	const navigate = useNavigate()
 	const [params] = useSearchParams()
-	const showDownloadToast = params.get('toast') === 'download-started'
 	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
 	const previewIncentive = params.get('preview')
 
@@ -205,16 +202,17 @@ export default function HomeScreen() {
 			    Deslogado, abre o modal de incentivo e o href vira o destino sem-JS, o mesmo
 			    do "Criar conta" do modal. O título é link para a matéria nos dois casos. */}
 			<DownloadSection
+				id="download"
 				eyebrow="E-book gratuito"
-				title={DOWNLOAD_TITULO}
+				title={MATERIAL_DESTAQUE_TITULO}
 				titleHref="/conteudo"
 				description="Saiba como a cadeia de produção está sendo otimizada até o atacarejo com rastreabilidade e as tecnologias envolvidas nesse processo."
 				ctaLabel="Baixar agora"
 				ctaHref={logado ? ARQUIVO_EXEMPLO_URL : '/cadastro?step=1&intent=download&returnTo=%2Fhome'}
-				ctaDownload={logado ? nomeArquivoDownload(DOWNLOAD_TITULO) : undefined}
+				ctaDownload={logado ? nomeArquivoDownload(MATERIAL_DESTAQUE_TITULO) : undefined}
 				onCtaClick={
 					logado
-						? () => void baixarMaterial(ARQUIVO_EXEMPLO_URL, nomeArquivoDownload(DOWNLOAD_TITULO))
+						? () => void baixarMaterial(ARQUIVO_EXEMPLO_URL, nomeArquivoDownload(MATERIAL_DESTAQUE_TITULO))
 						: () => setDownloadOpen(true)
 				}
 				image={picsumSrc('download-bg', 1920, 460)}
@@ -339,12 +337,6 @@ export default function HomeScreen() {
 					onDismiss={handleNewsletterDismiss}
 				/>
 			</>
-		) : null}
-
-		{showDownloadToast ? (
-			<div className="fixed bottom-6 right-6 z-50">
-				<Toast type="success" message="Seu download começou." />
-			</div>
 		) : null}
 
 		{showNewsletterToast ? (

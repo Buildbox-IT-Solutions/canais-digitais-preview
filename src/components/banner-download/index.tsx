@@ -19,6 +19,7 @@ export function BannerDownload({
 	onCtaClick,
 	orientation = 'horizontal',
 	photoSrc,
+	id,
 	className,
 }: IBannerDownloadProps) {
 	const hasPhoto = Boolean(photoSrc)
@@ -32,6 +33,7 @@ export function BannerDownload({
 
 	return (
 		<div
+			id={id}
 			className={twMerge(
 				'relative flex flex-col overflow-hidden rounded-sm w-full',
 				isVertical ? 'max-w-[300px]' : 'lg:flex-row lg:items-stretch',
