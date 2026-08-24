@@ -25,9 +25,9 @@ export default function BuscarScreen() {
 				</div>
 			</section>
 
-			{/* §3 — Ad Frame */}
+			{/* §3 — Ad 970×90 (Super Leaderboard) */}
 			<section className="flex flex-col items-center py-6 w-full">
-				<AdFrame width={970} height={250} />
+				<AdFrame width={970} height={90} />
 			</section>
 
 			{/* §4 — Search results + sidebar */}
