@@ -22,6 +22,7 @@ import {
 	OPCOES_PAIS,
 	OPCOES_SETOR,
 	PERFIL_CAMPOS,
+	nomeCompleto,
 	RECENT_NEWS,
 	SESSIONS,
 } from '~/mocks/dashboard-perfil'
@@ -290,7 +291,7 @@ function PerfilPane({ pct, missing }: { pct: number; missing: number }) {
 					icon="account-circle"
 					title="Dados pessoais"
 					description="Informações de identificação da sua conta"
-					fields={[PERFIL_CAMPOS.nome, PERFIL_CAMPOS.email, PERFIL_CAMPOS.telefone]}
+					fields={[nomeCompleto(PERFIL_CAMPOS), PERFIL_CAMPOS.email, PERFIL_CAMPOS.telefone]}
 					href="?tab=perfil&drawer=dados-pessoais"
 					cta="Atualizar"
 					chip="Complete seu Perfil"
@@ -600,7 +601,7 @@ function buildDrawerConfig(drawer: Drawer): { title: string; fields: DrawerField
 		return {
 			title: 'Dados pessoais',
 			fields: [
-				{ label: 'Nome completo', value: PERFIL_CAMPOS.nome, required: true },
+				{ label: 'Nome completo', value: nomeCompleto(PERFIL_CAMPOS), required: true },
 				{
 					label: 'E-mail corporativo',
 					value: PERFIL_CAMPOS.email,

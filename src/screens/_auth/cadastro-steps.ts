@@ -1,4 +1,5 @@
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
+import { OPCOES_CARGO, OPCOES_ESTADO, OPCOES_PAIS } from '~/mocks/eloqua-picklists'
 
 /**
  * Configuração do cadastro multi-step — fonte única para `/cadastro` (modal) e
@@ -114,23 +115,7 @@ export const PROFESSIONAL_FIELDS: CadastroField[] = [
 		name: 'cargo',
 		label: 'Cargo Ocupado',
 		placeholder: 'Selecione',
-		// Lista verbatim do formulário de download em produção (campo `GSQJobLevel` do
-		// Eloqua). A ordem é a do formulário — não é alfabética, é por senioridade.
-		options: [
-			'Estudante/Trainee/Docentes',
-			'Analista/Assistente',
-			'Técnico/Engenheiro',
-			'Coordenador/Supervisor',
-			'Gerente',
-			'Diretor',
-			'Presidente/Vice-Presidente',
-			'C-Level',
-			'Representante/Vendedor',
-			'Proprietário/Empreendedor',
-			'Consultor',
-			'Investidor',
-			'Autoridade',
-		],
+		options: OPCOES_CARGO,
 		autoComplete: 'organization-title',
 	},
 	{
@@ -150,22 +135,9 @@ export const DEMOGRAPHIC_FIELDS: CadastroField[] = [
 		name: 'pais',
 		label: 'País',
 		placeholder: 'Selecione',
-		// Vem preenchido com Brasil — o público do MVP é nacional. 🔴 O formulário em
-		// produção (campo `country` do Eloqua) lista 194 países; aqui fica uma amostra,
-		// suficiente para o protótipo. A lista completa é a do Eloqua.
+		// Vem preenchido com Brasil — o público do MVP é nacional.
 		defaultValue: 'Brasil',
-		options: [
-			'Brasil',
-			'Argentina',
-			'Chile',
-			'Colômbia',
-			'México',
-			'Paraguai',
-			'Peru',
-			'Portugal',
-			'Uruguai',
-			'Estados Unidos',
-		],
+		options: OPCOES_PAIS,
 		autoComplete: 'country-name',
 	},
 	{
@@ -173,37 +145,7 @@ export const DEMOGRAPHIC_FIELDS: CadastroField[] = [
 		name: 'estado',
 		label: 'Estado',
 		placeholder: 'Selecione',
-		// Nomes por extenso e em ordem alfabética, como no formulário em produção
-		// (campo `stateProv` do Eloqua) — não sigla.
-		options: [
-			'Acre',
-			'Alagoas',
-			'Amapá',
-			'Amazonas',
-			'Bahia',
-			'Ceará',
-			'Distrito Federal',
-			'Espírito Santo',
-			'Goiás',
-			'Maranhão',
-			'Mato Grosso',
-			'Mato Grosso do Sul',
-			'Minas Gerais',
-			'Pará',
-			'Paraíba',
-			'Paraná',
-			'Pernambuco',
-			'Piauí',
-			'Rio de Janeiro',
-			'Rio Grande do Norte',
-			'Rio Grande do Sul',
-			'Rondônia',
-			'Roraima',
-			'Santa Catarina',
-			'São Paulo',
-			'Sergipe',
-			'Tocantins',
-		],
+		options: OPCOES_ESTADO,
 		autoComplete: 'address-level1',
 	},
 	{
