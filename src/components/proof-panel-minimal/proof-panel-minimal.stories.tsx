@@ -15,6 +15,7 @@ export const Login: Story = { args: { variant: 'login' } }
 export const Signup1: Story = { args: { variant: 'signup-1' } }
 export const Signup2: Story = { args: { variant: 'signup-2' } }
 export const Signup3: Story = { args: { variant: 'signup-3' } }
+export const Signup4: Story = { args: { variant: 'signup-4' } }
 export const Welcome: Story = { args: { variant: 'welcome' } }
 
 /** Tamanho sm — coluna dos modais compactos de Login/Cadastro v2 (912×600). */

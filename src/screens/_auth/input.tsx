@@ -38,11 +38,14 @@ export function AuthInput({
 				<input
 					type={type}
 					required={required}
+					aria-invalid={error ? true : undefined}
 					{...inputProps}
 					className="flex-1 bg-transparent font-body text-body-lg text-primary-600 placeholder:text-neutral-500 focus:outline-none"
 				/>
 			</div>
-			{error ? (
+			{/* `error` só com espaços = campo marcado por um alerta único no topo do passo:
+			    pinta borda e rótulo, sem repetir mensagem (nem deixar ícone órfão). */}
+			{error && error.trim() ? (
 				<p className="mt-1.5 px-1 flex items-center gap-1.5 font-body font-semibold text-label-md text-red-600">
 					<Icon name="error" className="size-3.5 shrink-0" />
 					{error}

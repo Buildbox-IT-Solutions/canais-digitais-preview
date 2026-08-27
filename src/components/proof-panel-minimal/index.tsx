@@ -21,7 +21,7 @@ const VARIANTS: Record<
 	'signup-1': {
 		pre: 'Criar uma conta é ',
 		mark: 'gratuito',
-		post: ' — e continua sendo.',
+		post: '',
 		sub: 'Sem assinatura, sem cartão de crédito. Seu acesso aos materiais exclusivos não tem custo algum, agora nem depois.',
 	},
 	'signup-2': {
@@ -35,6 +35,12 @@ const VARIANTS: Record<
 		mark: 'material exclusivo',
 		post: ' sem preencher formulário.',
 		sub: 'Whitepapers, e-books e relatórios exclusivos com um clique.',
+	},
+	'signup-4': {
+		pre: 'Eventos e materiais da ',
+		mark: 'sua região',
+		post: ', no seu radar.',
+		sub: 'Saber onde você está nos permite avisar sobre feiras, encontros e conteúdos relevantes perto de você.',
 	},
 	welcome: {
 		pre: 'Bem-vindo aos ',

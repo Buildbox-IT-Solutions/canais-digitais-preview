@@ -3,6 +3,7 @@ export type ProofPanelMinimalVariant =
 	| 'signup-1'
 	| 'signup-2'
 	| 'signup-3'
+	| 'signup-4'
 	| 'welcome'
 	| 'confirm-waiting'
 	| 'confirm-welcome'

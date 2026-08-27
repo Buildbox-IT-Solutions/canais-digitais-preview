@@ -5,100 +5,65 @@ import { IconButton } from '~/components/icon-button'
 import { Modal } from '~/components/modal'
 import { PasswordChecklist } from '~/components/password-checklist'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
-import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import { sanitizeReturnTo, serializeReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
+import {
+	CADASTRO_STEPS,
+	CADASTRO_TOTAL_STEPS,
+	EMAIL_FIELD,
+	HEADINGS,
+	IDENTITY_FIELDS,
+	PRIMARY_CTA,
+	PROOF_VARIANT,
+	STEP_FIELDS,
+	type CadastroStep,
+} from '../_auth/cadastro-steps'
 import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
+import { AuthFieldList } from '../_auth/field-list'
 import { AuthInput } from '../_auth/input'
 import { AuthPasswordInput } from '../_auth/password-input'
 
-type CadastroStep = 1 | 2 | 3
-type Step1Error = 'none' | 'empty' | 'invalido' | 'existente'
+type Step1Error = 'none' | 'empty' | 'invalido' | 'existente' | 'campos'
 type Step2Error = 'none' | 'mismatch' | 'termos'
 type Step3Error = 'none' | 'campos'
+type Step4Error = 'none' | 'campos'
 
-const STEP1_ERRORS: Step1Error[] = ['none', 'empty', 'invalido', 'existente']
+const STEP1_ERRORS: Step1Error[] = ['none', 'empty', 'invalido', 'existente', 'campos']
 const STEP2_ERRORS: Step2Error[] = ['none', 'mismatch', 'termos']
 const STEP3_ERRORS: Step3Error[] = ['none', 'campos']
+const STEP4_ERRORS: Step4Error[] = ['none', 'campos']
 
-const HEADINGS: Record<CadastroStep, { title: string; sub: string | null }> = {
-	1: { title: 'Qual é o seu e-mail?', sub: 'Recomendamos o uso do seu e-mail corporativo.' },
-	2: { title: 'Crie uma senha', sub: null },
-	3: { title: 'Conte um pouco sobre você', sub: null },
+const ERRORS_BY_STEP: Record<CadastroStep, string[]> = {
+	1: STEP1_ERRORS,
+	2: STEP2_ERRORS,
+	3: STEP3_ERRORS,
+	4: STEP4_ERRORS,
 }
-
-const PRIMARY_CTA: Record<CadastroStep, string> = {
-	1: 'Avançar',
-	2: 'Avançar',
-	3: 'Criar minha conta',
-}
-
-const PROOF_VARIANT: Record<CadastroStep, ProofPanelMinimalVariant> = {
-	1: 'signup-1',
-	2: 'signup-2',
-	3: 'signup-3',
-}
-
-const PROFILE_FIELDS: Array<{
-	name: string
-	label: string
-	type: 'text' | 'tel'
-	placeholder: string
-	autoComplete: string
-}> = [
-	{ name: 'nome', label: 'Nome completo', type: 'text', placeholder: '', autoComplete: 'name' },
-	{ name: 'telefone', label: 'Telefone', type: 'tel', placeholder: '(00) 00000-0000', autoComplete: 'tel' },
-	{
-		name: 'empresa',
-		label: 'Empresa',
-		type: 'text',
-		placeholder: 'Ex.: Informa Markets Brasil',
-		autoComplete: 'organization',
-	},
-]
-
-const PROFILE_SELECTS = [
-	{
-		name: 'cargo',
-		label: 'Cargo',
-		placeholder: 'Selecione seu cargo',
-		options: ['Diretor(a)', 'Gerente', 'Coordenador(a)', 'Analista', 'Consultor(a)', 'Outro'],
-	},
-	{
-		name: 'setor',
-		label: 'Setor',
-		placeholder: 'Selecione o setor principal',
-		options: [
-			'Agro',
-			'Alimentos & Bebidas',
-			'Embalagens',
-			'Saúde',
-			'Logística',
-			'Varejo',
-			'Tecnologia',
-			'Outro',
-		],
-	},
-]
 
 /**
  * Tela: Cadastro Multi-Step (Modal) — v2
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=6930-43301
  * Modal compacto (912×600, colunas 50/50) sobre o portal. Coluna do formulário estruturada em:
- * top-bar (Voltar nos passos 2–3 + fechar) · header (Passo X de 3 + título) · body (campos) ·
+ * top-bar (Voltar nos passos 2–4 + fechar) · header (Passo X de 4 + título) · body (campos) ·
  * footer (CTA). O avanço se dá pela submissão do formulário; o retorno pelo botão "Voltar".
- * Estados: ?step=1|2|3 · ?error=... · ?email=...
+ * Campos e rótulos vêm de `_auth/cadastro-steps` (espelham o formulário do Eloqua).
+ * Estados: ?step=1|2|3|4 · ?error=... · ?email=...
  * Tokens: --color-primary-600, --color-secondary-500, --color-secondary-950, --color-neutral-*
  */
 export default function CadastroV2Screen() {
 	const [params] = useSearchParams()
 
 	const stepRaw = Number(params.get('step') ?? 1)
-	const step = ([1, 2, 3].includes(stepRaw) ? stepRaw : 1) as CadastroStep
+	const step = ((CADASTRO_STEPS as number[]).includes(stepRaw) ? stepRaw : 1) as CadastroStep
 
-	const emailParam = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
+	// Vazio por padrão: o passo 1 tem de mostrar o placeholder do campo. O e-mail só
+	// aparece preenchido quando volta pela URL (?email=) ou por um erro de validação.
+	const emailParam = params.get('email') ?? ''
+	// Usado onde o e-mail é apenas exibido/repassado nos passos seguintes — aí ele
+	// precisa de um valor, senão o passo 2 fala de uma conta sem endereço.
+	const emailDisplay = emailParam || 'mariana.albuquerque@empresa.com.br'
 	const intent = params.get('intent') ?? ''
 	// Intenção de favoritar viaja como parâmetro próprio (não pelo `intent`, que só
 	// escolhe qual toast mostrar) — precisa sobreviver a todo o fluxo multi-step até
@@ -114,8 +79,8 @@ export default function CadastroV2Screen() {
 	}${favoritar ? `&favoritar=${encodeURIComponent(favoritar)}` : ''}`
 
 	const errorParam = params.get('error') ?? 'none'
-	const validErrors = step === 1 ? STEP1_ERRORS : step === 2 ? STEP2_ERRORS : STEP3_ERRORS
-	const errorMode = (validErrors as string[]).includes(errorParam) ? errorParam : 'none'
+	const validErrors = ERRORS_BY_STEP[step]
+	const errorMode = validErrors.includes(errorParam) ? errorParam : 'none'
 
 	// Step 1
 	const emailError =
@@ -140,7 +105,7 @@ export default function CadastroV2Screen() {
 			? 'Você precisa aceitar os Termos de Uso e a Política de Privacidade.'
 			: undefined
 
-	// Step 3
+	// Steps 1, 3 e 4 — validação de obrigatórios
 	const campoVazioError = errorMode === 'campos' ? 'Preencha todos os campos obrigatórios.' : undefined
 
 	const senhaInicial = errorMode === 'mismatch' ? 'Minhasenha1@' : ''
@@ -154,8 +119,9 @@ export default function CadastroV2Screen() {
 			? null
 			: `/cadastro?step=${step - 1}&email=${encodeURIComponent(emailParam)}${crossLinkQuery}`
 
-	// Ao concluir o passo 3, o modal é fechado e a confirmação abre em fullpage (tela 3.1).
-	const nextAction = step === 3 ? '/confirmacao-email' : '/cadastro'
+	// Ao concluir o último passo, o modal é fechado e a confirmação abre em fullpage (tela 3.1).
+	const isLastStep = step === CADASTRO_TOTAL_STEPS
+	const nextAction = isLastStep ? '/confirmacao-email' : '/cadastro'
 
 	return (
 		<>
@@ -182,7 +148,7 @@ export default function CadastroV2Screen() {
 
 				{/* Coluna do formulário */}
 				<div className="relative flex grow basis-1/2 min-w-0 min-h-0 flex-col bg-white">
-					{/* top-bar: Voltar (passos 2–3) + fechar */}
+					{/* top-bar: Voltar (passos 2–4) + fechar */}
 					<div className="shrink-0 flex items-center justify-between px-4 pt-4 pb-2">
 						{prevStep ? (
 							<a
@@ -202,7 +168,7 @@ export default function CadastroV2Screen() {
 					{/* header */}
 					<div className="shrink-0 pt-6 pb-4 px-8 flex flex-col gap-3">
 						<p className="font-body font-semibold text-label-md text-neutral-900">
-							Passo {step} de 3
+							Passo {step} de {CADASTRO_TOTAL_STEPS}
 						</p>
 						<div className="flex flex-col gap-1">
 							<h2
@@ -218,7 +184,7 @@ export default function CadastroV2Screen() {
 					</div>
 
 					<form action={nextAction} method="get" className="flex-1 min-h-0 flex flex-col" noValidate>
-						{step === 3 ? (
+						{isLastStep ? (
 							<input type="hidden" name="state" value="waiting" />
 						) : (
 							<input type="hidden" name="step" value={step + 1} />
@@ -233,27 +199,34 @@ export default function CadastroV2Screen() {
 							{termosError ? <AuthErrorAlert message={termosError} /> : null}
 
 							{step === 1 ? (
-								<AuthInput
-									label="E-mail"
-									name="email"
-									type="email"
-									required
-									autoFocus
-									autoComplete="email"
-									placeholder="seu@empresa.com.br"
-									defaultValue={emailValueByError || emailParam}
-									error={emailError}
-									helperLink={
-										errorMode === 'existente'
-											? { label: 'Entrar', href: `/login?${crossLinkQuery.slice(1)}` }
-											: undefined
-									}
-								/>
+								<>
+									<AuthFieldList
+										fields={IDENTITY_FIELDS}
+										invalid={Boolean(campoVazioError)}
+										autoFocusFirst
+									/>
+
+									<AuthInput
+										label={EMAIL_FIELD.label}
+										name={EMAIL_FIELD.name}
+										type={EMAIL_FIELD.type}
+										required
+										autoComplete={EMAIL_FIELD.autoComplete}
+										placeholder={EMAIL_FIELD.placeholder}
+										defaultValue={emailValueByError || emailParam}
+										error={emailError ?? (campoVazioError ? ' ' : undefined)}
+										helperLink={
+											errorMode === 'existente'
+												? { label: 'Entrar', href: `/login?${crossLinkQuery.slice(1)}` }
+												: undefined
+										}
+									/>
+								</>
 							) : null}
 
 							{step === 2 ? (
 								<>
-									<input type="hidden" name="email" value={emailParam} />
+									<input type="hidden" name="email" value={emailDisplay} />
 
 									<div className="flex flex-col gap-3 w-full">
 										<AuthPasswordInput
@@ -269,7 +242,7 @@ export default function CadastroV2Screen() {
 									</div>
 
 									<AuthPasswordInput
-										label="Confirmar senha"
+										label="Confirmar Senha"
 										name="confirmar_senha"
 										id="cadastro-v2-confirmar"
 										autoComplete="new-password"
@@ -313,62 +286,15 @@ export default function CadastroV2Screen() {
 								</>
 							) : null}
 
-							{step === 3 ? (
+							{step === 3 || step === 4 ? (
 								<>
-									<input type="hidden" name="email" value={emailParam} />
+									<input type="hidden" name="email" value={emailDisplay} />
 
-									{PROFILE_FIELDS.map((f) => (
-										<AuthInput
-											key={f.name}
-											label={f.label}
-											name={f.name}
-											type={f.type}
-											required
-											autoComplete={f.autoComplete}
-											placeholder={f.placeholder}
-											error={campoVazioError ? ' ' : undefined}
-										/>
-									))}
-
-									{PROFILE_SELECTS.map((s) => (
-										<label key={s.name} className="flex flex-col w-full">
-											<span
-												className={`flex items-center gap-0.5 px-1 pb-1 font-body font-semibold text-label-lg ${
-													campoVazioError ? 'text-red-600' : 'text-neutral-950'
-												}`}
-											>
-												{s.label}
-												<span aria-hidden="true">*</span>
-											</span>
-											<div
-												className={`relative flex items-center h-10 px-3 rounded-sm border bg-white transition-colors ${
-													campoVazioError
-														? 'border-red-600'
-														: 'border-neutral-100 focus-within:border-secondary-950'
-												}`}
-											>
-												<select
-													name={s.name}
-													required
-													defaultValue=""
-													className="flex-1 appearance-none bg-transparent font-body text-body-lg text-neutral-500 focus:text-primary-600 focus:outline-none pr-7"
-												>
-													<option value="" disabled>
-														{s.placeholder}
-													</option>
-													{s.options.map((opt) => (
-														<option key={opt} value={opt}>
-															{opt}
-														</option>
-													))}
-												</select>
-												<Icon
-													name="arrow-drop-down"
-													className="size-4 absolute right-3 text-neutral-500 pointer-events-none"
-												/>
-											</div>
-										</label>
-									))}
+									<AuthFieldList
+										fields={STEP_FIELDS[step]}
+										invalid={Boolean(campoVazioError)}
+										autoFocusFirst
+									/>
 								</>
 							) : null}
 						</div>
@@ -380,7 +306,7 @@ export default function CadastroV2Screen() {
 								className="inline-flex items-center justify-center gap-3 w-full h-12 rounded-full bg-primary-600 hover:bg-secondary-950 text-white font-body font-bold text-body-lg transition-colors"
 							>
 								{PRIMARY_CTA[step]}
-								{step !== 3 ? <Icon name="arrow-forward" className="size-6" /> : null}
+								{!isLastStep ? <Icon name="arrow-forward" className="size-6" /> : null}
 							</button>
 
 							{step === 1 ? (
@@ -400,14 +326,14 @@ export default function CadastroV2Screen() {
 					{
 						paramName: 'step',
 						label: 'Step',
-						options: ['1', '2', '3'],
+						options: CADASTRO_STEPS.map(String),
 						current: String(step),
 						extraQuery: `&email=${encodeURIComponent(emailParam)}`,
 					},
 					{
 						paramName: 'error',
 						label: 'Erro',
-						options: validErrors as unknown as string[],
+						options: validErrors,
 						current: errorMode,
 						extraQuery: `&step=${step}&email=${encodeURIComponent(emailParam)}`,
 					},
