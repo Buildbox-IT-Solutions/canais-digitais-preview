@@ -9,14 +9,14 @@ import type { IToastProps, ToastType } from './types'
  * Notificação flutuante com ícone, mensagem e dismiss — fiel à estrutura do shadcn/ui
  * (card neutro + ícone colorido, sem borda de destaque), temizado com os tokens do projeto.
  * Tokens: --color-white, --color-neutral-200, --color-neutral-500, --color-neutral-600,
- *         --color-neutral-950, --color-secondary-950, --color-danger-600, --color-warning,
- *         --color-success
+ *         --color-neutral-950, --color-secondary-950, --color-danger-600, --color-warning-500,
+ *         --color-success-600
  */
 
 const TYPE_META: Record<ToastType, { icon: IconName; accent: string }> = {
-	success: { icon: 'check-circle', accent: 'text-success' },
+	success: { icon: 'check-circle', accent: 'text-success-600' },
 	error: { icon: 'cancel', accent: 'text-danger-600' },
-	warning: { icon: 'warning', accent: 'text-warning' },
+	warning: { icon: 'warning', accent: 'text-warning-500' },
 	info: { icon: 'info', accent: 'text-secondary-950' },
 }
 

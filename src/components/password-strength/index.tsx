@@ -7,7 +7,7 @@ import type { IPasswordStrengthProps, PasswordStrengthLevel } from './types'
  * Componente: Password Strength
  * Barra de 3 segmentos + label de força + checklist com 4 critérios (PasswordChecklist).
  * Tokens: --color-neutral-100, --color-neutral-500, --color-neutral-700, --color-neutral-950,
- *         --color-danger-600, --color-warning, --color-success
+ *         --color-danger-600, --color-warning-500, --color-success-600
  */
 
 function deriveLevel(metCount: number): PasswordStrengthLevel {
@@ -23,8 +23,8 @@ const LEVEL_META: Record<
 > = {
 	empty: { value: 0, label: '', barClass: 'bg-neutral-100', textClass: 'text-neutral-500', fills: 0 },
 	weak: { value: 1, label: 'Fraca', barClass: 'bg-danger-600', textClass: 'text-danger-600', fills: 1 },
-	medium: { value: 2, label: 'Média', barClass: 'bg-warning', textClass: 'text-warning', fills: 2 },
-	strong: { value: 3, label: 'Forte', barClass: 'bg-success', textClass: 'text-success', fills: 3 },
+	medium: { value: 2, label: 'Média', barClass: 'bg-warning-500', textClass: 'text-warning-500', fills: 2 },
+	strong: { value: 3, label: 'Forte', barClass: 'bg-success-600', textClass: 'text-success-600', fills: 3 },
 }
 
 export function PasswordStrength({
