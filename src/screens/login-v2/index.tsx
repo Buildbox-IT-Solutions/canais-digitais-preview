@@ -8,10 +8,11 @@ import { tituloDoMaterialDoRetorno } from '~/lib/material-do-retorno'
 import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
 import { AUTH_PANEL_BTN_BASE, AUTH_PANEL_BTN_VARIANT } from '../_auth/panel-button'
 import { buildReturnToHref, sanitizeReturnTo, serializeReturnTo } from '~/lib/sanitize-return-to'
+import { useScenarios } from '~/dev/use-scenarios'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
+import { authErrorAxis } from '../_auth/scenarios'
 import { AuthInput } from '../_auth/input'
 import { AuthPasswordInput } from '../_auth/password-input'
 
@@ -40,6 +41,8 @@ export default function LoginV2Screen() {
 	const errorMode = (ALLOWED_ERRORS.includes(errorParam as LoginError)
 		? errorParam
 		: 'none') as LoginError
+
+	useScenarios([authErrorAxis(ALLOWED_ERRORS, errorMode)])
 
 	const intent = params.get('intent') ?? ''
 	// Ver comentário equivalente em cadastro-v2 — mesma convenção, ida direta pro
@@ -246,13 +249,6 @@ export default function LoginV2Screen() {
 					) : null}
 				</div>
 			</Modal>
-
-			<AuthDevNav
-				paramName="error"
-				label="Erro"
-				options={['none', 'empty', 'invalid', 'locked']}
-				current={errorMode}
-			/>
 		</>
 	)
 }

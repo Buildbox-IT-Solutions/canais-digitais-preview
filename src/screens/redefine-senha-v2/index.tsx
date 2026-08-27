@@ -9,8 +9,9 @@ import { PasswordChecklist } from '~/components/password-checklist'
 import { Spinner } from '~/components/spinner'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthPasswordInput } from '../_auth/password-input'
+import { authErrorAxis, authStateAxis } from '../_auth/scenarios'
+import { useScenarios } from '~/dev/use-scenarios'
 import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import { AuthTerminalModal, type AuthTerminalButton } from '../_auth/terminal-modal'
 import type { IconName } from '~/components/icon/paths'
@@ -97,12 +98,12 @@ export default function RedefineSenhaV2Screen() {
 	const [pw, setPw] = useState(pwValue)
 	useEffect(() => { setPw(pwValue) }, [pwValue])
 
-	const stateRow = {
-		paramName: 'state',
-		label: 'Estado',
-		options: STATES as unknown as string[],
-		current: state,
-	}
+	// Registrado antes do early return dos estados terminais: o eixo de erro só existe no
+	// formulário, e `state === 'valid'` já exclui os terminais — um registro serve aos dois ramos.
+	useScenarios([
+		authStateAxis(STATES, state),
+		...(state === 'valid' ? [authErrorAxis(ERRORS, errorMode)] : []),
+	])
 
 	if (errorTerminal) {
 		return (
@@ -118,7 +119,6 @@ export default function RedefineSenhaV2Screen() {
 					buttons={errorTerminal.buttons}
 					labelledById="redefine-v2-title"
 				/>
-				<AuthDevNav rows={[stateRow]} />
 			</>
 		)
 	}
@@ -262,22 +262,6 @@ export default function RedefineSenhaV2Screen() {
 					)}
 				</div>
 			</Modal>
-
-			<AuthDevNav
-				rows={[
-					stateRow,
-					...(state === 'valid'
-						? [
-								{
-									paramName: 'error',
-									label: 'Erro',
-									options: ERRORS as unknown as string[],
-									current: errorMode,
-								},
-							]
-						: []),
-				]}
-			/>
 		</>
 	)
 }

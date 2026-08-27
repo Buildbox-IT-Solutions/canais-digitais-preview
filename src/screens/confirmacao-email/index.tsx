@@ -5,9 +5,10 @@ import { Icon } from '~/components/icon'
 import type { IconName } from '~/components/icon/paths'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import { maskEmail } from '../_auth/mask-email'
+import { authStateAxis } from '../_auth/scenarios'
+import { useScenarios } from '~/dev/use-scenarios'
 
 type ConfirmacaoState = 'waiting' | 'success' | 'link-expired' | 'link-used'
 
@@ -150,6 +151,8 @@ export default function ConfirmacaoEmailScreen() {
 		: 'waiting') as ConfirmacaoState
 
 	const email = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
+
+	useScenarios([authStateAxis(STATES, state)])
 	const cfg = buildConfig(state, email)
 	const isWaiting = state === 'waiting'
 	const hasProof = cfg.proof !== null
@@ -230,14 +233,6 @@ export default function ConfirmacaoEmailScreen() {
 					/>
 				) : null}
 			</main>
-
-			<AuthDevNav
-				paramName="state"
-				label="Estado"
-				options={STATES as unknown as string[]}
-				current={state}
-				extraQuery={`&email=${encodeURIComponent(email)}`}
-			/>
 		</>
 	)
 }

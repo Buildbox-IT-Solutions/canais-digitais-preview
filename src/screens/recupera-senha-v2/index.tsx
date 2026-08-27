@@ -5,10 +5,11 @@ import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthInput } from '../_auth/input'
 import { AuthResendButton } from '../_auth/resend-button'
+import { authErrorAxis, authStateAxis } from '../_auth/scenarios'
+import { useScenarios } from '~/dev/use-scenarios'
 import { StatusRing } from '~/components/status-ring'
 
 type RecuperaState = 'default' | 'sent'
@@ -34,6 +35,12 @@ export default function RecuperaSenhaV2Screen() {
 	const errorMode = (ERRORS.includes(errorParam as RecuperaError)
 		? errorParam
 		: 'none') as RecuperaError
+
+	// O eixo de erro só existe no formulário — em "E-mail enviado" não há campo que erre.
+	useScenarios([
+		authStateAxis(STATES, state),
+		...(state === 'default' ? [authErrorAxis(ERRORS, errorMode, { empty: 'E-mail vazio' })] : []),
+	])
 
 	const emailError =
 		errorMode === 'empty'
@@ -177,27 +184,6 @@ export default function RecuperaSenhaV2Screen() {
 					</div>
 				</div>
 			</Modal>
-
-			<AuthDevNav
-				rows={[
-					{
-						paramName: 'state',
-						label: 'Estado',
-						options: STATES as unknown as string[],
-						current: state,
-					},
-					...(state === 'default'
-						? [
-								{
-									paramName: 'error',
-									label: 'Erro',
-									options: ERRORS as unknown as string[],
-									current: errorMode,
-								},
-							]
-						: []),
-				]}
-			/>
 		</>
 	)
 }

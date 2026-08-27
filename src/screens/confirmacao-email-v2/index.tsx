@@ -9,11 +9,12 @@ import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import { buildReturnToHref, sanitizeReturnTo, serializeReturnTo, type SanitizedReturnTo } from '~/lib/sanitize-return-to'
 import HomeScreen from '../home'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
 import { tituloDoMaterialDoRetorno } from '~/lib/material-do-retorno'
 import { AUTH_PANEL_BTN_BASE, AUTH_PANEL_BTN_VARIANT, type AuthPanelButtonVariant } from '../_auth/panel-button'
 import { AuthInput } from '../_auth/input'
+import { authStateAxis } from '../_auth/scenarios'
+import { useScenarios } from '~/dev/use-scenarios'
 import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import { maskEmail } from '../_auth/mask-email'
 import { AuthTerminalModal, type AuthTerminalButton } from '../_auth/terminal-modal'
@@ -301,6 +302,8 @@ export default function ConfirmacaoEmailV2Screen() {
 		: 'waiting') as ConfirmacaoState
 
 	const email = params.get('email') ?? 'mariana.albuquerque@empresa.com.br'
+
+	useScenarios([authStateAxis(STATES, state)])
 	const intent = params.get('intent') ?? ''
 	// Ver comentário em cadastro-v2/login-v2 — mesmo parâmetro, mesma convenção,
 	// atravessando o último salto do fluxo (link de e-mail pode abrir em outra aba
@@ -432,14 +435,6 @@ export default function ConfirmacaoEmailV2Screen() {
 				</div>
 			</Modal>
 			)}
-
-			<AuthDevNav
-				paramName="state"
-				label="Estado"
-				options={STATES as unknown as string[]}
-				current={state}
-				extraQuery={`&email=${encodeURIComponent(email)}${extraQuery}`}
-			/>
 		</>
 	)
 }
