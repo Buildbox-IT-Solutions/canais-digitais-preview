@@ -26,6 +26,8 @@ export function ProfileBox({
 	chip = 'Complete seu Perfil',
 	className,
 }: IProfileBoxProps) {
+	// `placeholder` pinta o card inteiro de cinza; um campo com `pending` decide por si,
+	// para o card poder misturar valor preenchido e campo a preencher.
 	const fieldTextColor = placeholder ? 'text-neutral-500' : 'text-neutral-950'
 	// Padding por coluna: no mobile as 3 colunas empilham, então o topo/base é
 	// distribuído (título em cima, CTA embaixo) para não triplicar o ritmo
@@ -74,8 +76,14 @@ export function ProfileBox({
 
 				<div className={twMerge('flex-1 min-w-0 flex flex-col gap-1', col2Pad)}>
 					{fields.map((f, i) => (
-						<p key={i} className={twMerge('font-body text-body-md lg:truncate', fieldTextColor)}>
-							{f}
+						<p
+							key={i}
+							className={twMerge(
+								'font-body text-body-md lg:truncate',
+								typeof f === 'string' ? fieldTextColor : f.pending ? 'text-neutral-500' : 'text-neutral-950',
+							)}
+						>
+							{typeof f === 'string' ? f : f.label}
 						</p>
 					))}
 				</div>
