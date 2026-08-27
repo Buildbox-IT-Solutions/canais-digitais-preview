@@ -30,7 +30,7 @@ const GROUPS: RouteGroup[] = [
 		description: 'Fluxos de entrada — na ordem do mapa: cadastro → login → recuperação → download.',
 		color: 'secondary',
 		items: [
-			{ path: '/cadastro', label: 'Cadastro', description: 'Início · modal em 3 passos → termina na Confirmação de e-mail', status: 'pronto-para-dev' },
+			{ path: '/cadastro', label: 'Cadastro', description: 'Início · modal em 4 passos → termina na Confirmação de e-mail', status: 'pronto-para-dev' },
 			{ path: '/confirmacao-email', label: 'Confirmação de e-mail', description: 'Fim do cadastro · verificação do e-mail', status: 'pronto-para-dev' },
 			{ path: '/confirmacao-email?state=link-expired', label: 'Confirmação — link inválido', description: 'Link expirado / já usado · modal sobre o portal', status: 'pronto-para-dev' },
 			{ path: '/login', label: 'Login', description: 'Modal de login sobre o portal', status: 'pronto-para-dev' },
