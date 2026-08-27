@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { useMediaQuery } from '~/lib/use-media-query'
 import { toast } from '~/lib/toast-store'
 import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
 import { desfavoritar, favoritar, useFavorito, useFavoritos } from '~/lib/favoritos-store'
 import { useScenarios } from '~/dev/use-scenarios'
-import type { ScenarioDef } from '~/dev/scenario-store'
+import type { ScenarioAxis } from '~/dev/scenario-store'
 import { DashboardTabs } from '~/components/dashboard-tabs'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DownloadItem } from '~/components/download-item'
@@ -56,26 +56,78 @@ const PER_PAGE = 10
 
 // Registro único pra ScenarioBar (src/dev) — a única declaração dos cenários desta
 // tela; a lógica de estado abaixo deriva dos mesmos ids, nunca duplica os literais.
-const SCENARIOS: ScenarioDef[] = [
-	{ id: 'perfil-incompleto', label: 'Incompleto', group: 'Perfil', tab: 'perfil', isDefault: true },
-	{ id: 'perfil-completo', label: 'Completo', group: 'Perfil', tab: 'perfil' },
-	{ id: 'perfil-salvo', label: 'Salvo', group: 'Perfil', tab: 'perfil' },
-	{ id: 'downloads-padrao', label: 'Preenchido', group: 'Downloads', tab: 'downloads', isDefault: true },
-	{ id: 'downloads-vazio', label: 'Vazio', group: 'Downloads', tab: 'downloads' },
-	{ id: 'downloads-carregando', label: 'Carregando', group: 'Downloads', tab: 'downloads' },
-	{ id: 'downloads-com-erro', label: 'Com erro', group: 'Downloads', tab: 'downloads' },
-	{ id: 'leituras-padrao', label: 'Preenchido', group: 'Leituras', tab: 'ultimas', isDefault: true },
-	{ id: 'leituras-vazio', label: 'Vazio', group: 'Leituras', tab: 'ultimas' },
-	{ id: 'leituras-carregando', label: 'Carregando', group: 'Leituras', tab: 'ultimas' },
-	{ id: 'leituras-com-erro', label: 'Com erro', group: 'Leituras', tab: 'ultimas' },
-	{ id: 'favoritos-padrao', label: 'Preenchido', group: 'Favoritos', tab: 'favoritos', isDefault: true },
-	{ id: 'favoritos-vazio', label: 'Vazio', group: 'Favoritos', tab: 'favoritos' },
-	{ id: 'favoritos-carregando', label: 'Carregando', group: 'Favoritos', tab: 'favoritos' },
-	{ id: 'favoritos-com-erro', label: 'Com erro', group: 'Favoritos', tab: 'favoritos' },
-	{ id: 'newsletter-padrao', label: 'Preenchido', group: 'Newsletter', tab: 'newsletter', isDefault: true },
-	{ id: 'newsletter-carregando', label: 'Carregando', group: 'Newsletter', tab: 'newsletter' },
-	{ id: 'newsletter-com-erro', label: 'Com erro', group: 'Newsletter', tab: 'newsletter' },
-]
+//
+// Um eixo por aba, todos gravando em ?cenario=: só um cenário fica ativo por vez, e o
+// seletor que aparece é o da aba visível. A aba já é o "primeiro eixo" desta tela (ela
+// tem UI própria), então não vale duplicá-la num select.
+type ScenarioAxisSpec = Omit<ScenarioAxis, 'value'>
+
+const SCENARIO_AXIS_BY_TAB: Record<Tab, ScenarioAxisSpec> = {
+	perfil: {
+		param: 'cenario',
+		label: 'Perfil',
+		defaultValue: 'perfil-incompleto',
+		options: [
+			{ value: 'perfil-incompleto', label: 'Incompleto' },
+			{ value: 'perfil-completo', label: 'Completo' },
+			{ value: 'perfil-salvo', label: 'Salvo' },
+		],
+	},
+	downloads: {
+		param: 'cenario',
+		label: 'Downloads',
+		defaultValue: 'downloads-padrao',
+		options: [
+			{ value: 'downloads-padrao', label: 'Preenchido' },
+			{ value: 'downloads-vazio', label: 'Vazio' },
+			{ value: 'downloads-carregando', label: 'Carregando' },
+			{ value: 'downloads-com-erro', label: 'Com erro' },
+		],
+	},
+	ultimas: {
+		param: 'cenario',
+		label: 'Leituras',
+		defaultValue: 'leituras-padrao',
+		options: [
+			{ value: 'leituras-padrao', label: 'Preenchido' },
+			{ value: 'leituras-vazio', label: 'Vazio' },
+			{ value: 'leituras-carregando', label: 'Carregando' },
+			{ value: 'leituras-com-erro', label: 'Com erro' },
+		],
+	},
+	favoritos: {
+		param: 'cenario',
+		label: 'Favoritos',
+		defaultValue: 'favoritos-padrao',
+		options: [
+			{ value: 'favoritos-padrao', label: 'Preenchido' },
+			{ value: 'favoritos-vazio', label: 'Vazio' },
+			{ value: 'favoritos-carregando', label: 'Carregando' },
+			{ value: 'favoritos-com-erro', label: 'Com erro' },
+		],
+	},
+	newsletter: {
+		param: 'cenario',
+		label: 'Newsletter',
+		defaultValue: 'newsletter-padrao',
+		options: [
+			{ value: 'newsletter-padrao', label: 'Preenchido' },
+			{ value: 'newsletter-carregando', label: 'Carregando' },
+			{ value: 'newsletter-com-erro', label: 'Com erro' },
+		],
+	},
+}
+
+// cenario → aba, pra um link só com ?cenario= abrir na aba certa (ver `tabParam` abaixo).
+const TAB_BY_SCENARIO: Record<string, Tab> = Object.fromEntries(
+	(Object.entries(SCENARIO_AXIS_BY_TAB) as [Tab, ScenarioAxisSpec][]).flatMap(([tab, axis]) =>
+		axis.options.map((o) => [o.value, tab] as const),
+	),
+)
+
+// Registro vazio quando esta tela é só o fundo de outra (ex.: /excluir-conta) — nesse
+// caso os eixos da barra são os da tela da frente.
+const NO_AXES: ScenarioAxis[] = []
 
 // TODO remover na próxima iteração — alias temporário pra links antigos com ?state=.
 // `empty` era compartilhado entre Downloads e Últimas leituras, desambiguado só pelo
@@ -104,7 +156,7 @@ function resolveLegacyState(state: string, tab: string | null): { cenario: strin
  */
 export default function DashboardPerfilV4Screen() {
 	const [params, setSearchParams] = useSearchParams()
-	useScenarios(SCENARIOS)
+	const isOwnRoute = useLocation().pathname === '/dashboard-perfil-v4'
 
 	const cenarioParam = params.get('cenario')
 	const legacyStateParam = params.get('state')
@@ -112,7 +164,6 @@ export default function DashboardPerfilV4Screen() {
 		!cenarioParam && legacyStateParam ? resolveLegacyState(legacyStateParam, params.get('tab')) : null
 
 	const cenario = cenarioParam ?? legacyResolved?.cenario ?? null
-	const activeScenario = SCENARIOS.find((s) => s.id === cenario) ?? null
 
 	// ?tab= explícito sempre vence — o cenário só deriva a aba quando ?tab= está ausente
 	// ou inválido. Isso cobre dois casos: link só com ?cenario= (dispensa ?tab= manual,
@@ -122,8 +173,16 @@ export default function DashboardPerfilV4Screen() {
 	const tabParam =
 		explicitTabParam && TABS.includes(explicitTabParam as Tab)
 			? explicitTabParam
-			: (activeScenario?.tab ?? legacyResolved?.tab ?? 'perfil')
+			: ((cenario ? TAB_BY_SCENARIO[cenario] : null) ?? legacyResolved?.tab ?? 'perfil')
 	const tab = tabParam as Tab
+
+	// O eixo é o da aba visível. Um ?cenario= de outra aba (link antigo, aba trocada à
+	// mão) não é o valor deste eixo — cai no default em vez de aparecer como selecionado.
+	const axisSpec = SCENARIO_AXIS_BY_TAB[tab]
+	const axisValue = axisSpec.options.some((o) => o.value === cenario)
+		? (cenario as string)
+		: (axisSpec.defaultValue as string)
+	useScenarios(isOwnRoute ? [{ ...axisSpec, value: axisValue }] : NO_AXES)
 
 	const drawerParam = params.get('drawer')
 	const drawer = (DRAWERS.includes(drawerParam as Drawer) && tab === 'perfil'

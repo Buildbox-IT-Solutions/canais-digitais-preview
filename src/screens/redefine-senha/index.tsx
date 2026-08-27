@@ -6,8 +6,9 @@ import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import type { ProofPanelMinimalVariant } from '~/components/proof-panel-minimal/types'
 import { Spinner } from '~/components/spinner'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthPasswordInput } from '../_auth/password-input'
+import { authErrorAxis, authStateAxis } from '../_auth/scenarios'
+import { useScenarios } from '~/dev/use-scenarios'
 import { StatusRing, type StatusRingAccent } from '~/components/status-ring'
 import type { IconName } from '~/components/icon/paths'
 
@@ -76,6 +77,12 @@ export default function RedefineSenhaScreen() {
 	const errorMode = (ERRORS.includes(errorParam as RedefineError)
 		? errorParam
 		: 'none') as RedefineError
+
+	// O eixo de erro só existe no formulário — nos estados terminais não há campo que erre.
+	useScenarios([
+		authStateAxis(STATES, state),
+		...(state === 'valid' ? [authErrorAxis(ERRORS, errorMode)] : []),
+	])
 
 	const isTerminal = state === 'success' || state === 'expired' || state === 'used'
 	const isLoading = state === 'loading'
@@ -214,27 +221,6 @@ export default function RedefineSenhaScreen() {
 					className="hidden md:flex grow basis-1/2 min-w-0"
 				/>
 			</main>
-
-			<AuthDevNav
-				rows={[
-					{
-						paramName: 'state',
-						label: 'Estado',
-						options: STATES as unknown as string[],
-						current: state,
-					},
-					...(state === 'valid'
-						? [
-								{
-									paramName: 'error',
-									label: 'Erro',
-									options: ERRORS as unknown as string[],
-									current: errorMode,
-								},
-							]
-						: []),
-				]}
-			/>
 		</>
 	)
 }

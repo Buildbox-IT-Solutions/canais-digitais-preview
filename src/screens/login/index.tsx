@@ -2,9 +2,10 @@ import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import { SocialButton } from '~/components/social-button'
+import { useScenarios } from '~/dev/use-scenarios'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
+import { authErrorAxis } from '../_auth/scenarios'
 import { AuthInput } from '../_auth/input'
 import { AuthPasswordInput } from '../_auth/password-input'
 
@@ -26,6 +27,8 @@ export default function LoginScreen() {
 	const errorMode = (ALLOWED_ERRORS.includes(errorParam as LoginError)
 		? errorParam
 		: 'none') as LoginError
+
+	useScenarios([authErrorAxis(ALLOWED_ERRORS, errorMode)])
 
 	const emailDefault =
 		errorMode === 'invalid'
@@ -153,13 +156,6 @@ export default function LoginScreen() {
 					className="hidden md:flex grow basis-1/2 min-w-0"
 				/>
 			</main>
-
-			<AuthDevNav
-				paramName="error"
-				label="Erro"
-				options={['none', 'empty', 'invalid', 'locked']}
-				current={errorMode}
-			/>
 		</>
 	)
 }

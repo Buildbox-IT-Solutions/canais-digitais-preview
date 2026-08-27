@@ -15,11 +15,12 @@ import {
 	STEP_FIELDS,
 	type CadastroStep,
 } from '../_auth/cadastro-steps'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthErrorAlert } from '../_auth/error-alert'
 import { AuthFieldList } from '../_auth/field-list'
 import { AuthInput } from '../_auth/input'
 import { AuthPasswordInput } from '../_auth/password-input'
+import { authErrorAxis, cadastroStepAxis } from '../_auth/scenarios'
+import { useScenarios } from '~/dev/use-scenarios'
 
 type Step1Error = 'none' | 'empty' | 'invalido' | 'existente' | 'campos'
 type Step2Error = 'none' | 'mismatch' | 'termos'
@@ -63,6 +64,11 @@ export default function CadastroScreen() {
 	const errorParam = params.get('error') ?? 'none'
 	const validErrors = ERRORS_BY_STEP[step]
 	const errorMode = validErrors.includes(errorParam) ? errorParam : 'none'
+
+	useScenarios([
+		cadastroStepAxis(CADASTRO_STEPS, step),
+		authErrorAxis(validErrors, errorMode, { empty: 'E-mail vazio' }),
+	])
 
 	// Step 1
 	const emailError =
@@ -271,25 +277,6 @@ export default function CadastroScreen() {
 					className="hidden md:flex grow basis-1/2 min-w-0"
 				/>
 			</main>
-
-			<AuthDevNav
-				rows={[
-					{
-						paramName: 'step',
-						label: 'Step',
-						options: CADASTRO_STEPS.map(String),
-						current: String(step),
-						extraQuery: `&email=${encodeURIComponent(emailParam)}`,
-					},
-					{
-						paramName: 'error',
-						label: 'Erro',
-						options: validErrors,
-						current: errorMode,
-						extraQuery: `&step=${step}&email=${encodeURIComponent(emailParam)}`,
-					},
-				]}
-			/>
 		</>
 	)
 }

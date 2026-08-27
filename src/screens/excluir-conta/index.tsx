@@ -6,8 +6,9 @@ import { FormCheckbox } from '~/components/form-checkbox'
 import { LinkButton } from '~/components/link-button'
 import DashboardPerfilV4Screen from '../dashboard-perfil-v4'
 import HomeScreen from '../home'
-import { AuthDevNav } from '../_auth/dev-nav'
 import { AuthTerminalModal } from '../_auth/terminal-modal'
+import { authStateAxis } from '../_auth/scenarios'
+import { useScenarios } from '~/dev/use-scenarios'
 
 const MOTIVOS = [
 	'Não uso mais',
@@ -28,6 +29,8 @@ export default function ExcluirContaScreen() {
 	const [params] = useSearchParams()
 	const isDone = params.get('state') === 'done'
 
+	useScenarios([authStateAxis(['confirm', 'done'], isDone ? 'done' : 'confirm')])
+
 	return (
 		<>
 			{isDone ? (
@@ -39,13 +42,6 @@ export default function ExcluirContaScreen() {
 			)}
 
 			{isDone ? <DoneDialog /> : <ConfirmDialog />}
-
-			<AuthDevNav
-				paramName="state"
-				label="Estado"
-				options={['confirm', 'done']}
-				current={isDone ? 'done' : 'confirm'}
-			/>
 		</>
 	)
 }

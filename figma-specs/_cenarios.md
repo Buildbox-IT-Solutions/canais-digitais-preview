@@ -62,7 +62,7 @@ Sistêmicos:
 - **11.** Loading / skeleton de listas (home, categoria, busca) ⬜
 - **12.** Toast de erro (só existe o de sucesso "Alterações salvas") ⬜
 
-> **Auth & e-mails** (login, cadastro, recuperar/redefinir senha, confirmação de e-mail, gate-download, excluir-conta) estão **bem cobertos** — `empty/invalid/locked/existente/sent/expired/used/throttle` etc. já existem via `?error=`/`?state=` + `AuthDevNav`.
+> **Auth & e-mails** (login, cadastro, recuperar/redefinir senha, confirmação de e-mail, gate-download, excluir-conta) estão **bem cobertos** — `empty/invalid/locked/existente/sent/expired/used/throttle` etc. já existem via `?error=`/`?state=`, expostos na **ScenarioBar** (`src/dev/ScenarioBar.tsx`). O `AuthDevNav` que servia essas telas foi removido em 27/08/2026: a barra é o único mecanismo de cenários do protótipo.
 
 ---
 

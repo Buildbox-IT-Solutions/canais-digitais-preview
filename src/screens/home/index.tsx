@@ -22,7 +22,7 @@ import { VideosSection } from '~/components/videos-section'
 import { WebstoriesSection } from '~/components/webstories-section'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
 import { WidgetPodcast } from '~/components/widget-podcast'
-import type { ScenarioDef } from '~/dev/scenario-store'
+import type { ScenarioAxis } from '~/dev/scenario-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
 import { useLogado } from '~/lib/use-logado'
@@ -47,14 +47,24 @@ import {
 	WEBSTORIES,
 } from '~/mocks/articles'
 
-// Cenários da ScenarioBar (dev) — o toggle on/off do destaque único, que na
-// aplicação real vive no admin do WP (RN02). "Desligado" é o default: sem
-// ?cenario=, a home renderiza exatamente como antes desta feature.
-const SCENARIOS: ScenarioDef[] = [
-	{ id: 'destaque-unico-off', label: 'Desligado', group: 'Destaque único', isDefault: true },
-	{ id: 'destaque-unico-on', label: 'Ligado', group: 'Destaque único' },
-	{ id: 'destaque-unico-patrocinado', label: 'Ligado + patrocinado', group: 'Destaque único' },
-]
+// Eixo da ScenarioBar — o toggle on/off do destaque único, que na aplicação real vive
+// no admin do WP (RN02). "Desligado" é o default: sem ?cenario=, a home renderiza
+// exatamente como antes desta feature.
+const DESTAQUE_UNICO_AXIS: ScenarioAxis = {
+	param: 'cenario',
+	label: 'Destaque único',
+	value: 'destaque-unico-off',
+	defaultValue: 'destaque-unico-off',
+	options: [
+		{ value: 'destaque-unico-off', label: 'Desligado' },
+		{ value: 'destaque-unico-on', label: 'Ligado' },
+		{ value: 'destaque-unico-patrocinado', label: 'Ligado + patrocinado' },
+	],
+}
+
+// Registro vazio quando a home é só o fundo de um modal de auth (/login, /cadastro…):
+// nesse caso os eixos da barra são os da tela da frente, e não os desta.
+const NO_AXES: ScenarioAxis[] = []
 
 /**
  * Tela: Home — Página inicial
@@ -75,10 +85,14 @@ export default function HomeScreen() {
 	const showNewsletterToast = params.get('toast') === 'newsletter-subscribed'
 	const previewIncentive = params.get('preview')
 
-	useScenarios(SCENARIOS)
 	// RN02/RN03 — desligado, a seção não renderiza e o restante da home segue intacto.
 	const cenario = params.get('cenario')
 	const destaqueUnicoOn = cenario === 'destaque-unico-on' || cenario === 'destaque-unico-patrocinado'
+
+	const destaqueUnicoValue = DESTAQUE_UNICO_AXIS.options.some((o) => o.value === cenario)
+		? (cenario as string)
+		: 'destaque-unico-off'
+	useScenarios(isHomeRoute ? [{ ...DESTAQUE_UNICO_AXIS, value: destaqueUnicoValue }] : NO_AXES)
 
 	const [portalOpen, setPortalOpen] = useState(previewIncentive === 'portal')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')

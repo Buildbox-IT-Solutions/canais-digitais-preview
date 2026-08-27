@@ -1,17 +1,35 @@
 // PROVISÓRIO — será substituído pelo Handoff Tour.
 // Não importar deste diretório fora do shell (ver RootLayout em src/router.tsx).
-// Montada dentro de RootLayout (irmã de <Outlet />), por isso tem contexto de
-// <Router> e pode usar useSearchParams normalmente — troca de cenário é uma
-// navegação client-side (setSearchParams), não um reload de página.
+//
+// Único mecanismo de cenários do protótipo. Até 27/08/2026 conviviam dois: esta barra
+// (atrás de ?dev=1) e o `AuthDevNav`, uma fileira de pílulas <a href> só nas telas de
+// auth. Duas UIs, dois vocabulários e um deles invisível no link que o revisor recebia.
+//
+// Montada dentro de RootLayout (irmã de <Outlet />), por isso tem contexto de <Router>
+// e pode usar useSearchParams — troca de cenário é navegação client-side
+// (setSearchParams), não reload: preserva scroll e o estado local da tela.
+//
+// Aparece sempre que a tela registra eixos — sem gate de ambiente. O protótipo existe
+// para ser revisado, e cenário que só o dev alcança é cenário que ninguém revisa.
+// Para um screenshot limpo: ?ui=0 (ou Alt+0).
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useSearchParams } from 'react-router'
-import { getActiveScenarios, subscribeScenarios } from './scenario-store'
+import { getActiveAxes, subscribeAxes, type ScenarioAxis } from './scenario-store'
 
 // Fica acima de qualquer overlay do produto (modal, drawer, bottom sheet, toast).
 const Z_INDEX = 999999
 
-// Atalhos continuam ativos com foco dentro da própria barra (ex.: no <select>) —
-// só ficam inertes em campos de formulário do resto da aplicação.
+const COLLAPSED_KEY = 'cd-scenario-bar-collapsed'
+
+// Cores fixas, fora do @theme, e monospace: a barra não é produto e não deve ser
+// confundida com ele numa captura de tela enviada pra aprovação.
+const INK = '#e5e5e5'
+const MUTED = '#8e8e93'
+const SURFACE = '#1c1c1e'
+const BORDER = '#3a3a3c'
+
+// Atalhos continuam ativos com foco dentro da própria barra (ex.: num <select>) — só
+// ficam inertes em campos de formulário do resto da aplicação.
 function isTypingTarget(el: Element | null, barEl: HTMLElement | null): boolean {
 	if (!el) return false
 	if (barEl?.contains(el)) return false
@@ -20,85 +38,85 @@ function isTypingTarget(el: Element | null, barEl: HTMLElement | null): boolean 
 	return el instanceof HTMLElement && el.isContentEditable
 }
 
+function readCollapsed(): boolean {
+	// Expandida na primeira visita: colapsada por padrão, o revisor não descobre que a
+	// tela tem cenários. A escolha dele persiste daí em diante.
+	try {
+		return localStorage.getItem(COLLAPSED_KEY) === '1'
+	} catch {
+		return false
+	}
+}
+
+function writeCollapsed(value: boolean): void {
+	try {
+		localStorage.setItem(COLLAPSED_KEY, value ? '1' : '0')
+	} catch {
+		// Modo privado / storage bloqueado: a barra segue funcionando sem lembrar o estado.
+	}
+}
+
 export function ScenarioBar() {
-	const scenarios = useSyncExternalStore(subscribeScenarios, getActiveScenarios, getActiveScenarios)
+	const axes = useSyncExternalStore(subscribeAxes, getActiveAxes, getActiveAxes)
 	const [params, setSearchParams] = useSearchParams()
 	const containerRef = useRef<HTMLDivElement>(null)
 
-	const [manuallyHidden, setManuallyHidden] = useState(() => params.get('ui') === '0')
+	const [hidden, setHidden] = useState(() => params.get('ui') === '0')
+	const [collapsed, setCollapsed] = useState(readCollapsed)
 
-	const eligible = import.meta.env.DEV || params.get('dev') === '1'
+	function toggleCollapsed() {
+		setCollapsed((v) => {
+			writeCollapsed(!v)
+			return !v
+		})
+	}
 
-	// Só mostra os cenários da aba atual — telas com várias abas (ex.: dashboard-perfil-v4)
-	// registram todos os cenários de uma vez, e sem esse filtro o dropdown acumula grupos
-	// de abas que nem estão visíveis. Cenário sem `tab` (global) aparece em qualquer aba.
-	const effectiveTab = params.get('tab') ?? 'perfil'
-	const visibleScenarios = scenarios.filter((s) => !s.tab || s.tab === effectiveTab)
-
-	const visible = eligible && !manuallyHidden && visibleScenarios.length > 0
-
-	const activeId = (() => {
-		const current = params.get('cenario')
-		if (current && visibleScenarios.some((s) => s.id === current)) return current
-		// Sem ?cenario=: se a aba atual tem um estado "Preenchido"/default registrado,
-		// reflete ele no select em vez de cair sempre no primeiro item da lista.
-		const defaultForTab = visibleScenarios.find((s) => s.isDefault)
-		return defaultForTab?.id ?? visibleScenarios[0]?.id ?? ''
-	})()
-
-	// Client-side (mesma navegação que o resto da tela usa pra ?state=/?cenario=):
-	// preserva scroll e não recarrega o documento. "replace" pra não empilhar no
-	// histórico — o botão voltar do navegador não deve percorrer trocas de cenário.
-	function selectScenario(id: string) {
-		const scenario = scenarios.find((s) => s.id === id)
+	// Client-side (mesma navegação que o resto da tela usa): preserva scroll e não
+	// recarrega o documento. "replace" pra não empilhar no histórico — o botão voltar do
+	// navegador não deve percorrer trocas de cenário.
+	//
+	// Escreve por merge no que já está na URL, então parâmetros de contexto (?email=,
+	// ?returnTo=, ?intent=, ?tab=) sobrevivem sem cada tela ter de repeti-los.
+	function select(axis: ScenarioAxis, value: string) {
 		const next = new URLSearchParams(params)
-		// "Preenchido"/default não tem valor de cenario próprio — remove em vez de gravar,
-		// senão não haveria como voltar ao estado normal sem editar a URL na mão.
-		if (scenario?.isDefault) {
-			next.delete('cenario')
+		if (value === axis.defaultValue) {
+			next.delete(axis.param)
 		} else {
-			next.set('cenario', id)
+			next.set(axis.param, value)
 		}
-		if (scenario?.tab) next.set('tab', scenario.tab)
+		for (const param of axis.clears ?? []) {
+			if (param !== axis.param) next.delete(param)
+		}
 		setSearchParams(next, { replace: true })
 	}
 
-	// Atalhos só existem enquanto elegível — em produção sem ?dev=1 o componente
-	// nem chega a montar este efeito, então não há como invocar a barra por teclado.
+	// Alt+. / Alt+, percorrem o primeiro eixo — é o eixo "principal" da tela (passo do
+	// cadastro, estado do fluxo), o que se quer atravessar numa demonstração.
 	useEffect(() => {
-		if (!eligible) return
-
 		function onKeyDown(e: KeyboardEvent) {
 			if (!e.altKey || isTypingTarget(document.activeElement, containerRef.current)) return
 
 			if (e.key === '0') {
 				e.preventDefault()
-				setManuallyHidden((v) => !v)
+				setHidden((v) => !v)
 				return
 			}
 
-			if ((e.key === '.' || e.key === ',') && visibleScenarios.length > 0) {
+			const axis = axes[0]
+			if ((e.key === '.' || e.key === ',') && axis) {
 				e.preventDefault()
-				const ids = visibleScenarios.map((s) => s.id)
-				const currentIndex = Math.max(0, ids.indexOf(activeId))
+				const values = axis.options.map((o) => o.value)
+				const currentIndex = Math.max(0, values.indexOf(axis.value))
 				const delta = e.key === '.' ? 1 : -1
-				const nextIndex = (currentIndex + delta + ids.length) % ids.length
-				selectScenario(ids[nextIndex])
+				select(axis, values[(currentIndex + delta + values.length) % values.length])
 			}
 		}
 
 		window.addEventListener('keydown', onKeyDown)
 		return () => window.removeEventListener('keydown', onKeyDown)
-	}, [eligible, visibleScenarios, activeId, params])
+	}, [axes, params])
 
-	if (!visible) return null
-
-	const groups = new Map<string, typeof scenarios>()
-	for (const scenario of visibleScenarios) {
-		const list = groups.get(scenario.group) ?? []
-		list.push(scenario)
-		groups.set(scenario.group, list)
-	}
+	if (hidden || axes.length === 0) return null
 
 	return (
 		<div
@@ -109,56 +127,96 @@ export function ScenarioBar() {
 				bottom: 'calc(8px + env(safe-area-inset-bottom))',
 				zIndex: Z_INDEX,
 				display: 'flex',
-				alignItems: 'center',
+				flexDirection: 'column',
+				alignItems: 'flex-start',
 				gap: 6,
-				height: 30,
-				padding: '0 10px',
-				borderRadius: 7,
-				background: '#1c1c1e',
-				color: '#e5e5e5',
 				fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
 				fontSize: 11,
-				lineHeight: 1,
+				lineHeight: 1.2,
 				pointerEvents: 'auto',
 			}}
 		>
-			<label htmlFor="scenario-bar-select" style={{ color: '#8e8e93', whiteSpace: 'nowrap' }}>
-				cenário
-			</label>
-			<select
-				id="scenario-bar-select"
-				aria-label="Cenário de teste"
-				value={activeId}
-				onChange={(e) => selectScenario(e.target.value)}
+			{collapsed ? null : (
+				<div
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						gap: 8,
+						padding: 10,
+						borderRadius: 7,
+						background: SURFACE,
+						color: INK,
+						boxShadow: '0 8px 24px rgba(0,0,0,.35)',
+						maxWidth: 260,
+					}}
+				>
+					{axes.map((axis) => {
+						const selectId = `scenario-axis-${axis.param}`
+						return (
+							<div key={axis.param} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+								<label htmlFor={selectId} style={{ color: MUTED }}>
+									{axis.label}
+								</label>
+								<select
+									id={selectId}
+									value={axis.value}
+									onChange={(e) => select(axis, e.target.value)}
+									style={{
+										background: 'transparent',
+										color: INK,
+										border: `1px solid ${BORDER}`,
+										borderRadius: 4,
+										fontFamily: 'inherit',
+										fontSize: 11,
+										padding: '3px 4px',
+										width: '100%',
+									}}
+								>
+									{axis.options.map((o) => (
+										<option key={o.value} value={o.value} style={{ background: SURFACE, color: INK }}>
+											{o.label}
+										</option>
+									))}
+								</select>
+							</div>
+						)
+					})}
+				</div>
+			)}
+
+			<button
+				type="button"
+				onClick={toggleCollapsed}
+				aria-expanded={!collapsed}
+				title="Cenários de teste — Alt+0 esconde a barra, Alt+. percorre o primeiro eixo"
 				style={{
-					background: 'transparent',
-					color: '#e5e5e5',
-					border: '1px solid #3a3a3c',
-					borderRadius: 4,
+					display: 'flex',
+					alignItems: 'center',
+					gap: 6,
+					height: 26,
+					padding: '0 10px',
+					borderRadius: 7,
+					border: 'none',
+					background: SURFACE,
+					color: INK,
 					fontFamily: 'inherit',
-					fontSize: 11,
-					padding: '2px 4px',
-					maxWidth: 200,
+					fontSize: 10,
+					letterSpacing: '.08em',
+					cursor: 'pointer',
 				}}
 			>
-				{[...groups.entries()].map(([group, items]) => (
-					<optgroup
-						key={group}
-						label={group}
-						style={{ background: '#1c1c1e', color: '#8e8e93' }}
-					>
-						{items.map((s) => (
-							<option
-								key={s.id}
-								value={s.id}
-								style={{ background: '#1c1c1e', color: '#e5e5e5' }}
-							>
-								{s.label}
-							</option>
-						))}
-					</optgroup>
-				))}
-			</select>
+				{/* Sliders desenhado à mão em vez de <Icon>: dev chrome não puxa componente de
+				    produto, e Material Symbols é a fonte canônica só para o que é produto. */}
+				<svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+					<rect x="0" y="1.6" width="12" height="0.8" />
+					<rect x="0" y="5.6" width="12" height="0.8" />
+					<rect x="0" y="9.6" width="12" height="0.8" />
+					<circle cx="3.5" cy="2" r="1.7" />
+					<circle cx="8.5" cy="6" r="1.7" />
+					<circle cx="5" cy="10" r="1.7" />
+				</svg>
+				CENÁRIOS
+			</button>
 		</div>
 	)
 }
