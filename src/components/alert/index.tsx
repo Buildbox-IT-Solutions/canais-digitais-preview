@@ -9,13 +9,13 @@ import type { AlertType, IAlertProps } from './types'
  * Estrutura fiel ao Alert "custom colors" do shadcn/ui (borda + fundo tintado +
  * texto na cor do status), temizado com os tokens de status do projeto.
  * Substitui o antigo `AuthErrorAlert`, que hardcodava red-600 em vez do token danger.
- * Tokens: --color-danger-600, --color-warning, --color-success, --color-secondary-950
+ * Tokens: --color-danger-600, --color-warning-500, --color-success-600, --color-secondary-950
  */
 
 const TYPE_META: Record<AlertType, { icon: IconName; accent: string }> = {
-	success: { icon: 'check-circle', accent: 'border-success/30 bg-success/10 text-success' },
+	success: { icon: 'check-circle', accent: 'border-success-600/30 bg-success-600/10 text-success-600' },
 	error: { icon: 'error', accent: 'border-danger-600/30 bg-danger-600/10 text-danger-600' },
-	warning: { icon: 'warning', accent: 'border-warning/30 bg-warning/10 text-warning' },
+	warning: { icon: 'warning', accent: 'border-warning-500/30 bg-warning-500/10 text-warning-500' },
 	// Sem token --color-info dedicado — mesmo fallback que o Toast usa (--color-secondary-950).
 	info: { icon: 'info', accent: 'border-secondary-950/30 bg-secondary-950/10 text-secondary-950' },
 }
