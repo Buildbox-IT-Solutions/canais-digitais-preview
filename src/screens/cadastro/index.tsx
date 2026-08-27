@@ -15,7 +15,7 @@ import {
 	STEP_FIELDS,
 	type CadastroStep,
 } from '../_auth/cadastro-steps'
-import { AuthErrorAlert } from '../_auth/error-alert'
+import { Alert } from '~/components/alert'
 import { AuthFieldList } from '../_auth/field-list'
 import { AuthInput } from '../_auth/input'
 import { AuthPasswordInput } from '../_auth/password-input'
@@ -148,8 +148,8 @@ export default function CadastroScreen() {
 								</div>
 							</div>
 
-							{campoVazioError ? <AuthErrorAlert message={campoVazioError} /> : null}
-							{termosError ? <AuthErrorAlert message={termosError} /> : null}
+							{campoVazioError ? <Alert type="error" message={campoVazioError} /> : null}
+							{termosError ? <Alert type="error" message={termosError} /> : null}
 
 							<form action={nextAction} method="get" className="flex flex-col gap-6" noValidate>
 								{isLastStep ? null : <input type="hidden" name="step" value={step + 1} />}

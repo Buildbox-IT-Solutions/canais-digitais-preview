@@ -4,7 +4,7 @@ import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import { SocialButton } from '~/components/social-button'
 import { useScenarios } from '~/dev/use-scenarios'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthErrorAlert } from '../_auth/error-alert'
+import { Alert } from '~/components/alert'
 import { authErrorAxis } from '../_auth/scenarios'
 import { AuthInput } from '../_auth/input'
 import { AuthPasswordInput } from '../_auth/password-input'
@@ -86,7 +86,7 @@ export default function LoginScreen() {
 								</p>
 							</div>
 
-							{globalError ? <AuthErrorAlert message={globalError} /> : null}
+							{globalError ? <Alert type="error" message={globalError} /> : null}
 
 							<div className="flex flex-col gap-4">
 								<SocialButton provider="linkedin" href="/home" />
