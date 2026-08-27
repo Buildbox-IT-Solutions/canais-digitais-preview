@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/icon'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthErrorAlert } from '../_auth/error-alert'
+import { Alert } from '~/components/alert'
 import { AuthInput } from '../_auth/input'
 import { AuthResendButton } from '../_auth/resend-button'
 import { authErrorAxis, authStateAxis } from '../_auth/scenarios'
@@ -111,7 +111,7 @@ export default function RecuperaSenhaScreen() {
 									</p>
 								</div>
 
-								{globalError ? <AuthErrorAlert message={globalError} /> : null}
+								{globalError ? <Alert type="error" message={globalError} /> : null}
 
 								<form action="/recupera-senha" method="get" className="flex flex-col gap-6" noValidate>
 									<input type="hidden" name="state" value="sent" />

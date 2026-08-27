@@ -11,7 +11,7 @@ import { buildReturnToHref, sanitizeReturnTo, serializeReturnTo } from '~/lib/sa
 import { useScenarios } from '~/dev/use-scenarios'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthErrorAlert } from '../_auth/error-alert'
+import { Alert } from '~/components/alert'
 import { authErrorAxis } from '../_auth/scenarios'
 import { AuthInput } from '../_auth/input'
 import { AuthPasswordInput } from '../_auth/password-input'
@@ -171,7 +171,7 @@ export default function LoginV2Screen() {
 								Entrar
 							</h2>
 
-							{globalError ? <AuthErrorAlert message={globalError} /> : null}
+							{globalError ? <Alert type="error" message={globalError} /> : null}
 
 							<form
 								action={fechaNoModal ? '/login' : returnTo.path}

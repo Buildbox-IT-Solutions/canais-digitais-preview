@@ -5,7 +5,7 @@ import { Modal } from '~/components/modal'
 import { ProofPanelMinimal } from '~/components/proof-panel-minimal'
 import HomeScreen from '../home'
 import { AuthBottomLink } from '../_auth/bottom-link'
-import { AuthErrorAlert } from '../_auth/error-alert'
+import { Alert } from '~/components/alert'
 import { AuthInput } from '../_auth/input'
 import { AuthResendButton } from '../_auth/resend-button'
 import { authErrorAxis, authStateAxis } from '../_auth/scenarios'
@@ -137,7 +137,7 @@ export default function RecuperaSenhaV2Screen() {
 									</p>
 								</div>
 
-								{globalError ? <AuthErrorAlert message={globalError} /> : null}
+								{globalError ? <Alert type="error" message={globalError} /> : null}
 
 								<form
 									action="/recupera-senha"
