@@ -27,11 +27,14 @@ import {
 	DOWNLOADS,
 	NEWSLETTERS,
 	OPCOES_CARGO,
+	OPCOES_ESTADO,
 	OPCOES_GENERO,
 	OPCOES_PAIS,
 	OPCOES_SETOR,
 	PERFIL_CAMPOS,
 	PERFIL_CAMPOS_COMPLETO,
+	completude,
+	nomeCompleto,
 	type PerfilCampos,
 } from '~/mocks/dashboard-perfil'
 import type { FavoritoItem } from '~/mocks/favoritos'
@@ -172,10 +175,9 @@ export default function DashboardPerfilV4Screen() {
 	// "Engajado" (?cenario=perfil-completo): perfil todo preenchido; a tela suprime o
 	// andaime de completude (banner de progresso, badges e infos de % restantes).
 	const campos = isCompleto ? PERFIL_CAMPOS_COMPLETO : PERFIL_CAMPOS
-	const totalFields = Object.keys(campos).length
-	const filledFields = Object.values(campos).filter((v) => v !== '').length
-	const pct = Math.round((filledFields / totalFields) * 100)
-	const missing = totalFields - filledFields
+	// O que falta é sempre o que o cadastro não pergunta — quem acabou de se cadastrar
+	// chega aqui com nome, contato, empresa/cargo e localidade já preenchidos.
+	const { pct, faltando: missing } = completude(campos)
 
 	return (
 		<main className="bg-white min-h-screen flex flex-col">
@@ -479,11 +481,33 @@ function PerfilPane({
 	complete: boolean
 	campos: PerfilCampos
 }) {
-	// No estado "completo" a box Demográficos mostra valores reais; caso contrário,
-	// os rótulos-placeholder de campos a preencher.
-	const demograficoFields = complete
-		? [campos.cpf, `${campos.cidade}, ${campos.estado}`, campos.endereco]
-		: ['CPF / CNPJ', 'Cidade, UF', 'Endereço']
+	// Preview de cada box: valor quando existe, rótulo em cinza quando o campo está
+	// pendente. O cadastro já entrega localidade, então a box Demográficos deixa de ser
+	// só placeholder — ela mistura cidade/estado preenchidos com CPF e endereço a pedir.
+	const pendente = (valor: string, rotulo: string) =>
+		valor ? { label: valor, pending: false } : { label: rotulo, pending: true }
+
+	// Sem o e-mail: ele já aparece no topo da página, e a linha livre mostra as duas
+	// pendências da box — nascimento e gênero, que o cadastro não pergunta.
+	const pessoaisFields = [
+		pendente(nomeCompleto(campos), 'Nome e sobrenome'),
+		pendente(campos.telefone, 'Telefone'),
+		pendente(campos.nascimento, 'Data de nascimento'),
+		pendente(campos.genero, 'Gênero'),
+	]
+	const pessoaisIncompleto = !campos.nascimento || !campos.genero
+
+	const profissionaisFields = [
+		pendente(campos.empresa, 'Empresa'),
+		pendente(campos.cargo, 'Cargo'),
+		pendente(campos.setor, 'Setor'),
+	]
+
+	const demograficoFields = [
+		pendente([campos.cidade, campos.estado].filter(Boolean).join(', '), 'Cidade, estado'),
+		pendente(campos.cpf, 'CPF / CNPJ'),
+		pendente(campos.endereco, 'Endereço'),
+	]
 
 	return (
 		<div className="flex flex-col gap-10">
@@ -528,29 +552,33 @@ function PerfilPane({
 						icon="account-circle"
 						title="Dados pessoais"
 						description="Informações de identificação da sua conta"
-						fields={[campos.nome, campos.email, campos.telefone]}
+						fields={pessoaisFields}
 						href="?tab=perfil&drawer=dados-pessoais"
-						cta="Atualizar"
+						cta={pessoaisIncompleto ? 'Completar' : 'Atualizar'}
+						incomplete={pessoaisIncompleto}
 						chip="Complete seu Perfil"
-						incomplete={!complete}
 					/>
 					<ProfileBox
 						icon="work"
 						title="Dados profissionais"
 						description="Define suas recomendações de conteúdo e newsletter"
-						fields={[campos.empresa, campos.cargo, campos.setor]}
+						fields={profissionaisFields}
 						href="?tab=perfil&drawer=dados-profissionais"
-						cta="Atualizar"
+						cta={campos.setor ? 'Atualizar' : 'Completar'}
+						incomplete={!campos.setor}
+						chip="Complete seu Perfil"
 					/>
 					<ProfileBox
 						icon="location-on"
 						title="Dados Demográficos"
-						description="Solicitado apenas quando você baixa materiais"
+						// Mesma promessa do proof panel do passo 4 do cadastro ("Eventos e
+						// materiais da sua região, no seu radar") — é o que a pessoa ouviu ao
+						// entregar a localidade, e o que ela deve reencontrar aqui.
+						description="Indica eventos e materiais da sua região"
 						fields={demograficoFields}
 						href="?tab=perfil&drawer=dados-fiscais"
-						cta={complete ? 'Atualizar' : 'Preencher'}
+						cta={complete ? 'Atualizar' : 'Completar'}
 						incomplete={!complete}
-						placeholder={!complete}
 						chip="Preencha e personalize sua experiência"
 					/>
 				</div>
@@ -1032,7 +1060,10 @@ function buildDrawerConfig(drawer: Drawer): { title: string; fields: DrawerField
 		return {
 			title: 'Dados pessoais',
 			fields: [
-				{ label: 'Nome completo', value: PERFIL_CAMPOS.nome, required: true },
+				// Nome e sobrenome são campos separados desde o cadastro (o Eloqua guarda
+				// os dois) — o perfil edita cada um, não uma string de nome completo.
+				{ label: 'Nome', value: PERFIL_CAMPOS.nome, required: true, colSpan: 6 },
+				{ label: 'Sobrenome', value: PERFIL_CAMPOS.sobrenome, required: true, colSpan: 6 },
 				{
 					label: 'E-mail corporativo',
 					value: PERFIL_CAMPOS.email,
@@ -1068,9 +1099,10 @@ function buildDrawerConfig(drawer: Drawer): { title: string; fields: DrawerField
 					value: PERFIL_CAMPOS.cargo,
 					type: 'select',
 					options: OPCOES_CARGO,
-					placeholder: 'Selecione seu cargo',
+					placeholder: 'Selecione',
 					required: true,
 				},
+				// Único campo profissional que o cadastro não pede — chega aqui vazio.
 				{
 					label: 'Setor',
 					value: PERFIL_CAMPOS.setor,
@@ -1098,7 +1130,13 @@ function buildDrawerConfig(drawer: Drawer): { title: string; fields: DrawerField
 				type: 'select',
 				options: OPCOES_PAIS,
 			},
-			{ label: 'Estado', value: PERFIL_CAMPOS.estado, placeholder: 'UF' },
+			{
+				label: 'Estado',
+				value: PERFIL_CAMPOS.estado,
+				type: 'select',
+				options: OPCOES_ESTADO,
+				placeholder: 'Selecione',
+			},
 			{ label: 'Cidade', value: PERFIL_CAMPOS.cidade },
 			{ label: 'Endereço', value: PERFIL_CAMPOS.endereco, colSpan: 9 },
 			{ label: 'Número', value: PERFIL_CAMPOS.numero, colSpan: 3, placeholder: 'Nº' },

@@ -1,7 +1,9 @@
 import type { IconName } from '~/components/icon/paths'
+import { OPCOES_CARGO, OPCOES_ESTADO, OPCOES_PAIS } from './eloqua-picklists'
 
 export interface PerfilCampos {
 	nome: string
+	sobrenome: string
 	email: string
 	telefone: string
 	nascimento: string
@@ -19,49 +21,75 @@ export interface PerfilCampos {
 	complemento: string
 }
 
+/**
+ * Campos que o cadastro pede (ver `screens/_auth/cadastro-steps`). Quem termina o
+ * cadastro já entregou todos eles, então o perfil os mostra preenchidos — pedir de
+ * novo seria perguntar o que a pessoa acabou de responder. O resto nasce pendente e
+ * é o que a barra de completude conta.
+ */
+export const CAMPOS_DO_CADASTRO = [
+	'nome',
+	'sobrenome',
+	'email',
+	'telefone',
+	'empresa',
+	'cargo',
+	'pais',
+	'estado',
+	'cidade',
+] as const satisfies ReadonlyArray<keyof PerfilCampos>
+
+/** Perfil de quem acabou de se cadastrar: só o que o cadastro pediu vem preenchido. */
 export const PERFIL_CAMPOS: PerfilCampos = {
-	nome: 'Mariana Albuquerque',
+	nome: 'Mariana',
+	sobrenome: 'Albuquerque',
 	email: 'mariana.albuquerque@empresa.com.br',
-	telefone: '+55 (11) 98786-9879',
-	nascimento: '',
-	genero: '',
+	telefone: '(11) 98786-9879',
 	empresa: 'Grupo Camargo Alimentos S/A',
 	cargo: 'Gerente',
-	setor: 'Alimentos & Bebidas',
-	cpf: '',
 	pais: 'Brasil',
-	estado: '',
-	cidade: '',
+	estado: 'São Paulo',
+	cidade: 'São Paulo',
+	// Pendentes — o cadastro não pergunta nenhum destes.
+	nascimento: '',
+	genero: '',
+	setor: '',
+	cpf: '',
 	cep: '',
 	endereco: '',
 	numero: '',
 	complemento: '',
 }
 
-/** Perfil totalmente preenchido — usuário "engajado" (?state=completo no dashboard-perfil-v4). */
+/** Perfil totalmente preenchido — usuário "engajado" (?cenario=perfil-completo). */
 export const PERFIL_CAMPOS_COMPLETO: PerfilCampos = {
-	nome: 'Mariana Albuquerque',
-	email: 'mariana.albuquerque@empresa.com.br',
-	telefone: '+55 (11) 98786-9879',
+	...PERFIL_CAMPOS,
 	nascimento: '15/03/1988',
 	genero: 'Feminino',
-	empresa: 'Grupo Camargo Alimentos S/A',
-	cargo: 'Gerente',
 	setor: 'Alimentos & Bebidas',
 	cpf: '123.456.789-00',
-	pais: 'Brasil',
-	estado: 'SP',
-	cidade: 'São Paulo',
 	cep: '01310-100',
 	endereco: 'Av. Paulista',
 	numero: '1000',
 	complemento: 'Conj. 51',
 }
 
+/** Nome completo para exibição — o cadastro grava nome e sobrenome separados. */
+export function nomeCompleto(campos: PerfilCampos) {
+	return `${campos.nome} ${campos.sobrenome}`.trim()
+}
+
+/** Completude do perfil: todo campo do modelo conta, preenchido ou não. */
+export function completude(campos: PerfilCampos) {
+	const total = Object.keys(campos).length
+	const preenchidos = Object.values(campos).filter((v) => v !== '').length
+	return { total, preenchidos, faltando: total - preenchidos, pct: Math.round((preenchidos / total) * 100) }
+}
+
 export const OPCOES_GENERO = ['Masculino', 'Feminino', 'Prefiro não informar']
-export const OPCOES_CARGO = ['Diretor(a)', 'Gerente', 'Coordenador(a)', 'Analista', 'Consultor(a)', 'Outro']
 export const OPCOES_SETOR = ['Agro', 'Alimentos & Bebidas', 'Embalagens', 'Saúde', 'Logística', 'Varejo', 'Tecnologia', 'Outro']
-export const OPCOES_PAIS = ['Brasil', 'Argentina', 'Chile', 'Colômbia', 'México', 'Peru', 'Portugal', 'Outro']
+// Cargo, país e estado são os mesmos do cadastro — lista única em `eloqua-picklists`.
+export { OPCOES_CARGO, OPCOES_ESTADO, OPCOES_PAIS }
 
 export const RECENT_NEWS = [
 	{ category: 'Proteína Animal', title: 'Como fazer o transporte de pescados frescos corretamente', when: 'há poucos segundos' },
