@@ -4,15 +4,19 @@ import { HeaderDesktop } from '~/components/header-desktop'
 import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
 import { picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
+import { useSessaoPublica } from '../_sessao/use-sessao-publica'
 
 /**
  * Tela: Sobre — Página institucional
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=4951-50343
  */
 export default function SobreScreen() {
+	// Sessão (?logado=) na ScenarioBar + header logado/deslogado — ver _sessao/use-sessao-publica.
+	const sessao = useSessaoPublica()
+
 	return (
 		<main className="bg-white">
-			<HeaderDesktop />
+			<HeaderDesktop {...sessao.header} />
 
 			<section className="w-full">
 				<div className="max-w-screen-xl mx-auto px-4 lg:px-6 flex justify-center">

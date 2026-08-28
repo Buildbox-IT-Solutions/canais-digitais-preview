@@ -35,6 +35,7 @@ import {
 	PERFIL_CAMPOS_COMPLETO,
 	completude,
 	nomeCompleto,
+	USUARIO_LOGADO,
 	type PerfilCampos,
 } from '~/mocks/dashboard-perfil'
 import type { FavoritoItem } from '~/mocks/favoritos'
@@ -48,9 +49,11 @@ const DRAWERS: Drawer[] = ['dados-pessoais', 'dados-profissionais', 'dados-fisca
 
 const BASE_HREF = '/dashboard-perfil-v4'
 
-const USER_NAME = 'Mariana Albuquerque'
-const USER_EMAIL = 'mariana.albuquerque@empresa.com.br'
-const USER_INITIALS = 'MA'
+// Derivados da fonte única (mocks/dashboard-perfil) — o header desta tela e o das
+// telas públicas com ?logado=true precisam mostrar a MESMA pessoa.
+const USER_NAME = USUARIO_LOGADO.nome
+const USER_EMAIL = USUARIO_LOGADO.email
+const USER_INITIALS = USUARIO_LOGADO.iniciais
 
 const PER_PAGE = 10
 

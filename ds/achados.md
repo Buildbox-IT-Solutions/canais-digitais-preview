@@ -15,6 +15,32 @@
   únicas classes que saíram foram `gap-0`/`py-0`/`shadow-none` (existiam só para cancelar o
   `Card`) e `[.border-b]:pb-6`/`[.border-t]:pt-6` (variantes que nunca casavam neste
   consumidor). Nenhuma classe adicionada.
+- **`Loading Button [1.0]` (Figma `71:6026`) não será implementado como componente —
+  2026-08-28.** O spec (`figma-specs/loading-button.md`) descreve um componente separado:
+  pill filled **sem texto**, só spinner, que substitui o botão original enquanto a ação
+  corre. Virou o estado `loading` do próprio `Button [1.1]`, no padrão do shadcn — spinner
+  inline à esquerda, label preservado. Motivo: trocar um elemento por outro no meio da
+  interação é exatamente o que fazia a espera parecer improvisada, e sem o texto a largura
+  pula no clique. O que o spec exigia de acessibilidade (`disabled` + `aria-busy`, "o botão
+  NÃO pode receber novo clique enquanto carrega") foi mantido, e agora é o componente que
+  garante, não quem chama. **Consequência para o Figma:** o `71:6026` fica sem contrapartida
+  em código, e o `Button [1.1]` precisa ganhar uma property `Loading` — hoje o pending em
+  outlined/ghost existe no código e não existe no Figma.
+- **`subscribe-button` nasceu sem node no Figma — 2026-08-28.** Composto sobre o
+  `Button [1.1]`, estende o eixo `type` com o eixo `status` (idle | pending |
+  subscribed). Substituiu três montagens à mão que existiam em duplicata no
+  `newsletter-card` e no `banner-newsletter`. Precisa ser desenhado e nomeado no Figma
+  para que o back-end tenha referência visual — em especial o selo `subscribed`, que
+  **não é um botão** (é `role="status"`, sem ação) mas ocupa a mesma caixa que o botão
+  que substitui.
+- **`incentive-newsletter-dialog` arquivado em 2026-08-28** — decisão do cliente: o
+  deslogado que clica em "Assine agora" vai direto ao formulário público, sem modal
+  nenhum no caminho. O incentivo de login passou a ser a barra de rodapé da
+  `/form-newsletter` (`IncentiveBanner`, ver o cabeçalho daquela tela). O componente
+  fica no repo sem consumidor de produto — só alcançável por `?preview=newsletter` em
+  `/home` e `/conteudo`, e é isso que ele é agora: variante arquivada, não caminho
+  vivo. Não remover sem decisão explícita; o `incentive-download-dialog` irmão continua
+  em uso (download e favoritar).
 - **Órfãos criados em 2026-08-24** pela remoção de `home-v2`, `patrocinadores`, `patrocinador`,
   `dashboard` e `gate-download`: `src/components/coming-soon/`, `src/components/dashboard-header/`,
   `src/components/sponsor-card/` e `src/mocks/sponsors.ts` ficaram sem nenhum consumidor.

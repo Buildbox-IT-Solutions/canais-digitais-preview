@@ -1,6 +1,7 @@
 import { isValidElement } from 'react'
 import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
+import { Spinner } from '~/components/spinner'
 import type { ButtonIcon, ButtonSize, ButtonTone, ButtonType, IButtonProps } from './types'
 
 /**
@@ -11,6 +12,20 @@ import type { ButtonIcon, ButtonSize, ButtonTone, ButtonType, IButtonProps } fro
  * icon) — é extensão dev-side documentada em figma-specs/button.md, generalizando o padrão
  * "botão inverso" já descrito ad hoc nos specs de Banner Newsletter/Download e usado inline
  * (sem componente) no Incentive Banner.
+ *
+ * `loading` (28/08/2026) substitui o `Loading Button [1.0]` (Figma 71:6026,
+ * figma-specs/loading-button.md), que era um COMPONENTE separado: pill filled sem
+ * texto, só spinner. Virou estado deste botão, no padrão do shadcn — spinner inline
+ * ao lado do label, que continua visível. Três consequências, todas deliberadas:
+ * · O botão preserva a identidade (type, tone, size, largura) enquanto carrega. O
+ *   componente separado obrigava a trocar um elemento por outro no meio da interação,
+ *   que é o que fazia a espera parecer improvisada.
+ * · O texto fica: sem ele a largura pula no clique e o motivo da espera some.
+ * · `disabled` + `aria-busy` continuam obrigatórios, como o spec do 71:6026 já exigia
+ *   ("semanticamente o botão NÃO pode receber novo clique enquanto carrega") — o
+ *   shadcn deixa isso a cargo de quem chama; aqui é do componente.
+ * O `Loading Button [1.0]` fica sem consumidor; ver ds/achados.md.
+ *
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-50, --color-neutral-200, --color-white
  */
 
@@ -47,10 +62,35 @@ const PADDING_WITH_ICON: Record<ButtonSize, string> = {
 	small: 'pl-4 pr-3',
 }
 
+/**
+ * Espelho do de cima para ícone à ESQUERDA. Só o spinner de `loading` usa: um ícone
+ * atrás do texto lê como afordância ("vá →"), na frente lê como estado. Nenhuma
+ * variante de `icon` entra aqui — o Figma só desenhou ícone à direita.
+ */
+const PADDING_WITH_LEADING_ICON: Record<ButtonSize, string> = {
+	large: 'pl-5 pr-6',
+	medium: 'pl-4 pr-5',
+	small: 'pl-3 pr-4',
+}
+
+/**
+ * Altura, gap e tipografia por tamanho, e o padding com ícone à esquerda —
+ * reexportados para o `SubscribeButton` montar o selo "Assinado" (que NÃO é um
+ * `<button>`, ver aquele componente) ocupando exatamente o mesmo espaço do botão que
+ * ele substitui. Redeclarar essas medidas lá abriria divergência no primeiro ajuste
+ * de token.
+ */
+export const BUTTON_SIZE_CLASSES = SIZE_HEIGHT
+export const BUTTON_LEADING_ICON_PADDING = PADDING_WITH_LEADING_ICON
+
+/** Tamanho do ícone/spinner por tamanho de botão — mesma escala do BuiltInIcon. */
+export function buttonIconSize(size: ButtonSize): string {
+	return size === 'small' ? 'size-5' : 'size-6'
+}
+
 function BuiltInIcon({ icon, size }: { icon: ButtonIcon; size: ButtonSize }) {
 	if (icon !== 'arrow-forward' && icon !== 'add') return null
-	const iconSize = size === 'small' ? 'size-5' : 'size-6'
-	return <Icon name={icon} className={iconSize} />
+	return <Icon name={icon} className={buttonIconSize(size)} />
 }
 
 export function Button({
@@ -60,16 +100,23 @@ export function Button({
 	tone = 'default',
 	size = 'medium',
 	icon = 'none',
+	loading = false,
 	disabled,
 	onClick,
 	className,
 }: IButtonProps) {
-	const hasIcon = icon !== 'none'
+	// Carregando: o ícone declarado sai de cena — dois indicadores competindo no mesmo
+	// botão não dizem nada a mais.
+	const hasIcon = !loading && icon !== 'none'
 	const classes = twMerge(
 		'inline-flex items-center justify-center rounded-full font-body font-bold transition-colors disabled:cursor-not-allowed',
 		TYPE_CLASSES[tone][type],
 		SIZE_HEIGHT[size],
-		hasIcon ? PADDING_WITH_ICON[size] : PADDING_NO_ICON[size],
+		loading
+			? PADDING_WITH_LEADING_ICON[size]
+			: hasIcon
+				? PADDING_WITH_ICON[size]
+				: PADDING_NO_ICON[size],
 		className,
 	)
 
@@ -79,23 +126,50 @@ export function Button({
 			? <BuiltInIcon icon={icon as ButtonIcon} size={size} />
 			: null
 
-	const content = (
+	const content = loading ? (
+		<>
+			<Spinner className={buttonIconSize(size)} />
+			{label}
+		</>
+	) : (
 		<>
 			{label}
 			{iconNode}
 		</>
 	)
 
-	if (href) {
+	// Carregando renderiza sempre `<button>`, nunca `<a>`: âncora não tem `disabled`, e
+	// uma ação em voo que continua navegável dispara a mesma operação duas vezes.
+	if (href && !loading) {
+		// `href` + `onClick` é o contrato de aprimoramento progressivo: o href é o
+		// destino que funciona sem JS, e o handler INTERCEPTA a navegação para agir na
+		// própria página. Sem o preventDefault o clique faria as duas coisas.
 		return (
-			<a href={href} className={classes}>
+			<a
+				href={href}
+				onClick={
+					onClick
+						? (e) => {
+								e.preventDefault()
+								onClick()
+							}
+						: undefined
+				}
+				className={classes}
+			>
 				{content}
 			</a>
 		)
 	}
 
 	return (
-		<button type="button" onClick={onClick} disabled={disabled} className={classes}>
+		<button
+			type="button"
+			onClick={onClick}
+			disabled={disabled || loading}
+			aria-busy={loading || undefined}
+			className={classes}
+		>
 			{content}
 		</button>
 	)

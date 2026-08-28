@@ -9,7 +9,7 @@ import { AudioVersionBlock } from '~/components/audio-version-block'
 import { Avatar } from '~/components/avatar'
 import { AvatarStack } from '~/components/avatar-stack'
 import { BannerDownload } from '~/components/banner-download'
-import { Button } from '~/components/button'
+import { BannerNewsletter } from '~/components/banner-newsletter'
 import { Categoria } from '~/components/categoria'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
@@ -30,14 +30,21 @@ import { Toast } from '~/components/toast'
 import { Toggle } from '~/components/toggle'
 import { Tooltip } from '~/components/tooltip'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
+import type { ScenarioAxis } from '~/dev/scenario-store'
+import { useScenarios } from '~/dev/use-scenarios'
 import { getPostByParam } from '~/fixtures/posts'
 import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
+import { useAssinarNewsletter } from '~/lib/use-assinar-newsletter'
 import { useFavoritoAuthModal } from '~/lib/use-favorito-auth-modal'
+import { useHeaderUsuario } from '~/lib/use-header-usuario'
 import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
 import { useLogado } from '~/lib/use-logado'
 import { ARTICLE_TAGS, EM_ALTA, picsumSrc, VEJA_TAMBEM } from '~/mocks/articles'
+import { NEWSLETTER_DO_PORTAL } from '~/mocks/dashboard-perfil'
 import type { Author, ContentBlock, Post } from '~/types/post'
+import { newsletterAxis, newsletterAxisValue } from '../_newsletter/scenarios'
+import { sessaoAxis } from '../_sessao/scenarios'
 
 // Desenho final da barra: favoritar, WhatsApp, share — imprimir/LinkedIn/Facebook/
 // Twitter saíram, condensados no share nativo (que já lista os apps instalados do
@@ -61,6 +68,10 @@ function whatsappShareHref(title: string, path: string): string {
 // para 'apos-introducao' para testar a alternativa.
 const DOWNLOAD_BLOCK_POSITION: 'fim-do-corpo' | 'apos-introducao' = 'fim-do-corpo'
 
+// Ver comentário equivalente em screens/home — a página como fundo de um modal de auth
+// não registra eixos.
+const NO_AXES: ScenarioAxis[] = []
+
 /**
  * Tela: Conteúdo — Página interna de artigo
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=4179-32002
@@ -75,6 +86,25 @@ export default function ConteudoScreen() {
 	const tocVariant = params.get('toc')
 
 	const activePost = getPostByParam(params.get('post'))
+
+	// Registro vazio quando a página é só o fundo de um modal de auth — mesma regra da
+	// home: os eixos da barra são os da tela da frente. O eixo da newsletter só entra
+	// com ?logado=true, porque deslogado não há estado de assinatura para variar.
+	useScenarios(
+		isConteudoRoute
+			? [
+					sessaoAxis(logado),
+					...(logado ? [newsletterAxis(newsletterAxisValue(params.get('newsletter')))] : []),
+				]
+			: NO_AXES,
+	)
+
+	// Assinar a newsletter do portal direto no banner da sidebar (logado). Ver as 7
+	// regras em src/lib/use-assinar-newsletter.ts.
+	const newsletter = useAssinarNewsletter()
+
+	// O header reflete a sessão em toda tela pública — ver src/lib/use-header-usuario.ts.
+	const headerUsuario = useHeaderUsuario()
 
 	// Feature Favoritos: contentId é o slug do post (== chave de POSTS_BY_ID ==
 	// valor de `?post=`) — cada variação/fixture tem seu próprio estado de favorito.
@@ -182,7 +212,7 @@ export default function ConteudoScreen() {
 	return (
 		<>
 		<main className="bg-white">
-			<HeaderDesktop activeCategory="food-service" />
+			<HeaderDesktop activeCategory="food-service" {...headerUsuario} />
 
 			{/* §2 — Ad 970×90 (Super Leaderboard) */}
 			<section className="flex flex-col items-center py-6 w-full overflow-hidden">
@@ -348,34 +378,26 @@ export default function ConteudoScreen() {
 							className="max-w-[392px]"
 						/>
 
-						{/* Banner Newsletter */}
-						<div className="bg-primary-100 flex flex-col items-start overflow-hidden rounded-sm w-full max-w-[392px]">
-							<div className="aspect-[3/2] w-full overflow-hidden bg-secondary-50">
-								<img
-									src={picsumSrc('newsletter', 600, 400)}
-									alt="Newsletter"
-									className="w-full h-full object-cover"
-								/>
-							</div>
-							<div className="flex flex-col gap-4 pt-8 pb-4 px-6 text-primary-600">
-								<h3 className="font-display font-bold text-headline-sm">
-									Assine nossa Newsletter e fique por dentro de tudo do setor alimentício
-								</h3>
-								<p className="font-body text-body-lg">
-									Fique ligado nas inovações, estratégias e oportunidades do setor com
-									conteúdos selecionados pelo Food Connection.
-								</p>
-							</div>
-							<div className="pt-4 pb-8 px-6 w-full">
-								<Button
-									label="Assine agora"
-									href={logado ? '/dashboard-perfil-v4?tab=newsletter' : '/form-newsletter'}
-									type="filled"
-									size="large"
-									className="w-full"
-								/>
-							</div>
-						</div>
+						{/* Banner Newsletter — mesmo componente da home, layout `sidebar`. Nomeia a
+						    newsletter porque, para o logado, o clique já assina (um clique = um
+						    consentimento LGPD específico). Deslogado, o `returnTo` leva a matéria
+						    junto: quem entrar pelo lembrete do formulário volta PARA ESTA leitura,
+						    não para a home nem para o formulário. */}
+						<BannerNewsletter
+							variant="sidebar"
+							className="max-w-[392px]"
+							image={picsumSrc('newsletter', 600, 400)}
+							title={`Assine a newsletter ${NEWSLETTER_DO_PORTAL.title}`}
+							description="Fique ligado nas inovações, estratégias e oportunidades do setor com conteúdos selecionados pelo Food Connection."
+							ctaLabel="Assine agora"
+							ctaHref={
+								logado
+									? newsletter.tabHref
+									: `/form-newsletter?returnTo=${encodeURIComponent(`/conteudo?post=${activePost.slug}`)}`
+							}
+							onCtaClick={logado ? newsletter.assinar : undefined}
+							state={newsletter.state}
+						/>
 
 						{/* Ad 300×250 */}
 						<div className="bg-white p-4 flex justify-center w-full overflow-hidden">

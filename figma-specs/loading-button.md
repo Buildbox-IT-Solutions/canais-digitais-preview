@@ -1,5 +1,12 @@
 # Loading Button [1.0]
 
+> ⚠️ **Não implementar como componente.** Em 28/08/2026 este spec foi absorvido pelo estado
+> `loading` do `Button [1.1]` (`src/components/button`) — spinner inline **com o label
+> visível**, em vez de um componente separado sem texto. O racional e as consequências para
+> o Figma estão em [`ds/achados.md`](../ds/achados.md). O texto abaixo fica como registro do
+> que o `71:6026` desenha; as regras de acessibilidade dele continuam valendo e foram
+> implementadas.
+
 **Figma:** [Loading Button [1.0] — `71:6026`](https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=71-6026)
 **Arquivo:** [`legacy/src/components/loading-button.php`](../legacy/src/components/loading-button.php)
 

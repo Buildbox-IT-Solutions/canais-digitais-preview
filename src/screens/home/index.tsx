@@ -25,7 +25,12 @@ import { WidgetPodcast } from '~/components/widget-podcast'
 import type { ScenarioAxis } from '~/dev/scenario-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
+import { useAssinarNewsletter } from '~/lib/use-assinar-newsletter'
+import { useHeaderUsuario } from '~/lib/use-header-usuario'
 import { useLogado } from '~/lib/use-logado'
+import { NEWSLETTER_DO_PORTAL } from '~/mocks/dashboard-perfil'
+import { newsletterAxis, newsletterAxisValue } from '../_newsletter/scenarios'
+import { sessaoAxis } from '../_sessao/scenarios'
 import { ARQUIVO_EXEMPLO_URL, MATERIAL_DESTAQUE_TITULO, nomeArquivoDownload } from '~/mocks/downloads'
 import {
 	EM_ALTA,
@@ -92,7 +97,26 @@ export default function HomeScreen() {
 	const destaqueUnicoValue = DESTAQUE_UNICO_AXIS.options.some((o) => o.value === cenario)
 		? (cenario as string)
 		: 'destaque-unico-off'
-	useScenarios(isHomeRoute ? [{ ...DESTAQUE_UNICO_AXIS, value: destaqueUnicoValue }] : NO_AXES)
+	// Sessão primeiro (ver _sessao/scenarios). O eixo do banner de newsletter só entra
+	// na barra com ?logado=true: deslogado o banner leva ao formulário público e não
+	// tem estado de assinatura para variar — um controle que não muda nada é pior que
+	// controle nenhum.
+	useScenarios(
+		isHomeRoute
+			? [
+					sessaoAxis(logado),
+					{ ...DESTAQUE_UNICO_AXIS, value: destaqueUnicoValue },
+					...(logado ? [newsletterAxis(newsletterAxisValue(params.get('newsletter')))] : []),
+				]
+			: NO_AXES,
+	)
+
+	// Assinar a newsletter do portal direto no banner (logado). Ver as 7 regras em
+	// src/lib/use-assinar-newsletter.ts — é lá que o comportamento mora.
+	const newsletter = useAssinarNewsletter()
+
+	// O header reflete a sessão em toda tela pública — ver src/lib/use-header-usuario.ts.
+	const headerUsuario = useHeaderUsuario()
 
 	const [portalOpen, setPortalOpen] = useState(previewIncentive === 'portal')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
@@ -156,7 +180,7 @@ export default function HomeScreen() {
 	return (
 		<>
 		<main className="bg-white">
-			<HeaderDesktop />
+			<HeaderDesktop {...headerUsuario} />
 
 			{/* §1 — Ad 970×90 (desktop) / 360×142 (mobile) — Super Leaderboard */}
 			<section className="flex flex-col items-center py-6 w-full">
@@ -254,12 +278,21 @@ export default function HomeScreen() {
 				</div>
 			</section>
 
+			{/* O banner NOMEIA a newsletter porque, para o logado, o clique já assina — e um
+			    clique registra um consentimento LGPD específico, nunca um genérico.
+			    Deslogado: leva ao formulário público, carregando de onde veio em `returnTo`
+			    para que o "Entrar" do lembrete de lá devolva o leitor à home, e não ao
+			    formulário que ele estava tentando evitar. */}
 			<BannerNewsletter
 				image={picsumSrc('banner-news-home', 600, 400)}
-				title="O melhor conteúdo do setor alimentício, direto na sua caixa de entrada."
-				description="Junte-se a milhares de construtores que já assinam nossa newsletter gratuita."
+				title={`Assine a newsletter ${NEWSLETTER_DO_PORTAL.title}`}
+				description="Tendências, entrevistas e novidades do setor de alimentos e bebidas, direto na sua caixa de entrada."
 				ctaLabel="Assine agora"
-				ctaHref={logado ? '/dashboard-perfil-v4?tab=newsletter' : '/form-newsletter'}
+				ctaHref={
+					logado ? newsletter.tabHref : `/form-newsletter?returnTo=${encodeURIComponent('/home')}`
+				}
+				onCtaClick={logado ? newsletter.assinar : undefined}
+				state={newsletter.state}
 			/>
 
 			{/* §12 — Ad 970×90 (desktop) / 360×142 (mobile) */}

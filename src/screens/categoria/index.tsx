@@ -5,17 +5,21 @@ import { IconButton } from '~/components/icon-button'
 import { NewsCard } from '~/components/news-card'
 import { Thumbnail } from '~/components/thumbnail'
 import { CATEGORIA_FEATURED, CATEGORIA_LIST, picsumSrc } from '~/mocks/articles'
+import { useSessaoPublica } from '../_sessao/use-sessao-publica'
 
 /**
  * Tela: Categoria — Página de listagem por editoria
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=5433-16684
  */
 export default function CategoriaScreen() {
+	// Sessão (?logado=) na ScenarioBar + header logado/deslogado — ver _sessao/use-sessao-publica.
+	const sessao = useSessaoPublica()
+
 	const [hero, ...featured] = CATEGORIA_FEATURED
 
 	return (
 		<main className="bg-white">
-			<HeaderDesktop activeCategory="embalagens" />
+			<HeaderDesktop activeCategory="embalagens" {...sessao.header} />
 
 			{/* §2 — Category hero (cor da editoria — mint = Embalagens) */}
 			<section className="bg-mint flex flex-col items-center py-16 w-full">

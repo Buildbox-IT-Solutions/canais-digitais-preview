@@ -4,15 +4,19 @@ import { HeaderDesktop } from '~/components/header-desktop'
 import { NewsCard } from '~/components/news-card'
 import { SectionTitle } from '~/components/section-title'
 import { NOT_FOUND_CARDS, picsumSrc } from '~/mocks/articles'
+import { useSessaoPublica } from '../_sessao/use-sessao-publica'
 
 /**
  * Tela: 404 — Página não encontrada
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=3681-32583
  */
 export default function NotFoundScreen() {
+	// Sessão (?logado=) na ScenarioBar + header logado/deslogado — ver _sessao/use-sessao-publica.
+	const sessao = useSessaoPublica()
+
 	return (
 		<main className="bg-white">
-			<HeaderDesktop />
+			<HeaderDesktop {...sessao.header} />
 
 			<section className="flex flex-col items-center pb-14 pt-20">
 				<div className="flex flex-col gap-8 items-center max-w-[704px] w-full px-6">

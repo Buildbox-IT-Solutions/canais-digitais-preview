@@ -6,6 +6,7 @@ import { Icon } from '~/components/icon'
 import { IconButton } from '~/components/icon-button'
 import { NewsCard } from '~/components/news-card'
 import { picsumSrc, SEARCH_RESULTS } from '~/mocks/articles'
+import { useSessaoPublica } from '../_sessao/use-sessao-publica'
 
 const FILTERS = ['Categoria', 'Autor', 'Tipo']
 
@@ -14,9 +15,12 @@ const FILTERS = ['Categoria', 'Autor', 'Tipo']
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=1785-17716
  */
 export default function BuscarScreen() {
+	// Sessão (?logado=) na ScenarioBar + header logado/deslogado — ver _sessao/use-sessao-publica.
+	const sessao = useSessaoPublica()
+
 	return (
 		<main className="bg-white">
-			<HeaderDesktop />
+			<HeaderDesktop {...sessao.header} />
 
 			{/* §2 — Page title hero */}
 			<section className="bg-primary-600 flex flex-col items-center py-16 w-full">
