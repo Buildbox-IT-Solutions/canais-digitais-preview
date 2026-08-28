@@ -115,6 +115,32 @@ export const NEWSLETTERS: NewsletterEntry[] = [
 	{ icon: 'mail', title: 'Fispal Food Service', desc: 'O canal de conteúdo do food service brasileiro: bares, restaurantes, padarias, hotelaria, delivery e operações.', checked: false },
 ]
 
+/**
+ * O usuário logado do protótipo, derivado do próprio perfil — fonte única para o
+ * header de TODAS as telas públicas (ver src/lib/use-header-usuario.ts). Antes cada
+ * tela logada redeclarava `USER_NAME`/`USER_EMAIL`/`USER_INITIALS` localmente, e as
+ * telas públicas simplesmente não tinham como saber quem estava logado.
+ */
+export const USUARIO_LOGADO = {
+	nome: `${PERFIL_CAMPOS.nome} ${PERFIL_CAMPOS.sobrenome}`,
+	email: PERFIL_CAMPOS.email,
+	iniciais: `${PERFIL_CAMPOS.nome[0]}${PERFIL_CAMPOS.sobrenome[0]}`,
+	/** Sem foto: o header cai nas iniciais sobre `primary-100`. */
+	avatar: null,
+} as const
+
+/**
+ * A newsletter do PRÓPRIO portal — a única que a grande maioria dos 11+ portais
+ * oferece, e a que os banners de newsletter (home e página de conteúdo) nomeiam e
+ * assinam em um clique. O banner precisa nomeá-la porque um clique registra um
+ * consentimento LGPD específico; "nossa newsletter" no genérico não sustenta isso.
+ *
+ * No WordPress o portal atual vem do contexto do site multissite (ver
+ * src/lib/portal-atual.ts) e essa newsletter sai da configuração dele; aqui é um
+ * recorte fixo do catálogo acima.
+ */
+export const NEWSLETTER_DO_PORTAL = NEWSLETTERS.find((n) => n.title === 'Food Connection')!
+
 export type DownloadIconType = 'picture-as-pdf' | 'docs' | 'image'
 
 export interface DownloadEntry {

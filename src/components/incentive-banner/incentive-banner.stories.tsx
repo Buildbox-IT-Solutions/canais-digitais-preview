@@ -38,3 +38,20 @@ export const Leitura: Story = {
 			'Crie uma conta gratuita para acessar mais conteúdos como este e receber nossas newsletters.',
 	},
 }
+
+/**
+ * Lembrete de login no formulário público de newsletter (`/form-newsletter`). Mesma
+ * casca das outras duas, com uma diferença de propósito: as outras convidam quem não
+ * tem conta; esta lembra quem JÁ TEM de que dá para entrar em vez de preencher o
+ * formulário longo. Os dois CTAs continuam — "Criar conta" também é desfecho válido.
+ * As regras de aparição (entra na carga da tela, sai no primeiro foco de campo, sem
+ * cooldown de 7 dias) vivem na tela, não aqui — ver `src/screens/form-newsletter`.
+ */
+export const LembreteNewsletter: Story = {
+	args: {
+		icon: 'account-circle',
+		title: 'Já tem uma conta?',
+		titleHighlight: 'Entre e assine em um clique.',
+		description: 'Com a sua conta você assina sem preencher este formulário de novo.',
+	},
+}

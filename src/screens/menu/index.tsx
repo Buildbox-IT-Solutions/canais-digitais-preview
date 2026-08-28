@@ -1,6 +1,7 @@
 import { useSearchParams, useNavigate } from 'react-router'
 import { SideMenu } from '~/components/side-menu'
 import HomeScreen from '../home'
+import { USUARIO_LOGADO } from '~/mocks/dashboard-perfil'
 
 /**
  * Tela: Menu — preview standalone do Side Menu (hambúrguer)
@@ -14,8 +15,9 @@ import HomeScreen from '../home'
  * (→ /dashboard-perfil-v4).
  */
 
-const USER_NAME = 'Mariana Albuquerque'
-const USER_INITIALS = 'MA'
+// Fonte única — ver comentário equivalente em dashboard-perfil-v4.
+const USER_NAME = USUARIO_LOGADO.nome
+const USER_INITIALS = USUARIO_LOGADO.iniciais
 
 export default function MenuScreen() {
 	const [params] = useSearchParams()

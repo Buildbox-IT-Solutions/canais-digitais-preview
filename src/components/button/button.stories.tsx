@@ -21,6 +21,22 @@ export const Small: Story = { args: { type: 'filled', size: 'small' } }
 export const Disabled: Story = { args: { type: 'filled', size: 'medium', disabled: true } }
 export const AsLink: Story = { args: { type: 'filled', size: 'medium', href: '#' } }
 
+/**
+ * `loading` — spinner à esquerda, label preservado, `disabled` + `aria-busy`.
+ * Substitui o `Loading Button [1.0]` (Figma 71:6026), que era um componente separado
+ * sem texto: aqui o botão não troca de elemento no meio da interação, então mantém
+ * type, tone, tamanho e largura enquanto a ação está em voo.
+ */
+export const Loading: Story = { args: { type: 'filled', size: 'medium', label: 'Enviando', loading: true } }
+
+/** O tipo é preservado enquanto carrega — outlined que carrega continua outlined. */
+export const LoadingOutlined: Story = {
+	args: { type: 'outlined', size: 'medium', label: 'Enviando', loading: true },
+}
+export const LoadingLarge: Story = {
+	args: { type: 'filled', size: 'large', label: 'Enviando', loading: true },
+}
+
 const onDark: Story['decorators'] = [
 	(Story) => (
 		<div className="bg-gradient-to-br from-primary-600 to-secondary-950 p-8 rounded-lg">

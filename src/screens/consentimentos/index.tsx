@@ -10,6 +10,7 @@ import {
 	type ConsentType,
 } from '~/mocks/consentimentos'
 import { AuthBackLink } from '../_auth/back-link'
+import { USUARIO_LOGADO } from '~/mocks/dashboard-perfil'
 
 const ALLOWED_FILTERS: Array<ConsentType | 'all'> = [
 	'all',
@@ -20,9 +21,10 @@ const ALLOWED_FILTERS: Array<ConsentType | 'all'> = [
 	'cookies',
 ]
 
-const USER_NAME = 'Mariana Albuquerque'
-const USER_EMAIL = 'mariana.albuquerque@empresa.com.br'
-const USER_INITIALS = 'MA'
+// Fonte única — ver comentário equivalente em dashboard-perfil-v4.
+const USER_NAME = USUARIO_LOGADO.nome
+const USER_EMAIL = USUARIO_LOGADO.email
+const USER_INITIALS = USUARIO_LOGADO.iniciais
 
 /**
  * Tela: Histórico de Consentimentos — LGPD (Art. 18 II)

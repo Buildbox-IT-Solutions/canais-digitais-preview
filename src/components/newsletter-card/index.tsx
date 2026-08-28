@@ -1,7 +1,6 @@
 import { twMerge } from '~/lib/tw-merge'
-import { Button } from '~/components/button'
 import { Icon } from '~/components/icon'
-import { Spinner } from '~/components/spinner'
+import { SubscribeButton } from '~/components/subscribe-button'
 import type { INewsletterCardProps } from './types'
 
 /**
@@ -23,6 +22,10 @@ import type { INewsletterCardProps } from './types'
  * dashboard-perfil-v4), mesmo padrão do toggle de favoritos.
  * "subscribed" é terminal — o componente não expõe caminho de volta a idle nem controle de
  * cancelamento.
+ * Os três estados do rodapé saíram daqui em 28/08/2026: eram um Button + dois chips
+ * montados à mão, e viraram o `SubscribeButton` (src/components/subscribe-button), que
+ * o banner de newsletter também usa. Sem layout novo — o card só deixou de ser o dono
+ * de uma interação que se repete em outra superfície.
  * Tokens: --color-primary-600, --color-neutral-100, --color-neutral-600, --color-secondary-50,
  *         --color-secondary-950, --text-title-lg, --text-body-md, --text-body-lg
  */
@@ -44,24 +47,13 @@ export function NewsletterCard({ id, title, description, state = 'idle', onSubsc
 			</div>
 
 			<div className="flex flex-col items-start pt-3 pb-6 px-6">
-				{state === 'idle' ? <Button type="outlined" size="medium" label="Assinar" onClick={onSubscribe} /> : null}
-
-				{state === 'pending' ? (
-					<span className="inline-flex items-center gap-2 h-10 pl-4 pr-5 rounded-full border-[1.5px] border-primary-600 text-primary-600 font-body font-bold text-body-lg cursor-default">
-						<Spinner className="size-4" />
-						Assinando...
-					</span>
-				) : null}
-
-				{isSubscribed ? (
-					<span
-						role="status"
-						className="inline-flex items-center gap-2 h-10 pl-4 pr-5 rounded-full bg-secondary-50 text-secondary-950 font-body font-bold text-body-lg"
-					>
-						<Icon name="check" className="size-6" />
-						Assinado
-					</span>
-				) : null}
+				<SubscribeButton
+					status={state}
+					label="Assinar"
+					type="outlined"
+					size="medium"
+					onSubscribe={onSubscribe}
+				/>
 			</div>
 		</div>
 	)
