@@ -37,6 +37,9 @@
 | Play Button 2.0 | `2279:19957` | 24 | ✅ [`src/components/play-button/`](../src/components/play-button/) · [spec](./play-button.md) |
 | Link Button | `662:11195` | 12 | ✅ [`src/components/link-button/`](../src/components/link-button/) · [spec](./link-button.md) |
 | Loading Button [1.0] | `71:6026` | 3 | ✅ [`legacy/src/components/loading-button.php`](../legacy/src/components/loading-button.php) · [spec](./loading-button.md) |
+| **Toggle [1.0]** | `7952:127473` | **144** | ✅ [`src/components/toggle/`](../src/components/toggle/) · [spec](./toggle.md) — property `Type` criada em 30/08/2026 (48 → 144) |
+| **Toggle Label [1.0]** | `8463:129460` | **144** | ✅ [`src/components/toggle/`](../src/components/toggle/) (mesmo componente, prop `text`) · [spec](./toggle.md) — criado em 30/08/2026 |
+| Toggle — grupo | — | — | ✅ extensão dev-side, sem node: [`toggle-group`](../src/components/toggle-group/), [`favorito-toggle`](../src/components/favorito-toggle/) · [spec](./toggle.md) · [achado](../ds/achados.md) |
 
 ### Cards — `1061:21143`
 | Componente | nodeId | Variants | Status |

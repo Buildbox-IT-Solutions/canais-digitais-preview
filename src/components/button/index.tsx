@@ -83,6 +83,15 @@ const PADDING_WITH_LEADING_ICON: Record<ButtonSize, string> = {
 export const BUTTON_SIZE_CLASSES = SIZE_HEIGHT
 export const BUTTON_LEADING_ICON_PADDING = PADDING_WITH_LEADING_ICON
 
+/**
+ * As outras duas colunas da mesma tabela de padding — sem ícone e com ícone à
+ * direita —, reexportadas pelo `Toggle` com rótulo, que herda a geometria de pílula
+ * deste botão (o Figma só desenhou o Toggle só-ícone; ver `figma-specs/toggle.md`).
+ * Redeclarar as medidas lá abriria divergência no primeiro ajuste de padding.
+ */
+export const BUTTON_PADDING_NO_ICON = PADDING_NO_ICON
+export const BUTTON_TRAILING_ICON_PADDING = PADDING_WITH_ICON
+
 /** Tamanho do ícone/spinner por tamanho de botão — mesma escala do BuiltInIcon. */
 export function buttonIconSize(size: ButtonSize): string {
 	return size === 'small' ? 'size-5' : 'size-6'

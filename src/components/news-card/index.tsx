@@ -85,7 +85,7 @@ import { Thumbnail } from '~/components/thumbnail'
 import { Categoria } from '~/components/categoria'
 import { Byline } from '~/components/byline'
 import { SponsorLine } from '~/components/sponsor-line'
-import { Toggle } from '~/components/toggle'
+import { FavoritoToggle } from '~/components/favorito-toggle'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { useFavoritoAuthModal } from '~/lib/use-favorito-auth-modal'
 import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
@@ -171,15 +171,9 @@ export function NewsCard({
 	// de mediaOverlay — ver comentário do arquivo). Só existe quando há imagem.
 	const mediaToggle =
 		showToggle && image ? (
-			<Toggle
+			<FavoritoToggle
 				pressed={pressed}
 				onPressedChange={onPressedChange}
-				iconOn="favorite"
-				iconOff="favorite-border"
-				labelOn="Remover dos favoritos"
-				labelOff="Favoritar"
-				tooltipOn="Remover"
-				tooltipOff="Favoritar"
 				size="small"
 				surface="onMedia"
 				className={twMerge('absolute top-2 right-2', TOGGLE_HIDDEN_UNTIL_HOVER)}
@@ -189,15 +183,9 @@ export function NewsCard({
 	// Sem mídia: linha do título, alinhado à direita (ver comentário do arquivo).
 	const titleRowToggle =
 		showToggle && !image ? (
-			<Toggle
+			<FavoritoToggle
 				pressed={pressed}
 				onPressedChange={onPressedChange}
-				iconOn="favorite"
-				iconOff="favorite-border"
-				labelOn="Remover dos favoritos"
-				labelOff="Favoritar"
-				tooltipOn="Remover"
-				tooltipOff="Favoritar"
 				size="small"
 				surface="default"
 				className={twMerge('shrink-0 -my-2.5', TOGGLE_HIDDEN_UNTIL_HOVER)}

@@ -54,7 +54,7 @@
  */
 import { twMerge } from '~/lib/tw-merge'
 import { NewsCard } from '~/components/news-card'
-import { Toggle } from '~/components/toggle'
+import { FavoritoToggle } from '~/components/favorito-toggle'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { useFavoritoAuthModal } from '~/lib/use-favorito-auth-modal'
 import { useFavoritoToggle } from '~/lib/use-favorito-toggle'
@@ -148,15 +148,9 @@ export function CategoryColumn({
 							</h3>
 						</div>
 					</a>
-					<Toggle
+					<FavoritoToggle
 						pressed={pressed}
 						onPressedChange={onPressedChange}
-						iconOn="favorite"
-						iconOff="favorite-border"
-						labelOn="Remover dos favoritos"
-						labelOff="Favoritar"
-						tooltipOn="Remover"
-						tooltipOff="Favoritar"
 						size="small"
 						surface="onMedia"
 						className={twMerge('absolute top-2 right-2 z-10', TOGGLE_HIDDEN_UNTIL_HOVER)}

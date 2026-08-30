@@ -27,7 +27,7 @@ import { TableOfContentsMargin } from '~/components/table-of-contents-margin'
 import { Tag } from '~/components/tag'
 import { Thumbnail } from '~/components/thumbnail'
 import { Toast } from '~/components/toast'
-import { Toggle } from '~/components/toggle'
+import { FavoritoToggle } from '~/components/favorito-toggle'
 import { Tooltip } from '~/components/tooltip'
 import { WidgetEmAlta } from '~/components/widget-em-alta'
 import type { ScenarioAxis } from '~/dev/scenario-store'
@@ -258,15 +258,9 @@ export default function ConteudoScreen() {
 									{/* Bookmark: primeiro da fila, sempre visível (sem regra de hover —
 									    isso é do card, aqui a página é única). surface="default" pra
 									    ter o mesmo peso visual dos vizinhos (nenhum destaque de cor). */}
-									<Toggle
+									<FavoritoToggle
 										pressed={favoritoToggle.pressed}
 										onPressedChange={favoritoToggle.onPressedChange}
-										iconOn="favorite"
-										iconOff="favorite-border"
-										labelOn="Remover dos favoritos"
-										labelOff="Favoritar"
-										tooltipOn="Remover"
-										tooltipOff="Favoritar"
 										size="medium"
 										surface="default"
 									/>

@@ -285,3 +285,185 @@
   escopo do destaque único (mexem em outras telas) — a correção é a mesma três linhas
   aplicada no `NewsCard`. Se esses dois convergirem para `NewsCard boxed` (item
   acima), o bug some junto.
+
+## Toggle — rótulo, `type` e `ToggleGroup` existem no código e não no Figma
+
+- 🔴 **EM ABERTO — 2026-08-30.** O `Toggle [1.0]` (`7952:127473`) ganhou três extensões
+  dev-side, todas sem contrapartida no Figma. Mesmo formato do achado do `Button` acima
+  (`tone="inverse"` nasceu no código e foi formalizado depois, com as cores seguidas 1:1) —
+  a diferença é que ali o padrão já existia descrito ad hoc em outros specs, e aqui não
+  existia nada. Base de interação: shadcn/ui Toggle e ToggleGroup. Tabelas completas de
+  cor, geometria e HTML alvo em [`figma-specs/toggle.md`](../figma-specs/toggle.md).
+  1. ✅ **Rótulo visível — RESOLVIDO em 2026-08-30**, no mesmo dia, como component set
+     SEPARADO `Toggle Label [1.0]` (`8463:129460`, 144 variants: Selected × State × Size ×
+     Type × Icon). Não virou property do `Toggle [1.0]`: isso o levaria de 144 a 288 variants, e
+     dois sets de 144 e 72 são navegáveis onde um de 288 não é. Tem property de texto
+     `Label` (tipo TEXT), então o rótulo troca por instância sem detach. **Sem `Surface`**
+     — não há caso de produto para pílula com texto sobre fotografia, e incluir dobraria
+     para 144 sem consumidor. O texto abaixo descreve o estado ANTERIOR à resolução:
+     O component set inteiro é só-ícone.
+     Sem medida no Figma para uma pílula com texto, a geometria é **importada** do
+     `Button [1.1]` (altura, padding, gap, tipografia, via as constantes `BUTTON_*` que
+     aquele componente exporta) em vez de redigitada — assim um ajuste de padding lá não
+     abre divergência aqui. Para o Figma: falta uma property `Label` no `7952:127473`, e
+     uma decisão sobre se a pílula do Button é mesmo a geometria certa.
+  2. ✅ **`type` (`ghost | outlined | filled`) — RESOLVIDO em 2026-08-30**, no mesmo dia.
+     O set do Figma era inteiro `ghost`; ganhou a property `Type` e passou de 48 para
+     **144 variants** (as 48 originais viraram `Type=Ghost`, que é o que sempre foram).
+     `outlined` e `filled` seguem o **toggle** do MD3, não o botão: o não-selecionado do
+     `filled` é um contêiner neutro (`neutral-50`), porque aqui `filled` quer dizer
+     "contêiner que se preenche ao ligar", e não "ação principal" como no `Button`. As
+     duas exceções visuais (contorno neutro que não muda ao ligar, ligado em ultramarine)
+     entraram junto. Tabela completa em `figma-specs/toggle.md`.
+  3. **`ToggleGroup`** (`src/components/toggle-group/`) — composição de `Toggle`s, não
+     componente novo. `selection` (`single | multiple`), `allowDeselect`, `role="group"`.
+     Não vira controle segmentado (cantos grudados, como no shadcn) porque a geometria
+     deste DS é pílula e cortar o raio das pontas internas exigiria um raio fora da tabela
+     do DS. Se o Figma quiser segmentado, é um raio novo a aprovar.
+- **A regra do preenchimento é a decisão que mais precisa de confirmação.** O `on` ganha
+  fundo sempre que o estado não estiver legível de outra forma — e ele só está legível de
+  outra forma em UM caso: `ghost` só-ícone com `iconOn` ≠ `iconOff`, que é exatamente o set
+  do Figma (contorno → preenchido). Consequência visível: `type="ghost"` **não** preenche
+  no formato só-ícone e **preenche** com rótulo. Foi assim para não mudar um pixel dos
+  cinco call sites de favoritar já revisados, e porque um toggle de texto `ghost` sem fundo
+  teria o estado invisível. 🔴 A CONFIRMAR: o Figma aceita a mesma `type` com dois
+  comportamentos de fundo, ou prefere um nome separado para o toggle com rótulo?
+- **`favorito-toggle` também nasceu sem node no Figma — 2026-08-30.** Instância pronta do
+  `Toggle` com os textos e ícones de favoritar fixados. Existe porque os mesmos seis props
+  (`iconOn`, `iconOff`, `labelOn`, `labelOff`, `tooltipOn`, `tooltipOff`) estavam repetidos
+  palavra por palavra em cinco call sites — NewsCard (dois), VideoCard, CategoryColumn,
+  DestaqueSection e a tela de conteúdo. Copiado seis vezes, o aria-label diverge no primeiro
+  ajuste, e divergência entre portais é o risco central deste sistema. **Para o back-end:**
+  isto não é um componente a reimplementar, é a instrução de que esses seis textos têm uma
+  fonte só.
+
+## Toggle com rótulo — `labelOn`/`labelOff` proibidos pelo tipo
+
+- ✅ resolvido em 2026-08-30, na própria extensão — no formato com rótulo visível o
+  componente **não emite `aria-label` nenhum**, e o tipo TypeScript torna `labelOn`/
+  `labelOff` inescrevíveis ali (`never`). Um `aria-label` divergente do texto na tela quebra
+  o WCAG 2.5.3 (Label in Name): quem dita "clicar em Favoritar" por voz não alcançaria o
+  botão. O estado continua em `aria-pressed`, nunca no nome acessível — por isso o rótulo do
+  `FavoritoToggle` é estável ("Favoritar" nos dois estados) em vez de virar "Favoritado".
+- Pelo mesmo mecanismo, o formato só-ícone agora exige `labelOn`/`labelOff` **pelo tipo**,
+  em vez de depender de auditoria posterior: um toggle só-ícone sem nome acessível deixou de
+  ser escrevível.
+
+## Toggle — duas exceções visuais que o separam do Button
+
+- ✅ aplicado em 2026-08-30, a pedido do design. Sem elas o `Toggle` preenchido era
+  visualmente indistinguível de um `Button [1.1]` filled, e o outlined fazia o estado
+  DESLIGADO pedir a atenção da tela — o estado que menos merece.
+  1. **`outlined` tem contorno neutro que não muda ao ligar:** `border border-neutral-100`
+     nos dois estados. O que muda é o miolo (`bg-primary-100` + text `secondary-950`).
+     Antes era `border-[1.5px] border-primary-600` → `border-secondary-950`.
+  2. **`filled` ligado é ultramarine (`secondary-950`), não `primary-600`.** Hover do
+     ligado aprofunda pra `primary-600`. Antes era o inverso, que é exatamente o
+     `Button [1.1]` filled em repouso e seu hover.
+- **A largura virou `border` (1px), não `border-[1.5px]`.** 1.5px é a medida exata do
+  `Button [1.1]` no Figma e está justificada em `figma-specs/button.md` ("único arbitrary
+  value justificado"). O `Toggle` outlined **não existe no Figma** — não havia medida a
+  honrar, e usar 1.5px era herdar por analogia com um componente diferente. 1px +
+  `neutral-100` é o que todo controle interativo com contorno deste DS já usa: `form-field`,
+  `form-select` e `search-bar` são os três literalmente `border border-neutral-100`.
+- **O `filled` ON em `secondary-950` não é uma escolha nova, é convergência.** O `Switch`
+  marcado (`has-[:checked]:bg-secondary-950`) e os checkboxes já ligam em ultramarine, e
+  `figma-specs/form-toggle.md` registra a regra por escrito: "Cor ON é `secondary-950`
+  (Ultramarine), **não** `primary-600`. Alinhado com checkboxes do DS." O `Toggle` era o
+  único controle de estado do repo fora dessa regra.
+- 🔴 **A CONFIRMAR — contraste do contorno neutro (WCAG 1.4.11, non-text contrast).**
+  `neutral-100` (#D6D8DD) sobre branco dá ≈ **1.4:1**, contra os 3:1 exigidos para o limite
+  de um componente de UI ativo. Isto **não é regressão do Toggle**: é a mesma medida que
+  `form-field`, `form-select` e `search-bar` já usam, então a pergunta é do DS inteiro, não
+  deste componente — trocar só aqui criaria a divergência que o pedido queria evitar. Dois
+  atenuantes reais: o rótulo/ícone dentro do controle é `primary-600` (alto contraste), e o
+  contorno não é o único indicador de que ali há um controle. Se o DS decidir subir, o
+  primeiro neutro que passa de 3:1 sobre branco é `neutral-500` (#8391A9, ≈ 3.5:1) —
+  `neutral-300` (≈ 2.2:1) e `neutral-400` (≈ 2.8:1) ainda não passam.
+- 🔴 **A CONFIRMAR — no estado ON, `outlined` e `ghost` ficaram visualmente iguais.** É
+  consequência direta e previsível de "o contorno permanece o mesmo": o neutro
+  `neutral-100` (#D6D8DD) contra o fundo do ON `primary-100` (#D4DAE0) dá **1.01:1** — o
+  contorno some dentro do próprio preenchimento. Como as duas aparências passam a ter
+  `bg-primary-100` + text `secondary-950`, o `outlined` ligado é indistinguível do `ghost`
+  ligado; a diferença entre elas só existe no estado OFF. Pode ser aceitável (estados
+  selecionados convergirem é comum em toggle), mas é uma variante a menos na prática e
+  precisa ser uma decisão consciente, não um efeito colateral. Se tiver que ser
+  distinguível, a alternativa mais barata é o ON não usar `primary-100` — subir o contorno
+  pra `neutral-200` resolve pouco (1.21:1 contra o mesmo fundo) e quebraria o "permanece o
+  mesmo" que foi pedido.
+
+
+## Toggle — o que o Figma revelou ao ser atualizado (2026-08-30)
+
+Três achados que só apareceram ao abrir o arquivo para criar a property `Type`. Os dois
+primeiros são divergências reais; o terceiro é uma limitação da ferramenta que virou
+decisão de modelagem.
+
+- 🔴 **O anel de foco é 1px no Figma e 2px no código.** O arquivo desenha `State=Focused`
+  como stroke de **1px** `strokeAlign: OUTSIDE`; o código usa `ring-2`. A spec
+  `figma-specs/toggle.md` afirmava "2px" — estava errada, e foi corrigida a partir da
+  leitura do nó, não do contrário. **A CONFIRMAR:** qual das duas é a medida certa. Um
+  anel de 1px é frágil como indicador de foco (WCAG 2.4.11/2.4.13 pedem no mínimo 2px de
+  espessura para o indicador), o que sugere que o Figma é que deve subir para 2px — mas
+  isso muda 48 variants e é decisão de design.
+- 🔴 **`Type=Filled` + `State=Disabled` deixa o ícone invisível.** O código faz
+  `disabled:bg-neutral-200 disabled:text-white`, herdado do `Button [1.1]` filled. Num
+  botão o rótulo ainda tem alguma forma; num toggle só-ícone o resultado é um disco cinza
+  liso — o ícone some por completo (branco #FFFFFF sobre `neutral-200` #C2C7CF ≈ 1.6:1).
+  Visível nas 6 variants `Filled/Default/Disabled` da página. Controle desabilitado é
+  isento de contraste pela norma, mas "sem ícone nenhum" não comunica o que o controle é.
+  Vale trocar o ícone do filled disabled para `neutral-50` ou manter o contêiner e apagar
+  só parcialmente — decisão de design, não aplicada.
+- ℹ️ **Como o anel de foco foi modelado no `Type=Outlined`.** Um nó do Figma tem UM stroke,
+  com UM alinhamento, e no outlined ele já está ocupado pela borda neutra (INSIDE) — não
+  há onde colocar o anel (OUTSIDE). A primeira tentativa, `DROP_SHADOW` com `spread: 1`,
+  **não desenha nada**: sem `fill`, a sombra do Figma não tem geometria de onde ser
+  projetada (o nó chega a crescer de 40×40 para 42×42, mas nenhum pixel é pintado —
+  verificado lendo os pixels do PNG). A solução foi um retângulo filho `focus ring`
+  posicionado em absoluto, 1px maior de cada lado, que é a modelagem fiel do CSS: o
+  `box-shadow` fica FORA da caixa da borda e os dois coexistem. **Para o back-end isso não
+  muda nada** — continua sendo `border` + `ring` no mesmo elemento; é detalhe de como o
+  Figma representa.
+- **Fora do escopo desta rodada, ainda em aberto no Figma:** a property `Label` (rótulo
+  visível) e `iconPosition`. O set continua só-ícone. Somar `Label` levaria as 144 a 288
+  variants e exige nó de texto por variant — foi adiado deliberadamente, não esquecido.
+
+
+## Toggle — 36 das 144 variants do set só-ícone são visualmente idênticas (2026-08-30)
+
+- 🔴 **EM ABERTO — achado do design ao revisar o set, confirmado por comparação
+  programática** (impressão digital de cada variant por tamanho, fill, stroke, cor de
+  ícone e ícone usado): das 144 variants, só **117 aparências distintas**. 18 pares
+  renderizam exatamente igual entre `Type` diferentes — todos `Ghost` ↔ `Filled`:
+  - `Filled/Default/Off/Enabled` é idêntica a `Ghost/Default/Off/**Hovered**` (3 sizes).
+    Colisão entre TYPE e STATE, não só entre types: o repouso do filled desligado é o
+    mesmo `neutral-50` do hover do ghost.
+  - Em `Surface=OnMedia`, `Filled` difere de `Ghost` em apenas **9 das 24** variants. As
+    15 restantes são idênticas porque o repouso do filled sobre foto reusa o mesmo branco
+    80%. O racional está documentado em `figma-specs/toggle.md` ("sobre foto não existe
+    contêiner neutro que se distinga do scrim"), mas numa grade de variants isso lê como
+    enchimento — e funcionalmente é: o designer escolhe `Filled`, sobre foto, e nada muda.
+- **Encaminhamento proposto, não aplicado** (é decisão de design): dar ao
+  `Filled/OnMedia/Off` um contêiner próprio usando `bg-black/20` — que o CLAUDE.md já
+  lista como o token de scrim/overlay do DS — com ícone branco. Aí `Filled` passa a
+  existir de verdade sobre foto, e as 15 colisões viram 0. Muda código E Figma juntos.
+- A colisão `Filled/Default/Off/Enabled` × `Ghost/Default/Off/Hovered` é mais espinhosa:
+  são estados diferentes de types diferentes, e as duas cores vêm da mesma decisão MD3
+  (contêiner neutro = `neutral-50`). Pode ser aceitável — hover é transitório, ninguém vê
+  os dois lado a lado no produto — mas na folha de variants confunde.
+
+
+## Button [1.2] — letter-spacing do Size=Small diverge do token do código
+
+- 🔴 **EM ABERTO — 2026-08-30.** Achado ao ler as medidas do `Button [1.2]` (`3185:47973`)
+  para construir o `Toggle Label [1.0]`. No Figma, o texto das variants `Size=Small` usa
+  **`letter-spacing: 0.25px`**; o token do código é `--text-title-sm--letter-spacing:
+  0.10px` (`src/index.css`). Tamanho (14px) e line-height (20px) batem — só o tracking
+  não.
+- **0.10 é o valor do MD3** (Title Small e Label Large, ambos 14sp / lh 20 / tracking
+  0.1), então a suspeita é que o Figma é que está fora, não o código.
+- **O `Toggle Label [1.0]` foi construído com 0.10**, seguindo o código. Ou seja: o Small
+  do Toggle com rótulo e o Small do Button têm tracking diferente hoje, e essa diferença
+  nasceu desta decisão — deliberada, não descuido. Vale unificar assim que o valor certo
+  for confirmado; se for 0.25, são 2 lugares para mudar (token do código + as 6 variants
+  Small do Toggle Label).
