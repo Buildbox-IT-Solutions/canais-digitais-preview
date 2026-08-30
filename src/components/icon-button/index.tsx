@@ -1,19 +1,26 @@
 import { twMerge } from '~/lib/tw-merge'
 import { Icon } from '~/components/icon'
-import type { IconButtonSize, IconButtonType, IIconButtonProps } from './types'
+import type { IconButtonSize, IconButtonTone, IconButtonType, IIconButtonProps } from './types'
 
 /**
- * Componente: Icon Button [1.0]
+ * Componente: Icon Button [1.2]
  * Figma: https://www.figma.com/design/WGDRkmJLtuow7gRmPRAwJk/Canais-Digitais-2.0?node-id=71-6001
- * Variantes: type × size (27 variants)
- * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-50, --color-white
+ * Variantes: tone × type × size (54 variants)
+ * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-50, --color-neutral-200, --color-white
  */
 
-const TYPE_CLASSES: Record<IconButtonType, string> = {
-	filled: 'bg-primary-600 text-white hover:bg-secondary-950 disabled:bg-neutral-200',
-	outlined:
-		'border border-primary-600 text-primary-600 hover:bg-neutral-50 disabled:border-neutral-200 disabled:text-neutral-200',
-	ghost: 'text-primary-600 hover:bg-neutral-50 disabled:text-neutral-200',
+const TYPE_CLASSES: Record<IconButtonTone, Record<IconButtonType, string>> = {
+	default: {
+		filled: 'bg-primary-600 text-white hover:bg-secondary-950 disabled:bg-neutral-200',
+		outlined:
+			'border border-primary-600 text-primary-600 hover:bg-neutral-50 disabled:border-neutral-200 disabled:text-neutral-200',
+		ghost: 'text-primary-600 hover:bg-neutral-50 disabled:text-neutral-200',
+	},
+	inverse: {
+		filled: 'bg-white text-primary-600 hover:bg-neutral-50 disabled:bg-white/40 disabled:text-primary-600/40',
+		outlined: 'border border-white text-white hover:bg-white/10 disabled:border-white/40 disabled:text-white/40',
+		ghost: 'text-white hover:bg-white/10 disabled:text-white/40',
+	},
 }
 
 const SIZE_CLASSES: Record<IconButtonSize, string> = {
@@ -32,6 +39,7 @@ export function IconButton({
 	icon,
 	label,
 	type = 'ghost',
+	tone = 'default',
 	size = 'medium',
 	href,
 	target,
@@ -45,7 +53,7 @@ export function IconButton({
 }: IIconButtonProps) {
 	const classes = twMerge(
 		'inline-flex items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed',
-		TYPE_CLASSES[type],
+		TYPE_CLASSES[tone][type],
 		SIZE_CLASSES[size],
 		className,
 	)

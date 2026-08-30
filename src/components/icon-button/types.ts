@@ -1,12 +1,15 @@
 import type { IconName } from '~/components/icon/types'
 
 export type IconButtonType = 'filled' | 'outlined' | 'ghost'
+export type IconButtonTone = 'default' | 'inverse'
 export type IconButtonSize = 'large' | 'medium' | 'small'
 
 export interface IIconButtonProps {
 	icon: IconName
 	label: string
 	type?: IconButtonType
+	/** Para uso sobre fundo escuro/colorido (ex.: banners com gradient). Default: 'default'. */
+	tone?: IconButtonTone
 	size?: IconButtonSize
 	href?: string
 	/** Só faz sentido com `href` externo (ex.: wa.me) — abre em nova aba. */

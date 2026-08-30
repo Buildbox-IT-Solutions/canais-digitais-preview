@@ -253,6 +253,20 @@
   com a cor do texto em cada estado; verificado nos 108 variants com ícone (54 default
   + 54 inverse) sem mais divergências.
 
+## Icon Button — Tone formalizado no Figma e implementado no código
+
+- ✅ resolvido em 2026-08-28 — o component set `Icon Button [1.2]` (`71:6001`) ganhou a
+  mesma property `Tone` (`Default` | `Inverse`) do `Button [1.2]` (`3185:47973`), com as
+  27 variants novas usando exatamente a mesma paleta (branco/`primary-600` no filled,
+  borda+ícone brancos no outlined/ghost, opacidade `/40` nos estados disabled). Total do
+  component set passou de 27 para 54 variants. No mesmo dia, `tone="inverse"` foi
+  implementado em `IconButton` (`src/components/icon-button/index.tsx`, `types.ts`),
+  espelhando a estrutura já usada no `Button` (`TYPE_CLASSES` por tone, prop opcional
+  default `'default'`). `figma-specs/icon-button.md` atualizado com a tabela de cores.
+  **Diferente do achado do Button**: ali o código já tinha `tone="inverse"` e o Figma
+  estava atrasado; aqui foi o oposto — o Figma ganhou `Tone` primeiro, código
+  implementado em seguida, na mesma sessão.
+
 ## Tooltip do toggle de favoritar recortado por `overflow-hidden`
 
 - ✅ resolvido em 2026-08-23 **só no `NewsCard`** — card com moldura que usa
