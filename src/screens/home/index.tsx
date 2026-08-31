@@ -273,7 +273,15 @@ export default function HomeScreen() {
 			    toast. Deslogado, `onCtaClick` intercepta e abre o modal de incentivo; o href vira
 			    o destino sem-JS. O título é link para a matéria nos dois casos. */}
 			{mostrarBiblioteca ? (
-				<BibliotecaSection materiais={materiaisMaisRecentes(12)} className="mt-10" />
+				<BibliotecaSection
+					materiais={materiaisMaisRecentes(12)}
+					// Sem conta não se baixa material: mesma regra do banner que esta seção
+					// propõe substituir, e o mesmo modal. Logado, o "Baixar" do card baixa o
+					// arquivo direto.
+					bloqueado={!logado}
+					onBloqueado={() => setDownloadOpen(true)}
+					className="mt-10"
+				/>
 			) : (
 				<DownloadSection
 					eyebrow="E-book gratuito"

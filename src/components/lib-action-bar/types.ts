@@ -8,8 +8,12 @@ export interface ILibActionBarProps {
 	 * em "Baixar", nunca o rótulo nem a aparência do botão.
 	 */
 	bloqueado?: boolean
-	/** Clique em "Baixar" com o material liberado. */
-	onBaixar?: (material: Material) => void
+	/**
+	 * NÃO existe `onBaixar`. Material liberado baixa sozinho: o controle é uma âncora com
+	 * `download` apontando para o arquivo. Callback só faria sentido para reagir ao
+	 * download, e nada no protótipo reage — o toast que existia aqui foi removido em
+	 * 2026-08-31 por ser experiência diferente do resto do site.
+	 */
 	/** Clique em "Baixar" com o material bloqueado — abre o modal de incentivo. */
 	onBloqueado?: (material: Material) => void
 	/**

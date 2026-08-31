@@ -1181,3 +1181,41 @@ deveria convencer alguém a se cadastrar.
   um item só erra se o dado estiver errado).
 - **Para o back-end:** `MaterialType` continua sendo dado do material, não constante. O
   badge lê `material.tipo` e nada mais; não existe rótulo fixo a implementar.
+
+### "Baixar" liberado baixa de verdade; toast era experiência estranha (2026-08-31)
+
+- 🔴 **Bug.** Material desbloqueado + clique em "Baixar" exibia um toast ("Download
+  iniciado", com ação "Abrir material") e **não baixava nada**. O resto do site nunca fez
+  isso: a `DownloadSection` da home, para quem está logado, é uma âncora com `download` e o
+  navegador baixa o arquivo. Apontado pelo Pedro.
+- ✅ **resolvido:** liberado, o controle É uma âncora (`href={ARQUIVO_EXEMPLO_URL}`
+  `download={nomeArquivoDownload(titulo)}`); bloqueado, segue `<button>` que abre o modal.
+  Mesma aparência nos dois casos — quem sinaliza o bloqueio é o cadeado no badge, não a
+  forma do controle. Conferido no DOM: `download="tendencias-em-ingredientes-glp-1-…pdf"`
+  no cenário de perfil completo, e nenhuma âncora com perfil incompleto.
+- **`onBaixar` saiu do contrato** de `LibActionBar`, `LibCard`, `DestaqueBiblioteca` e da
+  tela. Não é simplificação cosmética: callback de download sugere que existe JS a
+  implementar no WordPress, e não existe — é um link para o arquivo. **Para o back-end:
+  "Baixar" é `<a download>`, não handler.**
+- ⚠️ **Consequência tratada na home:** com o download real, o painel da home entregaria o
+  arquivo a quem não tem conta. A home passou a ligar `bloqueado={!logado}` na
+  `BibliotecaSection`, e o clique cai no `IncentiveDownloadDialog` que a `DownloadSection`
+  já usava — mesma regra do banner que a seção propõe substituir. Deslogado, os 12 cards
+  mostram o cadeado (conferido: 12 cadeados deslogado, 0 logado). Cadeado em vitrine é
+  convite a criar conta, alinhado com o objetivo declarado da seção no Figma.
+- 🔴 Segue aberto: e para quem ESTÁ logado com cadastro incompleto na home? A home não
+  conhece o estado do perfil, então libera. Só a aba cruza material e gate.
+
+### Modal do gate: estética dos outros incentivos e copy sem contagem (2026-08-31)
+
+- 🔴 **Bug.** A palavra destacada do título usava `<b>`, que a renderiza em indigo escuro —
+  indistinguível do resto do título. Os outros incentivos do portal destacam com
+  `font-bold text-secondary-500` (ultramarine claro), e o modal do gate ficava com uma
+  estética própria sem motivo. ✅ Passou a usar o mesmo recurso.
+- 🔴 A copy contava os campos que faltam ("Faltam 3 campos no seu perfil…"). ✅ Agora é
+  **"Faltam poucos campos no seu perfil para liberar os downloads da Biblioteca
+  exclusiva."** Número exato obriga a página a calcular e obriga o back-end a manter esse
+  cálculo sincronizado com a régua de "cadastro completo" — para uma informação que não
+  muda o que o usuário faz em seguida. "Poucos campos" é verdade em qualquer quantidade.
+- `gate.camposFaltantes` continua existindo e continua sendo a verdade do cadastro; o que
+  saiu foi a exibição da contagem. **Para o back-end: nenhuma tela precisa do número.**

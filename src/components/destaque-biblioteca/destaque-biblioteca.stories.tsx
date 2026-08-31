@@ -15,7 +15,7 @@ const meta: Meta<typeof DestaqueBiblioteca> = {
 		},
 	},
 	tags: ['autodocs'],
-	args: { material: materialEmDestaque()!, onBaixar: () => {}, onBloqueado: () => {} },
+	args: { material: materialEmDestaque()!, onBloqueado: () => {} },
 }
 
 export default meta
