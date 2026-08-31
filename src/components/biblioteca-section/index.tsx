@@ -40,14 +40,25 @@ import type { IBibliotecaSectionProps } from './types'
  * Por isso o `LibCarousel` entra aqui **sem className de largura**. O recorte é assunto
  * dele (ver o bloco de doc do componente); alargá-lo por fora é justamente o bug.
  *
- * O gate NÃO é resolvido aqui. Na home o visitante pode nem estar logado, e o cadeado
- * exige saber o estado do cadastro — que é dado da área logada. Os cards entram sem
- * bloqueio, e a conversão acontece ao chegar na aba. 🔴 A confirmar: o cadeado deve
- * aparecer na home para quem já está logado com cadastro incompleto? Ver ds/achados.md.
+ * ## O gate do cadastro não é resolvido aqui — o da SESSÃO é
+ *
+ * Saber se falta campo no perfil é dado da área logada, e a home não tem isso: quem cruza
+ * material e gate é a aba. Mas desde que o "Baixar" passou a baixar de verdade (âncora com
+ * `download`, 2026-08-31), deixar os cards livres aqui entregaria o arquivo a quem nem tem
+ * conta — o oposto do objetivo declarado da seção no Figma, "incentivar ainda mais o
+ * cadastro". Daí `bloqueado`: a home liga com `!logado` e o clique cai no mesmo
+ * `IncentiveDownloadDialog` que a `DownloadSection` já usava.
+ *
+ * Consequência visual: **deslogado, os cards mostram o cadeado no badge** — é o mesmo
+ * `bloqueado` que o LibCard usa para os dois sinais. Fica de propósito; cadeado em vitrine
+ * é convite a criar conta. 🔴 A confirmar: e para quem ESTÁ logado com cadastro
+ * incompleto? Aí a home segue liberando, porque não conhece o estado do perfil.
  */
 export function BibliotecaSection({
 	materiais,
 	href = '/biblioteca-exclusiva',
+	bloqueado = false,
+	onBloqueado,
 	className,
 }: IBibliotecaSectionProps) {
 	// Um card expandido por vez, como nas seções da aba logada.
@@ -87,6 +98,8 @@ export function BibliotecaSection({
 									material={m}
 									aberto={abertoId === m.id}
 									onAbertoChange={(next) => setAbertoId(next ? m.id : null)}
+									bloqueado={bloqueado}
+									onBloqueado={onBloqueado}
 								/>
 							</li>
 						))}

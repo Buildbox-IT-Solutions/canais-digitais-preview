@@ -104,7 +104,6 @@ export function LibCard({
 	aberto = false,
 	onAbertoChange,
 	bloqueado = false,
-	onBaixar,
 	onBloqueado,
 	className,
 }: ILibCardProps) {
@@ -224,7 +223,6 @@ export function LibCard({
 			<SidePanel
 				material={material}
 				bloqueado={bloqueado}
-				onBaixar={onBaixar}
 				onBloqueado={onBloqueado}
 			/>
 		</article>
@@ -234,12 +232,10 @@ export function LibCard({
 function SidePanel({
 	material,
 	bloqueado,
-	onBaixar,
 	onBloqueado,
 }: {
 	material: ILibCardProps['material']
 	bloqueado: boolean
-	onBaixar: ILibCardProps['onBaixar']
 	onBloqueado: ILibCardProps['onBloqueado']
 }): ReactNode {
 	return (
@@ -253,7 +249,6 @@ function SidePanel({
 			<LibActionBar
 				material={material}
 				bloqueado={bloqueado}
-				onBaixar={onBaixar}
 				onBloqueado={onBloqueado}
 			/>
 		</div>

@@ -56,7 +56,6 @@ const TIPO_LABEL: Record<MaterialType, string> = {
 export function DestaqueBiblioteca({
 	material,
 	gate,
-	onBaixar,
 	onBloqueado,
 	className,
 }: IDestaqueBibliotecaProps) {
@@ -93,7 +92,6 @@ export function DestaqueBiblioteca({
 						// Node 8480:3308: os três ícones colados no "Baixar", não na borda do card.
 						// É o que este nó pede, e discorda do card listado — ver ds/achados.md.
 						align="start"
-						onBaixar={onBaixar}
 						onBloqueado={onBloqueado}
 					/>
 				}

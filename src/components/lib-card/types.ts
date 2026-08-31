@@ -15,8 +15,6 @@ export interface ILibCardProps {
 	 * de `estaBloqueado()`, o card não conhece o gate.
 	 */
 	bloqueado?: boolean
-	/** Clique em "Baixar" com o material liberado. */
-	onBaixar?: (material: Material) => void
 	/** Clique em "Baixar" com o material bloqueado — abre o modal de incentivo. */
 	onBloqueado?: (material: Material) => void
 	/** O consumidor é quem dá largura ao card — ver o bloco de doc do componente. */

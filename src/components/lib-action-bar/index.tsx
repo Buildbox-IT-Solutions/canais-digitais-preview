@@ -6,6 +6,7 @@ import { Tooltip } from '~/components/tooltip'
 import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
 import { desfavoritar, favoritar, useFavorito } from '~/lib/favoritos-store'
 import { toast } from '~/lib/toast-store'
+import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
 import type { ILibActionBarProps } from './types'
 
 /**
@@ -28,10 +29,12 @@ import type { ILibActionBarProps } from './types'
  * listado e destaque emitem o mesmo marcador de propósito — é o que diz que são a mesma
  * coisa.
  */
+const BOTAO_BAIXAR =
+	'inline-flex h-8 shrink-0 items-center gap-2 rounded-full border-[1.5px] border-primary-600 pr-4 pl-3 font-body font-bold text-body-md text-primary-600 transition-colors hover:bg-neutral-50'
+
 export function LibActionBar({
 	material,
 	bloqueado = false,
-	onBaixar,
 	onBloqueado,
 	align = 'spread',
 	className,
@@ -59,17 +62,34 @@ export function LibActionBar({
 			className={twMerge('flex w-full items-center gap-2', className)}
 		>
 			{/* "Para materiais desbloqueados faz o download direto; para materiais
-			    bloqueados abre-se modal de incentivo" — a anotação. Os dois caminhos saem
-			    do MESMO botão, com o mesmo rótulo: o usuário não descobre que está
-			    bloqueado por um botão diferente, descobre pelo cadeado no badge. */}
-			<button
-				type="button"
-				onClick={() => (bloqueado ? onBloqueado?.(material) : onBaixar?.(material))}
-				className="inline-flex h-8 shrink-0 items-center gap-2 rounded-full border-[1.5px] border-primary-600 pr-4 pl-3 font-body font-bold text-body-md text-primary-600 transition-colors hover:bg-neutral-50"
-			>
-				<Icon name="download" className="size-5" />
-				Baixar
-			</button>
+			    bloqueados abre-se modal de incentivo" — a anotação. Os dois caminhos saem do
+			    MESMO controle, com o mesmo rótulo e a mesma aparência: o usuário não descobre
+			    que está bloqueado por um botão diferente, descobre pelo cadeado no badge.
+			
+			    Liberado, o controle é uma ÂNCORA com `download` — o navegador baixa o arquivo,
+			    exatamente como a DownloadSection da home faz para quem está logado. Não é
+			    toast, não é `window.open`: em 2026-08-31 isto era um `onBaixar` que só exibia
+			    "Download iniciado", e o Pedro apontou que a experiência tem de ser a mesma do
+			    resto do site. O arquivo é o PDF de exemplo de `~/mocks/downloads` (forma real,
+			    conteúdo falso), com nome por material — no produto cada material tem a sua URL.
+			
+			    Bloqueado, é `<button>`, não âncora desabilitada: não existe destino, existe
+			    outra ação. */}
+			{bloqueado ? (
+				<button type="button" onClick={() => onBloqueado?.(material)} className={BOTAO_BAIXAR}>
+					<Icon name="download" className="size-5" />
+					Baixar
+				</button>
+			) : (
+				<a
+					href={ARQUIVO_EXEMPLO_URL}
+					download={nomeArquivoDownload(material.titulo)}
+					className={BOTAO_BAIXAR}
+				>
+					<Icon name="download" className="size-5" />
+					Baixar
+				</a>
+			)}
 
 			{/* `action-group` do Figma: os três ícones vão para a direita, separados do
 			    "Baixar". Sem isso os quatro controles ficam agrupados à esquerda e o

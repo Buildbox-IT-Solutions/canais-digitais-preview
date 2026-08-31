@@ -9,8 +9,6 @@ export interface IDestaqueBibliotecaProps {
 	 * do mesmo cálculo, nunca de flags separadas.
 	 */
 	gate: LibraryGate
-	/** Clique em "Baixar" com o material liberado. Repassado à `LibActionBar`. */
-	onBaixar?: (material: Material) => void
 	/** Clique em "Baixar" com o material bloqueado — abre o modal de incentivo. */
 	onBloqueado?: (material: Material) => void
 	className?: string

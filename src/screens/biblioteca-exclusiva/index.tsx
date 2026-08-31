@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import { toast } from '~/lib/toast-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import type { ScenarioAxis } from '~/dev/scenario-store'
 import { DashboardTabs } from '~/components/dashboard-tabs'
@@ -179,15 +178,6 @@ export default function BibliotecaExclusivaScreen() {
 	// para baixar. O clique do modal leva para a aba Meu perfil." — a anotação.
 	const [materialBloqueado, setMaterialBloqueado] = useState<Material | null>(null)
 
-	function baixar(material: Material) {
-		toast.success('Download iniciado.', {
-			action: {
-				label: 'Abrir material',
-				onClick: () => window.open(material.arquivoUrl, '_blank', 'noopener'),
-			},
-		})
-	}
-
 	// ── Tema ativo ──────────────────────────────────────────────────────────────
 	const temaParam = params.get('tema')
 	const temaValido = temaParam && temaPorSlug(temaParam) ? temaParam : TEMA_TODOS
@@ -268,7 +258,6 @@ export default function BibliotecaExclusivaScreen() {
 						<DestaqueBiblioteca
 							material={destaque}
 							gate={gate}
-							onBaixar={baixar}
 							onBloqueado={setMaterialBloqueado}
 						/>
 					)}
@@ -286,7 +275,6 @@ export default function BibliotecaExclusivaScreen() {
 							temaSlug={tema.slug}
 							gate={gate}
 							hrefTodos={hrefDoTema(TEMA_TODOS)}
-							onBaixar={baixar}
 							onBloqueado={setMaterialBloqueado}
 						/>
 					) : (
@@ -294,7 +282,6 @@ export default function BibliotecaExclusivaScreen() {
 							perfil={perfil}
 							cenario={cenario}
 							gate={gate}
-							onBaixar={baixar}
 							onBloqueado={setMaterialBloqueado}
 						/>
 					)}
@@ -305,16 +292,27 @@ export default function BibliotecaExclusivaScreen() {
 
 			{/* Reusa o modal de incentivo do download público, com a copy trocada: aqui o
 			    usuário JÁ tem conta, o que falta é completar o cadastro. Só uma ação —
-			    `onLogin` fica de fora, "Entrar" não faz sentido para quem já está logado. */}
+			    `onLogin` fica de fora, "Entrar" não faz sentido para quem já está logado.
+
+			    A palavra destacada usa o MESMO recurso dos outros incentivos do portal
+			    (`font-bold text-secondary-500`), não `<b>`: com `<b>` ela saía em indigo
+			    escuro, indistinguível do resto do título, e o modal do gate ficava com uma
+			    estética própria sem motivo (corrigido em 2026-08-31).
+
+			    A copy NÃO conta quantos campos faltam. Número exato obriga a página a
+			    calcular, e obriga o back-end a manter esse cálculo sincronizado com a régua
+			    de "cadastro completo" — para uma informação que não muda o que o usuário faz
+			    em seguida. "Poucos campos" é verdade em qualquer quantidade. */}
 			<IncentiveDownloadDialog
 				open={materialBloqueado !== null}
 				icon="lock"
 				title={
 					<>
-						Complete seu cadastro para <b>baixar</b>
+						Complete seu cadastro para{' '}
+						<span className="font-bold text-secondary-500">baixar</span>
 					</>
 				}
-				body={`Faltam ${gate.camposFaltantes.length} ${gate.camposFaltantes.length === 1 ? 'campo' : 'campos'} no seu perfil para liberar os downloads da Biblioteca exclusiva.`}
+				body="Faltam poucos campos no seu perfil para liberar os downloads da Biblioteca exclusiva."
 				primaryLabel="Completar perfil"
 				onCreateAccount={() => navigate(PERFIL_HREF)}
 				onDismiss={() => setMaterialBloqueado(null)}
@@ -331,13 +329,11 @@ function Secoes({
 	perfil,
 	cenario,
 	gate,
-	onBaixar,
 	onBloqueado,
 }: {
 	perfil: PerfilBiblioteca
 	cenario: Cenario
 	gate: LibraryGate
-	onBaixar: (m: Material) => void
 	onBloqueado: (m: Material) => void
 }) {
 	// `subsetor-outro` é definido como "subsetor 'outro' SEM histórico de download" — o
@@ -351,7 +347,6 @@ function Secoes({
 					key={secao.id}
 					secao={secao}
 					gate={gate}
-					onBaixar={onBaixar}
 					onBloqueado={onBloqueado}
 				/>
 			))}
@@ -362,12 +357,10 @@ function Secoes({
 function Secao({
 	secao,
 	gate,
-	onBaixar,
 	onBloqueado,
 }: {
 	secao: SecaoBiblioteca
 	gate: LibraryGate
-	onBaixar: (m: Material) => void
 	onBloqueado: (m: Material) => void
 }) {
 	// Um card aberto por seção, no máximo: duas expansões simultâneas no mesmo trilho
@@ -398,8 +391,7 @@ function Secao({
 								bloqueado={estaBloqueado(m, gate)}
 								aberto={aberto}
 								onAbertoChange={(next) => setAbertoId(next ? m.id : null)}
-								onBaixar={onBaixar}
-								onBloqueado={onBloqueado}
+											onBloqueado={onBloqueado}
 							/>
 						</li>
 					)
@@ -418,14 +410,12 @@ function GradeDoTema({
 	temaSlug,
 	gate,
 	hrefTodos,
-	onBaixar,
 	onBloqueado,
 }: {
 	temaLabel: string
 	temaSlug: string
 	gate: LibraryGate
 	hrefTodos: string
-	onBaixar: (m: Material) => void
 	onBloqueado: (m: Material) => void
 }) {
 	const [params] = useSearchParams()
@@ -504,8 +494,7 @@ function GradeDoTema({
 								bloqueado={estaBloqueado(m, gate)}
 								aberto={aberto}
 								onAbertoChange={(next) => setAbertoId(next ? m.id : null)}
-								onBaixar={onBaixar}
-								onBloqueado={onBloqueado}
+											onBloqueado={onBloqueado}
 							/>
 						</li>
 					)
