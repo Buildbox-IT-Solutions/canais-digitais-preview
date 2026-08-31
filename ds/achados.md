@@ -1157,3 +1157,26 @@ Três divergências entre os dois nós, implementadas como cada um pede, **a con
 🔴 As duas primeiras viraram a prop `align` da barra e posições diferentes do badge. A
 terceira ficou **sem correção**: 8px num card de 348px de altura não justificam um escape
 hatch novo num componente que 11 portais consomem. Se a medida importar, é um prop.
+
+### Nenhum texto da Biblioteca cita tipo de material (2026-08-31)
+
+Decisão do Pedro, com um dado que não estava no Figma: **na prática o acervo é só e-book.**
+Whitepaper e infográfico vão levar tempo para existir. As duas frases de apoio citavam os
+três.
+
+| Onde | Antes | Agora |
+|---|---|---|
+| Painel da home | "Análises e tendências que o setor inteiro está lendo. Baixe e-books, whitepapers e infográficos sem pagar nada." | "Análises e tendências que o setor inteiro está lendo." |
+| Cabeçalho da aba | "E-books, whitepapers e infográficos do portal, reunidos num só lugar." | "Análises e tendências do setor, reunidas num só lugar para você baixar." |
+
+A regra que fica: **o valor é o que o leitor leva, não o formato do arquivo.** Lista de
+tipos volta a mentir a cada mudança do acervo, e a mentira aparece justamente na frase que
+deveria convencer alguém a se cadastrar.
+
+- 🔴 **O tipo continua aparecendo em outro lugar: o badge do card.** O acervo extraído tem
+  29 e-books e 1 whitepaper (o item com sufixo `[Pesquisa]`), então esse único badge é hoje
+  o único ponto da tela que anuncia um tipo que o portal não produz. Não foi tocado — é
+  desenho do Figma (`Badge` com `TIPO_LABEL`), não texto de apoio. A confirmar: o badge
+  deve virar rótulo fixo ("Material"/"E-book"), sair, ou seguir refletindo `material.tipo`?
+- `MaterialType` segue com os três valores. Se o produto assumir que só e-book existe, o
+  tipo deixa de ser dado e vira constante — decisão de modelo, não de texto.

@@ -68,9 +68,12 @@ export function BibliotecaSection({
 								Biblioteca exclusiva
 							</a>
 						</h2>
+						{/* Termina na primeira sentença, por decisão do Pedro em 2026-08-31: a
+						    segunda listava tipos de material (whitepaper, infográfico) que o acervo
+						    ainda não tem. Nenhum texto da Biblioteca cita TIPO de material — hoje
+						    são só e-books, e a lista voltaria a mentir a cada mudança do acervo. */}
 						<p className="font-body text-body-md text-primary-600">
-							Análises e tendências que o setor inteiro está lendo. Baixe e-books,
-							whitepapers e infográficos sem pagar nada.
+							Análises e tendências que o setor inteiro está lendo.
 						</p>
 					</header>
 
