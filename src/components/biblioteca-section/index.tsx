@@ -40,24 +40,26 @@ import type { IBibliotecaSectionProps } from './types'
  * Por isso o `LibCarousel` entra aqui **sem className de largura**. O recorte é assunto
  * dele (ver o bloco de doc do componente); alargá-lo por fora é justamente o bug.
  *
- * ## O gate do cadastro não é resolvido aqui — o da SESSÃO é
+ * ## Quem trava o download é a TELA, por material
  *
- * Saber se falta campo no perfil é dado da área logada, e a home não tem isso: quem cruza
- * material e gate é a aba. Mas desde que o "Baixar" passou a baixar de verdade (âncora com
- * `download`, 2026-08-31), deixar os cards livres aqui entregaria o arquivo a quem nem tem
- * conta — o oposto do objetivo declarado da seção no Figma, "incentivar ainda mais o
- * cadastro". Daí `bloqueado`: a home liga com `!logado` e o clique cai no mesmo
- * `IncentiveDownloadDialog` que a `DownloadSection` já usava.
+ * A seção não resolve sessão nem gate: recebe `bloqueado(material)` e pergunta. São dois
+ * motivos com alcances diferentes — sem conta trava tudo, cadastro incompleto trava só o
+ * que exige cadastro completo — e os dois abrem modais diferentes, então quem decide é
+ * quem conhece o usuário.
  *
- * Consequência visual: **deslogado, os cards mostram o cadeado no badge** — é o mesmo
+ * Isso passou a existir quando o "Baixar" começou a baixar de verdade (âncora com
+ * `download`, 2026-08-31): antes o botão era inerte e o problema não aparecia; depois,
+ * deixar os cards livres aqui entregaria o arquivo a quem nem tem conta — o oposto do
+ * objetivo declarado da seção no Figma, "incentivar ainda mais o cadastro".
+ *
+ * Consequência visual: **card travado mostra o cadeado no badge**, porque é o mesmo
  * `bloqueado` que o LibCard usa para os dois sinais. Fica de propósito; cadeado em vitrine
- * é convite a criar conta. 🔴 A confirmar: e para quem ESTÁ logado com cadastro
- * incompleto? Aí a home segue liberando, porque não conhece o estado do perfil.
+ * é convite a criar conta.
  */
 export function BibliotecaSection({
 	materiais,
 	href = '/biblioteca-exclusiva',
-	bloqueado = false,
+	bloqueado,
 	onBloqueado,
 	className,
 }: IBibliotecaSectionProps) {
@@ -98,7 +100,7 @@ export function BibliotecaSection({
 									material={m}
 									aberto={abertoId === m.id}
 									onAbertoChange={(next) => setAbertoId(next ? m.id : null)}
-									bloqueado={bloqueado}
+									bloqueado={bloqueado?.(m) ?? false}
 									onBloqueado={onBloqueado}
 								/>
 							</li>

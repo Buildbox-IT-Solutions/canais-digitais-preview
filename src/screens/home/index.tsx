@@ -6,6 +6,7 @@ import { BannerNewsletter } from '~/components/banner-newsletter'
 import { CategoryColumn } from '~/components/category-column'
 import { DestaqueSection } from '~/components/destaque-section'
 import { DestaqueUnico } from '~/components/destaque-unico'
+import { BibliotecaGateDialog } from '~/components/biblioteca-gate-dialog'
 import { BibliotecaSection } from '~/components/biblioteca-section'
 import { DownloadSection } from '~/components/download-section'
 import { EspecialistasSection } from '~/components/especialistas-section'
@@ -33,7 +34,9 @@ import { NEWSLETTER_DO_PORTAL } from '~/mocks/dashboard-perfil'
 import { newsletterAxis, newsletterAxisValue } from '../_newsletter/scenarios'
 import { sessaoAxis } from '../_sessao/scenarios'
 import { ARQUIVO_EXEMPLO_URL, MATERIAL_DESTAQUE_TITULO, nomeArquivoDownload } from '~/mocks/downloads'
-import { materiaisMaisRecentes } from '~/lib/biblioteca'
+import { estaBloqueado, materiaisMaisRecentes } from '~/lib/biblioteca'
+import { resolverGate, useLatchDesbloqueio } from '~/lib/biblioteca-gate-store'
+import { PERFIL_BIBLIOTECA, type Material } from '~/mocks/biblioteca'
 import {
 	EM_ALTA,
 	ESPECIALISTAS,
@@ -184,6 +187,34 @@ export default function HomeScreen() {
 		setPortalOpen(false)
 	}
 
+	// ── Gate da Biblioteca na home ──────────────────────────────────────────────
+	// A home passou a mostrar o cadeado também para quem ESTÁ logado com cadastro
+	// incompleto (pedido do Pedro em 2026-08-31). Para isso ela precisa do gate, que até
+	// então era dado só da aba: `camposFaltantes` vem do perfil mockado e o latch, do
+	// navegador — a MESMA composição da aba, via `resolverGate`, para as duas telas nunca
+	// discordarem sobre quem está desbloqueado.
+	//
+	// O latch é monotônico e persistido: completar o cadastro na aba (cenário "Perfil
+	// completo") desbloqueia a home também, e é assim que se revisa o estado sem cadeado
+	// aqui. Ver src/lib/biblioteca-gate-store.ts.
+	const latchBiblioteca = useLatchDesbloqueio()
+	const gateBiblioteca = resolverGate(PERFIL_BIBLIOTECA.camposFaltantes, latchBiblioteca)
+	const [materialDoGate, setMaterialDoGate] = useState<Material | null>(null)
+
+	// Dois motivos para travar, com alcances diferentes: sem conta trava TUDO (regra do
+	// site), cadastro incompleto trava só o que exige cadastro completo (regra da aba).
+	function bibliotecaBloqueada(material: Material): boolean {
+		return !logado || estaBloqueado(material, gateBiblioteca)
+	}
+
+	function bibliotecaBloqueou(material: Material): void {
+		if (!logado) {
+			setDownloadOpen(true)
+			return
+		}
+		setMaterialDoGate(material)
+	}
+
 	function handleDownloadCreateAccount() {
 		setDownloadOpen(false)
 		navigate('/cadastro?step=1&intent=download&returnTo=%2Fhome')
@@ -275,11 +306,8 @@ export default function HomeScreen() {
 			{mostrarBiblioteca ? (
 				<BibliotecaSection
 					materiais={materiaisMaisRecentes(12)}
-					// Sem conta não se baixa material: mesma regra do banner que esta seção
-					// propõe substituir, e o mesmo modal. Logado, o "Baixar" do card baixa o
-					// arquivo direto.
-					bloqueado={!logado}
-					onBloqueado={() => setDownloadOpen(true)}
+					bloqueado={bibliotecaBloqueada}
+					onBloqueado={bibliotecaBloqueou}
 					className="mt-10"
 				/>
 			) : (
@@ -397,6 +425,14 @@ export default function HomeScreen() {
 				<FooterDesktop />
 			</div>
 		</main>
+
+		{/* Gate do acervo: só existe logado, e é o mesmo modal da aba (componente único,
+		    para as duas telas não divergirem na copy). */}
+		<BibliotecaGateDialog
+			open={materialDoGate !== null}
+			onCompletarPerfil={() => navigate('/dashboard-perfil-v4?tab=perfil')}
+			onDismiss={() => setMaterialDoGate(null)}
+		/>
 
 		{!logado ? (
 			<>

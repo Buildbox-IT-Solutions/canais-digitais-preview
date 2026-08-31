@@ -3,13 +3,13 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { useScenarios } from '~/dev/use-scenarios'
 import type { ScenarioAxis } from '~/dev/scenario-store'
 import { DashboardTabs } from '~/components/dashboard-tabs'
+import { BibliotecaGateDialog } from '~/components/biblioteca-gate-dialog'
 import { DashboardWelcome } from '~/components/dashboard-welcome'
 import { DestaqueBiblioteca } from '~/components/destaque-biblioteca'
 import { FilterBar } from '~/components/filter-bar'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
-import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { LibCard } from '~/components/lib-card'
 import { LibCarousel } from '~/components/lib-carousel'
 import { Pagination } from '~/components/pagination'
@@ -290,31 +290,9 @@ export default function BibliotecaExclusivaScreen() {
 
 			<FooterDesktop />
 
-			{/* Reusa o modal de incentivo do download público, com a copy trocada: aqui o
-			    usuário JÁ tem conta, o que falta é completar o cadastro. Só uma ação —
-			    `onLogin` fica de fora, "Entrar" não faz sentido para quem já está logado.
-
-			    A palavra destacada usa o MESMO recurso dos outros incentivos do portal
-			    (`font-bold text-secondary-500`), não `<b>`: com `<b>` ela saía em indigo
-			    escuro, indistinguível do resto do título, e o modal do gate ficava com uma
-			    estética própria sem motivo (corrigido em 2026-08-31).
-
-			    A copy NÃO conta quantos campos faltam. Número exato obriga a página a
-			    calcular, e obriga o back-end a manter esse cálculo sincronizado com a régua
-			    de "cadastro completo" — para uma informação que não muda o que o usuário faz
-			    em seguida. "Poucos campos" é verdade em qualquer quantidade. */}
-			<IncentiveDownloadDialog
+			<BibliotecaGateDialog
 				open={materialBloqueado !== null}
-				icon="lock"
-				title={
-					<>
-						Complete seu cadastro para{' '}
-						<span className="font-bold text-secondary-500">baixar</span>
-					</>
-				}
-				body="Faltam poucos campos no seu perfil para liberar os downloads da Biblioteca exclusiva."
-				primaryLabel="Completar perfil"
-				onCreateAccount={() => navigate(PERFIL_HREF)}
+				onCompletarPerfil={() => navigate(PERFIL_HREF)}
 				onDismiss={() => setMaterialBloqueado(null)}
 			/>
 		</main>
