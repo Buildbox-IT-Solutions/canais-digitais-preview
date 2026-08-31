@@ -1,5 +1,6 @@
 import { AdFrame } from '~/components/ad-frame'
 import { Divider } from '~/components/divider'
+import { FilterChip } from '~/components/filter-chip'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
 import { Icon } from '~/components/icon'
@@ -63,16 +64,13 @@ export default function BuscarScreen() {
 								<p className="font-body font-bold text-label-lg text-primary-600">
 									Refine sua busca
 								</p>
+								{/* Estes chips abrem menu (trailing `expand-more`), não alternam filtro —
+								    por isso `ariaHasPopup` e nenhum `selected`. Mesmo componente do
+								    filtro da Biblioteca exclusiva: o markup à mão que vivia aqui foi
+								    o que levou a Biblioteca a inventar um segundo chip. */}
 								<div className="flex gap-2 items-center">
 									{FILTERS.map((f) => (
-										<button
-											key={f}
-											type="button"
-											className="inline-flex h-8 items-center gap-2 pl-4 pr-2 rounded-full border border-neutral-100 font-body font-semibold text-label-lg text-neutral-950 hover:bg-neutral-50 transition-colors"
-										>
-											{f}
-											<Icon name="expand-more" className="size-4 text-neutral-950" />
-										</button>
+										<FilterChip key={f} label={f} trailingIcon="expand-more" ariaHasPopup="menu" />
 									))}
 								</div>
 							</div>

@@ -6,6 +6,7 @@ import { BannerNewsletter } from '~/components/banner-newsletter'
 import { CategoryColumn } from '~/components/category-column'
 import { DestaqueSection } from '~/components/destaque-section'
 import { DestaqueUnico } from '~/components/destaque-unico'
+import { BibliotecaSection } from '~/components/biblioteca-section'
 import { DownloadSection } from '~/components/download-section'
 import { EspecialistasSection } from '~/components/especialistas-section'
 import { FooterDesktop } from '~/components/footer-desktop'
@@ -32,6 +33,7 @@ import { NEWSLETTER_DO_PORTAL } from '~/mocks/dashboard-perfil'
 import { newsletterAxis, newsletterAxisValue } from '../_newsletter/scenarios'
 import { sessaoAxis } from '../_sessao/scenarios'
 import { ARQUIVO_EXEMPLO_URL, MATERIAL_DESTAQUE_TITULO, nomeArquivoDownload } from '~/mocks/downloads'
+import { materiaisMaisRecentes } from '~/lib/biblioteca'
 import {
 	EM_ALTA,
 	ESPECIALISTAS,
@@ -97,6 +99,7 @@ export default function HomeScreen() {
 	const destaqueUnicoValue = DESTAQUE_UNICO_AXIS.options.some((o) => o.value === cenario)
 		? (cenario as string)
 		: 'destaque-unico-off'
+
 	// Sessão primeiro (ver _sessao/scenarios). O eixo do banner de newsletter só entra
 	// na barra com ?logado=true: deslogado o banner leva ao formulário público e não
 	// tem estado de assinatura para variar — um controle que não muda nada é pior que
@@ -228,6 +231,12 @@ export default function HomeScreen() {
 			</section>
 
 			<ProteinaAnimalSection articles={PROTEINA_ANIMAL} />
+
+			{/* Vitrine do acervo (node 8424:112623). A anotação do Figma a propõe como
+			    SUBSTITUIÇÃO do banner de download abaixo, mas as regras ainda vão para
+			    aprovação do cliente — até lá as duas convivem, de propósito. Ver
+			    ds/achados.md. */}
+			<BibliotecaSection materiais={materiaisMaisRecentes(12)} className="mt-10" />
 
 			{/* Logado, sem handler: a âncora com `download` baixa nativamente, e quem confirma
 			    é o próprio navegador (barra de downloads) — não duplicamos isso em toast.

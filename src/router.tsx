@@ -5,6 +5,7 @@ import { ScenarioBar } from './dev/ScenarioBar'
 import './dev/favoritos-dev-handle'
 import AnuncieScreen from './screens/anuncie'
 import ArchiveScreen from './screens/archive'
+import BibliotecaExclusivaScreen from './screens/biblioteca-exclusiva'
 import BuscarScreen from './screens/buscar'
 import CadastroScreen from './screens/cadastro'
 import CadastroV2Screen from './screens/cadastro-v2'
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
 			{ path: '/redefinir', element: <Navigate to="/redefine-senha" replace /> },
 			{ path: '/dashboard-perfil-v3', element: <DashboardPerfilV3Screen /> },
 			{ path: '/dashboard-perfil-v4', element: <DashboardPerfilV4Screen /> },
+			{ path: '/biblioteca-exclusiva', element: <BibliotecaExclusivaScreen /> },
 			{ path: '/meus-dados', element: <MeusDadosScreen /> },
 			{ path: '/consentimentos', element: <ConsentimentosScreen /> },
 			{ path: '/excluir-conta', element: <ExcluirContaScreen /> },

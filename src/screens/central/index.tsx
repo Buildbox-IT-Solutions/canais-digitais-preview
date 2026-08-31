@@ -54,6 +54,7 @@ const GROUPS: RouteGroup[] = [
 		color: 'mint',
 		items: [
 			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads', status: 'pronto-para-dev' },
+			{ path: '/biblioteca-exclusiva', label: 'Biblioteca exclusiva', description: 'Área logada · acervo de materiais, bloqueio por cadastro incompleto', status: 'prototipando' },
 			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil', status: 'pronto-para-dev' },
 			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · exclusão imediata e irreversível', status: 'pronto-para-dev' },
 		],

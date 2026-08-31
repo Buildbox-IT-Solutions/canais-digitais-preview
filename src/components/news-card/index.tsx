@@ -143,6 +143,7 @@ export function NewsCard({
 	size = 'large',
 	orientation = 'vertical',
 	categoria,
+	badge,
 	lead,
 	author,
 	authorHref,
@@ -210,7 +211,16 @@ export function NewsCard({
 		// `flex-1` só fora do boxed: lá quem distribui a altura da coluna é o painel
 		// de texto (justify-between/center), e um filho que cresce anularia isso.
 		<div className={twMerge('flex flex-col gap-2 min-w-0', !boxed && 'flex-1')}>
-			{categoria ? <Categoria {...categoria} /> : null}
+			{badge ? (
+				// Badge + categoria dividem uma linha só (Figma "Frame 3", gap 12px). Sem
+				// badge nada muda: a categoria segue filha direta da coluna, como sempre foi.
+				<div className="flex items-center gap-3">
+					{badge}
+					{categoria ? <Categoria {...categoria} /> : null}
+				</div>
+			) : categoria ? (
+				<Categoria {...categoria} />
+			) : null}
 			<div className="flex items-start gap-2">
 				<h3
 					className={twMerge(

@@ -6,7 +6,8 @@ import type { DashboardTab, IDashboardTabsProps } from './types'
  * Componente: Dashboard Tabs
  * Figma: 6045:6002
  * Canônico da navegação por seções da área logada. Ordem: Perfil (ativa por
- * padrão), Downloads, Newsletter, Últimas leituras, Favoritos — todas ativas.
+ * padrão), Downloads, Newsletter, Últimas leituras, Favoritos, Biblioteca
+ * exclusiva — todas ativas.
  * Versão anterior arquivada em src/components/dashboard-tabs-v3/.
  * Tokens: --color-primary-600, --color-secondary-950, --color-neutral-100, --color-neutral-400,
  *         --color-neutral-900
@@ -18,6 +19,11 @@ const DEFAULT_TABS: DashboardTab[] = [
 	{ id: 'newsletter', label: 'Newsletter' },
 	{ id: 'ultimas', label: 'Últimas leituras' },
 	{ id: 'favoritos', label: 'Favoritos' },
+	// Única aba com `href` absoluto: a Biblioteca é uma ROTA (/biblioteca-exclusiva), não
+	// um `?tab=` de /dashboard-perfil-v4 como as outras cinco — o filtro por categoria e a
+	// paginação da grade já ocupam a querystring dela. **Para o back-end: as duas formas
+	// de navegação convivem nesta barra de propósito; a aba não é uniforme.**
+	{ id: 'biblioteca', label: 'Biblioteca exclusiva', href: '/biblioteca-exclusiva' },
 ]
 
 export function DashboardTabs({

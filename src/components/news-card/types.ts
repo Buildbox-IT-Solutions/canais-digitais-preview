@@ -18,6 +18,13 @@ export interface INewsCardProps {
 	size?: NewsCardSize
 	orientation?: NewsCardOrientation
 	categoria?: Pick<ICategoriaProps, 'label' | 'color' | 'href' | 'chip'>
+	/**
+	 * Slot à ESQUERDA da categoria, na mesma linha (`Frame 3` do Figma, gap 12px). Criado
+	 * para o Destaque da Biblioteca exclusiva, que precisa do badge de tipo/cadeado ao
+	 * lado da categoria. Sem ele o card renderiza exatamente como antes — a linha só
+	 * existe quando `badge` vem.
+	 */
+	badge?: ReactNode
 	lead?: string
 	author?: string
 	authorHref?: string

@@ -5,6 +5,7 @@ export type DashboardTabId =
 	| 'favoritos'
 	| 'newsletter'
 	| 'downloads'
+	| 'biblioteca'
 
 export interface DashboardTab {
 	id: DashboardTabId

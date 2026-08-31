@@ -207,6 +207,7 @@ export function Toggle({
 	labelOff,
 	tooltipOn,
 	tooltipOff,
+	tooltipSide,
 	type = 'ghost',
 	size = 'medium',
 	surface = 'default',
@@ -270,7 +271,7 @@ export function Toggle({
 	if (!tooltipLabel) return button
 
 	return (
-		<Tooltip label={tooltipLabel} disabled={disabled} className={className}>
+		<Tooltip label={tooltipLabel} side={tooltipSide} disabled={disabled} className={className}>
 			{button}
 		</Tooltip>
 	)
