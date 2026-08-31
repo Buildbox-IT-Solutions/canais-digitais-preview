@@ -1,44 +1,37 @@
 /**
  * Componente: TableOfContentsIcon — "Neste artigo" (versão final)
  * Sem referência no Figma. Única versão de TOC apresentada ao PO — as
- * outras duas (table-of-contents/ e table-of-contents-margin/) foram
- * arquivadas em 2026-07-31 e ficam congeladas, acessíveis só via
- * `?toc=pill`/`?toc=margem` a partir de `/archive`.
- * Em telas largas (>=1400px), se comporta como a régua na margem
- * (<TocMarginRail> compartilhada com a Opção 2 arquivada) — abre no hover,
- * visível desde o carregamento da página. Decisão de 2026-08-18 (Pedro):
- * régua saiu de centralizada em relação ao container (`2xl`/1536px, com
- * gate de scroll pra não invadir a faixa vertical do título/cabeçalho no
- * carregamento) pra colada na borda real da viewport (`left-6`, sem gate —
- * nessa posição ela não compete mais com o título/cabeçalho, então o
- * motivo original do gate deixou de existir). 1400px é o menor ponto em
- * que ela cabe sem sobrepor o início do texto do artigo; o painel do hover
- * pode invadir o conteúdo, só a régua em si não pode — trade-off aceito
- * deliberadamente pra viabilizar um breakpoint menor (cobre notebooks como
- * MacBook Pro 14", que não chegavam a 1536px).
- * Abaixo desse limiar, cai para um botão flutuante com texto "Neste
- * artigo" (reaproveitado da Opção 1 arquivada), fixo top-right, clique
- * abre/fecha, sempre visível desde o carregamento. A distância até o
- * header é a mesma da margem direita (`right-4`/`lg:right-6`), mas medida
- * a partir da altura REAL do header (`useHeaderHeight`) em vez de um valor
- * fixo — o header alterna Expanded/Compact e muda de altura por
- * breakpoint, então um `top-N` fixo grudava ou afastava demais dependendo
- * do estado (feedback do PO em 2026-07-31, terceira rodada de ajuste).
- * Os dois blocos (régua e botão) ficam montados ao mesmo tempo; a
- * visibilidade por breakpoint é só CSS (`hidden min-[1400px]:block` /
- * `min-[1400px]:hidden`) — elementos com `display:none` saem da árvore de
- * foco/tab.
+ * outras três (table-of-contents/, table-of-contents-margin/ e
+ * table-of-contents-hybrid/) foram arquivadas e ficam congeladas,
+ * acessíveis via `?toc=pill`/`?toc=margem`/`?toc=hibrido` a partir de
+ * `/archive`.
+ * Botão flutuante com texto "Neste artigo" em TODOS os breakpoints, fixo
+ * top-right, clique abre/fecha, sempre visível desde o carregamento —
+ * desktop e mobile idênticos. Decisão de 2026-08-31 (Micaelly, feedback de
+ * 2026-08-25): até então, a partir de 1400px o botão dava lugar à régua de
+ * tracinhos na margem esquerda (ver table-of-contents-hybrid, snapshot
+ * congelado com o racional completo daquele breakpoint). A régua discreta
+ * era deliberada — padrão de Medium e ChatGPT, índice tratado como
+ * ferramenta de apoio e não como conteúdo — mas passou despercebida no
+ * desktop na revisão com a Micaelly, e descoberta pesou mais que limpeza
+ * visual. Um único affordance explícito em toda largura elimina também a
+ * divergência desktop/mobile, que é o risco central com 11 portais.
+ * A distância até o header é a mesma da margem direita
+ * (`right-4`/`lg:right-6`), mas medida a partir da altura REAL do header
+ * (`useHeaderHeight`) em vez de um valor fixo — o header alterna
+ * Expanded/Compact e muda de altura por breakpoint, então um `top-N` fixo
+ * grudava ou afastava demais dependendo do estado (feedback do PO em
+ * 2026-07-31, terceira rodada de ajuste).
  * Botão sem seta indicadora — só ícone `toc` + texto (pedido do PO em 2026-08-03).
- * O popover (tanto da régua quanto do botão) ganha o título muted "Neste
- * artigo" e itens mais compactos (`dense`) — só nesta versão; a régua da
- * Opção 2 arquivada continua sem título e com o espaçamento original.
+ * O popover ganha o título muted "Neste artigo" e itens mais compactos
+ * (`dense`) — só nesta versão; a régua da Opção 2 arquivada continua sem
+ * título e com o espaçamento original.
  * Não renderiza nada quando `headings.length < 3`.
- * Tokens: --color-neutral-100, --color-neutral-500, --color-primary-600, --color-secondary-950, rounded-sm, rounded-full
+ * Tokens: --color-neutral-100, --color-primary-600, --color-secondary-950, rounded-full
  */
 import { useRef, useState } from 'react'
 import { Icon } from '~/components/icon'
 import { TocList } from '~/components/table-of-contents/toc-list'
-import { TocMarginRail } from '~/components/table-of-contents/toc-margin-rail'
 import { TocPanel } from '~/components/table-of-contents/toc-panel'
 import { scrollToHeading } from '~/lib/scroll-to-heading'
 import { useClickAwayAndEscape } from '~/lib/use-click-away-and-escape'
@@ -71,15 +64,7 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 
 	return (
 		<div className={className}>
-			<TocMarginRail
-				headings={headings}
-				activeId={activeId}
-				onSelect={scrollToHeading}
-				title="Neste artigo"
-				dense
-			/>
-
-			<div className="min-[1400px]:hidden fixed right-4 lg:right-6 z-30" style={{ top: buttonTop }}>
+			<div className="fixed right-4 lg:right-6 z-30" style={{ top: buttonTop }}>
 				<button
 					ref={triggerRef}
 					type="button"

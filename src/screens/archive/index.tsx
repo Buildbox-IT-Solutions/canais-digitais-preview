@@ -103,8 +103,13 @@ const GROUPS: ArchiveGroup[] = [
 			{
 				path: '/conteudo?post=post-longo-toc&toc=margem',
 				label: 'TOC — só régua na margem',
+				reason: 'Substituída pelo híbrido régua + botão, que por sua vez virou só botão em 2026-08-31',
+			},
+			{
+				path: '/conteudo?post=post-longo-toc&toc=hibrido',
+				label: 'TOC — régua (>=1400px) + botão flutuante',
 				reason:
-					'Substituída pelo TOC único, que reaproveita esta régua e complementa com botão flutuante abaixo de 1536px',
+					'Vigente entre 2026-07-31 e 2026-08-31. A régua passou despercebida no desktop na revisão com a Micaelly — o TOC atual usa o botão com texto em todas as larguras. Alargue a janela acima de 1400px pra ver a régua.',
 			},
 		],
 	},
