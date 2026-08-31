@@ -47,24 +47,22 @@ import type { ILibCardProps } from './types'
  * o `open_in_new` da ActionBar, que existe exatamente para isso ("Abre o post", na
  * anotação).
  *
- * ## Abre para BAIXO, e a moldura cresce PARA DENTRO
+ * ## Abre para BAIXO, e a capa não se move
  *
  * O card expandido do Figma (262×411) é o card fechado (236px) mais 12px de padding de
- * cada lado, em COLUNA, com o SidePanel abaixo. Aqui a expansão **não muda a largura da
- * célula**: o card continua ocupando exatamente o mesmo espaço, e só a altura cresce.
- * Vale igual no trilho e na grade filtrada.
+ * cada lado, em COLUNA, com o SidePanel abaixo. A expansão **não muda a largura da célula**:
+ * o card ocupa o mesmo espaço, só a altura cresce, e nenhum vizinho se move.
  *
- * A moldura (`p-3` + borda) cresce para DENTRO, então a capa do card aberto fica 24px mais
- * estreita e 12px mais à direita que a dos vizinhos fechados. É um deslocamento pequeno e
- * local — do próprio card clicado, nunca dos vizinhos.
+ * A moldura (`p-3` + borda) cresce **para fora** — `-mx-3 -mt-3` mais 24px de largura —,
+ * então a capa do card aberto continua exatamente onde estava e do mesmo tamanho. Sem isso
+ * a moldura comprimiria o conteúdo: a capa ficaria 24px mais estreita e 12px à direita da
+ * dos vizinhos, desalinhada também do título da seção quando o card aberto é o primeiro.
+ * (Tentado em 2026-08-31 e revertido no mesmo dia, exatamente por isso.)
  *
- * Uma versão anterior fazia a moldura crescer para FORA (`-mx-3 -mt-3` + 24px de largura),
- * para a capa não se mover nem um pixel. Funcionava no meio do trilho e **quebrava nas duas
- * pontas**: um scroller não deixa alcançar conteúdo à esquerda da origem, e no fim a margem
- * negativa reduz o `scrollWidth` — nos dois casos a moldura aparecia recortada. Além disso
- * amarrava três medidas em dois arquivos (sangria, calha do trilho, calha da grade), e
- * mudar uma sem as outras invadia o card vizinho. Trocado em 2026-08-31: 12px de
- * deslocamento local valem menos que uma classe inteira de bugs de borda.
+ * **Quem precisa dar espaço para essa sangria é o container**, e é a parte fácil de
+ * esquecer: numa grade, a calha de 24px já serve; num CARROSSEL, não — nas pontas o
+ * scroller define a origem e o fim, e o que passa disso não é alcançável. O `LibCarousel`
+ * reserva 12px de padding nas duas pontas por isso. Ver o bloco de doc dele.
  *
  * ## Largura é do consumidor, não do card
  *
@@ -196,9 +194,10 @@ export function LibCard({
 			data-estado={bloqueado ? 'bloqueado' : 'enabled'}
 			data-aberto="true"
 			className={twMerge(
-				// gap-2 = os 8px entre o card e o SidePanel no Figma. Nenhuma margem negativa:
-				// a moldura fica DENTRO da célula (ver o bloco de doc).
-				'flex w-full min-w-0 flex-col items-start gap-2 rounded-lg border border-neutral-100 bg-white p-3',
+				// gap-2 = os 8px entre o card e o SidePanel no Figma. A moldura cresce para
+				// FORA para a capa não se mover (ver o bloco de doc); quem reserva o espaço
+				// dessa sangria é o container.
+				'-mx-3 -mt-3 flex w-[calc(100%+1.5rem)] min-w-0 flex-col items-start gap-2 rounded-lg border border-neutral-100 bg-white p-3',
 				className,
 			)}
 		>

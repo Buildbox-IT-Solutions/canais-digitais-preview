@@ -997,24 +997,38 @@ primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso
 
 ### Moldura do card expandido quebrava nas pontas do carrossel (2026-08-31)
 
-- 🔴 **Bug.** A moldura do card expandido (`p-3` + borda) crescia PARA FORA
-  (`-mx-3 -mt-3` + 24px de largura) para a capa não se mover ao abrir. Funcionava no meio
-  do trilho e **quebrava nas duas pontas**:
-  - **No começo:** um scroller não deixa alcançar conteúdo à esquerda da origem
-    (`scrollLeft` não vai a negativo), então os 12px da esquerda eram recortados e a
-    moldura aparecia desalinhada do título da seção.
-  - **No fim:** margem negativa REDUZ a contribuição ao `scrollWidth`, então os 12px da
-    direita não eram roláveis e a moldura aparecia cortada na borda do painel.
-- ✅ **resolvido invertendo a direção: a moldura cresce PARA DENTRO.** Sem margem negativa
-  nenhuma. Custo: a capa do card aberto fica 24px mais estreita e 12px à direita da dos
-  vizinhos fechados — deslocamento pequeno, e do próprio card clicado, nunca dos vizinhos.
-- Isso também desfez o acoplamento que estava anotado aqui como armadilha: **a sangria não
-  precisa mais casar com a calha**. Eram três medidas em dois arquivos (sangria do card,
-  `--lib-gap` do trilho, `gap-6` da grade) que tinham de andar juntas. Agora o invariante é
-  um só e local: **o card nunca sai da própria célula.**
-- 🔴 **Regra geral que vale registrar:** margem negativa dentro de um container com
-  `overflow-x-auto` só é confiável no MEIO do conteúdo. Nas pontas, o scroller define a
-  origem e o fim, e o que passa disso não é alcançável.
+- 🔴 **Bug.** A moldura do card expandido (`p-3` + borda) cresce 12px PARA FORA
+  (`-mx-3` + 24px de largura) para a capa não se mover ao abrir. Numa grade a calha de
+  24px já dá esse espaço. **Num carrossel, não** — e foi o que quebrou:
+  - **No começo:** `scrollLeft` não vai a negativo, então 12px à esquerda do primeiro item
+    são inalcançáveis. A moldura aparecia recortada e desalinhada do título da seção.
+  - **No fim:** depois do último item não existe nada além do fim do conteúdo, e margem
+    negativa ainda REDUZ a contribuição ao `scrollWidth`. A moldura era cortada na borda
+    do painel.
+- ⚠️ **Uma primeira tentativa fez a moldura crescer para DENTRO** (sem margem negativa).
+  Parou o recorte, mas a capa do card aberto ficou 24px mais estreita e 13px à direita —
+  medido: título em 120, capa em 133 — desalinhada dos vizinhos e do título. Trocar um
+  defeito por outro; revertido no mesmo dia.
+- ✅ **resolvido reservando o espaço no SCROLLER**, que é quem controla origem e fim:
+  `px-3` no `<ul>` (padding entra no `scrollWidth` e não reduz a área visível no meio da
+  rolagem, então a espiada do próximo card fica intacta), `-ml-3` mais 12px de largura
+  extra para devolver o padding esquerdo para fora e manter a primeira capa alinhada ao
+  título, e **`scroll-px-3`**.
+- 🔴 **O `scroll-px-3` é a parte não óbvia e obrigatória.** Sem ele o scroll-snap alinha o
+  `snap-start` do primeiro item à borda do scrollport e COME o padding: o navegador entra
+  com `scrollLeft: 12` e a primeira capa volta a desalinhar. Foi exatamente esse o sintoma
+  que sobreviveu à primeira correção. **Padding num scroller com `snap` precisa de
+  `scroll-padding` casado, sempre.**
+- O `overflow-hidden` saiu do wrapper do trilho: o `<ul>` se estende 12px à esquerda dele
+  de propósito, e clipar ali mataria justamente esse espaço. À direita o `<ul>` não passa
+  da borda do wrapper, então não há barra de rolagem na página — verificado com
+  `documentElement.scrollWidth === clientWidth`.
+- **Como isso foi verificado, e por que importa:** as duas correções anteriores foram
+  validadas lendo HTML e CSS, e as duas passaram nos meus testes enquanto o defeito seguia
+  na tela. Esta foi medida em navegador de verdade (Chrome headless renderizando o painel
+  com o primeiro e o último card forçados abertos, `getBoundingClientRect` nos dois
+  extremos de rolagem) e conferida em captura de tela. 🔴 **Geometria de layout não se
+  verifica por string de classe.**
 
 ### Setas do carrossel ficavam sobre o texto do card aberto (2026-08-31)
 

@@ -110,7 +110,11 @@ export function LibCarousel({ children, ariaLabel, className }: ILibCarouselProp
 				// card expandido. Sem isso o consumidor declara `gap-4` entre o título da
 				// seção e o trilho e recebe 28px (16 + 12) — o espaço que estava sobrando.
 				// Assim o gap declarado é o gap visto.
-				'group/trilho @container relative -mt-3 w-full min-w-0 overflow-hidden',
+				// SEM `overflow-hidden`: o `<ul>` abaixo se estende 12px à esquerda deste wrapper
+				// para reservar espaço à sangria da moldura do card aberto, e clipar aqui mataria
+				// justamente esses 12px. Quem rola é o `<ul>`, e à direita ele não passa da borda
+				// deste wrapper — então nada disso gera barra de rolagem na página.
+				'group/trilho @container relative -mt-3 w-full min-w-0',
 				className,
 			)}
 		>
@@ -133,6 +137,24 @@ export function LibCarousel({ children, ariaLabel, className }: ILibCarouselProp
 					// `items-start`: o card expandido é mais alto que os fechados, e sem isso o
 					// stretch do flex esticaria todos os vizinhos até a altura dele.
 					'flex snap-x items-start overflow-x-auto scrollbar-hide py-3',
+					// ── Espaço para a sangria da moldura do card aberto ──
+					// A moldura cresce 12px para fora do card (ver LibCard). Num carrossel isso NÃO
+					// funciona de graça: `scrollLeft` não vai a negativo, então 12px à esquerda do
+					// primeiro item são inalcançáveis, e depois do último item não existe nada além
+					// do fim do conteúdo. Era o bug das duas pontas.
+					//
+					// `px-3` reserva os 12px DENTRO do scroller: padding entra no `scrollWidth` e não
+					// reduz a área visível no meio da rolagem, então a espiada do próximo card
+					// continua intacta. `-ml-3` mais 12px de largura extra devolvem o padding esquerdo
+					// para fora, para a primeira capa seguir alinhada com o título da seção.
+					// Assimétrico de propósito: à direita a borda do `<ul>` coincide com a do wrapper,
+					// senão vazaria para fora do painel.
+					// `scroll-px-3` casando com o `px-3` é obrigatório, não enfeite: sem ele o
+					// scroll-snap alinha o `snap-start` do primeiro item à borda do scrollport e
+					// COME o padding — o navegador entra com `scrollLeft: 12` e a primeira capa
+					// volta a desalinhar do título. Com o scroll-padding declarado, o snap em
+					// `scrollLeft: 0` já é a posição correta.
+					'-ml-3 w-[calc(100%_+_var(--spacing)*3)] px-3 scroll-px-3',
 					// Geometria do trilho. `gap-[var(--lib-gap)]` em vez de `gap-6` para o
 					// espaçamento real e o da fórmula não poderem divergir.
 					'gap-[var(--lib-gap)] [--lib-gap:24px]',
