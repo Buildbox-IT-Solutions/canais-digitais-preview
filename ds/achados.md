@@ -1219,3 +1219,57 @@ deveria convencer alguém a se cadastrar.
   muda o que o usuário faz em seguida. "Poucos campos" é verdade em qualquer quantidade.
 - `gate.camposFaltantes` continua existindo e continua sendo a verdade do cadastro; o que
   saiu foi a exibição da contagem. **Para o back-end: nenhuma tela precisa do número.**
+
+### Cadeado na home também para quem está logado (2026-08-31)
+
+Decisão do Pedro, fechando a pergunta que ficou aberta na entrada anterior. A home passou
+a resolver o gate do acervo, que até então era dado exclusivo da aba: `camposFaltantes` do
+perfil mockado + latch do navegador, compostos por `resolverGate` — **a mesma composição da
+aba**, para as duas telas nunca discordarem sobre quem está desbloqueado.
+
+O bloqueio da seção virou **função por material** (`bloqueado(material)`), não booleano,
+porque os dois motivos de travar têm alcances e modais diferentes:
+
+| Estado | O que trava | Clique em "Baixar" abre |
+|---|---|---|
+| Deslogado | **todos** os materiais (regra do site: sem conta não se baixa) | "Crie sua conta para baixar" → Criar conta grátis |
+| Logado, cadastro incompleto | só os que exigem cadastro completo (`estaBloqueado`, regra da aba) | "Complete seu cadastro para baixar" → Completar perfil |
+| Logado, cadastro completo | nada | nada: baixa o arquivo |
+
+Medido no DOM, com cliques: deslogado 12 cadeados em 12 cards; logado com cadastro
+incompleto **7 em 12**, com o card travado virando `<button>` que abre o modal do gate e o
+card livre virando `<a href="/downloads/exemplo-food-connection.pdf">`. 0 erros de console.
+
+- O modal do gate virou componente próprio (`~/components/biblioteca-gate-dialog`), usado
+  pela aba E pela home: a mesma copy em duas telas é a forma clássica de as duas divergirem
+  no próximo ajuste. **Para o back-end: é um modal só, em dois lugares.**
+- Como revisar o estado SEM cadeado na home: o latch é monotônico e persistido, então
+  visitar a aba no cenário "Perfil completo" desbloqueia a home também. Não há eixo de
+  cenário próprio na home para isso — se fizer falta na revisão, é um eixo a mais na
+  ScenarioBar.
+
+### "Link copiado" no compartilhar: o código não mudou (2026-08-31)
+
+Relato: *"antes abria o dialog de compartilhamento nativo agora está mostrando toast de
+'Link copiado'"*.
+
+Investigado: `src/lib/compartilhar-conteudo.ts` **não foi tocado desde o PR #29**
+(`git log` do arquivo confirma), é a ÚNICA implementação de compartilhar do repo, e os 4
+call sites chamam a mesma função. O botão é um `<button>` com o handler direto — nem o
+`Tooltip` que o envolve nem o `IconButton` interceptam o clique.
+
+Verificado no Chrome 151/macOS, contexto seguro: `typeof navigator.share = "function"`,
+`canShare({title,url}) = true`. Ou seja, **onde a API existe a folha nativa abre**; o toast
+é o caminho de quando ela não existe. Contextos sem Web Share que aparecem na revisão deste
+protótipo: navegadores embutidos (Simple Browser do VS Code, webviews), Firefox no
+desktop, iframe sem `allow="web-share"`, origem sem HTTPS. A resposta do preview não traz
+`Permissions-Policy`, então não é bloqueio de header.
+
+- ✅ **Corrigido o que era defeito de verdade no arquivo:** cancelar a folha (`AbortError`)
+  e a folha NÃO ABRIR eram tratados igual, no mesmo `catch` vazio — a ação morria em
+  silêncio. Agora só o cancelamento é silêncio; qualquer outra falha cai no copiar, para o
+  clique nunca terminar em nada. Entrou também `canShare` no teste de suporte.
+- 🔴 A confirmar: se a folha nativa tiver de existir em TODO navegador, o caminho é um menu
+  de compartilhamento próprio (WhatsApp / LinkedIn / X / e-mail / copiar). O Figma já tem
+  esse padrão desenhado para a página de conteúdo (`share-widget` de 6 ícones,
+  figma-specs/pagina-conteudo.md); para card, seria UI nova e precisa de desenho.
