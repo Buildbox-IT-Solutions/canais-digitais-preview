@@ -1,4 +1,5 @@
 import type { IconName } from '~/components/icon/types'
+import type { TooltipSide } from '~/components/tooltip/types'
 
 /**
  * Aparência do controle — MESMOS três nomes de `Button [1.1]` e `Icon Button [1.2]`
@@ -50,6 +51,14 @@ interface IToggleBaseProps {
 	tooltipOn?: string
 	/** Texto do Tooltip quando `pressed` é false — curto, ex. "Favoritar". */
 	tooltipOff?: string
+	/**
+	 * Lado em que o balão aparece. Default `'bottom'` (o do Tooltip).
+	 *
+	 * Existe porque o balão é `absolute` dentro do gatilho e **qualquer ancestral com
+	 * `overflow` o corta** — num toggle na última linha de um card dentro de carrossel,
+	 * `bottom` sai pela borda. Quem conhece o container é o consumidor, não o Toggle.
+	 */
+	tooltipSide?: TooltipSide
 	/** Default `'ghost'` — a única aparência que o Figma desenhou. */
 	type?: ToggleType
 	size?: ToggleSize

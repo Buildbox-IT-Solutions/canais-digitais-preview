@@ -33,6 +33,7 @@ export function FavoritoToggle({
 	size,
 	surface,
 	disabled,
+	tooltipSide,
 	className,
 }: IFavoritoToggleProps) {
 	const shared = {
@@ -56,6 +57,7 @@ export function FavoritoToggle({
 			labelOff="Favoritar"
 			tooltipOn="Remover"
 			tooltipOff="Favoritar"
+			tooltipSide={tooltipSide}
 		/>
 	)
 }

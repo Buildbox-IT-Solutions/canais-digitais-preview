@@ -1,4 +1,5 @@
 import type { ToggleSize, ToggleSurface, ToggleType } from '~/components/toggle/types'
+import type { TooltipSide } from '~/components/tooltip/types'
 
 export interface IFavoritoToggleProps {
 	/** Vem de `useFavoritoToggle` — este componente não chama o hook (ver o bloco de doc). */
@@ -13,5 +14,7 @@ export interface IFavoritoToggleProps {
 	size?: ToggleSize
 	surface?: ToggleSurface
 	disabled?: boolean
+	/** Lado do balão — ver `tooltipSide` no Toggle. Ignorado quando `showLabel`. */
+	tooltipSide?: TooltipSide
 	className?: string
 }

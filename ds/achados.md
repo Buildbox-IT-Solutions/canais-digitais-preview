@@ -467,3 +467,482 @@ decisão de modelagem.
   nasceu desta decisão — deliberada, não descuido. Vale unificar assim que o valor certo
   for confirmado; se for 0.25, são 2 lugares para mudar (token do código + as 6 variants
   Small do Toggle Label).
+
+## Biblioteca exclusiva — achados (2026-08-30)
+
+Levantados ao construir `/biblioteca-exclusiva` a partir do layout do Figma
+(`8261:11151`, 12 anotações) e ao extrair o acervo real de
+`https://www.foodconnection.com.br/materiais-de-download/` (3 primeiras páginas,
+30 materiais). Nenhum é executado nesta rodada.
+
+### Decisões tomadas na revisão do layout (Pedro, 2026-08-30)
+
+- **Banner de bloqueio removido.** A fase 1 tinha um banner "Faltam N campos…" no topo
+  da aba. O Figma não o desenha e a anotação move o bloqueio para o card (cadeado no
+  badge de tipo) + modal de incentivo ao clicar em "Baixar". O banner saiu; o componente
+  `library-gate-banner` não chegou a existir nesta versão.
+- **Grade paginada mantida.** Selecionar uma categoria continua substituindo Destaque +
+  seções por uma grade cronológica de 20 por página, com contador. O Figma só desenhou o
+  estado inicial da aba, e a anotação do filtro ("filtram os conteúdos abaixo") não
+  conflita com isso.
+- **Terceira seção proposta: "Mais acessados do portal".** O Figma tem 3 seções, todas
+  com "Título da Seção" de placeholder. As duas primeiras vieram do briefing (Novos
+  materiais, Para o seu setor); a terceira foi proposta pelo dev e **espera confirmação**.
+  Ela é suprimida quando "Para o seu setor" cai no fallback (c), que já se chama "Mais
+  acessados do portal" — nesse caso a aba tem 2 seções, não 3.
+
+### Taxonomia — 80% do acervo sem categoria editorial na fonte
+
+- 🔴 **EM ABERTO — dado para a discussão com o tech lead.** **24 dos 30 materiais (80%)**
+  tiveram a categoria INFERIDA pelo tema do título, porque a URL deles não carrega
+  categoria editorial nenhuma. Só 6 vivem sob um caminho editorial
+  (`/proteina-animal/`, `/ingredientes/`, `/sustentabilidade/`). Os outros 24 vivem sob
+  `/materiais-de-download/` (o container do acervo) ou `/eventos/<feira>/` (hub de
+  feira). O cabeçalho da própria página de material confirma: exibe "Materiais de
+  Download" no lugar da categoria. **Na fonte, o container virou a categoria.** Cada item
+  inferido está comentado em `src/mocks/biblioteca.ts`; o balanço é impresso no console
+  em DEV (`src/dev/biblioteca-extracao-log.ts`).
+- 🔴 **EM ABERTO** — dois itens sob `/materiais-de-download/` **não são material de
+  download**, são artigos editoriais ("Proteína de inseto…", "Ozempic, 6×1 e custo da mão
+  de obra…"): texto corrido, sem arquivo associado. O container mistura artigo e
+  material. Se a Biblioteca espelhar o container, ela lista artigo como se fosse
+  material baixável.
+
+### `[Pesquisa]` — quarto tipo que o contrato não tem
+
+- 🔴 **EM ABERTO** — o título "O poder da IA no mercado de alimentos e bebidas… **[Pesquisa]**"
+  traz um sufixo de tipo que **não existe em `MaterialType`** (`'ebook' | 'whitepaper' |
+  'infografico'`). Mapeado para `'whitepaper'` — o mais próximo dos três — e comentado no
+  mock. **Decisão pendente: `MaterialType` ganha `'pesquisa'`, ou a redação passa a usar
+  `[Whitepaper]`?**
+- Nas 3 páginas extraídas **não apareceu nenhum `[Infográfico]` nem `[Whitepaper]`**. Os
+  dois tipos existem no contrato e estão implementados (badge, cor), mas não têm caso
+  real no protótipo — só stories.
+
+### `subsetor` não existe no modelo de perfil
+
+- 🔴 **EM ABERTO** — a cadeia de fallback de "Para o seu setor" depende de um `subsetor`
+  declarado no perfil, e **esse campo não existe**. `PerfilCampos`
+  (`src/mocks/dashboard-perfil.ts`) só tem `setor`, cujos valores (`OPCOES_SETOR`: Agro,
+  Alimentos & Bebidas, Embalagens, Saúde, Logística, Varejo, Tecnologia, Outro) são
+  **setores macro incompatíveis com a taxonomia editorial do portal** — "Proteína animal",
+  o exemplo do próprio briefing, não está nessa lista. O campo foi declarado em
+  `PerfilBiblioteca` (`src/mocks/biblioteca.ts`), e **não** adicionado a `PerfilCampos`,
+  de propósito: a aba Perfil calcula completude com `Object.keys(PERFIL_CAMPOS).length`,
+  então um campo novo lá mudaria a matemática de uma tela fora do escopo. **Decisão
+  pendente: `subsetor` é campo novo do cadastro (com a taxonomia editorial como domínio),
+  ou `setor` é que precisa mudar de domínio?**
+
+### Três campos do `Material` que a fonte não tem
+
+- `requerCadastroCompleto`, `disponivel` e `baixado` **são simulados**. A anotação diz
+  "ALGUNS materiais são bloqueados", então o gate é por material — mas **nada na fonte
+  diz quais**. Hoje: 15 de 30 bloqueados, 3 indisponíveis, 5 baixados, escolhidos à mão.
+  🔴 **Decisão pendente: o que torna um material "bloqueado"?** (tipo? patrocinador?
+  campo no CMS?) É a regra que o back-end precisa implementar e que ninguém definiu.
+
+### Capa 16:9 — a fonte não tem 16:9
+
+- 🔴 **EM ABERTO** — o LibCard especifica capa 16:9 (`aspect-[160/90]` no Figma). Das 26
+  capas com dimensão na URL, **apenas 1 é 16:9** (1024×576). A maioria é banner largo: 14
+  em 1024×423 (**2,42:1**), 6 em 1024×546, 5 em 1024×532. Forçar 16:9 com `object-cover`
+  recorta ~26% da altura das 2,42:1 — e essas são artes promocionais **com texto**, então
+  o recorte corta palavras. O card implementa 16:9 como desenhado; a proporção precisa ser
+  revisitada com as capas reais na mão.
+
+### `arquivoUrl` não é extraível da fonte
+
+- Nenhuma das 30 páginas de material expõe link direto pro arquivo — o download fica atrás
+  de formulário. `arquivoUrl` aponta pra **página pública do material**, não pro arquivo, e
+  está comentado como tal no mock. **Para o back-end: a URL do arquivo é dado que só existe
+  do lado de dentro.**
+
+### `CategoriaColor` tem 7 cores para 8 categorias — e nenhum tom neutro
+
+- 🔴 **EM ABERTO** — o portal tem 8 categorias editoriais e `CategoriaColor`
+  (`src/components/categoria/types.ts`) oferece 7. `Embalagens` e `Indústria A&B`
+  compartilham `primary-600`. Nenhuma cor nova foi inventada fora do DS.
+- 🔴 O LibCard "Indisponível" precisa da categoria em **neutro** (`#6C7F9E`), e
+  `CategoriaColor` não tem tom neutro — o card sobrescreve por `className`. Ou o
+  `Categoria` ganha um tom `neutral`, ou o esmaecimento vira responsabilidade do
+  consumidor de forma documentada.
+
+### Divergências entre o Figma e o que foi implementado
+
+- **Card como `<button>`.** No Figma o LibCard aberto é um botão contendo outros quatro
+  controles (Baixar, abrir post, compartilhar, favoritar). Botão dentro de botão é HTML
+  inválido e o clique conflita. Implementado como `<article>` com o título sendo o link do
+  post e os controles como irmãos. **Documentado o correto, não o desenhado** (regra 4 do
+  CLAUDE.md).
+- **Glifo do favoritar.** O Figma usa `bookmark` no ActionBar; o DS usa `favorite`
+  (coração) em todos os 5 pontos de favoritar do repo, e a anotação diz "Favorita e abre
+  toast. Semelhante a Últimas leituras" — ou seja, é a mesma feature. Implementado com o
+  `FavoritoToggle` canônico. **Trocar o glifo só aqui é que seria a divergência.**
+- **Abertura do card.** O component set tem `Hovered + Opened=On`, mas não
+  `Enabled + Opened=On` — o que sugere abertura por hover. Implementado assim (mais foco
+  de teclado, por acessibilidade). 🔴 **O comportamento em touch não foi desenhado**: sem
+  hover, o card fica sempre fechado e o lead/ActionBar ficam inalcançáveis no mobile.
+  Precisa de decisão (tap abre? o card aberto vira bottom sheet?).
+- **O Destaque não tem ação de baixar.** O Figma desenha só badge + categoria + manchete
+  + lead + imagem; o card inteiro leva ao post. Uma primeira versão desta implementação
+  acrescentou um botão "Baixar" abaixo do card — removido, era invenção. O cadeado no
+  badge continua aparecendo ali: informa o estado do material, não oferece ação.
+- **Na grade filtrada o card não abre.** A expansão de 236→519px empurraria a linha
+  inteira e o SidePanel não cabe numa coluna de grade. O Figma não desenha a grade.
+- **`Link Button` "ver todos" no cabeçalho de seção** existe no Figma mas está `hidden`.
+  Não foi renderizado. O caminho para o acervo completo de uma categoria é a FilterBar.
+
+### `DashboardTabs` passou a misturar duas formas de navegação
+
+- A aba "Biblioteca exclusiva" é a única com `href` absoluto (`/biblioteca-exclusiva`): é
+  uma **rota**, enquanto as outras cinco são `?tab=` de `/dashboard-perfil-v4`. **Para o
+  back-end a barra deixou de ser uniforme**; vale decidir se as outras cinco também viram
+  rotas numa próxima rodada.
+- O mock do Figma mostra as abas "Visão geral · Perfil · Newsletter · Downloads ·
+  Favoritos · Biblioteca exclusiva" — conjunto do `dashboard-tabs-v3`, que está
+  **arquivado**. O canônico (`dashboard-tabs`) é "Meu Perfil · Downloads · Newsletter ·
+  Últimas leituras · Favoritos". Tratado como instância desatualizada no mock, não como
+  pedido de mudança. **Confirmar.**
+
+### `favoritos-store` não é renderizável no servidor
+
+- `useFavorito`/`useFavoritos` chamam `useSyncExternalStore` sem `getServerSnapshot`, o
+  que faz `renderToString` estourar em qualquer tela que monte um `NewsCard`. Não é bug
+  em produção (o app é client-only), mas impede smoke test de render. Uma linha resolve
+  (o `biblioteca-gate-store` já faz isso com `latchNoServidor`). Não corrigido aqui por
+  estar fora do escopo e mexer em store compartilhada.
+
+### Normalização de título disclosada
+
+- A regra é preservar o título íntegro, e ela foi seguida — com **uma** exceção declarada:
+  espaço em branco nas bordas é aparado. O título "Ozempic, 6×1 e custo da mão de obra…"
+  vem da fonte com espaço final (artefato do HTML). Sufixos entre colchetes, acentuação,
+  pontuação, o `6×1` com sinal de multiplicação e a caixa **não** foram tocados.
+
+### Revisão do layout — 2026-08-30 (segunda rodada)
+
+Sete correções pedidas pelo Pedro comparando a implementação com o Figma. As três
+primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso.
+
+- **Seções perderam o texto de apoio.** O briefing (regra 4) pedia um subtítulo
+  explicando a origem da recomendação ("Baseado em Proteína animal, que você indicou no
+  perfil"); o Figma só tem o título. O subtítulo saiu do contrato de `SecaoBiblioteca`.
+  🔴 **Consequência: a origem da recomendação deixou de ser explicada ao leitor.** As
+  três origens (subsetor / histórico de 90 dias / popularidade) continuam distinguíveis
+  em código (`Recomendacao.origem`) e só o elo (c) muda o título da seção — do lado de
+  fora, (a) e (b) agora são indistinguíveis. Se isso importar, o lugar natural é um
+  texto de apoio ou um tooltip no título.
+- **Selo "Baixado" removido.** O briefing (regra 4) pedia o selo em qualquer seção; o
+  Figma não o desenha. `material.baixado` continua no mock e **sem consumidor visual** —
+  🔴 decidir se volta em outro formato ou se o campo sai do contrato.
+- **Detalhes abrem no CLIQUE, não no hover.** O nome da variante do Figma
+  (`Hovered, Opened=On`) tinha levado a implementar abertura por hover. Agora o card
+  fechado é um `<button>` com `aria-expanded`. Resolve de quebra o achado anterior sobre
+  o comportamento em touch: clique funciona nos dois. **O título deixou de ser link** —
+  duas ações concorrentes no mesmo alvo produziam o clique errado; ir para o post é a
+  ação do `open_in_new` na ActionBar, como a anotação já dizia.
+- **Barra de rolagem horizontal na página.** O trilho e a FilterBar sangravam até a borda
+  da viewport com `-mx-4 px-4`, o que empurrava o conteúdo para fora do container e dava
+  scroll no DOCUMENTO, não no trilho. A sangria saiu; o wrapper do carrossel ganhou
+  `overflow-hidden` + `min-w-0`. **Para o back-end: a rolagem tem de ser do trilho, nunca
+  da página** — é o erro fácil de reintroduzir ao reimplementar.
+- **Categoria sem acervo não vira filtro** (`categoriasComAcervo()`). `Embalagens` saiu
+  da barra. 🔴 **Consequência: o estado vazio da grade não é mais alcançável pela
+  interface** — só por link direto de uma categoria que ficou sem conteúdo depois de
+  compartilhada. Ele continua implementado e é o cenário `acervo-vazio`.
+- **Clicar no filtro ativo desliga.** Antes o filtro ativo era inerte e só o "Todos"
+  voltava ao acervo. Agora desligar acende o "Todos" e some com o `?tema=` da URL.
+- **Grade filtrada em 4 colunas** (`grid-cols-4` explícito, 2 no tablet, 1 no mobile).
+  Estava em `auto-fill minmax(236px,1fr)` brigando com o `w-[236px]` que o card declarava
+  internamente — daí o desalinhamento. **O card não declara mais largura própria**: quem
+  dá é o consumidor (o `<li>` do trilho, a célula da grade). Na grade o card aberto ocupa
+  **duas colunas**, então o painel abre dentro da própria grade, sem modal.
+
+### Filter chip — um controle de filtro, não dois (2026-08-30)
+
+- ✅ **resolvido.** A primeira versão da FilterBar da Biblioteca montava os filtros com
+  `Toggle` de rótulo. Estava errado: filtrar conteúdo por categoria já tinha controle
+  desenhado — o **`Filter chip`** do MD3 (Figma `1859:18460`) —, aplicado na barra "Refine
+  sua busca" da tela de Busca. O Pedro corrigiu o Figma (`8458:115949` agora instancia
+  `Filter chip`) e a implementação seguiu.
+- Criado `src/components/filter-chip/`, fiel ao component set: `Configuration` (Label only
+  | Label & leading icon) × `Selected` × `Show trailing icon`, mais hover/foco/disabled em
+  CSS. Selecionar empilha **três** sinais, todos do Figma — check de 20px à esquerda, a
+  borda some e entra fundo `secondary-50`, e o texto vira `primary-600` —, e o padding
+  muda de `px-4` para `pl-2 pr-4` para o check não empurrar o rótulo.
+- **A tela de Busca foi convergida para o mesmo componente.** O markup à mão que vivia lá
+  (`src/screens/buscar/index.tsx`) era a razão de o chip não estar "disponível" na hora de
+  construir a Biblioteca — chip sem componente é chip que vai ser reinventado. Os chips da
+  busca abrem menu (trailing `expand-more`), então recebem `ariaHasPopup="menu"` em vez de
+  `aria-pressed`: disparador de menu não é botão de dois estados.
+- 🔴 **Para o back-end e para a próxima rodada de doc:** o `Toggle [1.0]` com rótulo
+  continua existindo e é legítimo — o que ele NÃO é, é chip de filtro. A regra: filtro de
+  conteúdo → `FilterChip`; ligar/desligar uma preferência → `Toggle`.
+
+### Barra de rolagem do trilho ficava visível
+
+- ✅ **resolvido.** A correção anterior tirou a barra de rolagem do DOCUMENTO, mas a do
+  próprio trilho continuava desenhada — em macOS configurado para "sempre mostrar
+  scrollbar", uma faixa cinza atravessava a seção inteira e lia como erro de layout. O
+  trilho e a FilterBar passaram a usar `.scrollbar-hide`, utilitário que **já existia** em
+  `src/index.css` e que a `especialistas-section` (o outro carrossel do repo) já usava. A
+  rolagem continua inteira: arrasto, roda horizontal, teclado e as setas.
+
+### O card cortado do trilho não pode ser resto de divisão (2026-08-30)
+
+- ✅ **resolvido.** O trilho precisa terminar com um card visivelmente cortado — é o corte
+  que diz "role para o lado". Com o card em largura fixa (os 236px do Figma) esse corte
+  virava **sobra da divisão**: num container de 1232px sobravam **192px do quinto card,
+  81% dele**, o que não lê como corte e sim como card estreito demais.
+- A conta foi invertida: **a espiada é fixa e a largura do card sai dela.**
+
+      card = (100% − espiada − colunas × gap) / colunas
+
+  Implementado com custom properties no `<ul>` do `LibCarousel` (`--lib-card`,
+  `--lib-gap`, `--lib-peek`, `--lib-cols`), que os `<li>` consomem — o card aberto é
+  `2 × card + gap`. Degraus: 1 coluna → 2 (`sm`) → 3 (`lg`) → 4 (`xl`); espiada 64px até
+  o `lg` e 56px no `xl`. Resultado: a espiada fica entre **20% e 27% do card de 360px a
+  1920px**, em vez de variar com o resto da divisão.
+- 🔴 **Para o back-end: 236px NÃO é a largura do card.** É o valor que a fórmula devolvia
+  na largura de container do Figma. Reimplementar o trilho com largura fixa reintroduz o
+  bug em qualquer container que não seja exatamente aquele. Pela mesma razão o card
+  aberto dá 564px no container cheio, e não os 519px do component set: é a mesma
+  proporção (dois cards + gap) sobre a largura derivada.
+- A grade filtrada não usa a fórmula: lá não há espiada (nada a rolar), as colunas são
+  `grid-cols-4` e o card preenche a célula. O `LibCard` aberto cai no fallback de 236px
+  para a coluna da capa (`var(--lib-card, 236px)`), já que a variável só existe no trilho.
+
+### Expansão do card na grade filtrada não pode mudar tamanho (2026-08-30)
+
+> ⤷ **Superado no mesmo dia** pela entrada "Uma expansão só, para baixo, nos dois
+> contextos" no fim deste arquivo: o Figma foi atualizado e a prop `layout` deixou de
+> existir. O registro fica porque o diagnóstico (mudar o tamanho reflui a linha) segue
+> válido e é o motivo de a solução final ser a que é.
+
+- ✅ **resolvido.** Na grade, o card aberto ocupava `col-span-2`. Consequência: a cada
+  clique a linha inteira se reorganizava e o card saía de baixo do cursor.
+- O `LibCard` ganhou a prop **`layout`**, e a diferença não é estética:
+  - **`trilho`** — a fila rola de lado, o card pode crescer de lado. Aberto vira card +
+    painel lado a lado; o `<li>` passa de um card para dois cards + gap.
+  - **`grade`** — a célula tem largura fixa. O card **não muda de tamanho**: o painel
+    empilha embaixo e só a altura cresce.
+- **Referência do Pedro: MEC Livros** (`meclivros.mec.gov.br`), que resolve exatamente
+  assim — o mesmo componente com duas expansões por contexto. No carrossel,
+  `.gallery-item { width:232px } .gallery-item.expanded { max-width:560px }`; na grade de
+  resultados, `.search-results-grid .gallery-item { width:100%!important;
+  height:fit-content }` — travado na largura da célula, só cresce para baixo.
+- Detalhe que faz a expansão não deslocar nada: a moldura do aberto (`p-3` + borda)
+  comprimiria o conteúdo e empurraria a capa. Em vez de dar padding a todo card fechado
+  (o que mudaria o espaçamento da grade e desalinharia a primeira coluna do título da
+  seção), **o card aberto cresce para FORA** — `-mx-3 -mt-3` + `w-[calc(100%+1.5rem)]`.
+  A calha da grade é `gap-6` (24px), então a borda cai exatamente no meio dela, em espaço
+  vazio. **Para o back-end: a medida da sangria e a da calha são a mesma coisa** — mudar
+  o `gap` da grade sem mudar a sangria faz a moldura invadir o card vizinho.
+- A `<ul>` da grade ganhou `items-start`, senão o card aberto esticaria os vizinhos da
+  mesma linha até a altura dele.
+
+### `--lib-card` com `100%` dava largura diferente em cada nível (2026-08-30)
+
+- ✅ **resolvido.** A fórmula da largura do card estava como
+  `--lib-card: calc((100% − espiada − colunas × gap) / colunas)`. Custom property é
+  substituída como **texto**, não como valor já resolvido — então cada elemento que lia
+  `--lib-card` resolvia a porcentagem contra o **próprio pai**:
+  - no `<li>` do trilho o pai é a `<ul>` (1232px) → 270px, correto;
+  - na coluna da capa dentro do card ABERTO o pai é o card (540px de conteúdo) →
+    `(540 − 56 − 96) / 4 = 97px`. A capa encolhia para um terço e o título quebrava em
+    três linhas num filete.
+- Corrigido trocando `100%` por **`100cqw`** e declarando `container-type: inline-size`
+  (utilitário `@container`) no wrapper do trilho. `cqw` resolve contra o container
+  declarado, não contra o pai imediato, então `--lib-card` passou a ser um comprimento
+  absoluto que qualquer descendente lê com o mesmo valor.
+- 🔴 **Para o back-end, é a armadilha central desta fórmula:** ela precisa de um
+  ancestral de referência FIXO. Escrita com `%`, ela devolve resultados diferentes em
+  cada nível de aninhamento e o erro só aparece no estado aberto — o estado que ninguém
+  testa primeiro.
+
+### Uma expansão só, para baixo, nos dois contextos (2026-08-30)
+
+- O Figma do `LibCard` foi atualizado pelo Pedro: o eixo `Opened` virou **`Expanded`**, e
+  o expandido (`State=Hovered, Expanded=On`, node `8296:91808`) passou a ser
+  **262×411, em COLUNA, `bg-white`** — o card fechado (236px) mais 12px de padding de cada
+  lado, com o SidePanel **abaixo**. Não é mais o split de 519px lado a lado.
+- Consequência: **a prop `layout` (`trilho` | `grade`) foi removida.** Trilho e grade
+  filtrada usam a mesma interação, que é a que o Figma agora desenha — e é também a que a
+  correção anterior já tinha construído para a grade. O `<li>` do trilho parou de crescer
+  ao abrir; quem cresce é só a altura.
+- A sangria (`-mx-3 -mt-3` + 24px de largura) vale nos dois: a calha é 24px tanto no
+  trilho (`--lib-gap`) quanto na grade (`gap-6`), então a moldura cai no meio dela.
+- 🔴 **Para o back-end, o acoplamento a não quebrar: a sangria e a calha são a mesma
+  medida.** Mudar o `gap` sem mudar a sangria faz a moldura invadir o card vizinho.
+- O `<ul>` do trilho ganhou `items-start`, senão o stretch do flex esticaria todos os
+  cards fechados até a altura do expandido.
+
+### Hover do card não estava implementado (2026-08-30)
+
+- ✅ **resolvido.** O component set tem `State=Hovered, Expanded=Off` (node `8424:11813`)
+  com o **título em ultramarine** (`secondary-950`), e isso tinha se perdido quando a
+  abertura passou de hover para clique. O card fechado voltou a ter hover; clicar
+  continua sendo o que expande.
+- No expandido o título **volta para `primary-600`**, como o Figma desenha: ali a moldura
+  já destaca o card, e manter o azul de hover competiria com ela. Material indisponível
+  não tem hover — não é clicável.
+
+### Ordem da ActionBar (2026-08-30)
+
+- O Figma ganhou um `action-group` (`flex-[1_0_0] justify-end`) envolvendo os três ícones:
+  "Baixar" fica à esquerda e abrir/compartilhar/favoritar vão para a **direita**, separados
+  dele. Sem isso os quatro controles ficam agrupados à esquerda e o download perde a
+  hierarquia de ação principal.
+- O lead do expandido é `line-clamp-4` — a altura que o Figma reserva (411px menos card,
+  paddings e ActionBar).
+
+### Grupos de hover aninhados sem nome (2026-08-30)
+
+- ✅ **resolvido.** Passar o mouse em UM card acendia o título de TODOS. Causa: dois
+  `group` anônimos aninhados — o `LibCarousel` usa um para revelar as setas, e o `LibCard`
+  passou a usar outro para o hover do título. `group-hover:` casa com **qualquer**
+  ancestral que tenha a classe `group`, então o hover no trilho satisfazia a condição para
+  todos os cards de uma vez.
+- Corrigido com grupos NOMEADOS: `group/trilho` (setas) e `group/card` (título), com
+  `group-hover/trilho:` e `group-hover/card:`. Verificado que não sobrou nenhum `group`
+  anônimo na árvore da Biblioteca.
+- 🔴 **Regra geral para o repo:** componente que expõe `group` e pode ser aninhado em
+  outro deve nomear o grupo. Grupo anônimo só é seguro em componente-folha. Vale conferir
+  os outros usos de `group` no repo (`NewsCard`, `CategoryColumn`, `DestaqueSection` têm
+  `group` para o hover do título) antes de aninhá-los em algo que também use `group`.
+
+### Tooltips da ActionBar eram cortados pelo container (2026-08-30)
+
+- ✅ **resolvido.** O balão do `Tooltip` é `absolute` dentro do gatilho, então **qualquer
+  ancestral com `overflow` o corta**. A ActionBar é a última linha do card expandido, e o
+  card vive dentro do trilho (`overflow-x-auto` no `<ul>` + `overflow-hidden` no wrapper):
+  com o default `side="bottom"`, o balão saía pela borda inferior e aparecia cortado.
+- Os três controles de ícone passaram a `side="top"` — o balão cai sobre o lead, dentro
+  dos limites do card, e sobrevive no trilho e na grade. "Baixar" **não** ganhou tooltip:
+  já tem rótulo visível, e balão repetindo a palavra que está na tela não informa nada
+  (mesmo racional do `showLabel` no `FavoritoToggle`).
+- Para isso o `Toggle` ganhou a prop **`tooltipSide`** (repassada pelo `FavoritoToggle`),
+  com default `'bottom'` — nenhum dos outros cinco pontos de favoritar do repo muda. O
+  lado tem de ser escolhido por quem conhece o container, não pelo Toggle.
+- 🔴 **Limitação conhecida, não corrigida:** o balão continua preso ao fluxo (sem portal),
+  então um tooltip largo no ícone mais à direita do ÚLTIMO card visível do trilho ainda
+  pode encostar na borda do wrapper. A correção de fundo é renderizar o balão em portal —
+  vale quando o `Tooltip` for revisto, porque afeta todos os consumidores, não só este.
+
+### Título do card expandido virou link para o post (2026-08-30) — REVERTIDO
+
+> ⤷ **Revertido no mesmo dia.** Ver "Título do card não é link, e por quê" no fim deste
+> arquivo. O registro fica porque a razão da reversão só se entende sabendo o que foi
+> tentado.
+
+
+- O Figma ganhou `State=Hovered, Expanded=On` com o **título em ultramarine**
+  (node `8458:116227`): no card expandido o título é link para o post.
+- Isso obrigou a **separar os alvos de clique no expandido**, porque `<a>` dentro de
+  `<button>` é HTML inválido e o clique conflita: ali a **capa** é o botão que fecha
+  (`aria-expanded` + `aria-label` "Recolher detalhes de…") e o **título** é um `<a>`
+  irmão. Fechado, os dois voltam a ser um botão só — o card inteiro expande.
+- **Para o back-end: o alvo do clique MUDA entre os dois estados.** Fechado, o card
+  inteiro expande; expandido, a capa recolhe e o título navega. Verificado que nenhum
+  `<a>` fica dentro de `<button>` em nenhum dos três estados.
+- Tooltip do `open_in_new` passou de "Abrir post" para **"Abrir"**. O `aria-label` do
+  botão continua "Abrir o post": o balão é reforço curto, o nome acessível precisa ser
+  autoexplicativo fora de contexto.
+
+### Distância entre o título da seção e o trilho (2026-08-30)
+
+- ✅ **resolvido.** A seção declarava `gap-4` (16px) e o espaço visível era 28px: o
+  `LibCarousel` reserva `py-3` (12px) para a sangria do card expandido, e esses 12px
+  somavam ao gap. O wrapper do trilho ganhou `-mt-3`, que cancela a reserva **para fora**.
+  Agora o gap declarado pelo consumidor é o gap visto. 🔴 **Para o back-end: a reserva de
+  12px é interna ao trilho e não deve entrar na conta do espaçamento da seção.**
+
+### Seção "Biblioteca exclusiva" na home (2026-08-30)
+
+- Criada `src/components/biblioteca-section/` a partir do node `8424:112623`. Anotação:
+  *"Proposta para substituição do banner de 'Material para Download'. 1. Uma seção
+  mostrando os 12 'Materiais de download' mais recentes. Objetivo: mostrar valor para o
+  leitor na home e incentivar ainda mais o cadastro. (Semelhante a 'Reportagens especiais'
+  do CE)"*.
+- Entrou como **proposta, não como substituição consumada**: vive atrás do eixo
+  `?biblioteca=secao` da ScenarioBar, com o `DownloadSection` atual como **default**. Sem
+  os dois disponíveis na mesma tela não dá para comparar, e trocar direto apagaria o
+  banner antes da decisão. 🔴 **Decisão pendente: a seção substitui o banner, ou os dois
+  convivem?**
+- Param próprio (`biblioteca`), não `cenario` — este último já é do destaque único, e dois
+  eixos não dividem parâmetro.
+- Reusa `LibCarousel` + `LibCard` **sem variante nova**; a diferença é só o painel com
+  gradiente (`secondary-500` → `secondary-50`, ambos a 40%). **Para o back-end: é a mesma
+  seção da aba logada, não uma cópia com regras próprias.**
+- 🔴 **A CONFIRMAR — o gate na home.** A seção renderiza os cards **sem cadeado**: o
+  visitante pode nem estar logado, e o bloqueio depende de saber o estado do cadastro, que
+  é dado da área logada. A conversão fica para a chegada na aba. Falta decidir se, para
+  quem JÁ está logado com cadastro incompleto, o cadeado deve aparecer na home.
+
+### Título do card não é link, e por quê (2026-08-30)
+
+- ✅ **decidido, depois de tentar o contrário.** Uma versão intermediária tornou o título
+  do card expandido um link para o post (node `8458:116227`, título em ultramarine).
+  Revertido pelo Pedro: **com o título clicável, a área que sobra para FECHAR o card
+  encolhe para a capa**, e quem só queria recolher acerta o post sem querer.
+- A regra que sobrou: **o card é UM alvo de clique nos dois estados** — fechado expande,
+  expandido recolhe —, e o hover leva o título a ultramarine nas duas situações. Quem abre
+  o post é o `open_in_new` da ActionBar, que existe exatamente para isso.
+- 🔴 **Para o back-end: a frequência das ações é o critério.** Recolher acontece toda vez
+  que alguém abre um card por curiosidade; abrir o post é a exceção. A ação frequente fica
+  com a área grande.
+
+### Seção da home convive com o banner de download (2026-08-30)
+
+- A anotação do Figma propõe a `BibliotecaSection` como **substituição** do
+  `DownloadSection`. Decisão do Pedro: **os dois convivem** até o cliente aceitar as regras
+  propostas, que ainda vão para aprovação. O eixo de ScenarioBar que alternava entre eles
+  foi removido — a home renderiza os dois, sempre.
+- 🔴 **Segue pendente:** confirmada a proposta, o `DownloadSection` sai da home? Enquanto
+  não sai, a home tem duas chamadas de download em sequência.
+
+### Trilho era recortado antes da borda do painel (2026-08-30)
+
+- ✅ **resolvido.** Dentro da `BibliotecaSection` o trilho terminava no padding do painel,
+  não na borda dele: sobrava uma faixa de fundo azul à direita e o corte lia como acidente
+  de layout, não como convite a rolar.
+- O trilho recebeu margem negativa à direita **do tamanho exato do padding do painel**
+  (`-mr-6 lg:-mr-10` contra `px-6 lg:px-10`), então o card cortado encosta na borda. À
+  esquerda o padding fica: é ele que alinha o primeiro card ao título.
+- 🔴 **Para o back-end, o acoplamento:** a sangria e o padding do painel são a mesma
+  medida, e são responsivos. Mudar um sem o outro faz o trilho vazar para fora do box ou
+  voltar a parar antes dele.
+
+### Material indisponível não é novidade (2026-08-30)
+
+- ✅ **resolvido.** A vitrine da home e a seção "Novidades para você" listavam material
+  com `disponivel: false` — anunciar como recente algo que não dá para baixar é a pior
+  forma de gastar a atenção do leitor. `materiaisMaisRecentes()` passou a filtrar por
+  `disponivel`.
+- Os dois materiais marcados como indisponíveis foram movidos para **categorias que não
+  aparecem entre os 12 mais recentes** (Sorvetes e ESG), a pedido do Pedro. Assim o estado
+  "Indisponível" do `LibCard` continua alcançável — filtrando por aquelas categorias — sem
+  nunca aparecer onde contradiz o próprio rótulo da seção. Nenhum dos dois está em
+  `MAIS_ACESSADOS_IDS`, e cada uma das duas categorias mantém pelo menos um material
+  disponível ao lado.
+- 🔴 **Para o back-end: é uma regra, não um arranjo do mock.** "Mais recentes" exclui
+  indisponíveis. Se o CMS despublicar um material que está no topo da lista, ele tem de
+  sair da vitrine, não ficar cinza nela.
+
+### "Novos materiais" virou "Novidades para você" (2026-08-30)
+
+- Renomeada a primeira seção da aba. O `id` da seção acompanhou (`novos-materiais` →
+  `novidades`); ele não aparece em URL, só no `data-handoff` e nas chaves de render.
+
+### Sangria do trilho: margem negativa não alarga elemento com largura travada (2026-08-30)
+
+- ✅ **resolvido em duas tentativas.** O trilho da seção da home continuava sendo cortado
+  antes da borda do painel mesmo depois de receber `-mr-6 lg:-mr-10`. Causa: o wrapper do
+  `LibCarousel` é `w-full`, e **margem negativa só alarga elemento de largura `auto`** —
+  com a largura travada em 100% ela apenas permite sobreposição, sem esticar nada.
+- Correção: margem negativa **mais** largura explícita —
+  `w-[calc(100%+var(--spacing)*6)]` / `lg:w-[calc(100%+var(--spacing)*10)]`, casando com
+  o `px-6 lg:px-10` do painel.
+- 🔴 **Para o back-end:** as três medidas (padding do painel, margem negativa e largura
+  extra do trilho) são a MESMA e são responsivas. Mudar uma sem as outras faz o trilho
+  vazar para fora do box ou voltar a parar antes dele.
