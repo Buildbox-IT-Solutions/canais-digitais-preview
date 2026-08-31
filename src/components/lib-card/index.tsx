@@ -47,18 +47,24 @@ import type { ILibCardProps } from './types'
  * o `open_in_new` da ActionBar, que existe exatamente para isso ("Abre o post", na
  * anotação).
  *
- * ## Abre para BAIXO, e abrir não move nada
+ * ## Abre para BAIXO, e a moldura cresce PARA DENTRO
  *
  * O card expandido do Figma (262×411) é o card fechado (236px) mais 12px de padding de
- * cada lado, em COLUNA, com o SidePanel abaixo: a expansão não muda a largura da coluna,
- * só a altura — vale igual no trilho e na grade filtrada.
+ * cada lado, em COLUNA, com o SidePanel abaixo. Aqui a expansão **não muda a largura da
+ * célula**: o card continua ocupando exatamente o mesmo espaço, e só a altura cresce.
+ * Vale igual no trilho e na grade filtrada.
  *
- * O detalhe que faz abrir não deslocar nada: a moldura (`p-3` + borda) comprimiria o
- * conteúdo e empurraria a capa 12px. Em vez de dar padding a todo card fechado, o card
- * expandido cresce **para fora** — `-mx-3 -mt-3` mais 24px de largura. A calha é 24px nos
- * dois contextos (`gap-6` na grade, `--lib-gap` no trilho), então a borda cai exatamente
- * no meio dela, em espaço vazio. **Para o back-end: a sangria e a calha são a mesma
- * medida** — mudar uma sem a outra faz a moldura invadir o card vizinho.
+ * A moldura (`p-3` + borda) cresce para DENTRO, então a capa do card aberto fica 24px mais
+ * estreita e 12px mais à direita que a dos vizinhos fechados. É um deslocamento pequeno e
+ * local — do próprio card clicado, nunca dos vizinhos.
+ *
+ * Uma versão anterior fazia a moldura crescer para FORA (`-mx-3 -mt-3` + 24px de largura),
+ * para a capa não se mover nem um pixel. Funcionava no meio do trilho e **quebrava nas duas
+ * pontas**: um scroller não deixa alcançar conteúdo à esquerda da origem, e no fim a margem
+ * negativa reduz o `scrollWidth` — nos dois casos a moldura aparecia recortada. Além disso
+ * amarrava três medidas em dois arquivos (sangria, calha do trilho, calha da grade), e
+ * mudar uma sem as outras invadia o card vizinho. Trocado em 2026-08-31: 12px de
+ * deslocamento local valem menos que uma classe inteira de bugs de borda.
  *
  * ## Largura é do consumidor, não do card
  *
@@ -190,9 +196,9 @@ export function LibCard({
 			data-estado={bloqueado ? 'bloqueado' : 'enabled'}
 			data-aberto="true"
 			className={twMerge(
-				// gap-2 = os 8px entre o card e o SidePanel no Figma. A largura da coluna não
-				// muda: a moldura sangra 12px para cada calha (ver o bloco de doc).
-				'-mx-3 -mt-3 flex w-[calc(100%+1.5rem)] min-w-0 flex-col items-start gap-2 rounded-lg border border-neutral-100 bg-white p-3',
+				// gap-2 = os 8px entre o card e o SidePanel no Figma. Nenhuma margem negativa:
+				// a moldura fica DENTRO da célula (ver o bloco de doc).
+				'flex w-full min-w-0 flex-col items-start gap-2 rounded-lg border border-neutral-100 bg-white p-3',
 				className,
 			)}
 		>

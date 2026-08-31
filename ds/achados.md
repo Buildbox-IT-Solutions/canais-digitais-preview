@@ -938,6 +938,11 @@ primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso
 
 ### Sangria do trilho: margem negativa não alarga elemento com largura travada (2026-08-30)
 
+> ⤷ Vale para o trilho da seção da home (o wrapper do carrossel). A sangria da MOLDURA DO
+> CARD, descrita mais abaixo, foi removida em 31/08 — ver "Moldura do card expandido
+> quebrava nas pontas do carrossel".
+
+
 - ✅ **resolvido em duas tentativas.** O trilho da seção da home continuava sendo cortado
   antes da borda do painel mesmo depois de receber `-mr-6 lg:-mr-10`. Causa: o wrapper do
   `LibCarousel` é `w-full`, e **margem negativa só alarga elemento de largura `auto`** —
@@ -989,3 +994,39 @@ primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso
   de existir sem o movimento que os justificava. `materiaisEmDestaque()` virou
   `materialEmDestaque()` e devolve `Material | null`; a tela não renderiza o destaque se o
   acervo inteiro estiver indisponível.
+
+### Moldura do card expandido quebrava nas pontas do carrossel (2026-08-31)
+
+- 🔴 **Bug.** A moldura do card expandido (`p-3` + borda) crescia PARA FORA
+  (`-mx-3 -mt-3` + 24px de largura) para a capa não se mover ao abrir. Funcionava no meio
+  do trilho e **quebrava nas duas pontas**:
+  - **No começo:** um scroller não deixa alcançar conteúdo à esquerda da origem
+    (`scrollLeft` não vai a negativo), então os 12px da esquerda eram recortados e a
+    moldura aparecia desalinhada do título da seção.
+  - **No fim:** margem negativa REDUZ a contribuição ao `scrollWidth`, então os 12px da
+    direita não eram roláveis e a moldura aparecia cortada na borda do painel.
+- ✅ **resolvido invertendo a direção: a moldura cresce PARA DENTRO.** Sem margem negativa
+  nenhuma. Custo: a capa do card aberto fica 24px mais estreita e 12px à direita da dos
+  vizinhos fechados — deslocamento pequeno, e do próprio card clicado, nunca dos vizinhos.
+- Isso também desfez o acoplamento que estava anotado aqui como armadilha: **a sangria não
+  precisa mais casar com a calha**. Eram três medidas em dois arquivos (sangria do card,
+  `--lib-gap` do trilho, `gap-6` da grade) que tinham de andar juntas. Agora o invariante é
+  um só e local: **o card nunca sai da própria célula.**
+- 🔴 **Regra geral que vale registrar:** margem negativa dentro de um container com
+  `overflow-x-auto` só é confiável no MEIO do conteúdo. Nas pontas, o scroller define a
+  origem e o fim, e o que passa disso não é alcançável.
+
+### Setas do carrossel ficavam sobre o texto do card aberto (2026-08-31)
+
+- ✅ **resolvido.** As setas eram `top-1/2` do trilho. O trilho cresce quando um card
+  expande, então a seta descia para cima do título e do lead. Agora ficam centradas na
+  CAPA: `top-[calc(var(--lib-card)*9/32 + var(--spacing)*3)]` — a capa é 16:9 da largura do
+  card, logo seu centro está a `card × 9/32` do topo, mais os 12px de `py-3` do trilho.
+
+### Documentar um nome de classe faz o Tailwind emiti-la (2026-08-31)
+
+- Curiosidade com consequência pequena: o Tailwind v4 escaneia **todos** os arquivos não
+  ignorados pelo Git, `.md` incluso. Citar `w-[calc(100%+1.5rem)]` neste arquivo faz a
+  regra ser gerada no CSS mesmo sem nenhum componente usá-la. São ~60 bytes órfãos.
+  Registrado para ninguém perder tempo caçando a origem — e para não mutilar a doc por
+  causa disso.
