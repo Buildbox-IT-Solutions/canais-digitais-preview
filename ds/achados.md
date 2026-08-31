@@ -1121,3 +1121,39 @@ Os elementos que vazam são âncoras de título de card fora de qualquer scrolle
 🔴 Fica registrado sem correção: está fora do escopo da Biblioteca e mexe em componentes de
 outras seções. Vale investigar — é a mesma classe de defeito que o Pedro já apontou duas
 vezes ("o scroll horizontal continua aparecendo"), agora num lugar diferente.
+
+### Destaque da aba ganhou os recursos do card listado (2026-08-31)
+
+Figma `8480:3299` (`CardHighlight`), trazido pelo Pedro: *"fiz atualizações para que ficasse
+com os mesmos recursos dos cards listados"*. O que mudou no destaque:
+
+- **ActionBar** (baixar / abrir o post / compartilhar / favoritar) ancorada no rodapé da
+  coluna de texto. Ela foi **extraída** do `LibCard` para `~/components/lib-action-bar` e
+  os dois consomem a MESMA — duas cópias divergiriam no primeiro ajuste, e "os mesmos
+  recursos" é exatamente o que o nó pede. O marcador `data-handoff="lib-card-actionbar"`
+  foi mantido nos dois: ele identifica o contrato, não o arquivo.
+- **Badge de tipo saiu de perto da categoria e foi para cima da imagem**, canto superior
+  direito, inset 16px (nó em x=991/y=16 num card de 1080). O slot `badge` do `NewsCard`
+  (que punha o selo ao lado da categoria, criado para este mesmo destaque em 27/08) perdeu
+  o único consumidor e **saiu do contrato**; entrou `mediaBadge`.
+- **Título é `headline-md` (28/36), um degrau ABAIXO** do destaque único da home
+  (`headline-lg`, 32/40), que é o que o `NewsCard` `xlarge` entrega por default. Override
+  via `titleClassName`, com `lg:` — classe sem variante não vence classe com variante no
+  twMerge.
+- Clamps medidos nos nós, não estimados: título 72px = 2 linhas de 36; lead 72px = 3 linhas
+  de 24.
+- O card segue com título e imagem linkados (3 âncoras) e a barra como IRMÃ dos links —
+  nenhum `<button>` dentro de `<a>`, conferido no DOM renderizado. Diferente do LibCard,
+  aqui o título pode ser link: não existe estado expandido para o clique disputar.
+
+Três divergências entre os dois nós, implementadas como cada um pede, **a confirmar**:
+
+| | Card listado (8296:91785) | Destaque (8480:3308) |
+|---|---|---|
+| Badge sobre a capa | topo à **esquerda** (`top-2 left-2`) | topo à **direita** (inset 16) |
+| `action-group` | ocupa até a borda (125px numa barra de 236) | 112px fixos colados no "Baixar", 253px de sobra |
+| Padding inferior do texto | — | Figma pede 24px; o painel do `NewsCard` é `p-8` uniforme → 32px |
+
+🔴 As duas primeiras viraram a prop `align` da barra e posições diferentes do badge. A
+terceira ficou **sem correção**: 8px num card de 348px de altura não justificam um escape
+hatch novo num componente que 11 portais consomem. Se a medida importar, é um prop.

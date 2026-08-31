@@ -2,15 +2,10 @@ import type { ReactNode } from 'react'
 import { twMerge } from '~/lib/tw-merge'
 import { Badge } from '~/components/badge'
 import { Categoria } from '~/components/categoria'
-import { FavoritoToggle } from '~/components/favorito-toggle'
 import { Icon } from '~/components/icon'
-import { IconButton } from '~/components/icon-button'
 import { Image } from '~/components/image'
-import { Tooltip } from '~/components/tooltip'
-import { compartilharConteudo } from '~/lib/compartilhar-conteudo'
+import { LibActionBar } from '~/components/lib-action-bar'
 import { corDaCategoria, leadDoMaterial } from '~/lib/biblioteca'
-import { desfavoritar, favoritar, useFavorito } from '~/lib/favoritos-store'
-import { toast } from '~/lib/toast-store'
 import type { MaterialType } from '~/mocks/biblioteca'
 import type { ILibCardProps } from './types'
 
@@ -25,6 +20,12 @@ import type { ILibCardProps } from './types'
  *
  * Card do acervo da Biblioteca exclusiva. Fechado mostra capa 16:9 + badge + categoria +
  * título; expandido revela o SidePanel abaixo, com o lead do post e a ActionBar.
+ *
+ * A ActionBar não vive mais aqui: virou `~/components/lib-action-bar` em 2026-08-31,
+ * quando o destaque da aba passou a pedir as mesmas quatro ações (node 8480:3299). Este
+ * card e o destaque consomem o MESMO componente — é o que faz "os mesmos recursos" ser
+ * verdade em vez de promessa. O que muda entre os dois é só o `align` dos três ícones,
+ * porque os dois nós do Figma discordam nesse ponto (ver types.ts da barra).
  *
  * ## Abre no CLIQUE, não no hover
  *
@@ -241,23 +242,6 @@ function SidePanel({
 	onBaixar: ILibCardProps['onBaixar']
 	onBloqueado: ILibCardProps['onBloqueado']
 }): ReactNode {
-	// Ação direta na store + toast, SEM `useFavoritoToggle`. Aquele hook trava a ação
-	// atrás de `useLogado()` (`?logado=true`) e abre o convite de criar conta se
-	// deslogado — faz sentido em conteúdo público, não aqui: esta tela inteira É a área
-	// logada. Mesmo racional (e mesmo código) já usados em dashboard-perfil-v4.
-	// "Favorita e abre toast. Semelhante a Últimas leituras." — a anotação.
-	const pressed = useFavorito(material.id)
-
-	function alternarFavorito() {
-		if (pressed) {
-			desfavoritar(material.id)
-			toast.success('Removido dos favoritos.')
-		} else {
-			favoritar(material.id)
-			toast.success('Adicionado aos seus Favoritos!')
-		}
-	}
-
 	return (
 		<div className="flex w-full min-w-0 flex-col gap-4">
 			{/* Lead do post; sem lead, primeiro parágrafo (anotação). 4 linhas é a altura que
@@ -266,61 +250,12 @@ function SidePanel({
 				{leadDoMaterial(material)}
 			</p>
 
-			<div data-handoff="lib-card-actionbar" className="flex w-full items-center gap-2">
-				{/* "Para materiais desbloqueados faz o download direto; para materiais
-				    bloqueados abre-se modal de incentivo" — a anotação. Os dois caminhos saem
-				    do MESMO botão, com o mesmo rótulo: o usuário não descobre que está
-				    bloqueado por um botão diferente, descobre pelo cadeado no badge. */}
-				<button
-					type="button"
-					onClick={() => (bloqueado ? onBloqueado?.(material) : onBaixar?.(material))}
-					className="inline-flex h-8 shrink-0 items-center gap-2 rounded-full border-[1.5px] border-primary-600 pr-4 pl-3 font-body font-bold text-body-md text-primary-600 transition-colors hover:bg-neutral-50"
-				>
-					<Icon name="download" className="size-5" />
-					Baixar
-				</button>
-
-				{/* `action-group` do Figma: os três ícones vão para a direita, separados do
-				    "Baixar". Sem isso os quatro controles ficam agrupados à esquerda e o
-				    download perde a hierarquia de ação principal.
-
-				    Os três têm tooltip; "Baixar" não — ele já tem rótulo visível, e balão
-				    repetindo a palavra que está na tela não informa nada (mesmo racional do
-				    `showLabel` no FavoritoToggle).
-
-				    `side="top"` nos três, e isso NÃO é preferência estética: o balão é
-				    `absolute` dentro do gatilho, então qualquer ancestral com `overflow` o
-				    corta. A ActionBar é a última linha do card, e o card vive dentro do
-				    trilho (`overflow-x-auto` + wrapper `overflow-hidden`) — para baixo o
-				    balão sai pela borda e é cortado. Para cima ele cai sobre o lead, dentro
-				    dos limites do card, e sobrevive nos dois contextos. */}
-				<div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-					<Tooltip label="Abrir" side="top">
-						<IconButton
-							icon="open-in-new"
-							label="Abrir o post"
-							href={material.arquivoUrl}
-							type="ghost"
-							size="small"
-						/>
-					</Tooltip>
-					<Tooltip label="Compartilhar" side="top">
-						<IconButton
-							icon="share"
-							label="Compartilhar"
-							type="ghost"
-							size="small"
-							onClick={() => compartilharConteudo(material.titulo, material.arquivoUrl)}
-						/>
-					</Tooltip>
-					<FavoritoToggle
-						pressed={pressed}
-						onPressedChange={alternarFavorito}
-						size="small"
-						tooltipSide="top"
-					/>
-				</div>
-			</div>
+			<LibActionBar
+				material={material}
+				bloqueado={bloqueado}
+				onBaixar={onBaixar}
+				onBloqueado={onBloqueado}
+			/>
 		</div>
 	)
 }
