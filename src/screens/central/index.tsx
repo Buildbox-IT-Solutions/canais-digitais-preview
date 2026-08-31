@@ -49,12 +49,28 @@ const GROUPS: RouteGroup[] = [
 		],
 	},
 	{
-		title: 'Perfil & LGPD',
-		description: 'Área logada do usuário e gestão de dados pessoais.',
+		// Uma aba por card, na ORDEM da barra de navegação da área logada
+		// (src/components/dashboard-tabs). Antes havia um card só, "Perfil", e chegar em
+		// Newsletter ou Favoritos exigia entrar e clicar na aba certa — atrito para quem
+		// revisa e não conhece a tela. Se uma aba nova entrar na barra, entra aqui também.
+		title: 'Área logada',
+		description: 'Uma aba por card, na ordem da barra de navegação da conta.',
 		color: 'mint',
 		items: [
-			{ path: '/dashboard-perfil-v4', label: 'Perfil', description: 'Área logada · Meu Perfil + Downloads', status: 'pronto-para-dev' },
-			{ path: '/biblioteca-exclusiva', label: 'Biblioteca exclusiva', description: 'Área logada · acervo de materiais, bloqueio por cadastro incompleto', status: 'prototipando' },
+			{ path: '/dashboard-perfil-v4?tab=perfil', label: 'Meu Perfil', description: 'Dados cadastrais, progresso do cadastro e ações de LGPD', status: 'pronto-para-dev' },
+			{ path: '/dashboard-perfil-v4?tab=downloads', label: 'Downloads', description: 'Materiais que o usuário já baixou', status: 'pronto-para-dev' },
+			{ path: '/dashboard-perfil-v4?tab=newsletter', label: 'Newsletter', description: 'Assinaturas do usuário e do portal', status: 'pronto-para-dev' },
+			{ path: '/dashboard-perfil-v4?tab=ultimas', label: 'Últimas leituras', description: 'Histórico de conteúdos lidos', status: 'pronto-para-dev' },
+			{ path: '/dashboard-perfil-v4?tab=favoritos', label: 'Favoritos', description: 'Conteúdos salvos pelo usuário', status: 'pronto-para-dev' },
+			// Única aba que é ROTA própria, não `?tab=` — ver o comentário em dashboard-tabs.
+			{ path: '/biblioteca-exclusiva', label: 'Biblioteca exclusiva', description: 'Acervo de materiais · download bloqueado por cadastro incompleto', status: 'em-aprovacao' },
+		],
+	},
+	{
+		title: 'LGPD',
+		description: 'Ações sobre os dados pessoais, disparadas de dentro do Perfil.',
+		color: 'mint',
+		items: [
 			{ path: '/meus-dados', label: 'Baixar dados', description: 'LGPD · modal de ação direta sobre o Perfil', status: 'pronto-para-dev' },
 			{ path: '/excluir-conta', label: 'Excluir conta', description: 'Modal de ação direta · exclusão imediata e irreversível', status: 'pronto-para-dev' },
 		],
