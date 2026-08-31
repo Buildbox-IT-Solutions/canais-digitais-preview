@@ -71,7 +71,7 @@ export const Expandido: Story = {
 		docs: {
 			description: {
 				story:
-					'Mesma largura do fechado: o painel empilha embaixo e a moldura cresce para FORA (`-mx-3 -mt-3` + 24px de largura), caindo na calha de 24px em vez de comprimir o conteúdo. A capa não anda um pixel, e nenhum vizinho é tocado — no trilho e na grade filtrada. O card inteiro continua sendo UM alvo: aqui ele recolhe. O título não é link (a decisão foi revertida em 2026-08-30: título clicável reduz a área de fechar); quem abre o post é o `open_in_new` da ActionBar.',
+					'Mesma largura do fechado: a célula não muda de tamanho, só a altura cresce, e nenhum vizinho é tocado. A moldura cresce PARA DENTRO, então a capa do card aberto fica 24px mais estreita e 12px à direita da dos vizinhos — deslocamento pequeno e local. A versão anterior crescia para fora para a capa não se mover, mas quebrava nas duas pontas do carrossel (ver o bloco de doc do componente). O card inteiro continua sendo UM alvo: aqui ele recolhe. O título não é link; quem abre o post é o `open_in_new` da ActionBar.',
 			},
 		},
 	},

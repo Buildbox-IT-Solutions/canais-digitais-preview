@@ -169,7 +169,11 @@ function Seta({
 	return (
 		<div
 			className={twMerge(
-				'absolute top-1/2 -translate-y-1/2',
+				// Centrada na CAPA, não na altura do trilho. O trilho cresce quando um card
+				// expande, e `top-1/2` levava a seta para cima do texto do card aberto. A capa
+				// é 16:9 da largura do card, então seu centro fica a `card * 9/32` do topo,
+				// mais os 12px de `py-3` do trilho.
+				'absolute top-[calc(var(--lib-card)*9/32_+_var(--spacing)*3)] -translate-y-1/2',
 				dir === 'prev' ? 'left-2' : 'right-2',
 				// Só existe onde há ponteiro fino; lá, aparece no hover ou no foco de teclado
 				// dentro do trilho. Sem hover fino a seta nunca é renderizada visível — o
