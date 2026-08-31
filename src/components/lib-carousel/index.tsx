@@ -114,11 +114,32 @@ export function LibCarousel({ children, ariaLabel, className }: ILibCarouselProp
 				// para reservar espaço à sangria da moldura do card aberto, e clipar aqui mataria
 				// justamente esses 12px. Quem rola é o `<ul>`, e à direita ele não passa da borda
 				// deste wrapper — então nada disso gera barra de rolagem na página.
-				'group/trilho @container relative -mt-3 w-full min-w-0',
+				'group/trilho @container -mt-3 w-full min-w-0',
 				className,
 			)}
 		>
-			<ul
+			{/* Wrapper INTERNO. Existe por dois motivos que se encaixam:
+			    1. As variáveis de geometria precisam ficar AQUI, não no `<ul>`: as setas são
+			       IRMÃS do `<ul>` e leem `--lib-card` para se posicionar. Declaradas no `<ul>`,
+			       `var(--lib-card)` chegava INDEFINIDA na seta, o `calc()` do `top` ficava
+			       inválido e a seta perdia o posicionamento (bug de 2026-08-31).
+			    2. `--lib-card` usa `100cqw`, e unidade de container não pode ser resolvida no
+			       próprio elemento que É o container — um elemento não consulta a si mesmo. Daí
+			       o `@container` ficar no wrapper de fora e as variáveis aqui dentro. */}
+			<div
+				className={twMerge(
+					'relative',
+					'[--lib-gap:24px]',
+					// A espiada é um pouco maior onde o card é mais largo em relação à tela, para a
+					// proporção espiada/card ficar na mesma faixa (~20–27%) em todos os degraus.
+					'[--lib-peek:64px] xl:[--lib-peek:56px]',
+					// 3 colunas no lg e só 4 no xl: com 4 já em 1024px o card cairia para 206px,
+					// mais estreito que os 236px do Figma.
+					'[--lib-cols:1] sm:[--lib-cols:2] lg:[--lib-cols:3] xl:[--lib-cols:4]',
+					'[--lib-card:calc((100cqw_-_var(--lib-peek)_-_var(--lib-cols)_*_var(--lib-gap))_/_var(--lib-cols))]',
+				)}
+			>
+				<ul
 				ref={trilhoRef}
 				onScroll={medir}
 				aria-label={ariaLabel}
@@ -155,24 +176,18 @@ export function LibCarousel({ children, ariaLabel, className }: ILibCarouselProp
 					// volta a desalinhar do título. Com o scroll-padding declarado, o snap em
 					// `scrollLeft: 0` já é a posição correta.
 					'-ml-3 w-[calc(100%_+_var(--spacing)*3)] px-3 scroll-px-3',
-					// Geometria do trilho. `gap-[var(--lib-gap)]` em vez de `gap-6` para o
-					// espaçamento real e o da fórmula não poderem divergir.
-					'gap-[var(--lib-gap)] [--lib-gap:24px]',
-					// A espiada é um pouco maior onde o card é mais largo em relação à tela,
-					// para a proporção espiada/card ficar na mesma faixa (~20–27%) em todos
-					// os degraus, em vez de sumir no mobile.
-					'[--lib-peek:64px] xl:[--lib-peek:56px]',
-					// 3 colunas no lg e só 4 no xl: com 4 já em 1024px o card cairia para
-					// 206px, mais estreito que os 236px do Figma.
-					'[--lib-cols:1] sm:[--lib-cols:2] lg:[--lib-cols:3] xl:[--lib-cols:4]',
-					'[--lib-card:calc((100cqw_-_var(--lib-peek)_-_var(--lib-cols)_*_var(--lib-gap))_/_var(--lib-cols))]',
+					// `gap-[var(--lib-gap)]` em vez de `gap-6` para o espaçamento real e o da fórmula
+					// de largura não poderem divergir. As VARIÁVEIS não moram aqui — ver o wrapper
+					// interno acima.
+					'gap-[var(--lib-gap)]',
 				)}
 			>
 				{children}
 			</ul>
 
-			<Seta dir="prev" visivel={podeVoltar} onClick={() => rolar(-1)} />
-			<Seta dir="next" visivel={podeAvancar} onClick={() => rolar(1)} />
+				<Seta dir="prev" visivel={podeVoltar} onClick={() => rolar(-1)} />
+				<Seta dir="next" visivel={podeAvancar} onClick={() => rolar(1)} />
+			</div>
 		</div>
 	)
 }
