@@ -1044,3 +1044,38 @@ primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso
   regra ser gerada no CSS mesmo sem nenhum componente usá-la. São ~60 bytes órfãos.
   Registrado para ninguém perder tempo caçando a origem — e para não mutilar a doc por
   causa disso.
+
+### Seta do carrossel perdeu o posicionamento (2026-08-31)
+
+- 🔴 **Bug.** A seta é posicionada com
+  `top: calc(var(--lib-card) * 9/32 + 12px)` para ficar centrada na CAPA. Mas as variáveis
+  `--lib-*` eram declaradas no `<ul>`, e **as setas são IRMÃS do `<ul>`**, não descendentes.
+  `var(--lib-card)` chegava indefinida, o `calc()` inteiro ficava inválido, o `top` era
+  descartado e a seta caía na posição estática.
+- ✅ **resolvido com um wrapper INTERNO** que declara as variáveis e ancora tanto o `<ul>`
+  quanto as setas. Não foi possível declará-las no wrapper de fora porque `--lib-card` usa
+  `100cqw`, e **unidade de container não é resolvida no próprio elemento que É o
+  container** — um elemento não consulta a si mesmo. Então: `@container` no wrapper de
+  fora, variáveis no de dentro.
+- 🔴 **Duas armadilhas para quem reimplementar:** custom property só desce para
+  DESCENDENTES (irmão não vê), e `cqw` não vale no próprio container.
+
+### Como esta feature passou a ser verificada (2026-08-31)
+
+Três correções de layout seguidas passaram nos testes e continuaram quebradas na tela,
+porque a verificação era leitura de HTML e de CSS gerado. Isso confirma que a regra existe,
+não que ela produz o resultado certo.
+
+O que passou a ser feito, e vale repetir em qualquer mexida de geometria aqui:
+
+1. `dist/` servido em `localhost` com fallback de SPA (um `http.server` cru devolve 404 em
+   `/biblioteca-exclusiva` e o app nem monta).
+2. Uma página de driver, na MESMA origem, com o app num `<iframe>` — mesma origem para
+   poder scriptar o conteúdo.
+3. O driver **clica de verdade** (`button[aria-expanded]`), rola até as duas pontas e mede
+   com `getBoundingClientRect`: capa vs. título, moldura vs. borda do trilho, centro da
+   seta vs. centro da capa, e `documentElement.scrollWidth` vs `clientWidth`.
+4. `window.onerror` e `console.error` capturados durante a interação.
+5. Captura de tela para conferir o que os números não pegam.
+
+🔴 **Geometria de layout e interação não se verificam por string de classe.**
