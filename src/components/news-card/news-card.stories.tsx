@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router'
 import { favoritar } from '~/lib/favoritos-store'
 import { PlayButton } from '~/components/play-button'
 import { NewsCard } from './index'
+import { MOCK_FOTO_CLARA, MOCK_FOTO_ESCURA, picsumSrc } from '~/mocks/articles'
 
 /** Molduras ILUSTRATIVAS para diferenciar os tamanhos no Storybook.
  *  Decisão (Opção B, provisória): o card é fluido e a largura real vem do
@@ -58,7 +59,7 @@ type Story = StoryObj<typeof NewsCard>
 // (não existem no ARTICLE_POOL), só pra exercitar a store isoladamente.
 const base = {
 	title: 'Meu colega robô: WEG e Mitsubishi apostam em robôs que ajudam humanos',
-	image: 'https://picsum.photos/seed/news/600/338',
+	image: picsumSrc('news', 600, 338),
 	href: '#',
 	categoria: { label: 'Food Service', color: 'mint' as const, href: '#' },
 	lead: 'Parágrafo de apoio que resume a matéria em uma ou duas linhas.',
@@ -240,14 +241,14 @@ export const ContrasteOnMedia: Story = {
 			<Caso label="Foto clara" width={WIDTHS['large-vertical']}>
 				<NewsCard
 					{...base}
-					image="https://picsum.photos/seed/bright-sky-white/600/338"
+					image={MOCK_FOTO_CLARA}
 					contentId="story-foto-clara"
 				/>
 			</Caso>
 			<Caso label="Foto escura" width={WIDTHS['large-vertical']}>
 				<NewsCard
 					{...base}
-					image="https://picsum.photos/seed/black-storm-night2/600/338"
+					image={MOCK_FOTO_ESCURA}
 					contentId="story-foto-escura"
 				/>
 			</Caso>
@@ -314,7 +315,7 @@ export const Favoritado: Story = {
 // clamp: é a diferença que elas provam.
 const destaque = {
 	title: 'Fispal Food Service terá ativações com chefs e executivos do setor',
-	image: 'https://picsum.photos/seed/home-destaque-unico/1224/816',
+	image: picsumSrc('home-destaque-unico', 1224, 816),
 	href: '#',
 	categoria: { label: 'Food Service', color: 'mint' as const, href: '#' },
 	lead: 'Maior evento da América do Sul voltado ao setor de alimentação fora do lar, a Fispal Food Service 2026 reunirá, entre os dias 26 e 29 de maio no Distrito Anhembi, não apenas lançamentos e soluções, mas também uma agenda de conteúdo com nomes de peso da gastronomia.',

@@ -946,3 +946,31 @@ primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso
 - 🔴 **Para o back-end:** as três medidas (padding do painel, margem negativa e largura
   extra do trilho) são a MESMA e são responsivas. Mudar uma sem as outras faz o trilho
   vazar para fora do box ou voltar a parar antes dele.
+
+### Imagens do protótipo dependiam de serviço externo (2026-08-31)
+
+- 🔴 **Incidente.** `picsum.photos` saiu do ar (HTTP 503, depois timeout) e **toda imagem
+  do protótipo sumiu ao mesmo tempo**, inclusive no ambiente publicado. Quem abrisse o
+  link de revisão naquele dia veria uma home sem imagem nenhuma e concluiria que a
+  aplicação tinha quebrado. Um protótipo cuja revisão visual depende de terceiro estar de
+  pé não é revisável.
+- ✅ **resolvido.** As imagens passaram a ser arquivos locais em `public/mock/`: 8
+  fotografias editoriais REAIS do próprio Food Connection, recortadas em 5 proporções
+  (wide, video, photo, square, portrait) = 40 arquivos, 1,8 MB. Ganho de brinde: as
+  imagens agora são do assunto certo — indústria de alimentos — em vez de paisagens
+  aleatórias. **Elas não correspondem às manchetes mockadas**; são exemplo visual.
+- A troca foi de UMA função. `picsumSrc(seed, w, h)` já era o ponto único por onde os ~56
+  usos passavam; só mudou de onde a imagem vem. `seed` continua escolhendo a foto de forma
+  determinística (djb2), então a home não embaralha entre recarregamentos e as capturas de
+  revisão seguem comparáveis; `w`/`h` agora só escolhem a proporção.
+- ⚠️ **Armadilha encontrada no caminho:** `picsumSrc` é chamada na INICIALIZAÇÃO do próprio
+  `articles.ts` (`VIDEOS_SECTION` monta `image:` no nível de módulo). Constante declarada
+  perto da função fica na zona morta temporal nesse instante e estoura em runtime — o
+  primeiro rascunho quebrou assim. `MOCK_COUNT` está no topo do arquivo por isso, e os
+  helpers são `function` (hasteadas), não `const`.
+- **Stories de contraste:** `MOCK_FOTO_CLARA` e `MOCK_FOTO_ESCURA` são constantes
+  nomeadas, escolhidas por brilho medido (195 e 65 numa escala de 0–255), não por assunto.
+  As stories que testam `surface="onMedia"` do Toggle/ToggleGroup/NewsCard usam elas, não
+  `picsumSrc` — "uma foto qualquer" não testa contraste. 🔴 **Se as imagens de
+  `public/mock/` forem regeradas, remeça o brilho e reaponte essas duas constantes**,
+  senão a story continua passando enquanto deixa de testar o que diz testar.

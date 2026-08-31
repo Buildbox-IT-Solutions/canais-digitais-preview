@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FavoritoToggle } from './index'
+import { MOCK_FOTO_ESCURA } from '~/mocks/articles'
 
 /**
  * Instância pronta do `Toggle` com os textos e ícones de "favoritar" fixados — não é um
@@ -58,7 +59,7 @@ export const SobreMidia: Story = {
 		return (
 			<div
 				className="relative flex h-40 w-64 items-start justify-end rounded-sm bg-cover bg-center p-3"
-				style={{ backgroundImage: 'url(https://picsum.photos/seed/black-storm-night2/400/260)' }}
+				style={{ backgroundImage: `url(${MOCK_FOTO_ESCURA})` }}
 			>
 				<FavoritoToggle pressed={pressed} onPressedChange={setPressed} size="small" surface="onMedia" />
 			</div>

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { WebstoryCard } from './index'
+import { picsumSrc } from '~/mocks/articles'
 
 const meta: Meta<typeof WebstoryCard> = {
 	title: 'Cards/WebstoryCard',
@@ -13,7 +14,7 @@ type Story = StoryObj<typeof WebstoryCard>
 export const Default: Story = {
 	args: {
 		title: 'Como a robótica está mudando o food service',
-		image: 'https://picsum.photos/seed/ws/640/1138',
+		image: picsumSrc('ws', 640, 1138),
 		label: 'Tecnologia',
 		color: 'coral',
 		href: '#',

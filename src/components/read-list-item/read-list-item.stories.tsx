@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ReadListItem } from '.'
 import { ReadListItemSkeleton } from './read-list-item-skeleton'
+import { picsumSrc } from '~/mocks/articles'
 
 const ACTIONS_ULTIMAS = [
 	{ label: 'Compartilhar', icon: 'share' as const, onClick: () => {} },
@@ -35,7 +36,7 @@ const meta: Meta<typeof ReadListItem> = {
 		title: 'Como fazer o transporte de pescados frescos corretamente',
 		href: '/conteudo',
 		readAt: new Date().toISOString(),
-		image: 'https://picsum.photos/seed/read-list-item/416/234',
+		image: picsumSrc('read-list-item', 416, 234),
 		isLast: true,
 		menuActions: ACTIONS_ULTIMAS,
 	},
@@ -119,7 +120,7 @@ export const Lista: Story = {
 					title="Como fazer o transporte de pescados frescos corretamente"
 					href="/conteudo"
 					readAt={new Date(Date.now() - 5 * 60 * 1000).toISOString()}
-					image="https://picsum.photos/seed/lista-1/416/234"
+					image={picsumSrc('lista-1', 416, 234)}
 					menuActions={ACTIONS_ULTIMAS}
 				/>
 				<ReadListItem
@@ -139,7 +140,7 @@ export const Lista: Story = {
 		categoryColor: 'primary-600',
 		title: 'Tendência de fermentados exóticos: kimchi, missô e kombucha',
 		readAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
-		image: 'https://picsum.photos/seed/lista-3/416/234',
+		image: picsumSrc('lista-3', 416, 234),
 		isLast: true,
 	},
 }

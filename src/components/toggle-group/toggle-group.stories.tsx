@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ToggleGroup } from './index'
 import type { ToggleGroupItem } from './types'
+import { MOCK_FOTO_ESCURA } from '~/mocks/articles'
 
 /**
  * Conjunto de `Toggle`s que se conhecem. Composição, não componente novo do Figma —
@@ -164,7 +165,7 @@ export const OnMedia: Story = {
 		return (
 			<div
 				className="flex h-40 w-[34rem] items-center justify-center rounded-sm bg-cover bg-center p-4"
-				style={{ backgroundImage: 'url(https://picsum.photos/seed/black-storm-night2/700/260)' }}
+				style={{ backgroundImage: `url(${MOCK_FOTO_ESCURA})` }}
 			>
 				<ToggleGroup ariaLabel="Filtrar por formato" items={FORMATOS} value={value} onValueChange={setValue} surface="onMedia" />
 			</div>

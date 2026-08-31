@@ -1,4 +1,5 @@
 import type { Post } from '~/types/post'
+import { picsumSrc } from '~/mocks/articles'
 
 // Fixture "acúmulo de blocos": 2 autores + vídeo + download + aiSummary +
 // audioVersion ao mesmo tempo — banco de testes do empilhamento de blocos
@@ -61,7 +62,7 @@ export const POST_COMPLETO: Post = {
 		},
 		{
 			type: 'image',
-			src: 'https://picsum.photos/seed/analise-sensorial-ia/1200/700',
+			src: picsumSrc('analise-sensorial-ia', 1200, 700),
 			alt: 'Ingredientes e utensílios de laboratório usados em testes sensoriais de alimentos',
 			caption: 'Sensores digitais avaliam aroma, sabor e textura com precisão comparável à de painéis humanos.',
 		},
