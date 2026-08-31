@@ -40,7 +40,7 @@ import { NewsCard } from '~/components/news-card'
 import { Thumbnail } from '~/components/thumbnail'
 import { Categoria } from '~/components/categoria'
 import { SponsorLine } from '~/components/sponsor-line'
-import { Toggle } from '~/components/toggle'
+import { FavoritoToggle } from '~/components/favorito-toggle'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { AdFrame } from '~/components/ad-frame'
 import { useFavoritoAuthModal } from '~/lib/use-favorito-auth-modal'
@@ -100,15 +100,9 @@ export function DestaqueSection({ hero, top2, top3, heroText, heroBottom, classN
 					<article className="group relative bg-white border border-neutral-100 hover:border-secondary-950 transition-colors flex flex-col rounded-sm overflow-hidden w-full">
 						<div className="relative">
 							<Thumbnail src={picsumSrc(sponsored.seed, 600, 338)} alt="Capa" href="/conteudo" ratio="video" radius={false} />
-							<Toggle
+							<FavoritoToggle
 								pressed={sponsoredToggle.pressed}
 								onPressedChange={sponsoredToggle.onPressedChange}
-								iconOn="favorite"
-								iconOff="favorite-border"
-								labelOn="Remover dos favoritos"
-								labelOff="Favoritar"
-								tooltipOn="Remover"
-								tooltipOff="Favoritar"
 								size="small"
 								surface="onMedia"
 								className={twMerge('absolute top-2 right-2', TOGGLE_HIDDEN_UNTIL_HOVER)}
