@@ -28,13 +28,17 @@ import type { IBibliotecaSectionProps } from './types'
  * aba logada, expansão inclusa. A diferença é só o container. **Para o back-end: é a
  * mesma seção, não uma cópia com regras próprias.**
  *
- * ## O trilho sangra até a borda do painel
+ * ## O trilho é recortado no padding do painel, NÃO na borda do box
  *
- * O painel tem padding horizontal, e sem tratar isso o trilho era recortado ANTES do
- * fim do box azul: sobrava uma faixa de fundo à direita e o corte parecia acidental, não
- * um convite a rolar. O trilho recebe margem negativa à direita do tamanho exato do
- * padding (`-mr-6 lg:-mr-10`), então o card cortado encosta na borda do painel. À
- * esquerda o padding fica: é ele que alinha o primeiro card ao título.
+ * O card cortado morre na borda do container invisível — o padding do painel continua
+ * visível depois dele. É o oposto do que esta seção fazia até 2026-08-31: o trilho
+ * recebia margem negativa do tamanho do padding (`-mr-10`) para encostar na borda do box
+ * azul, e o Pedro apontou que o resultado lia errado. A referência é
+ * meclivros.mec.gov.br — "a sangria não se dá exatamente nas bordas do box e sim nas
+ * bordas de container invisível (mostra o padding lateral)".
+ *
+ * Por isso o `LibCarousel` entra aqui **sem className de largura**. O recorte é assunto
+ * dele (ver o bloco de doc do componente); alargá-lo por fora é justamente o bug.
  *
  * O gate NÃO é resolvido aqui. Na home o visitante pode nem estar logado, e o cadeado
  * exige saber o estado do cadastro — que é dado da área logada. Os cards entram sem
@@ -70,10 +74,7 @@ export function BibliotecaSection({
 						</p>
 					</header>
 
-					<LibCarousel
-						ariaLabel="Biblioteca exclusiva"
-						className="-mr-6 w-[calc(100%+var(--spacing)*6)] lg:-mr-10 lg:w-[calc(100%+var(--spacing)*10)]"
-					>
+					<LibCarousel ariaLabel="Biblioteca exclusiva">
 						{materiais.map((m) => (
 							<li
 								key={m.id}

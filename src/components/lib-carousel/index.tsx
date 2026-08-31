@@ -158,23 +158,43 @@ export function LibCarousel({ children, ariaLabel, className }: ILibCarouselProp
 					// `items-start`: o card expandido é mais alto que os fechados, e sem isso o
 					// stretch do flex esticaria todos os vizinhos até a altura dele.
 					'flex snap-x items-start overflow-x-auto scrollbar-hide py-3',
-					// ── Espaço para a sangria da moldura do card aberto ──
+					// ── ONDE O TRILHO É RECORTADO ──
+					// Na borda do CONTAINER INVISÍVEL, não na borda do box do consumidor: depois do
+					// card cortado o padding lateral continua visível. Regra dada pelo Pedro em
+					// 2026-08-31, com meclivros.mec.gov.br como referência — "a sangria não se dá
+					// exatamente nas bordas do box e sim nas bordas de container invisível (mostra
+					// o padding lateral)".
+					//
+					// **Quem consome não deve alargar o trilho por cima do próprio padding.** Era
+					// isso que o painel da home fazia (`-mr-6 lg:-mr-10`, do tamanho exato do
+					// padding) e era o defeito: o card cortado morria rente à borda do box azul,
+					// sem nenhuma folga depois dele. O `LibCarousel` entra sem className de
+					// largura, e o recorte sai certo de graça.
+					//
+					// ── ESPAÇO PARA A SANGRIA DA MOLDURA DO CARD ABERTO ──
 					// A moldura cresce 12px para fora do card (ver LibCard). Num carrossel isso NÃO
 					// funciona de graça: `scrollLeft` não vai a negativo, então 12px à esquerda do
 					// primeiro item são inalcançáveis, e depois do último item não existe nada além
 					// do fim do conteúdo. Era o bug das duas pontas.
 					//
-					// `px-3` reserva os 12px DENTRO do scroller: padding entra no `scrollWidth` e não
-					// reduz a área visível no meio da rolagem, então a espiada do próximo card
-					// continua intacta. `-ml-3` mais 12px de largura extra devolvem o padding esquerdo
-					// para fora, para a primeira capa seguir alinhada com o título da seção.
-					// Assimétrico de propósito: à direita a borda do `<ul>` coincide com a do wrapper,
-					// senão vazaria para fora do painel.
+					// `px-3` reserva os 12px DENTRO do scroller: padding entra no `scrollWidth`, e
+					// `overflow` recorta na PADDING box — então ele não reduz a área visível no meio
+					// da rolagem e a espiada do próximo card continua intacta. No fim da rolagem o
+					// conteúdo para 12px antes da borda e a moldura do último card encosta nela,
+					// inteira. `-ml-3` mais 12px de largura extra devolvem o padding esquerdo para
+					// fora, para a primeira capa seguir alinhada com o título da seção.
 					// `scroll-px-3` casando com o `px-3` é obrigatório, não enfeite: sem ele o
 					// scroll-snap alinha o `snap-start` do primeiro item à borda do scrollport e
 					// COME o padding — o navegador entra com `scrollLeft: 12` e a primeira capa
 					// volta a desalinhar do título. Com o scroll-padding declarado, o snap em
 					// `scrollLeft: 0` já é a posição correta.
+					//
+					// O `-ml-3` faz o recorte esquerdo cair 12px DENTRO do padding, e não rente a
+					// ele. É o único jeito de as duas coisas conviverem: sem ele, a moldura do
+					// primeiro card aberto é decepada rente à borda (medido em 2026-08-31 —
+					// moldura em 101 contra recorte em 113) e o card aberto fica sem padding de um
+					// lado só. 12px num padding de 24 a 40px continuam mostrando padding, que é o
+					// que a referência pede; moldura decepada não tem como ler bem.
 					'-ml-3 w-[calc(100%_+_var(--spacing)*3)] px-3 scroll-px-3',
 					// `gap-[var(--lib-gap)]` em vez de `gap-6` para o espaçamento real e o da fórmula
 					// de largura não poderem divergir. As VARIÁVEIS não moram aqui — ver o wrapper

@@ -1079,3 +1079,41 @@ O que passou a ser feito, e vale repetir em qualquer mexida de geometria aqui:
 5. Captura de tela para conferir o que os números não pegam.
 
 🔴 **Geometria de layout e interação não se verificam por string de classe.**
+
+### Onde o carrossel é recortado: padding do container, não borda do box (2026-08-31)
+
+Regra dada pelo Pedro, com **meclivros.mec.gov.br** como referência: *"a sangria não se dá
+exatamente nas bordas do box e sim nas bordas de container invisível (mostra o padding
+lateral)"*. Ele registrou achar o visual esquisito e mandou adotar de todo modo, por falta
+de alternativa melhor.
+
+- 🔴 **Bug.** O painel da Biblioteca na home alargava o trilho por cima do próprio padding
+  (`-mr-6 lg:-mr-10`, do tamanho exato do padding) para o card cortado encostar na borda do
+  box azul. Medido em 1440px: painel `[73,1353]`, padding 40, conteúdo `[113,1313]` — e o
+  trilho recortando em **1353**, sem folga nenhuma depois do card cortado.
+- ✅ **resolvido tirando a className de largura do `LibCarousel`.** O recorte passou a
+  1313: o card cortado mostra 56px e sobram os 40px de padding do painel antes da borda. O
+  trilho JÁ estava certo — o defeito era o consumidor.
+- **Para o back-end:** o recorte do carrossel é responsabilidade do próprio carrossel.
+  Quem consome não alarga o trilho por cima do padding do container.
+- A ponta esquerda é recortada 12px DENTRO do padding, não rente a ele, e isso é
+  deliberado: são os 12px que a moldura do card expandido precisa para não ser decepada
+  quando o primeiro card abre com o trilho no começo (medido: moldura em 101 contra recorte
+  em 113 — o card aberto ficava sem padding de um lado só). Num padding de 24 a 40px, 12px
+  continuam mostrando padding.
+- 🔵 **Decidido para o mobile da aba logada:** lá a sangria até a borda da TELA continua
+  (`-mr-4` abaixo de `lg`). Não há box com fundo próprio, a borda do container é a borda da
+  tela, e os 16px virariam faixa branca — o defeito que essa sangria corrigiu em 30/08.
+  🔴 A confirmar: se a referência do MEC também vale no mobile, é só apagar a constante
+  `SANGRIA_MOBILE`; nada mais depende dela.
+
+### Home tem rolagem horizontal no mobile, e não é da Biblioteca (2026-08-31)
+
+Medido em 390px de viewport: `documentElement.scrollWidth = 519` contra
+`clientWidth = 375` — 144px de vazamento. **Acontece igual com a seção da Biblioteca
+desligada** (`?biblioteca=banner` dá o mesmo 519), então a origem é outra seção da home.
+Os elementos que vazam são âncoras de título de card fora de qualquer scroller.
+
+🔴 Fica registrado sem correção: está fora do escopo da Biblioteca e mexe em componentes de
+outras seções. Vale investigar — é a mesma classe de defeito que o Pedro já apontou duas
+vezes ("o scroll horizontal continua aparecendo"), agora num lugar diferente.
