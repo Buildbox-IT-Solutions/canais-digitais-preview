@@ -53,6 +53,14 @@ const BASE_HREF = '/biblioteca-exclusiva'
  * Margem negativa E largura explícita: margem negativa sozinha não alarga elemento de
  * largura travada, e tanto o trilho quanto a FilterBar são `w-full`. A margem só à
  * DIREITA — à esquerda o alinhamento com o título da seção é o que segura a leitura.
+ *
+ * **Não confundir com a regra de recorte do `LibCarousel`** (2026-08-31): lá o trilho é
+ * recortado no padding do container e o padding fica visível, porque o painel da home tem
+ * um box com fundo próprio e o card morrendo na borda dele lia errado. Aqui não há box
+ * nenhum — abaixo de `lg` a borda do container É a borda da tela, e o padding de 16px
+ * viraria uma faixa branca sem função. Acima de `lg` esta sangria não existe e vale a
+ * regra do componente. 🔴 A confirmar com o Pedro: se a referência do MEC também deve
+ * valer no mobile, é só apagar esta constante — nada mais depende dela.
  */
 const SANGRIA_MOBILE = '-mr-4 w-[calc(100%+var(--spacing)*4)] lg:mr-0 lg:w-full'
 const PERFIL_HREF = '/dashboard-perfil-v4?tab=perfil'
