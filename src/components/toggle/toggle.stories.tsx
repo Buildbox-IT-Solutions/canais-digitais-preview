@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Toggle } from './index'
+import { MOCK_FOTO_CLARA, MOCK_FOTO_ESCURA } from '~/mocks/articles'
 import type {
 	IIconOnlyToggleProps,
 	ILabeledToggleProps,
@@ -269,7 +270,7 @@ export const OnMediaFundoClaro: Story = {
 		return (
 			<div
 				className="relative flex h-40 w-64 items-start justify-end rounded-sm bg-cover bg-center p-3"
-				style={{ backgroundImage: 'url(https://picsum.photos/seed/bright-sky-white/400/260)' }}
+				style={{ backgroundImage: `url(${MOCK_FOTO_CLARA})` }}
 			>
 				<Toggle {...favoriteProps} surface="onMedia" pressed={pressed} onPressedChange={setPressed} />
 			</div>
@@ -284,7 +285,7 @@ export const OnMediaFundoEscuro: Story = {
 		return (
 			<div
 				className="relative flex h-40 w-64 items-start justify-end rounded-sm bg-cover bg-center p-3"
-				style={{ backgroundImage: 'url(https://picsum.photos/seed/black-storm-night2/400/260)' }}
+				style={{ backgroundImage: `url(${MOCK_FOTO_ESCURA})` }}
 			>
 				<Toggle {...favoriteProps} surface="onMedia" pressed={pressed} onPressedChange={setPressed} />
 			</div>

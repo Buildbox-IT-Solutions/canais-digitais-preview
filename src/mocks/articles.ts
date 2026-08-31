@@ -1,5 +1,28 @@
 import type { CategoriaColor } from '~/components/categoria/types'
 
+/**
+ * Quantas fotos existem por proporção em `public/mock/` (wide-1..8, video-1..8, …).
+ *
+ * Declarada AQUI EM CIMA de propósito: `picsumSrc` (no fim do arquivo) é chamada durante a
+ * inicialização deste próprio módulo — `VIDEOS_SECTION` monta `image: picsumSrc(...)` no
+ * nível de módulo. Uma constante declarada perto da função ainda estaria na zona morta
+ * temporal nesse instante e estouraria em runtime.
+ */
+const MOCK_COUNT = 8
+
+/**
+ * Duas fotos do conjunto escolhidas pelo BRILHO, não pelo assunto — para as stories que
+ * testam legibilidade de controle sobre foto (`surface="onMedia"` do Toggle e do
+ * ToggleGroup). Medido no conjunto atual: 65 e 195 numa escala de 0 a 255.
+ *
+ * Não use `picsumSrc` nesses casos: ela devolve uma foto qualquer, e "qualquer" não testa
+ * contraste. Se as imagens de `public/mock/` forem regeradas, remeça o brilho e reaponte
+ * estas duas constantes — senão a story continua passando enquanto deixa de testar o que
+ * diz testar.
+ */
+export const MOCK_FOTO_ESCURA = '/mock/video-6.jpg'
+export const MOCK_FOTO_CLARA = '/mock/video-3.jpg'
+
 export interface Article {
 	id: string
 	seed: string
@@ -311,6 +334,53 @@ export const MENU_ITEMS = [
 	{ label: 'E-books', dropdown: false },
 ]
 
+/**
+ * Imagem de exemplo para os mocks. Nome mantido por compatibilidade com os ~56 pontos
+ * que já chamavam esta função — o que mudou foi de onde a imagem vem.
+ *
+ * ANTES: `https://picsum.photos/seed/...`. Em 2026-08-31 o picsum saiu do ar (503, depois
+ * timeout) e TODA imagem do protótipo sumiu ao mesmo tempo, inclusive no ambiente de
+ * revisão publicado. Um protótipo cuja revisão visual depende de um serviço de terceiros
+ * estar de pé não é revisável — quem abrisse o link naquele dia concluiria que a
+ * aplicação tinha quebrado.
+ *
+ * AGORA: arquivos locais em `public/mock/`. São 8 fotografias editoriais REAIS do próprio
+ * Food Connection (CDN do portal), recortadas em 5 proporções. Sendo do portal, o
+ * protótipo ganha de brinde imagens do assunto certo — indústria de alimentos — em vez de
+ * paisagens aleatórias. **Elas não correspondem às manchetes mockadas**: são exemplo
+ * visual, não conteúdo.
+ *
+ * O `seed` continua decidindo QUAL foto sai, de forma determinística: a mesma seed devolve
+ * sempre a mesma imagem, então a home não embaralha entre recarregamentos e as capturas de
+ * tela de revisão continuam comparáveis. `w`/`h` só escolhem a PROPORÇÃO — o arquivo tem
+ * tamanho fixo e quem ajusta é o `object-cover` de quem exibe, igual ao que o picsum
+ * fazia.
+ */
+/**
+ * Proporção pedida -> pasta de imagem. É `function` (hasteada), não `const`: este arquivo
+ * chama `picsumSrc` na própria inicialização do módulo (`VIDEOS_SECTION`, bem acima), e
+ * uma constante declarada aqui embaixo ainda estaria na zona morta temporal nesse momento.
+ */
+function bucketDaProporcao(ratio: number): string {
+	if (ratio >= 3) return 'wide'
+	if (ratio >= 1.7) return 'video'
+	if (ratio >= 1.3) return 'photo'
+	if (ratio >= 0.9) return 'square'
+	return 'portrait'
+}
+
+/**
+ * Hash estável (djb2). Não precisa ser criptográfico — precisa devolver o MESMO número em
+ * toda execução, para a mesma seed cair sempre na mesma foto.
+ */
+function hashDaSeed(seed: string): number {
+	let hash = 5381
+	for (let i = 0; i < seed.length; i++) hash = ((hash << 5) + hash + seed.charCodeAt(i)) | 0
+	return Math.abs(hash)
+}
+
 export function picsumSrc(seed: string, w: number, h: number): string {
-	return `https://picsum.photos/seed/${seed}/${w}/${h}`
+	const bucket = bucketDaProporcao(w / h)
+	const indice = (hashDaSeed(seed) % MOCK_COUNT) + 1
+	return `/mock/${bucket}-${indice}.jpg`
 }

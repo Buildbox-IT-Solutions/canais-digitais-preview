@@ -1,4 +1,5 @@
 import type { Post } from '~/types/post'
+import { picsumSrc } from '~/mocks/articles'
 
 // Fixture de teste do TOC: precisa de 8-10 H2, 2-3 H3 distribuídos sob H2
 // diferentes, parágrafos de tamanho realista e pelo menos um título longo
@@ -72,7 +73,7 @@ export const POST_LONGO_TOC: Post = {
 		},
 		{
 			type: 'image',
-			src: 'https://picsum.photos/seed/matriz-eletrica-brasil/1200/700',
+			src: picsumSrc('matriz-eletrica-brasil', 1200, 700),
 			alt: 'Torres de transmissão de energia elétrica ao entardecer',
 			caption: 'Expansão da malha de transmissão acompanha o crescimento das fontes renováveis no país.',
 		},
