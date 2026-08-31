@@ -252,8 +252,13 @@ export default function BibliotecaExclusivaScreen() {
 						<h1 className="font-display font-bold text-title-xl text-primary-600">
 							Biblioteca exclusiva
 						</h1>
+						{/* Sem citar tipo de material: na prática o acervo é só e-book (29 dos 30
+						    itens extraídos), e whitepaper/infográfico levariam tempo para existir.
+						    O valor fica no que o leitor leva ("análises e tendências do setor",
+						    mesmo vocabulário do painel da home) e na promessa de reunião, que não
+						    depende do formato. Decisão do Pedro em 2026-08-31. */}
 						<p className="font-body text-body-md text-neutral-600">
-							E-books, whitepapers e infográficos do portal, reunidos num só lugar.
+							Análises e tendências do setor, reunidas num só lugar para você baixar.
 						</p>
 					</header>
 
