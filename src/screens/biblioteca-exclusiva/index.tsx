@@ -258,7 +258,7 @@ export default function BibliotecaExclusivaScreen() {
 						    mesmo vocabulário do painel da home) e na promessa de reunião, que não
 						    depende do formato. Decisão do Pedro em 2026-08-31. */}
 						<p className="font-body text-body-md text-neutral-600">
-							Análises e tendências do setor, reunidas num só lugar para você baixar.
+							Análises e tendências do setor, reunidas num só lugar.
 						</p>
 					</header>
 

@@ -1167,16 +1167,17 @@ três.
 | Onde | Antes | Agora |
 |---|---|---|
 | Painel da home | "Análises e tendências que o setor inteiro está lendo. Baixe e-books, whitepapers e infográficos sem pagar nada." | "Análises e tendências que o setor inteiro está lendo." |
-| Cabeçalho da aba | "E-books, whitepapers e infográficos do portal, reunidos num só lugar." | "Análises e tendências do setor, reunidas num só lugar para você baixar." |
+| Cabeçalho da aba | "E-books, whitepapers e infográficos do portal, reunidos num só lugar." | "Análises e tendências do setor, reunidas num só lugar." |
 
 A regra que fica: **o valor é o que o leitor leva, não o formato do arquivo.** Lista de
 tipos volta a mentir a cada mudança do acervo, e a mentira aparece justamente na frase que
 deveria convencer alguém a se cadastrar.
 
-- 🔴 **O tipo continua aparecendo em outro lugar: o badge do card.** O acervo extraído tem
-  29 e-books e 1 whitepaper (o item com sufixo `[Pesquisa]`), então esse único badge é hoje
-  o único ponto da tela que anuncia um tipo que o portal não produz. Não foi tocado — é
-  desenho do Figma (`Badge` com `TIPO_LABEL`), não texto de apoio. A confirmar: o badge
-  deve virar rótulo fixo ("Material"/"E-book"), sair, ou seguir refletindo `material.tipo`?
-- `MaterialType` segue com os três valores. Se o produto assumir que só e-book existe, o
-  tipo deixa de ser dado e vira constante — decisão de modelo, não de texto.
+- 🔵 **DECIDIDO (Pedro, 2026-08-31): o badge segue refletindo `material.tipo`.** O acervo
+  extraído tem 29 e-books e 1 whitepaper (o item com sufixo `[Pesquisa]`), então esse badge
+  é hoje o único ponto da tela que anuncia um tipo que o portal ainda não produz em escala —
+  e fica assim de propósito. **A regra separa dois papéis:** texto de apoio PROMETE (e
+  promessa que envelhece vira mentira), badge DESCREVE o item que está ali (e descrição de
+  um item só erra se o dado estiver errado).
+- **Para o back-end:** `MaterialType` continua sendo dado do material, não constante. O
+  badge lê `material.tipo` e nada mais; não existe rótulo fixo a implementar.
