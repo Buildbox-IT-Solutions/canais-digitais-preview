@@ -1096,6 +1096,10 @@ de alternativa melhor.
   trilho JÁ estava certo — o defeito era o consumidor.
 - **Para o back-end:** o recorte do carrossel é responsabilidade do próprio carrossel.
   Quem consome não alarga o trilho por cima do padding do container.
+- Logo depois, o padding lateral do painel no desktop passou de 40px para **32px**
+  (`lg:px-10` → `lg:px-8`, 8 × `--spacing`), a pedido do Pedro. As medidas acima são de
+  antes disso; com 32px o conteúdo do painel é `[105,1321]` e o recorte acompanha. O
+  padding vertical não mudou (`pt-8` 32px / `pb-10` 40px).
 - A ponta esquerda é recortada 12px DENTRO do padding, não rente a ele, e isso é
   deliberado: são os 12px que a moldura do card expandido precisa para não ser decepada
   quando o primeiro card abre com o trilho no começo (medido: moldura em 101 contra recorte

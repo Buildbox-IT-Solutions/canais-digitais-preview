@@ -61,7 +61,7 @@ export function BibliotecaSection({
 			className={twMerge('w-full px-4 lg:px-6', className)}
 		>
 			<div className="mx-auto w-full max-w-screen-xl">
-				<div className="flex flex-col gap-10 rounded-lg bg-linear-[234deg,--alpha(var(--color-secondary-500)/40%),--alpha(var(--color-secondary-50)/40%)] px-6 pt-8 pb-10 lg:px-10">
+				<div className="flex flex-col gap-10 rounded-lg bg-linear-[234deg,--alpha(var(--color-secondary-500)/40%),--alpha(var(--color-secondary-50)/40%)] px-6 pt-8 pb-10 lg:px-8">
 					<header className="flex flex-col gap-1">
 						<h2 className="font-display font-bold text-headline-md text-primary-600">
 							<a href={href} className="transition-colors hover:text-secondary-950">
