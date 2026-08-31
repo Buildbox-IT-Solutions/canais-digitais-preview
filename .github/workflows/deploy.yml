@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+  # Gatilho manual. Existe porque um push para main pode não criar run (aconteceu no
+  # merge do #50: commit em main, nenhum run em nenhum estado, Actions ativo), e sem
+  # isto não havia como republicar o site a não ser empurrando um commit vazio.
+  workflow_dispatch:
 
 jobs:
   deploy:
