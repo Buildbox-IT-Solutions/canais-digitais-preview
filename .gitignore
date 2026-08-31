@@ -30,3 +30,6 @@ tmp
 
 # Worktrees isolados (superpowers:using-git-worktrees)
 /.worktrees
+
+# Configuração pessoal do Claude Code (permissões locais) — não versionar
+.claude/settings.local.json
