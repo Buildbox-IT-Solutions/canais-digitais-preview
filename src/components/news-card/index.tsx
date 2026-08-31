@@ -143,7 +143,8 @@ export function NewsCard({
 	size = 'large',
 	orientation = 'vertical',
 	categoria,
-	badge,
+	mediaBadge,
+	actions,
 	lead,
 	author,
 	authorHref,
@@ -193,6 +194,12 @@ export function NewsCard({
 			/>
 		) : null
 
+	// Irmão da Thumbnail, como o toggle — e nunca em `mediaOverlay`, que o Thumbnail
+	// renderiza DENTRO do <a> e só revela no hover. Selo de estado precisa estar sempre
+	// visível.
+	const mediaBadgeNode =
+		mediaBadge && image ? <div className="absolute top-4 right-4">{mediaBadge}</div> : null
+
 	const mediaStack = image ? (
 		<div className="relative">
 			<Thumbnail
@@ -203,6 +210,7 @@ export function NewsCard({
 				overlay={mediaOverlay}
 				radius={!boxed}
 			/>
+			{mediaBadgeNode}
 			{mediaToggle}
 		</div>
 	) : null
@@ -211,16 +219,7 @@ export function NewsCard({
 		// `flex-1` só fora do boxed: lá quem distribui a altura da coluna é o painel
 		// de texto (justify-between/center), e um filho que cresce anularia isso.
 		<div className={twMerge('flex flex-col gap-2 min-w-0', !boxed && 'flex-1')}>
-			{badge ? (
-				// Badge + categoria dividem uma linha só (Figma "Frame 3", gap 12px). Sem
-				// badge nada muda: a categoria segue filha direta da coluna, como sempre foi.
-				<div className="flex items-center gap-3">
-					{badge}
-					{categoria ? <Categoria {...categoria} /> : null}
-				</div>
-			) : categoria ? (
-				<Categoria {...categoria} />
-			) : null}
+			{categoria ? <Categoria {...categoria} /> : null}
 			<div className="flex items-start gap-2">
 				<h3
 					className={twMerge(
@@ -247,6 +246,7 @@ export function NewsCard({
 				</p>
 			) : null}
 			{author ? <Byline author={author} href={authorHref} size={bylineSize} /> : null}
+			{!boxed ? actions : null}
 		</div>
 	)
 
@@ -302,11 +302,14 @@ export function NewsCard({
 					// Com patrocinador a SponsorLine ancora no rodapé (único estado que o
 					// Figma desenha). Sem ela, `justify-between` deixaria o vazio da altura
 					// ditada pela imagem embaixo do texto — lê como bug, não como respiro.
-					sponsorLine ? 'justify-between' : 'justify-center',
+					// A barra de ações ancora no rodapé pelo mesmo mecanismo (Figma
+					// `CardHighlight`: bloco de texto no topo, ActionBar na base).
+					sponsorLine || actions ? 'justify-between' : 'justify-center',
 				)}
 			>
 				{content}
 				{sponsorLine}
+				{actions}
 			</div>
 		)
 
@@ -337,6 +340,7 @@ export function NewsCard({
 					radius={false}
 					className={twMerge(boxedMediaRadius, split && 'lg:grow')}
 				/>
+				{mediaBadgeNode}
 				{mediaToggle}
 			</div>
 		) : null

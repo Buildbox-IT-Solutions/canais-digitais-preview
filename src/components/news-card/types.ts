@@ -19,12 +19,25 @@ export interface INewsCardProps {
 	orientation?: NewsCardOrientation
 	categoria?: Pick<ICategoriaProps, 'label' | 'color' | 'href' | 'chip'>
 	/**
-	 * Slot à ESQUERDA da categoria, na mesma linha (`Frame 3` do Figma, gap 12px). Criado
-	 * para o Destaque da Biblioteca exclusiva, que precisa do badge de tipo/cadeado ao
-	 * lado da categoria. Sem ele o card renderiza exatamente como antes — a linha só
-	 * existe quando `badge` vem.
+	 * Selo sobre a MÍDIA, canto superior direito com inset de 16px (Figma `CardHighlight`
+	 * 8480:3299 — badge em x=991/y=16 num card de 1080). Substituiu, em 2026-08-31, um
+	 * slot `badge` que punha o selo ao lado da categoria: o Figma do destaque da
+	 * Biblioteca moveu o selo para cima da imagem, e manter os dois slots deixaria um sem
+	 * consumidor.
+	 *
+	 * ⚠️ Divide o canto com o toggle de favoritar da mídia (`contentId`, em `top-2
+	 * right-2`). Nenhum design usa os dois juntos; se algum passar a usar, um dos dois
+	 * precisa trocar de canto.
 	 */
-	badge?: ReactNode
+	mediaBadge?: ReactNode
+	/**
+	 * Barra de ações ancorada no RODAPÉ da coluna de texto (Figma `CardHighlight`: a
+	 * ActionBar fica a 24px da base, com `justify-between` separando-a do bloco de
+	 * texto). Em `boxed` é irmã do conteúdo, para o `justify-between` do painel poder
+	 * empurrá-la para baixo; nas outras variantes ela entra no fim da própria coluna de
+	 * texto.
+	 */
+	actions?: ReactNode
 	lead?: string
 	author?: string
 	authorHref?: string

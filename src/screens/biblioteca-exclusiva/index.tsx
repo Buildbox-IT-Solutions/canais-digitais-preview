@@ -259,7 +259,14 @@ export default function BibliotecaExclusivaScreen() {
 
 					{/* Destaque só na página inicial da aba: filtrado por tema, ele repetiria
 					    material que a grade logo abaixo já lista. */}
-					{tema || !destaque ? null : <DestaqueBiblioteca material={destaque} gate={gate} />}
+					{tema || !destaque ? null : (
+						<DestaqueBiblioteca
+							material={destaque}
+							gate={gate}
+							onBaixar={baixar}
+							onBloqueado={setMaterialBloqueado}
+						/>
+					)}
 
 					<FilterBar
 						itens={filtros}
