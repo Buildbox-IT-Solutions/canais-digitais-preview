@@ -12,9 +12,10 @@
  * só a régua, sempre visível em telas largas o bastante (correção do
  * usuário em 2026-07-31, pós-primeira rodada de revisão com o cliente).
  * A régua em si (tracinhos, hover/foco/blur/Escape, painel) vive em
- * <TocMarginRail>, compartilhada com a Opção 3 (table-of-contents-icon),
- * que reusa a mesma régua em telas largas e cai pro botão flutuante abaixo
- * do breakpoint em que ela deixa de caber.
+ * <TocMarginRail>, compartilhada com o híbrido também arquivado
+ * (table-of-contents-hybrid), que reusava a mesma régua em telas largas e
+ * caía pro botão flutuante abaixo de 1400px. A versão vigente
+ * (table-of-contents-icon) não usa mais régua alguma.
  * Não renderiza nada quando `headings.length < 3`.
  * Tokens: --color-neutral-100, --color-neutral-300, --color-neutral-900, --color-secondary-950, rounded-sm
  */

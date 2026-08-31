@@ -22,6 +22,7 @@ import { NewsCard } from '~/components/news-card'
 import { PlayButton } from '~/components/play-button'
 import { SectionTitle } from '~/components/section-title'
 import { TableOfContents } from '~/components/table-of-contents'
+import { TableOfContentsHybrid } from '~/components/table-of-contents-hybrid'
 import { TableOfContentsIcon } from '~/components/table-of-contents-icon'
 import { TableOfContentsMargin } from '~/components/table-of-contents-margin'
 import { Tag } from '~/components/tag'
@@ -335,6 +336,8 @@ export default function ConteudoScreen() {
 								<TableOfContentsMargin headings={activePost.headings} />
 							) : tocVariant === 'pill' ? (
 								<TableOfContents headings={activePost.headings} />
+							) : tocVariant === 'hibrido' ? (
+								<TableOfContentsHybrid headings={activePost.headings} />
 							) : (
 								<TableOfContentsIcon headings={activePost.headings} />
 							)}

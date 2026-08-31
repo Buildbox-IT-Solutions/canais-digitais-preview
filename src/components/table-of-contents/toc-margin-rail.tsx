@@ -17,11 +17,12 @@ interface ITocMarginRailProps {
 
 /**
  * Régua de tracinhos na margem esquerda + painel no hover — visual e
- * interação do Medium. Reaproveitada pela Opção 2 arquivada
- * (table-of-contents-margin, congelada, nunca passa `title`/`dense`) e pela
- * versão final (table-of-contents-icon, onde é a metade "tela larga" do
- * híbrido — a outra metade é o botão flutuante, visível só abaixo do
- * breakpoint abaixo).
+ * interação do Medium. Não está mais em uso pela versão vigente do TOC
+ * (table-of-contents-icon, só botão flutuante desde 2026-08-31): sobrevive
+ * nas duas variantes arquivadas e congeladas — table-of-contents-margin
+ * (nunca passa `title`/`dense`) e table-of-contents-hybrid (onde é a metade
+ * "tela larga", com a outra metade sendo o botão flutuante abaixo do
+ * breakpoint descrito adiante).
  * Colada na borda real da viewport (`left-6`), não mais centralizada em
  * relação ao container de max-w-screen-xl — decisão de 2026-08-18 pra
  * baixar o breakpoint sem depender da folga fora do container (que só
