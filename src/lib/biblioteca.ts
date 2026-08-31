@@ -143,14 +143,18 @@ export function paginarGrade(materiais: Material[], paginaPedida: number): Pagin
 }
 
 /**
- * Destaque do topo: os 3 materiais mais recentes (anotação "Destaque com os 3 itens
- * mais recentes"). Indisponíveis ficam de fora — o destaque é convite a baixar, e
- * convidar para o que não existe mais é o pior lugar possível para essa falha.
+ * Destaque do topo: O material mais recente. Um só.
+ *
+ * O Figma pedia 3 num carrossel automático ("Destaque com os 3 itens mais recentes",
+ * "Slide carrossel automático"). Simplificado por decisão do Pedro em 2026-08-31: virou
+ * item único, sem slide. **Para o back-end: a anotação do Figma sobre o carrossel do
+ * destaque está vencida.** Ver ds/achados.md.
+ *
+ * Indisponíveis ficam de fora — o destaque é convite a baixar, e convidar para o que não
+ * existe mais é o pior lugar possível para essa falha.
  */
-export const TOTAL_DESTAQUE = 3
-
-export function materiaisEmDestaque(): Material[] {
-	return ordenarPorData(MATERIAIS.filter((m) => m.disponivel)).slice(0, TOTAL_DESTAQUE)
+export function materialEmDestaque(): Material | null {
+	return ordenarPorData(MATERIAIS.filter((m) => m.disponivel))[0] ?? null
 }
 
 /**

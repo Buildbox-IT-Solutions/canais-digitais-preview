@@ -892,14 +892,16 @@ primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso
   que alguém abre um card por curiosidade; abrir o post é a exceção. A ação frequente fica
   com a área grande.
 
-### Seção da home convive com o banner de download (2026-08-30)
+### Seção da home ALTERNA com o banner de download (2026-08-30, revisto em 31/08)
 
 - A anotação do Figma propõe a `BibliotecaSection` como **substituição** do
-  `DownloadSection`. Decisão do Pedro: **os dois convivem** até o cliente aceitar as regras
-  propostas, que ainda vão para aprovação. O eixo de ScenarioBar que alternava entre eles
-  foi removido — a home renderiza os dois, sempre.
-- 🔴 **Segue pendente:** confirmada a proposta, o `DownloadSection` sai da home? Enquanto
-  não sai, a home tem duas chamadas de download em sequência.
+  `DownloadSection`. Uma versão intermediária renderizou os dois ao mesmo tempo; corrigido
+  em 2026-08-31 — eles **alternam** por eixo da ScenarioBar (`?biblioteca=secao`), com o
+  banner atual como default.
+- O motivo de não conviverem: **ocupam o mesmo lugar da página e falam da mesma coisa**
+  (baixar material). Juntos, a home ganha duas chamadas de download em sequência e some a
+  possibilidade de comparar — que é exatamente o que precisa acontecer antes da decisão.
+- 🔴 **Segue pendente:** aprovada a proposta, o `DownloadSection` sai da home de vez?
 
 ### Trilho era recortado antes da borda do painel (2026-08-30)
 
@@ -974,3 +976,16 @@ primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso
   `picsumSrc` — "uma foto qualquer" não testa contraste. 🔴 **Se as imagens de
   `public/mock/` forem regeradas, remeça o brilho e reaponte essas duas constantes**,
   senão a story continua passando enquanto deixa de testar o que diz testar.
+
+### Destaque da Biblioteca perdeu o carrossel (2026-08-31)
+
+- O Figma pede 3 itens em slide automático ("Destaque com os 3 itens mais recentes" +
+  "Slide carrossel automático", node `8424:109762`). Estava implementado assim e foi
+  **simplificado por decisão do Pedro**: virou o material mais recente, um só, sem slide.
+- 🔴 **Para o back-end: essa anotação do Figma está VENCIDA.** Quem reimplementar lendo só
+  o arquivo de design vai construir um carrossel que não existe mais.
+- Saíram junto com o slide o timer de 6s, o estado de índice, os dots, a pausa por
+  hover/foco, o respeito a `prefers-reduced-motion` e o `aria-live` — nada disso tem razão
+  de existir sem o movimento que os justificava. `materiaisEmDestaque()` virou
+  `materialEmDestaque()` e devolve `Material | null`; a tela não renderiza o destaque se o
+  acervo inteiro estiver indisponível.

@@ -26,7 +26,7 @@ import {
 	TEMA_TODOS,
 	categoriasComAcervo,
 	estaBloqueado,
-	materiaisEmDestaque,
+	materialEmDestaque,
 	materiaisPorTema,
 	paginarGrade,
 	secoesDaBiblioteca,
@@ -196,6 +196,9 @@ export default function BibliotecaExclusivaScreen() {
 
 	const tema = temaPorSlug(temaValido)
 
+	// Acervo inteiro indisponível deixaria o destaque sem material — a tela segue sem ele.
+	const destaque = materialEmDestaque()
+
 	function hrefDoTema(slug: string): string {
 		const next = new URLSearchParams(params)
 		// Trocar de tema zera a paginação — manter ?page=3 ao entrar num tema de 4 itens
@@ -248,9 +251,7 @@ export default function BibliotecaExclusivaScreen() {
 
 					{/* Destaque só na página inicial da aba: filtrado por tema, ele repetiria
 					    material que a grade logo abaixo já lista. */}
-					{tema ? null : (
-						<DestaqueBiblioteca materiais={materiaisEmDestaque()} gate={gate} />
-					)}
+					{tema || !destaque ? null : <DestaqueBiblioteca material={destaque} gate={gate} />}
 
 					<FilterBar
 						itens={filtros}
