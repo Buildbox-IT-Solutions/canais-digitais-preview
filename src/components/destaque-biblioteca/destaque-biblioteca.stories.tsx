@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DestaqueBiblioteca } from '.'
-import { materiaisEmDestaque } from '~/lib/biblioteca'
+import { materialEmDestaque } from '~/lib/biblioteca'
 
 const meta: Meta<typeof DestaqueBiblioteca> = {
 	title: 'Biblioteca/Destaque',
@@ -10,12 +10,12 @@ const meta: Meta<typeof DestaqueBiblioteca> = {
 		docs: {
 			description: {
 				component:
-					'Destaque do topo da Biblioteca (Figma 8424:109762): os 3 materiais mais recentes em carrossel automático de 6s. O card é o `NewsCard` `boxed`/`xlarge`/`horizontal` — o mesmo split do destaque único da home —, acrescido do slot `badge`. O avanço automático para de vez com `prefers-reduced-motion` e pausa no hover ou no foco de teclado. Os dots são botões de verdade.',
+					'Destaque do topo da Biblioteca (Figma 8424:109762): o material mais recente do acervo, um só e sem slide. O Figma pedia 3 em carrossel automático; simplificado por decisão do Pedro em 2026-08-31, e com o carrossel saíram o timer, os dots e a pausa por hover. O card é o `NewsCard` `boxed`/`xlarge`/`horizontal` — o mesmo split do destaque único da home —, acrescido do slot `badge`.',
 			},
 		},
 	},
 	tags: ['autodocs'],
-	args: { materiais: materiaisEmDestaque() },
+	args: { material: materialEmDestaque()! },
 }
 
 export default meta

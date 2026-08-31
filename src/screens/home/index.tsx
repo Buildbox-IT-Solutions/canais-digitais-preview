@@ -69,6 +69,30 @@ const DESTAQUE_UNICO_AXIS: ScenarioAxis = {
 	],
 }
 
+/**
+ * Eixo da proposta da Biblioteca exclusiva na home (anotação do Figma no node
+ * `8424:112623`: "Proposta para substituição do banner de 'Material para Download'").
+ *
+ * É ALTERNÂNCIA, não convivência: as duas ocupam o mesmo lugar na página e falam da mesma
+ * coisa (baixar material). Renderizar as duas juntas dá à home duas chamadas de download
+ * em sequência e impede comparar — que é justamente o que precisa acontecer antes da
+ * decisão. O default é o banner ATUAL, então sem `?biblioteca=` a home fica como está
+ * hoje em produção.
+ *
+ * Param próprio (`biblioteca`, não `cenario`): o `cenario` já é do destaque único, e dois
+ * eixos não dividem parâmetro.
+ */
+const BIBLIOTECA_AXIS: ScenarioAxis = {
+	param: 'biblioteca',
+	label: 'Seção Biblioteca',
+	value: 'banner',
+	defaultValue: 'banner',
+	options: [
+		{ value: 'banner', label: 'Banner de download (atual)' },
+		{ value: 'secao', label: 'Biblioteca exclusiva (proposta)' },
+	],
+}
+
 // Registro vazio quando a home é só o fundo de um modal de auth (/login, /cadastro…):
 // nesse caso os eixos da barra são os da tela da frente, e não os desta.
 const NO_AXES: ScenarioAxis[] = []
@@ -100,6 +124,13 @@ export default function HomeScreen() {
 		? (cenario as string)
 		: 'destaque-unico-off'
 
+	// ?biblioteca=secao troca o banner de download pela vitrine do acervo.
+	const bibliotecaParam = params.get('biblioteca')
+	const bibliotecaValue = BIBLIOTECA_AXIS.options.some((o) => o.value === bibliotecaParam)
+		? (bibliotecaParam as string)
+		: 'banner'
+	const mostrarBiblioteca = bibliotecaValue === 'secao'
+
 	// Sessão primeiro (ver _sessao/scenarios). O eixo do banner de newsletter só entra
 	// na barra com ?logado=true: deslogado o banner leva ao formulário público e não
 	// tem estado de assinatura para variar — um controle que não muda nada é pior que
@@ -109,6 +140,7 @@ export default function HomeScreen() {
 			? [
 					sessaoAxis(logado),
 					{ ...DESTAQUE_UNICO_AXIS, value: destaqueUnicoValue },
+					{ ...BIBLIOTECA_AXIS, value: bibliotecaValue },
 					...(logado ? [newsletterAxis(newsletterAxisValue(params.get('newsletter')))] : []),
 				]
 			: NO_AXES,
@@ -232,28 +264,30 @@ export default function HomeScreen() {
 
 			<ProteinaAnimalSection articles={PROTEINA_ANIMAL} />
 
-			{/* Vitrine do acervo (node 8424:112623). A anotação do Figma a propõe como
-			    SUBSTITUIÇÃO do banner de download abaixo, mas as regras ainda vão para
-			    aprovação do cliente — até lá as duas convivem, de propósito. Ver
-			    ds/achados.md. */}
-			<BibliotecaSection materiais={materiaisMaisRecentes(12)} className="mt-10" />
+			{/* Vitrine do acervo (node 8424:112623) OU o banner de download atual — nunca os
+			    dois: ocupam o mesmo lugar e falam da mesma coisa (baixar material). Ver
+			    BIBLIOTECA_AXIS.
 
-			{/* Logado, sem handler: a âncora com `download` baixa nativamente, e quem confirma
-			    é o próprio navegador (barra de downloads) — não duplicamos isso em toast.
-			    Deslogado, `onCtaClick` intercepta e abre o modal de incentivo; o href vira o
-			    destino sem-JS. O título é link para a matéria nos dois casos. */}
-			<DownloadSection
-				eyebrow="E-book gratuito"
-				title={MATERIAL_DESTAQUE_TITULO}
-				titleHref="/conteudo"
-				description="Saiba como a cadeia de produção está sendo otimizada até o atacarejo com rastreabilidade e as tecnologias envolvidas nesse processo."
-				ctaLabel="Baixar agora"
-				ctaHref={logado ? ARQUIVO_EXEMPLO_URL : '/cadastro?step=1&intent=download&returnTo=%2Fhome'}
-				ctaDownload={logado ? nomeArquivoDownload(MATERIAL_DESTAQUE_TITULO) : undefined}
-				onCtaClick={!logado ? () => setDownloadOpen(true) : undefined}
-				image={picsumSrc('download-bg', 1920, 460)}
-				className="mt-10"
-			/>
+			    No banner: logado e sem handler, a âncora com `download` baixa nativamente e quem
+			    confirma é o próprio navegador (barra de downloads) — não duplicamos isso em
+			    toast. Deslogado, `onCtaClick` intercepta e abre o modal de incentivo; o href vira
+			    o destino sem-JS. O título é link para a matéria nos dois casos. */}
+			{mostrarBiblioteca ? (
+				<BibliotecaSection materiais={materiaisMaisRecentes(12)} className="mt-10" />
+			) : (
+				<DownloadSection
+					eyebrow="E-book gratuito"
+					title={MATERIAL_DESTAQUE_TITULO}
+					titleHref="/conteudo"
+					description="Saiba como a cadeia de produção está sendo otimizada até o atacarejo com rastreabilidade e as tecnologias envolvidas nesse processo."
+					ctaLabel="Baixar agora"
+					ctaHref={logado ? ARQUIVO_EXEMPLO_URL : '/cadastro?step=1&intent=download&returnTo=%2Fhome'}
+					ctaDownload={logado ? nomeArquivoDownload(MATERIAL_DESTAQUE_TITULO) : undefined}
+					onCtaClick={!logado ? () => setDownloadOpen(true) : undefined}
+					image={picsumSrc('download-bg', 1920, 460)}
+					className="mt-10"
+				/>
+			)}
 
 			{/* §6 — Ad 970×90 (desktop) / 360×142 (mobile) */}
 			<section className="flex flex-col items-center py-10 w-full">
