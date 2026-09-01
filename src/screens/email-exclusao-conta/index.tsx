@@ -56,7 +56,7 @@ export default function EmailExclusaoContaScreen() {
 				<EmailP>Sentiremos sua falta! Quando quiser, é só criar uma nova conta pra voltar a acessar a Food Connection.</EmailP>
 			</EmailBody>
 
-			<EmailButton href="https://foodconnection.com.br/cadastro" label="Criar nova conta" />
+			<EmailButton href="" label="Criar nova conta" />
 		</EmailShell>
 	)
 }
