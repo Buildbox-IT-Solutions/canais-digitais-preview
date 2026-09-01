@@ -20,7 +20,7 @@ const MOTIVOS = [
 ]
 
 /**
- * Tela: Excluir Conta (Modal) — LGPD Direito ao Esquecimento (Art. 18 IX)
+ * Tela: Excluir Conta (Modal) — LGPD, direito de eliminação (art. 18, VI)
  * Ação direta sobre o Perfil (ACC-01), em 2 estados: confirm (padrão) → done (?state=done).
  * Usa o Dialog padrão; Perfil ao fundo em confirm. Em done a conta já foi excluída — não há
  * mais sessão — então o fundo passa a ser a home deslogada, não a área logada.
@@ -132,15 +132,11 @@ function ConfirmDialog() {
 							<ul className="flex flex-col gap-1.5 list-disc pl-5">
 								<li>
 									<strong className="font-semibold text-neutral-900">Excluídos agora:</strong> perfil,
-									preferências, conteúdo salvo
+									preferências, conteúdo salvo e e-mail
 								</li>
 								<li>
-									<strong className="font-semibold text-neutral-900">Mantidos por prazo legal:</strong>{' '}
-									registros de acesso e transações — eliminados depois
-								</li>
-								<li>
-									<strong className="font-semibold text-neutral-900">Nunca usados</strong> para novas
-									comunicações
+									<strong className="font-semibold text-neutral-900">Nenhuma comunicação</strong>{' '}
+									depois disso
 								</li>
 							</ul>
 						</AccordionContent>

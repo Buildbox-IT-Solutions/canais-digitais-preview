@@ -16,12 +16,11 @@ export default function EmailExclusaoContaScreen() {
 					<EmailStrong>[DATA_SOLICITACAO]</EmailStrong>.
 				</EmailP>
 				<EmailP>
-					Seus dados de perfil e preferências de newsletter foram removidos.
+					Seus dados foram removidos na hora, e nada foi mantido.
 				</EmailP>
 				<EmailPMuted>
-					Uma pequena parte dos dados (como registros de acesso e download) pode ser mantida por
-					tempo limitado apenas para cumprir obrigações legais, e não será usada para novas
-					comunicações. Depois desse prazo, também é eliminada.
+					Não guardamos cópia, histórico nem registro de acesso — e você não recebe mais nenhuma
+					comunicação nossa.
 				</EmailPMuted>
 			</EmailBody>
 
@@ -48,6 +47,7 @@ export default function EmailExclusaoContaScreen() {
 					<ul style={{ margin: 0, paddingLeft: 20, fontSize: 14, lineHeight: 1.6, color: '#5A6E8F' }}>
 						<li>Dados de perfil (nome, foto, telefone, endereço)</li>
 						<li>Preferências e inscrições de newsletter</li>
+						<li>Conteúdo salvo e seu endereço de e-mail</li>
 					</ul>
 				</div>
 			</div>
