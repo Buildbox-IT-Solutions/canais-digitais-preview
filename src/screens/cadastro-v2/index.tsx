@@ -257,38 +257,26 @@ export default function CadastroV2Screen() {
 										required
 									/>
 
-									<div className="flex flex-col w-full">
-										<label className="flex items-start gap-4 cursor-pointer group py-2">
-											<input type="checkbox" name="termos" required className="sr-only" />
-											<span
-												className={`inline-flex items-center justify-center size-[18px] rounded-xs border-2 mt-0.5 shrink-0 transition-colors ${
-													termosError ? 'border-red-600' : 'border-neutral-950'
-												} group-has-[:checked]:bg-primary-600 group-has-[:checked]:border-primary-600`}
-											>
-												<Icon name="check" className="size-3 text-white opacity-0 group-has-[:checked]:opacity-100" />
-											</span>
-											<span className="flex-1 font-body text-body-md text-neutral-950">
-												Li e aceito os{' '}
-												<a href="#" className="font-bold text-secondary-950">
-													Termos de Uso
-												</a>{' '}
-												e a{' '}
-												<a href="#" className="font-bold text-secondary-950">
-													Política de Privacidade
-												</a>
-											</span>
-										</label>
-
-										<label className="flex items-start gap-4 cursor-pointer group py-2">
-											<input type="checkbox" name="marketing" className="sr-only" />
-											<span className="inline-flex items-center justify-center size-[18px] rounded-xs border-2 border-neutral-950 mt-0.5 shrink-0 transition-colors group-has-[:checked]:bg-primary-600 group-has-[:checked]:border-primary-600">
-												<Icon name="check" className="size-3 text-white opacity-0 group-has-[:checked]:opacity-100" />
-											</span>
-											<span className="flex-1 font-body text-body-md text-neutral-950">
-												Quero receber comunicações e novidades da Informa Markets
-											</span>
-										</label>
-									</div>
+									<label className="flex items-start gap-4 cursor-pointer group py-2">
+										<input type="checkbox" name="termos" required className="sr-only" />
+										<span
+											className={`inline-flex items-center justify-center size-[18px] rounded-xs border-2 mt-0.5 shrink-0 transition-colors ${
+												termosError ? 'border-red-600' : 'border-neutral-950'
+											} group-has-[:checked]:bg-primary-600 group-has-[:checked]:border-primary-600`}
+										>
+											<Icon name="check" className="size-3 text-white opacity-0 group-has-[:checked]:opacity-100" />
+										</span>
+										<span className="flex-1 font-body text-body-md text-neutral-950">
+											Li e aceito os{' '}
+											<a href="#" className="font-bold text-secondary-950">
+												Termos de Uso
+											</a>{' '}
+											e a{' '}
+											<a href="#" className="font-bold text-secondary-950">
+												Política de Privacidade
+											</a>
+										</span>
+									</label>
 								</>
 							) : null}
 
