@@ -9,11 +9,9 @@ import { DestaqueBiblioteca } from '~/components/destaque-biblioteca'
 import { FilterBar } from '~/components/filter-bar'
 import { FooterDesktop } from '~/components/footer-desktop'
 import { HeaderDesktop } from '~/components/header-desktop'
-import { Icon } from '~/components/icon'
 import { LibCard } from '~/components/lib-card'
 import { LibCarousel } from '~/components/lib-carousel'
 import { Pagination } from '~/components/pagination'
-import { StatusRing } from '~/components/status-ring'
 import { relatarExtracao } from '~/dev/biblioteca-extracao-log'
 import {
 	persistirDesbloqueio,
@@ -68,28 +66,17 @@ const USER_NAME = 'Mariana Albuquerque'
 const USER_EMAIL = 'mariana.albuquerque@empresa.com.br'
 const USER_INITIALS = 'MA'
 
-/**
- * Tema do cenário `acervo-vazio`: "Embalagens" é categoria REAL do portal sem nenhum
- * material nas 3 primeiras páginas do acervo. O estado vazio não é simulado — é o
- * resultado honesto de filtrar por ela.
- */
-const TEMA_SEM_ACERVO = 'embalagens'
-
-type Cenario = 'perfil-incompleto' | 'perfil-completo' | 'subsetor-outro' | 'acervo-vazio'
+type Cenario = 'perfil-incompleto' | 'perfil-completo' | 'subsetor-outro'
 
 /**
- * Eixo único de cenário desta tela. Um eixo só porque as quatro opções são estados
+ * Eixo único de cenário desta tela. Um eixo só porque as três opções são estados
  * mutuamente exclusivos do mesmo assunto (quem é o usuário e o que ele vê), não
  * dimensões que se acumulam.
- *
- * `acervo-vazio` também mexe no `?tema=` — `clears` não dá conta disso (só remove
- * parâmetros), então quem reescreve é o efeito lá embaixo.
  */
 const CENARIOS: { value: Cenario; label: string }[] = [
 	{ value: 'perfil-incompleto', label: 'Perfil incompleto' },
 	{ value: 'perfil-completo', label: 'Perfil completo' },
 	{ value: 'subsetor-outro', label: "Subsetor 'outro'" },
-	{ value: 'acervo-vazio', label: 'Acervo vazio' },
 ]
 
 /** `subsetor-outro` é o único que muda o PERFIL; os outros mudam só o gate. */
@@ -121,7 +108,7 @@ function perfilDoCenario(cenario: Cenario): PerfilBiblioteca {
  *   ?cenario=      cenário de revisão (ScenarioBar)
  */
 export default function BibliotecaExclusivaScreen() {
-	const [params, setSearchParams] = useSearchParams()
+	const [params] = useSearchParams()
 	const navigate = useNavigate()
 
 	// Balanço da extração no console (só em DEV) — a contagem de categorias inferidas é
@@ -142,9 +129,8 @@ export default function BibliotecaExclusivaScreen() {
 			options: CENARIOS,
 			value: cenario,
 			defaultValue: 'perfil-incompleto',
-			// Sair de `acervo-vazio` precisa soltar o `?tema=` que ele forçou, senão o
-			// próximo cenário abriria preso em Embalagens. E trocar de cenário sempre
-			// invalida a página da grade.
+			// Trocar de cenário sempre invalida a página da grade e o tema filtrado — os
+			// três cenários mudam quem é o usuário, não o que ele está olhando.
 			clears: ['tema', 'page'],
 		},
 	]
@@ -181,16 +167,6 @@ export default function BibliotecaExclusivaScreen() {
 	// ── Tema ativo ──────────────────────────────────────────────────────────────
 	const temaParam = params.get('tema')
 	const temaValido = temaParam && temaPorSlug(temaParam) ? temaParam : TEMA_TODOS
-
-	// `acervo-vazio` só existe como tema filtrado. Reescreve a URL (replace, sem empilhar
-	// histórico) pra ela continuar dizendo a verdade e continuar compartilhável.
-	useEffect(() => {
-		if (cenario !== 'acervo-vazio' || temaParam === TEMA_SEM_ACERVO) return
-		const next = new URLSearchParams(params)
-		next.set('tema', TEMA_SEM_ACERVO)
-		next.delete('page')
-		setSearchParams(next, { replace: true })
-	}, [cenario, temaParam])
 
 	const tema = temaPorSlug(temaValido)
 
@@ -274,7 +250,6 @@ export default function BibliotecaExclusivaScreen() {
 							temaLabel={tema.label}
 							temaSlug={tema.slug}
 							gate={gate}
-							hrefTodos={hrefDoTema(TEMA_TODOS)}
 							onBloqueado={setMaterialBloqueado}
 						/>
 					) : (
@@ -387,13 +362,11 @@ function GradeDoTema({
 	temaLabel,
 	temaSlug,
 	gate,
-	hrefTodos,
 	onBloqueado,
 }: {
 	temaLabel: string
 	temaSlug: string
 	gate: LibraryGate
-	hrefTodos: string
 	onBloqueado: (m: Material) => void
 }) {
 	const [params] = useSearchParams()
@@ -410,34 +383,11 @@ function GradeDoTema({
 	// acervo inteiro.
 	const baseHref = `${BASE_HREF}?tema=${temaSlug}`
 
-	if (total === 0) {
-		return (
-			<section className="flex flex-col gap-4">
-				<h2 className="font-display font-semibold text-title-lg text-primary-600">{temaLabel}</h2>
-				<div
-					data-handoff="acervo-vazio"
-					className="flex flex-col items-center gap-4 py-12 text-center"
-				>
-					<StatusRing accent="primary" icon="folder" size="sm" />
-					<h3 className="font-display font-bold text-title-xl text-primary-600">
-						Nenhum material em {temaLabel} ainda
-					</h3>
-					<p className="max-w-md font-body text-body-md text-neutral-700">
-						Este tema ainda não tem material publicado. Volte ao acervo completo ou escolha outra
-						categoria acima.
-					</p>
-					<a
-						href={hrefTodos}
-						className="mt-2 inline-flex h-10 items-center gap-2 rounded-full border-[1.5px] border-primary-600 pr-4 pl-5 font-body font-bold text-body-md text-primary-600 transition-colors hover:bg-neutral-50"
-					>
-						Ver todo o acervo
-						<Icon name="arrow-forward" className="size-5" />
-					</a>
-				</div>
-			</section>
-		)
-	}
-
+	// Sem estado vazio dedicado: a FilterBar só oferece categorias com acervo
+	// (`categoriasComAcervo`), então esta grade nunca é alcançada por clique com `total`
+	// zerado. Um link direto/compartilhado para uma categoria que perdeu o acervo depois
+	// cai aqui mesmo assim — decisão do Pedro em 2026-09-04 é deixar de tratar esse caso
+	// como estado de produto: a grade renderiza normalmente, com 0 no contador.
 	return (
 		<section className="flex flex-col gap-6">
 			<header className="flex flex-col gap-1">

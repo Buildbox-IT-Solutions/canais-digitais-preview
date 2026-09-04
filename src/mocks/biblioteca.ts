@@ -90,8 +90,9 @@ export interface LibraryGate {
  * "Materiais de Download" no lugar da categoria. Na fonte, o container VIROU a
  * categoria. Cada item inferido está comentado.
  *
- * `Embalagens` entra na lista mesmo sem nenhum material nas 3 primeiras páginas — é o
- * caso real que alimenta o cenário `acervo-vazio` (?tema=embalagens).
+ * `Embalagens` entra na lista mesmo sem nenhum material nas 3 primeiras páginas — é
+ * categoria real do portal, só ainda sem acervo. Fica de fora da FilterBar
+ * (`categoriasComAcervo`) até ter material publicado.
  */
 export interface CategoriaPortal {
 	slug: string

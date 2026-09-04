@@ -87,11 +87,11 @@ export function slugDaCategoria(label: string): string {
 /**
  * Categorias que têm ao menos um material — as únicas que viram filtro.
  *
- * Uma categoria vazia como filtro é um beco: o único destino dela é o estado vazio.
+ * Uma categoria vazia como filtro é um beco: o clique não levaria a nada pra ver.
  * `Embalagens` existe na taxonomia do portal e fica de fora daqui enquanto não tiver
- * acervo. **Consequência: o estado vazio da grade deixa de ser alcançável pela
- * FilterBar** — ele continua existindo para link direto/compartilhado de uma categoria
- * que ficou sem conteúdo depois (é justamente o cenário `acervo-vazio`).
+ * acervo. Decisão do Pedro em 2026-09-04: a grade de um tema sem material não tem
+ * estado vazio dedicado — ela só nunca é alcançada por clique, porque a FilterBar
+ * nunca oferece esse tema.
  */
 export function categoriasComAcervo(): CategoriaPortal[] {
 	return CATEGORIAS_PORTAL.filter((c) => MATERIAIS.some((m) => m.categoria === c.label))

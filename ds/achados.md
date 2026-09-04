@@ -578,6 +578,15 @@ Levantados ao construir `/biblioteca-exclusiva` a partir do layout do Figma
   (coração) em todos os 5 pontos de favoritar do repo, e a anotação diz "Favorita e abre
   toast. Semelhante a Últimas leituras" — ou seja, é a mesma feature. Implementado com o
   `FavoritoToggle` canônico. **Trocar o glifo só aqui é que seria a divergência.**
+- **Toast de favoritar ganhou a ação "Ver"** (2026-09-04), igualando ao padrão dos outros
+  quatro pontos de favoritar do repo (ex.: `UltimasListRow` em dashboard-perfil-v4) — leva
+  para `/dashboard-perfil-v4?tab=favoritos`. 🔴 **EM ABERTO**: `resolveFavoritos()`
+  (`src/mocks/favoritos.ts`) só resolve contra `ARTICLES_BY_ID` — um `Material` da
+  Biblioteca favoritado é salvo na store (o coração acende certo), mas **não aparece** na
+  aba Favoritos: `resolveFavoritos` não reconhece o id, loga aviso em DEV e descarta o
+  item silenciosamente. Clicar em "Ver" hoje leva a uma lista onde o material que acabou
+  de ser favoritado não está. Corrigir exige `resolveFavoritos` (ou uma variante) também
+  soltar `Material`, não só `Article` — fora do escopo desta mudança pontual.
 - **Abertura do card.** O component set tem `Hovered + Opened=On`, mas não
   `Enabled + Opened=On` — o que sugere abertura por hover. Implementado assim (mais foco
   de teclado, por acessibilidade). 🔴 **O comportamento em touch não foi desenhado**: sem
@@ -647,9 +656,12 @@ primeiras **desfazem regras do briefing da fase 1** e ficam registradas por isso
   `overflow-hidden` + `min-w-0`. **Para o back-end: a rolagem tem de ser do trilho, nunca
   da página** — é o erro fácil de reintroduzir ao reimplementar.
 - **Categoria sem acervo não vira filtro** (`categoriasComAcervo()`). `Embalagens` saiu
-  da barra. 🔴 **Consequência: o estado vazio da grade não é mais alcançável pela
-  interface** — só por link direto de uma categoria que ficou sem conteúdo depois de
-  compartilhada. Ele continua implementado e é o cenário `acervo-vazio`.
+  da barra. ✅ resolvido em 2026-09-04 — como o estado vazio da grade já não era mais
+  alcançável pela interface (só por link direto/compartilhado de uma categoria que
+  ficou sem conteúdo depois), o Pedro decidiu não tratá-lo mais como estado de produto:
+  o cenário de revisão `acervo-vazio` e a UI dedicada (`GradeDoTema`, ícone + CTA "Ver
+  todo o acervo") saíram do código. Um link direto para tema sem material agora renderiza
+  a grade normalmente, com "0 materiais em X".
 - **Clicar no filtro ativo desliga.** Antes o filtro ativo era inerte e só o "Todos"
   voltava ao acervo. Agora desligar acende o "Todos" e some com o `?tema=` da URL.
 - **Grade filtrada em 4 colunas** (`grid-cols-4` explícito, 2 no tablet, 1 no mobile).

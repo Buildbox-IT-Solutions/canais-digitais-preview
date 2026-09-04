@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import { twMerge } from '~/lib/tw-merge'
 import { FavoritoToggle } from '~/components/favorito-toggle'
 import { Icon } from '~/components/icon'
@@ -8,6 +9,8 @@ import { desfavoritar, favoritar, useFavorito } from '~/lib/favoritos-store'
 import { toast } from '~/lib/toast-store'
 import { ARQUIVO_EXEMPLO_URL, nomeArquivoDownload } from '~/mocks/downloads'
 import type { ILibActionBarProps } from './types'
+
+const FAVORITOS_HREF = '/dashboard-perfil-v4?tab=favoritos'
 
 /**
  * Componente: LibActionBar — as quatro ações de um material do acervo.
@@ -43,8 +46,12 @@ export function LibActionBar({
 	// atrás de `useLogado()` (`?logado=true`) e abre o convite de criar conta se
 	// deslogado — faz sentido em conteúdo público, não aqui: a Biblioteca exclusiva É a
 	// área logada. Mesmo racional (e mesmo código) já usados em dashboard-perfil-v4.
-	// "Favorita e abre toast. Semelhante a Últimas leituras." — a anotação.
+	// "Favorita e abre toast. Semelhante a Últimas leituras." — a anotação. O toast de
+	// adicionar ganha a ação "Ver", mesmo padrão dos outros quatro pontos de favoritar do
+	// repo (ex.: UltimasListRow em dashboard-perfil-v4) — o de remover não tem ação porque
+	// não há pra onde levar depois de tirar da lista.
 	const pressed = useFavorito(material.id)
+	const navigate = useNavigate()
 
 	function alternarFavorito() {
 		if (pressed) {
@@ -52,7 +59,9 @@ export function LibActionBar({
 			toast.success('Removido dos favoritos.')
 		} else {
 			favoritar(material.id)
-			toast.success('Adicionado aos seus Favoritos!')
+			toast.success('Adicionado aos seus Favoritos!', {
+				action: { label: 'Ver', onClick: () => navigate(FAVORITOS_HREF) },
+			})
 		}
 	}
 
