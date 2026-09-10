@@ -16,6 +16,7 @@ import { IncentiveBanner } from '~/components/incentive-banner'
 import { IncentiveDownloadDialog } from '~/components/incentive-download-dialog'
 import { IncentiveNewsletterDialog } from '~/components/incentive-newsletter-dialog'
 import { Toast } from '~/components/toast'
+import { WhatsNewDialog } from '~/components/whats-new-dialog'
 import { NewsCard } from '~/components/news-card'
 import { ProteinaAnimalSection } from '~/components/proteina-animal-section'
 import { SectionTitle } from '~/components/section-title'
@@ -159,6 +160,9 @@ export default function HomeScreen() {
 	const [portalOpen, setPortalOpen] = useState(previewIncentive === 'portal')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
 	const [newsletterOpen, setNewsletterOpen] = useState(previewIncentive === 'newsletter')
+	// Preview isolado do carrossel "novidade do login" — regra de quando exibir/cooldown/
+	// persistência fica para depois (ver whats-new-dialog/index.tsx), aqui é só ?preview=whats-new.
+	const [whatsNewOpen, setWhatsNewOpen] = useState(previewIncentive === 'whats-new')
 
 	useEffect(() => {
 		if (!isHomeRoute || logado || previewIncentive) return
@@ -461,6 +465,8 @@ export default function HomeScreen() {
 				/>
 			</>
 		) : null}
+
+		<WhatsNewDialog open={whatsNewOpen} onClose={() => setWhatsNewOpen(false)} />
 
 		{showNewsletterToast ? (
 			<div className="fixed bottom-6 right-6 z-50">

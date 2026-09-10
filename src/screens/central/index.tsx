@@ -40,13 +40,14 @@ const GROUPS: RouteGroup[] = [
 	},
 	{
 		title: 'Incentivo ao Cadastro',
-		description: 'Modais que convertem visitante deslogado em cadastro — reusam os mesmos modais de Cadastro/Login acima.',
+		description: 'Modais que convertem visitante deslogado em cadastro — em sua maioria reusando os mesmos modais de Cadastro/Login acima.',
 		color: 'secondary',
 		items: [
 			{ path: '/home?preview=portal', label: 'Incentivo — Portal', description: 'Passivo · dispara ~4s na Home para visitante deslogado', status: 'pronto-para-dev' },
 			{ path: '/conteudo?preview=leitura', label: 'Incentivo — Leitura', description: 'Passivo · dispara a ~50% de scroll no Conteúdo para visitante deslogado', status: 'pronto-para-dev' },
 			{ path: '/home?preview=download', label: 'Incentivo — Download', description: 'Ativo · dispara ao clicar no CTA de download (Home e Conteúdo) para visitante deslogado', status: 'pronto-para-dev' },
 			{ path: '/form-newsletter?preview=lembrete', label: 'Incentivo — Newsletter', description: 'Passivo · barra fixa na entrada do Formulário de Newsletter, some no primeiro foco em campo', status: 'pronto-para-dev' },
+			{ path: '/home?preview=whats-new', label: "What's New — Login", description: 'Carrossel de 3 passos sobre a Home anunciando login, download e newsletter · regra de exibição (quando, para quem, cooldown) ainda não definida', status: 'prototipando' },
 		],
 	},
 	{
