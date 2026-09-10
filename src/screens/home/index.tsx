@@ -28,6 +28,15 @@ import { WidgetPodcast } from '~/components/widget-podcast'
 import type { ScenarioAxis } from '~/dev/scenario-store'
 import { useScenarios } from '~/dev/use-scenarios'
 import { markPassiveShown, shouldShowPassiveIncentive, suppressPassiveFor7Days } from '~/lib/incentive-storage'
+import {
+	aplicarPresetWhatsNew,
+	encerrarWhatsNew,
+	registrarImpressaoWhatsNew,
+	resolverWhatsNew,
+	type MotivoWhatsNew,
+	type PresetWhatsNew,
+} from '~/lib/whats-new-campanha'
+import type { WhatsNewEvento } from '~/components/whats-new-dialog/types'
 import { useAssinarNewsletter } from '~/lib/use-assinar-newsletter'
 import { useHeaderUsuario } from '~/lib/use-header-usuario'
 import { useLogado } from '~/lib/use-logado'
@@ -97,6 +106,34 @@ const BIBLIOTECA_AXIS: ScenarioAxis = {
 	],
 }
 
+/**
+ * Eixo do What's New. As regras têm prazo em dias (2 impressões, 4 dias de intervalo,
+ * janela de 90 dias) — sem poder plantar um histórico, revisar "volta em 4 dias"
+ * custaria quatro dias. Cada opção grava um estado plausível no `localStorage` e deixa
+ * `resolverWhatsNew` decidir normalmente; nenhuma delas desvia da regra.
+ *
+ * O rótulo diz o resultado esperado de propósito: "não apareceu" e "quebrou" são
+ * indistinguíveis para quem revisa, e a barra não tem onde mostrar o motivo.
+ *
+ * A janela de campanha é o único item que não está aqui: ela varia por PORTAL, então
+ * se demonstra com `?portal=saude-business` (lança em 15/11, ainda fora da janela).
+ */
+const WHATS_NEW_AXIS: ScenarioAxis = {
+	param: 'whatsnew',
+	label: "What's New",
+	value: 'auto',
+	defaultValue: 'auto',
+	options: [
+		{ value: 'auto', label: 'Estado real do navegador' },
+		{ value: 'limpo', label: 'Nunca viu → aparece' },
+		{ value: 'segunda', label: '1ª há 5 dias, adiada → aparece (2ª)' },
+		{ value: 'aguardando', label: '1ª há 1 dia → não aparece (intervalo)' },
+		{ value: 'esgotado', label: 'Já viu 2× → não aparece' },
+		{ value: 'encerrado', label: 'Dispensou de vez → não aparece' },
+		{ value: 'interrupcao-usada', label: 'Já interrompido nesta sessão → não aparece' },
+	],
+}
+
 // Registro vazio quando a home é só o fundo de um modal de auth (/login, /cadastro…):
 // nesse caso os eixos da barra são os da tela da frente, e não os desta.
 const NO_AXES: ScenarioAxis[] = []
@@ -135,17 +172,27 @@ export default function HomeScreen() {
 		: 'banner'
 	const mostrarBiblioteca = bibliotecaValue === 'secao'
 
+	// ?whatsnew=<preset> planta um histórico de campanha no storage — ver WHATS_NEW_AXIS.
+	const whatsNewParam = params.get('whatsnew')
+	const whatsNewPreset = (
+		WHATS_NEW_AXIS.options.some((o) => o.value === whatsNewParam) ? whatsNewParam : 'auto'
+	) as PresetWhatsNew
+
 	// Sessão primeiro (ver _sessao/scenarios). O eixo do banner de newsletter só entra
 	// na barra com ?logado=true: deslogado o banner leva ao formulário público e não
 	// tem estado de assinatura para variar — um controle que não muda nada é pior que
 	// controle nenhum.
+	// O eixo do What's New só entra deslogado: logado a regra é "não aparece" e ponto,
+	// e um controle com sete opções que não mudam nada é pior que controle nenhum.
 	useScenarios(
 		isHomeRoute
 			? [
 					sessaoAxis(logado),
 					{ ...DESTAQUE_UNICO_AXIS, value: destaqueUnicoValue },
 					{ ...BIBLIOTECA_AXIS, value: bibliotecaValue },
-					...(logado ? [newsletterAxis(newsletterAxisValue(params.get('newsletter')))] : []),
+					...(logado
+						? [newsletterAxis(newsletterAxisValue(params.get('newsletter')))]
+						: [{ ...WHATS_NEW_AXIS, value: whatsNewPreset }]),
 				]
 			: NO_AXES,
 	)
@@ -160,19 +207,88 @@ export default function HomeScreen() {
 	const [portalOpen, setPortalOpen] = useState(previewIncentive === 'portal')
 	const [downloadOpen, setDownloadOpen] = useState(previewIncentive === 'download')
 	const [newsletterOpen, setNewsletterOpen] = useState(previewIncentive === 'newsletter')
-	// Preview isolado do carrossel "novidade do login" — regra de quando exibir/cooldown/
-	// persistência fica para depois (ver whats-new-dialog/index.tsx), aqui é só ?preview=whats-new.
+	// `?preview=whats-new` abre direto, sem passar pelas regras — é o atalho da central
+	// para revisar o carrossel em si. O fluxo real é o dos dois efeitos abaixo.
 	const [whatsNewOpen, setWhatsNewOpen] = useState(previewIncentive === 'whats-new')
+
+	// ── Slot de interrupção da home ─────────────────────────────────────────────
+	// Item 7 das regras: uma interrupção por sessão, e um único passivo na home. O
+	// What's New é resolvido PRIMEIRO e, enquanto a campanha estiver aberta para esta
+	// pessoa, o Incentivo Portal cede o slot. Resolver antes dos dois timers (e não
+	// dentro deles) é o que impede os dois de agendarem e dispararem juntos.
+	const [motivoWhatsNew, setMotivoWhatsNew] = useState<MotivoWhatsNew | null>(null)
+
+	useEffect(() => {
+		if (!isHomeRoute || previewIncentive) {
+			setMotivoWhatsNew(null)
+			return
+		}
+		aplicarPresetWhatsNew(whatsNewPreset)
+		setMotivoWhatsNew(resolverWhatsNew({ logado }))
+	}, [isHomeRoute, previewIncentive, whatsNewPreset, logado])
+
+	// Item 1 — 3s depois de a página ficar INTERATIVA, não 3s depois do request. Em
+	// conexão lenta a diferença passa de 5s e o modal abriria sobre uma página em branco.
+	useEffect(() => {
+		if (motivoWhatsNew !== 'exibir') return
+
+		let timerId: number | undefined
+		function agendar() {
+			timerId = window.setTimeout(() => {
+				registrarImpressaoWhatsNew()
+				markPassiveShown()
+				setWhatsNewOpen(true)
+			}, 3000)
+		}
+
+		if (document.readyState === 'complete') {
+			agendar()
+		} else {
+			window.addEventListener('load', agendar, { once: true })
+		}
+
+		return () => {
+			window.removeEventListener('load', agendar)
+			if (timerId) clearTimeout(timerId)
+		}
+	}, [motivoWhatsNew])
 
 	useEffect(() => {
 		if (!isHomeRoute || logado || previewIncentive) return
+		// `null` = decisão do What's New ainda não resolvida nesta render; esperar é
+		// mais barato que abrir os dois e fechar um.
+		if (motivoWhatsNew === null || motivoWhatsNew === 'exibir') return
 		if (!shouldShowPassiveIncentive()) return
 		const timerId = setTimeout(() => {
 			markPassiveShown()
 			setPortalOpen(true)
 		}, 4000)
 		return () => clearTimeout(timerId)
-	}, [isHomeRoute, logado, previewIncentive])
+	}, [isHomeRoute, logado, previewIncentive, motivoWhatsNew])
+
+	// Item 4 — as saídas não são equivalentes. A impressão já foi contada na exibição;
+	// aqui só se decide se a campanha continua aberta para esta pessoa.
+	function handleWhatsNewEvento(evento: WhatsNewEvento) {
+		switch (evento) {
+			// "Agora não": pode ter sido reflexo. Volta uma vez, em 4 dias.
+			case 'adiar':
+				setWhatsNewOpen(false)
+				return
+			case 'pular':
+				encerrarWhatsNew()
+				setWhatsNewOpen(false)
+				return
+			// Leu os três passos: mensagem entregue. Encerra sem fechar — ela continua lendo.
+			case 'ultimo-passo':
+				encerrarWhatsNew()
+				return
+			case 'criar-conta':
+				encerrarWhatsNew()
+				setWhatsNewOpen(false)
+				navigate('/cadastro?step=1&returnTo=%2Fhome')
+				return
+		}
+	}
 
 	function handlePortalCreateAccount() {
 		suppressPassiveFor7Days()
@@ -466,7 +582,7 @@ export default function HomeScreen() {
 			</>
 		) : null}
 
-		<WhatsNewDialog open={whatsNewOpen} onClose={() => setWhatsNewOpen(false)} />
+		<WhatsNewDialog open={whatsNewOpen} onEvento={handleWhatsNewEvento} />
 
 		{showNewsletterToast ? (
 			<div className="fixed bottom-6 right-6 z-50">
