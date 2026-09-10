@@ -47,7 +47,7 @@ const GROUPS: RouteGroup[] = [
 			{ path: '/conteudo?preview=leitura', label: 'Incentivo — Leitura', description: 'Passivo · dispara a ~50% de scroll no Conteúdo para visitante deslogado', status: 'pronto-para-dev' },
 			{ path: '/home?preview=download', label: 'Incentivo — Download', description: 'Ativo · dispara ao clicar no CTA de download (Home e Conteúdo) para visitante deslogado', status: 'pronto-para-dev' },
 			{ path: '/form-newsletter?preview=lembrete', label: 'Incentivo — Newsletter', description: 'Passivo · barra fixa na entrada do Formulário de Newsletter, some no primeiro foco em campo', status: 'pronto-para-dev' },
-			{ path: '/home?preview=whats-new', label: "What's New — Login", description: 'Carrossel de 3 passos sobre a Home anunciando login, download e newsletter · regra de exibição (quando, para quem, cooldown) ainda não definida', status: 'prototipando' },
+			{ path: '/home?whatsnew=limpo', label: "What's New — Login", description: 'Passivo · dispara 3s após a Home carregar, 2× no máximo com 4 dias de intervalo · os 7 estados da regra estão na barra de cenários; ?preview=whats-new abre direto, sem regra', status: 'em-aprovacao' },
 		],
 	},
 	{

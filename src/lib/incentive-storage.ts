@@ -17,6 +17,32 @@ export function markPassiveShown(): void {
 	sessionStorage.setItem(PASSIVE_SHOWN_KEY, '1')
 }
 
+/**
+ * Só o teto de "uma interrupção por sessão de aba", sem a supressão de 7 dias que
+ * `shouldShowPassiveIncentive` também aplica.
+ *
+ * Existe para o What's New (`src/lib/whats-new-campanha.ts`), que divide o teto por
+ * sessão com os passivos mas tem cadência própria (2 impressões, 4 dias). Herdar
+ * junto a supressão de 7 dias faria uma dispensa do Incentivo Portal calar uma
+ * campanha que não tem nada a ver com ela.
+ */
+export function hasPassiveShownThisSession(): boolean {
+	try {
+		return sessionStorage.getItem(PASSIVE_SHOWN_KEY) === '1'
+	} catch {
+		return false
+	}
+}
+
+/** Só para os presets da ScenarioBar — ver `aplicarPresetWhatsNew`. */
+export function resetPassiveShownThisSession(): void {
+	try {
+		sessionStorage.removeItem(PASSIVE_SHOWN_KEY)
+	} catch {
+		// Sem sessionStorage o teto por sessão não existe; nada a limpar.
+	}
+}
+
 /** Suprime os dois passivos por 7 dias a partir de agora. */
 export function suppressPassiveFor7Days(): void {
 	localStorage.setItem(PASSIVE_SUPPRESSED_UNTIL_KEY, String(Date.now() + SUPPRESS_DURATION_MS))
