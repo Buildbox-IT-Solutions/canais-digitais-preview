@@ -18,34 +18,35 @@ type Story = StoryObj<typeof WhatsNewDialog>
 /** Passo 1 de 3 — sem seta "voltar". Dots clicáveis navegam direto para qualquer passo. */
 export const Passo1Login: Story = {
 	name: 'Passo 1 — Login',
-	args: { initialStep: 0, apresentacao: 'modal' },
+	args: { initialStep: 0 },
 }
 
-/** Passo 2 de 3 — download de materiais. Ambas as setas ativas. */
+/** Passo 2 de 3 — o único com as duas setas: é o único que tem passo anterior e próximo. */
 export const Passo2Download: Story = {
 	name: 'Passo 2 — Download',
-	args: { initialStep: 1, apresentacao: 'modal' },
+	args: { initialStep: 1 },
 }
 
-/** Passo 3 de 3 — a seta "avançar" dá lugar ao CTA "Criar conta"; "Pular" continua no lugar. */
+/** Passo 3 de 3 — as setas saem de cena e fica só "Pular" ao lado do CTA "Criar conta". */
 export const Passo3Newsletter: Story = {
 	name: 'Passo 3 — Newsletter',
-	args: { initialStep: 2, apresentacao: 'modal' },
+	args: { initialStep: 2 },
 }
 
 /**
- * Abaixo de `lg` o card de 420px vira bottom sheet de largura total, com handle de
- * arrastar (arrastar para baixo = mesma semântica do X, "agora não"). Forçado por
- * `apresentacao` para não depender do tamanho da janela de quem está revisando — no
- * produto quem decide é a viewport.
+ * Mesmo modal, 342px com margem de 24px. Não há troca de apresentação entre mobile e
+ * desktop — mudam largura e paddings, e a ilustração 16:9 acompanha. No último passo o
+ * CTA ocupa a largura que sobra ao lado do "Pular".
  */
-export const MobileSheet: Story = {
-	name: 'Mobile — bottom sheet',
-	args: { initialStep: 0, apresentacao: 'sheet' },
+export const Mobile: Story = {
+	name: 'Mobile — passo 1',
+	globals: { viewport: { value: 'mobile1' } },
+	args: { initialStep: 0 },
 }
 
-/** O mesmo sheet no último passo, com o CTA "Criar conta" na largura do mobile. */
-export const MobileSheetUltimoPasso: Story = {
-	name: 'Mobile — bottom sheet, passo 3',
-	args: { initialStep: 2, apresentacao: 'sheet' },
+/** O mesmo no passo 3, onde o CTA estica. */
+export const MobileUltimoPasso: Story = {
+	name: 'Mobile — passo 3',
+	globals: { viewport: { value: 'mobile1' } },
+	args: { initialStep: 2 },
 }
