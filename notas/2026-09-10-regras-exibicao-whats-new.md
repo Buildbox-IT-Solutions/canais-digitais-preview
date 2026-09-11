@@ -10,15 +10,6 @@ motivo: >-
 
 # Regras de exibição do What's New
 
-> **Decidido pelo Pedro em 10/09/2026.** Cobre os 8 itens que ficaram abertos quando o
-> [`whats-new-dialog`](../src/components/whats-new-dialog/index.tsx) foi entregue
-> (PR #71). O componente ainda **não** implementa nenhuma destas regras: a home só o abre
-> via `?preview=whats-new`.
->
-> **O que falta agora é a leitura do time de desenvolvimento** — o que é viável, o que
-> esbarra em cache de página, o que custa mais do que parece. Ver
-> [Para o time de desenvolvimento](#para-o-time-de-desenvolvimento) no fim.
-
 ## A tensão que atravessa tudo
 
 Este modal é duas coisas ao mesmo tempo, e vale nomear isso antes de ler as regras:
@@ -74,9 +65,6 @@ Ou seja: **todo visitante deslogado**, até encerrar a campanha pelas regras dos
 CTA "Criar conta" está errado para ela. Dá para imaginar uma variante logada com CTA
 "Ver meu perfil" — mas isso é um segundo componente com segunda régua de exibição, e não
 paga o custo em 11 portais para anunciar uma funcionalidade que a pessoa já usa.
-
-**Ainda em aberto:** se valer a pena o alcance, a variante logada seria **sem** o passo 1
-(login) e com CTA "Ir para minha newsletter". É trabalho de design a mais, não um toggle.
 
 ---
 
@@ -170,71 +158,3 @@ o cenário em que cada portal acaba resolvendo a colisão por conta própria —
 divergem em silêncio. Um slot com prioridade declarada é uma regra que o back-end
 consegue reimplementar igual em todos.
 
----
-
-## 8. Mobile
-
-**Regra:**
-
-- **Bottom sheet** abaixo de `lg`, largura total, em vez do card de 420px centralizado.
-  Reusar o `bottom-sheet` que já existe na família de sobreposições.
-- Arrastar para baixo = mesma semântica do X ("agora não").
-- **Manter as setas** e os dots, iguais ao desktop. Swipe entre passos, se entrar, é
-  acréscimo — não substituto, porque vira trabalho de reimplementação em 11 portais.
-- Mesmo gatilho e mesma frequência do desktop. Não criar régua separada por plataforma.
-- **As ilustrações precisam de versão mobile.** Os PNGs atuais são recortes de tela
-  desktop em 420×180; a 360px de largura o conteúdo dentro deles fica ilegível. É
-  trabalho de design pendente, não um `object-fit`.
-
-**Por quê:** o modal fixo em 420px é o único item desta lista que já está errado no
-código hoje, não apenas indefinido.
-
----
-
-## O que fica de fora, por decisão
-
-- **Página de changelog.** Não há cadência de release que a sustente; nasce desatualizada.
-- **Bloquear a home até fechar o modal.** O scrim já fecha; não transformar anúncio em pedágio.
-- **Reaproveitar o mesmo modal para a próxima novidade** sem trocar o id da campanha —
-  quem já encerrou a primeira nunca veria a segunda.
-- **Régua diferente por portal** além da data de início. Um só conjunto de regras, uma
-  data configurável.
-
----
-
-## Para o time de desenvolvimento
-
-As regras acima estão decididas do lado de produto/design. O que precisamos de vocês é a
-leitura de viabilidade: **o que não dá, o que dá de outro jeito, e o que custa mais do que
-parece.** Não é preciso concordar — é preciso apontar o limite antes de virar spec.
-
-**A pergunta que provavelmente derruba mais coisa:** os 11 portais servem a home por
-cache de página cheia (CDN/Varnish)? Se sim, nada que dependa do visitante — sessão,
-contagem de impressões, estado da campanha — pode ser decidido no PHP que monta a página;
-tudo precisa ser client-side, com a configuração da campanha chegando por um endpoint
-separado ou embutida como dado estático. Isso muda a forma dos itens 1, 3, 5 e 7.
-
-Por item:
-
-| Item | O que precisamos saber |
-|---|---|
-| 1. Gatilho | Dá para medir "página interativa" no tema, ou só `DOMContentLoaded`? |
-| 1 e 3 | Como o portal identifica "sessão" e "visitante" hoje para quem está deslogado? Existe algo, ou nasce com esta feature? |
-| 3 e 6 | `localStorage` é aceitável como única fonte para deslogado? O que acontece em janela anônima e em navegador com storage bloqueado — pode mostrar sempre, ou tem que suprimir? |
-| 5 | Onde mora a data de início por portal: wp-admin, arquivo de config, feature flag? Quem consegue mudar sem deploy? |
-| 6 | Já existe user meta / API de preferências no perfil, ou precisa criar? |
-| 7 | Existe hoje algum orquestrador de modais, ou cada incentivo dispara por conta própria? Se for o segundo caso, o teto de "1 interrupção por sessão" é feature nova, não configuração. |
-| 8 | O bottom sheet já existe no tema WordPress, ou só no protótipo React? |
-
-**Consequência no componente, se o item 4 for adiante:** hoje o X e o "Pular" chamam o
-mesmo `onClose` e são indistinguíveis. Para o X significar "adiar" e o "Pular" significar
-"dispensar", o componente precisa expor dois callbacks — mudança pequena no React, mas
-que precisa estar no contrato antes de o back-end reimplementar.
-
-## Ainda em aberto, do lado de produto
-
-1. Vale a variante logada do item 2 (sem o passo 1, CTA "Ir para minha newsletter")?
-2. Qual a data de lançamento do login por portal — existe cronograma, ou é tudo junto?
-3. O banner de consentimento de cookies trata `localStorage` funcional como isento?
-4. O Incentivo Portal sai do ar durante a campanha nos 11 portais ao mesmo tempo, ou
-   portal a portal conforme cada um lança?
