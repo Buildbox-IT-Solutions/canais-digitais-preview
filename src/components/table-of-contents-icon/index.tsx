@@ -6,7 +6,7 @@
  * acessíveis via `?toc=pill`/`?toc=margem`/`?toc=hibrido` a partir de
  * `/archive`.
  * Botão flutuante com texto "Neste artigo" em TODOS os breakpoints, fixo
- * top-right, clique abre/fecha, sempre visível desde o carregamento —
+ * top-left, clique abre/fecha, sempre visível desde o carregamento —
  * desktop e mobile idênticos. Decisão de 2026-08-31 (Micaelly, feedback de
  * 2026-08-25): até então, a partir de 1400px o botão dava lugar à régua de
  * tracinhos na margem esquerda (ver table-of-contents-hybrid, snapshot
@@ -16,8 +16,11 @@
  * desktop na revisão com a Micaelly, e descoberta pesou mais que limpeza
  * visual. Um único affordance explícito em toda largura elimina também a
  * divergência desktop/mobile, que é o risco central com 11 portais.
- * A distância até o header é a mesma da margem direita
- * (`right-4`/`lg:right-6`), mas medida a partir da altura REAL do header
+ * Posicionado à esquerda desde 2026-09-17 (pedido do Pedro); antes ficava
+ * top-right. O painel abre alinhado pela mesma borda (`left-0`), então
+ * cresce para dentro do conteúdo em vez de sair da viewport.
+ * A distância até o header é a mesma da margem esquerda
+ * (`left-4`/`lg:left-6`), mas medida a partir da altura REAL do header
  * (`useHeaderHeight`) em vez de um valor fixo — o header alterna
  * Expanded/Compact e muda de altura por breakpoint, então um `top-N` fixo
  * grudava ou afastava demais dependendo do estado (feedback do PO em
@@ -50,7 +53,7 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 	const activeId = useTocScrollspy(headings, hasEnoughHeadings)
 	const headerHeight = useHeaderHeight()
 	const isLgUp = useMediaQuery('(min-width: 1024px)')
-	// Mesma distância que o botão já tem da margem direita (right-4/lg:right-6).
+	// Mesma distância que o botão já tem da margem esquerda (left-4/lg:left-6).
 	const buttonTop = headerHeight + (isLgUp ? 24 : 16)
 
 	useClickAwayAndEscape(triggerRef, panelRef, panelOpen, () => setPanelOpen(false))
@@ -64,7 +67,7 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 
 	return (
 		<div className={className}>
-			<div className="fixed right-4 lg:right-6 z-30" style={{ top: buttonTop }}>
+			<div className="fixed left-4 lg:left-6 z-30" style={{ top: buttonTop }}>
 				<button
 					ref={triggerRef}
 					type="button"
@@ -77,7 +80,7 @@ export function TableOfContentsIcon({ headings, className }: ITableOfContentsIco
 					Neste artigo
 				</button>
 				{panelOpen ? (
-					<TocPanel ref={panelRef} title="Neste artigo" className="absolute right-0 mt-2">
+					<TocPanel ref={panelRef} title="Neste artigo" className="absolute left-0 mt-2">
 						<nav aria-label="Neste artigo">
 							<TocList headings={headings} activeId={activeId} onSelect={handleSelect} dense />
 						</nav>

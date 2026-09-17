@@ -22,7 +22,7 @@ type Story = StoryObj<typeof TableOfContentsIcon>
 
 /**
  * Versão final do TOC: botão flutuante com texto "Neste artigo" fixo
- * top-right desde o carregamento, em TODAS as larguras de tela — desktop e
+ * top-left desde o carregamento, em TODAS as larguras de tela — desktop e
  * mobile idênticos. Clique abre/fecha o painel; clique fora ou Escape
  * também fecham. O painel mostra o título "Neste artigo" e itens com
  * espaçamento compacto. A régua na margem que aparecia acima de 1400px foi
